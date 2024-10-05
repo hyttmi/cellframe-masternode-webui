@@ -27,6 +27,8 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/op
 
 ## Installation
 
+You can get the latest release from [releases page](https://github.com/hyttmi/cellframe-masternode-webui/releases) or by cloning this repo.
+
 1. Enable Python plugins in `cellframe-node.cfg` so it looks on the bottom something like this:
 ```
 # Plugins
