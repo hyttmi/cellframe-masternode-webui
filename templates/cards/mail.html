@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #333333;
+        }
+
+        h2 {
+            color: #555555;
+        }
+
+        h3 {
+            color: #666666;
+            border-bottom: 1px solid #dddddd;
+            padding-bottom: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #dddddd;
+        }
+
+        strong {
+            color: #333333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="system">
+            <h3>System stats</h3>
+                <table>
+                    <tr>
+                        <td><strong>System uptime:</strong></td>
+                        <td>{{ system_uptime }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Node uptime:</strong></td>
+                        <td>{{ node_uptime }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Node version:</strong></td>
+                        <td>{{ node_version }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Latest node version:</strong></td>
+                        <td>{{ latest_node_version }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>CPU utilization:</strong></td>
+                        <td>{{ cpu_utilization }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Memory utilization:</strong></td>
+                        <td>{{ memory_utilization }}</td>
+                    </tr>
+                </table>
+        </div>
+
+        {% for network in net_info %}
+        <div class="network">
+            <h3>{{ network.name }}</h3>
+            <table>
+                <tr>
+                    <td><strong>State:</strong></td>
+                    <td>{{ network.state }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Target state:</strong></td>
+                    <td>{{ network.target_state }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Node address:</strong></td>
+                    <td>{{ network.address }}</td>
+                </tr>
+                <tr>
+                    <td><strong>First signed blocks:</strong></td>
+                    <td>{{ network.first_signed_blocks }}</td>
+                </tr>
+                <tr>
+                    <td><strong>All signed blocks:</strong></td>
+                    <td>{{ network.all_signed_blocks }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Signed blocks today:</strong></td>
+                    <td>{{ network.signed_blocks_today }}</td>
+                </tr>
+                <tr>
+                    <td><strong>All blocks:</strong></td>
+                    <td>{{ network.all_blocks }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Autocollect status:</strong></td>
+                    <td>{{ network.autocollect_status }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Autocollect rewards:</strong></td>
+                    <td>{{ network.rewards }}</td>
+                </tr>
+                {% if network.fee_wallet_tokens %}
+                <tr>
+                    <td><strong>Reward wallet information:</strong></td>
+                    <td>
+                        {% for token in network.fee_wallet_tokens %}
+                        {{ token.token }}: {{ token.balance }}<br>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endif %}
+            </table>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+
+</html>

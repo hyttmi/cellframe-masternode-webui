@@ -1,0 +1,8 @@
+{ 
+    "name": "cellframe-masternode-webui",
+    "version": "2.52",
+    "author": "Mika Hyttinen (@CELLgainz)",
+    "dependencies": [],
+    "description": "WebUI for Cellframe masternode",
+    "type": "python"
+}
