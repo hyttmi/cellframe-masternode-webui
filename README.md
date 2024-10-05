@@ -37,16 +37,16 @@ py_load=true
 py_path=/opt/cellframe-node/var/lib/plugins
 
 ```
-2. Place the `webui` directory to `/opt/cellframe-node/var/lib/plugins/` (If it doesn't exist, create it).
+2. Place the `cellframe-node-webui` directory to `/opt/cellframe-node/var/lib/plugins/` (If it doesn't exist, create it).
 3. Go to `/opt/cellframe-node/python/bin` and make sure pip/pip3 is executable `(chmod +x pip pip3)`
 4. Go back to `/opt/cellframe-node/var/lib/plugins/webui` and install required packages with `/opt/cellframe-node/python/bin/pip3 install -r requirements.txt` **AS ROOT**
-5. Restart your node and access the WebUI with your browser (`http://<your_node_ip>:<your_node_port>/<uri>` where `<uri>` by default is webui).
+5. Restart your node and access the WebUI with your browser (`http://<your_node_ip>:<your_node_port>/<url>` where `<url>` by default is webui).
 
 ## Updating
 
 1. Overwrite the old files in `/opt/cellframe-node/var/lib/plugins/webui`
 2. Go to `/opt/cellframe-node/var/lib/plugins/webui` and install required packages with `/opt/cellframe-node/python/bin/pip3 install -r requirements.txt` **AS ROOT**
-3. Restart your node and access the WebUI with your browser (`http://<your_node_ip>:<your_node_port>/<uri>` where `<uri>` by default is webui).
+3. Restart your node and access the WebUI with your browser (`http://<your_node_ip>:<your_node_port>/<url>` where `<url>` by default is webui).
 
 ## Templating
 

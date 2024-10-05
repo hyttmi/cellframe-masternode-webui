@@ -37,7 +37,7 @@ def checkForUpdate():
             curr_version = Version(data["version"])
             logNotice(f"Current plugin version: {curr_version}")
                 
-        url = "https://raw.githubusercontent.com/hyttmi/cellframe-masternode-webui/refs/heads/master/webui/manifest.json"
+        url = "https://raw.githubusercontent.com/hyttmi/cellframe-masternode-webui/refs/heads/master/manifest.json"
         res = requests.get(url).json()
         latest_version = Version(res["version"])
         logNotice(f"Latest plugin version: {latest_version}")
