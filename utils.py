@@ -11,6 +11,9 @@ from datetime import datetime, timedelta
 
 log = CFLog()
 
+def getScriptDir():
+    return os.path.dirname(os.path.abspath(__file__))
+
 def logNotice(msg):
     func_name = inspect.stack()[1].function
     log.notice(f"{PLUGIN_NAME} [{func_name}] {msg}")
@@ -363,6 +366,3 @@ def validateTime(str):
     except ValueError as e:
         logError(f"Error: {e}")
         return False
-    
-def getScriptDir():
-    return os.path.dirname(os.path.abspath(__file__))
