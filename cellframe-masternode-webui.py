@@ -32,9 +32,8 @@ def init():
             executor.submit(sendTelegram, f"Telegram sending is activated at {telegram_stats_time}")
             logNotice(f"Telegram sending is activated at {telegram_stats_time}")
             executor.submit(funcScheduler, lambda: sendTelegram(generateHTML("telegram.html")), telegram_stats_time)
-    if cache_rewards:
-        p = Process(target=cacheRewards) # OK :/
-        p.start()
+    p = Process(target=cacheRewards) # OK :/
+    p.start()
     return 0
 
 def deinit():
