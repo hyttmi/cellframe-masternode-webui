@@ -327,8 +327,10 @@ def readRewards(network):
         logNotice(rewards)
     except FileNotFoundError:
         logError("Rewards file not found!")
+        return None
     except Exception as e:
         logError(f"Error reading rewards: {e}")
+        return None
                 
 
 def generateNetworkData():
