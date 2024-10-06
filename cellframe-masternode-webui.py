@@ -22,8 +22,9 @@ def init():
     telegram_stats_time = getConfigValue("webui", "telegram_stats_time")
     cache_rewards = getConfigValue("webui", "cache_rewards", default=False)
             
-    with ThreadPoolExecutor(max_workers=6) as executor:
-        executor.submit(cacheRewards)
+    with ThreadPoolExecutor() as executor:
+        if cache_rewards:
+            executor.submit(cacheRewards)
         executor.submit(HTTPServer)
         if email_stats_enabled is not None and validateTime(email_stats_time):
             logNotice(f"Email sending is activated at {email_stats_time}")
