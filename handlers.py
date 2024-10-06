@@ -51,7 +51,7 @@ def getRequestHandler(request: CFSimpleHTTPRequestHandler):
             "WWW-Authenticate": 'Basic realm="Cellframe node webui"'
         }
         return response
-    response_body = generateHTML(template_name="template.html")
+    response_body = generateHTML("template.html")
     response_body = response_body.encode("utf-8")
     response = CFSimpleHTTPResponse(body=response_body, code=200)
     response.headers = {

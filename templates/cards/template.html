@@ -250,7 +250,6 @@
                 </div>
             </div>
             {% endif %}
-            {% if network.autocollect_status is not none %}
             <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">autocollect status</h5>
@@ -260,7 +259,6 @@
                     <i class="fa-solid fa-coins icon-container"></i>
                 </div>
             </div>
-            {% endif %}
             {% if network.rewards is not none %}
             <div class="col-md-3">
                 <div class="card">
@@ -269,17 +267,6 @@
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.rewards }}</h6>
                     </div>
                     <i class="fa-solid fa-coins icon-container"></i>
-                </div>
-            </div>
-            {% endif %}
-
-            {% if network.signed_blocks_last_7_days is not none %}
-            <div class="col-md-3">
-                <div class="card">
-                    <h5 class="card-header text-uppercase">Signed blocks last 7 days</h5>
-                    <div class="card-body">
-                       <canvas id="blocksChart"></canvas>
-                    </div>
                 </div>
             </div>
             {% endif %}
@@ -302,6 +289,18 @@
                 </div>
             </div>
             {% endif %}
+
+            {% if network.signed_blocks_last_7_days is not none %}
+            <div class="col-md-3">
+                <div class="card">
+                    <h5 class="card-header text-uppercase">Signed blocks last 7 days</h5>
+                    <div class="card-body">
+                       <canvas id="blocksChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
         </div>
         <script>
             var blocksData = {{ network.signed_blocks_last_7_days | tojson }};
