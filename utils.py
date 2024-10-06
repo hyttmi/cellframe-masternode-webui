@@ -135,7 +135,8 @@ def getLatestNodeVersion():
 def getListNetworks():
     try:
         return CFNet.active_nets()
-    except:
+    except Exception as e:
+        logError(f"Error retrieving networks: {e}")
         return None
 
 def readNetworkConfig(network):
@@ -261,8 +262,10 @@ def getAutocollectRewards(network):
     
 def cacheRewards():
     while True:
+        logNotice("called")
         try:
             networks = getListNetworks()
+            logNotice(networks)
             for network in networks:
                 net_config = readNetworkConfig(network)
                 if net_config is not None:
