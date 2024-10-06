@@ -4,6 +4,7 @@ from handlers import *
 from utils import *
 from mailer import sendMail
 from telegram import sendTelegram
+from threading import Thread
 
 def HTTPServer():
     try:
@@ -13,9 +14,6 @@ def HTTPServer():
     except Exception as e:
         logError(f"Error: {e}")
     return 0
-
-def test():
-    print("yes")
 
 def init():
     email_stats_enabled = getConfigValue("webui", "email_stats")
@@ -34,9 +32,7 @@ def init():
             executor.submit(sendTelegram, f"Telegram sending is activated at {telegram_stats_time}")
             logNotice(f"Telegram sending is activated at {telegram_stats_time}")
             executor.submit(funcScheduler, lambda: sendTelegram(generateHTML("telegram.html")), telegram_stats_time)
-    with ProcessPoolExecutor() as pexecutor: # Use ProcessPoolExecutor for CPU bound tasks, not sure if it's the right choice :)
-        if cache_rewards:
-            pexecutor.submit(cacheRewards)
+    Thread(target=cacheRewards, daemon=True).start()
     return 0
 
 def deinit():
