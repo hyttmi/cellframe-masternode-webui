@@ -305,12 +305,33 @@ def cacheRewards():
                     return None
         except Exception as e:
             logError(f"Error caching rewards: {e}")
+            
+def readRewards(network):
+    try:
+        rewards = {}
+        with open(os.path.join(getScriptDir(),f".{network}_rewards_cache.txt")) as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                date_string, amount = line.split("|")
+                amount = float(amount)
+                formatted_date  = datetime.strptime(date_string, "%d %b %Y %H:%M:%S").date()
+                if formatted_date in rewards:
+                    rewards[formatted_date] += amount
+                else:
+                    rewards[formatted_date] = amount
+        logNotice(rewards)
+    except Exception as e:
+        logError(f"Error reading rewards: {e}")
+                
 
 def generateNetworkData():
     networks = getListNetworks()
     if networks is not None:
         network_data = []
         for network in networks:
+            readRewards(network)
             net_status = CLICommand(f"net -net {network} get status")
             addr_pattern = r"([A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*)"
             state_pattern = r"states:\s+current: (\w+)"

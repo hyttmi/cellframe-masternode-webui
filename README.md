@@ -26,6 +26,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/op
 - `telegram_api_key=something` - Your Telegram Bot API token
 - `telegram_chat_id=something` - Your Telegram chat id
 - `telegram_stats_time=23:59` - Time to send the message **24h format (HH:MM)**
+- `cache_rewards`- Cache rewards to a text file
 
 ## Installation
 
