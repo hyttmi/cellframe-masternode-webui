@@ -22,10 +22,9 @@ def init():
     telegram_stats_time = getConfigValue("webui", "telegram_stats_time")
     cache_rewards = getConfigValue("webui", "cache_rewards", default=False)
     
-    logNotice("Starting process...")
-    p = Process(target=cacheRewards) # OK :/
-    p.start()
-    logNotice(f"Process started with {p.pid}")
+    with ProcessPoolExecutor() as pexecutor:
+        logNotice("Executing new process...")
+        pexecutor.submit(cacheRewards)
             
     with ThreadPoolExecutor() as executor:
         executor.submit(HTTPServer)

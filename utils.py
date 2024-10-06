@@ -264,6 +264,7 @@ def cacheRewards():
     while True:
         logNotice("called")
         try:
+            logNotice("Fetching network list...")
             networks = getListNetworks()
             logNotice(networks)
             for network in networks:
