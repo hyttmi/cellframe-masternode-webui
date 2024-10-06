@@ -309,19 +309,24 @@ def cacheRewards():
 def readRewards(network):
     try:
         rewards = {}
-        with open(os.path.join(getScriptDir(),f".{network}_rewards_cache.txt")) as f:
+        with open(os.path.join(getScriptDir(), f".{network}_rewards_cache.txt")) as f:
             for line in f:
                 line = line.strip()
                 if not line:
                     continue
                 date_string, amount = line.split("|")
                 amount = float(amount)
+                today = datetime.now().date()
+                seven_days_ago = today - timedelta(days=7)
                 formatted_date  = datetime.strptime(date_string, "%d %b %Y %H:%M:%S").date()
-                if formatted_date in rewards:
-                    rewards[formatted_date] += amount
-                else:
-                    rewards[formatted_date] = amount
+                if seven_days_ago <= formatted_date <= today:
+                    if formatted_date in rewards:
+                        rewards[formatted_date] += amount
+                    else:
+                        rewards[formatted_date] = amount
         logNotice(rewards)
+    except FileNotFoundError:
+        logError("Rewards file not found!")
     except Exception as e:
         logError(f"Error reading rewards: {e}")
                 
