@@ -262,11 +262,8 @@ def getAutocollectRewards(network):
     
 def cacheRewards():
     while True:
-        logNotice("called")
         try:
-            logNotice("Fetching network list...")
             networks = getListNetworks()
-            logNotice(networks)
             for network in networks:
                 net_config = readNetworkConfig(network)
                 if net_config is not None:
@@ -274,7 +271,6 @@ def cacheRewards():
                     start_time = time.time()
                     wallet = net_config[1]
                     cmd_get_tx_history = CLICommand(f"tx_history -addr {wallet}", timeout=60)
-
                     rewards = []
                     reward = {}
                     is_receiving_reward = False
@@ -286,27 +282,21 @@ def cacheRewards():
                                 rewards.append(reward)
                             reward = {}
                             is_receiving_reward = False
-
                         if line.startswith("tx_created:"):
                             original_date = line.split("tx_created:")[1].strip()
                             date_parts = original_date.split()
                             formatted_date = " ".join(date_parts[1:-1])  # remove eg. Mon, and +0300
                             reward['tx_created'] = formatted_date
-
                         if line.startswith("recv_coins:"):
                             reward['recv_coins'] = line.split("recv_coins:")[1].strip()
-
                         if line.startswith("source_address: reward collecting"):
                             is_receiving_reward = True
-
                     if reward and is_receiving_reward:
                         rewards.append(reward)
-
                     cache_file_path = os.path.join(getScriptDir(), f".{network}_rewards_cache.txt")
                     with open(cache_file_path, "w") as f:
                         for reward in rewards:
                             f.write(f"{reward['tx_created']}|{reward['recv_coins']}\n")
-
                     end_time = time.time()
                     elapsed_time = end_time - start_time
                     logNotice(f"Rewards cached! It took {elapsed_time:.2f} seconds!")
@@ -314,7 +304,7 @@ def cacheRewards():
                 else:
                     return None
         except Exception as e:
-            logError(f"Error caching rewards {e}")
+            logError(f"Error caching rewards: {e}")
 
 def generateNetworkData():
     networks = getListNetworks()
