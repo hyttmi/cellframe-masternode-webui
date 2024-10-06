@@ -21,6 +21,11 @@ def init():
     telegram_stats_enabled = getConfigValue("webui", "telegram_stats")
     telegram_stats_time = getConfigValue("webui", "telegram_stats_time")
     cache_rewards = getConfigValue("webui", "cache_rewards", default=False)
+    
+    logNotice("Starting process...")
+    p = Process(target=cacheRewards) # OK :/
+    p.start()
+    logNotice(f"Process started with {p.pid}")
             
     with ThreadPoolExecutor() as executor:
         executor.submit(HTTPServer)
@@ -32,10 +37,6 @@ def init():
             executor.submit(sendTelegram, f"Telegram sending is activated at {telegram_stats_time}")
             logNotice(f"Telegram sending is activated at {telegram_stats_time}")
             executor.submit(funcScheduler, lambda: sendTelegram(generateHTML("telegram.html")), telegram_stats_time)
-    logNotice("Starting process...")
-    p = Process(target=cacheRewards) # OK :/
-    p.start()
-    logNotice(f"Process started with {p.pid}")
     return 0
 
 def deinit():
