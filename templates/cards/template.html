@@ -382,7 +382,7 @@
             combinedRewards.sort((a, b) => a.date - b.date);
         
             var sortedRewardDays = combinedRewards.map(item => formatDate(item.date.toString()));
-            var sortedRewards = combinedRewards.map(item => item.rewards);
+            var sortedRewards = combinedRewards.map(item => item.rewards.toString());
             var rewardsCtx = document.getElementById('rewardsChart').getContext('2d');
             var rewardsChart = new Chart(rewardsCtx, {
                 type: 'line',
