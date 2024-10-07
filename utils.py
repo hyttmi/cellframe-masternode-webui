@@ -334,7 +334,6 @@ def generateNetworkData():
     if networks is not None:
         network_data = []
         for network in networks:
-            readRewards(network)
             net_status = CLICommand(f"net -net {network} get status")
             addr_pattern = r"([A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*)"
             state_pattern = r"states:\s+current: (\w+)"
@@ -357,12 +356,12 @@ def generateNetworkData():
                     'signed_blocks_last_7_days': getSignedBlocksLast7Days(network),
                     'autocollect_status': getAutocollectStatus(network),
                     'rewards': getAutocollectRewards(network),
-                    'fee_wallet_tokens': [{'token': token[1], 'balance': token[0]} for token in tokens] if tokens else None
+                    'fee_wallet_tokens': [{'token': token[1], 'balance': token[0]} for token in tokens] if tokens else None,
+                    'rewards': readRewards(network)
                 }
                 network_data.append(network_info)
             else:
                 return None
-    
         return network_data
     else:
         return None
