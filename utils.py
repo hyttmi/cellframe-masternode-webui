@@ -283,7 +283,7 @@ def cacheRewards():
                             reward = {}
                             is_receiving_reward = False
                         if line.startswith("tx_created:"):
-                            original_date = line.split("tx_created:")[1].strip()[:-5]
+                            original_date = line.split("tx_created:")[1].strip()[:-6]
                             reward['tx_created'] = original_date
                         if line.startswith("recv_coins:"):
                             reward['recv_coins'] = line.split("recv_coins:")[1].strip()
