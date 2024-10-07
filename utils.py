@@ -284,9 +284,7 @@ def cacheRewards():
                             is_receiving_reward = False
                         if line.startswith("tx_created:"):
                             original_date = line.split("tx_created:")[1].strip()
-                            date_parts = original_date.split()
-                            formatted_date = " ".join(date_parts[1:-1])  # remove eg. Mon, and +0300
-                            reward['tx_created'] = formatted_date
+                            reward['tx_created'] = original_date
                         if line.startswith("recv_coins:"):
                             reward['recv_coins'] = line.split("recv_coins:")[1].strip()
                         if line.startswith("source_address: reward collecting"):
@@ -318,13 +316,15 @@ def readRewards(network):
                 amount = float(amount)
                 today = datetime.now().date()
                 seven_days_ago = today - timedelta(days=7)
-                formatted_date  = datetime.strptime(date_string, "%d %b %Y %H:%M:%S").date()
+                formatted_date = datetime.strptime(date_string, "%a, %d %b %Y %H:%M:%S %z").date() # First to object...
+                formatted_date = formatted_date.strftime("")
                 if seven_days_ago <= formatted_date <= today:
                     if formatted_date in rewards:
                         rewards[formatted_date] += amount
                     else:
                         rewards[formatted_date] = amount
         logNotice(rewards)
+        return rewards
     except FileNotFoundError:
         logError("Rewards file not found!")
         return None
