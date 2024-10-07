@@ -317,6 +317,7 @@ def readRewards(network):
                 today = datetime.now().date()
                 seven_days_ago = today - timedelta(days=7)
                 formatted_date = datetime.strptime(date_string, "%a, %d %b %Y %H:%M:%S %z") # First to object...
+                formatted_date = formatted_date.strftime("%a, %d %b %Y") # And back to string, same like in blocks...
                 if seven_days_ago <= formatted_date <= today:
                     if formatted_date in rewards:
                         rewards[formatted_date] += amount
