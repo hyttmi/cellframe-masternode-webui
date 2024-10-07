@@ -317,11 +317,13 @@ def readRewards(network):
                 today = datetime.now()
                 seven_days_ago = today - timedelta(days=7)
                 formatted_date = datetime.strptime(date_string, "%a, %d %b %Y %H:%M:%S") # First to object...
+                formatted_date_str = formatted_date.strftime("%a, %d %b %Y")
+
                 if seven_days_ago <= formatted_date <= today:
-                    if formatted_date in rewards:
-                        rewards[formatted_date.strftime("%a, %d %b %Y")] += amount
+                    if formatted_date_str in rewards:
+                        rewards[formatted_date_str] += amount
                     else:
-                        rewards[formatted_date.strftime("%a, %d %b %Y")] = amount
+                        rewards[formatted_date_str] = amount
         logNotice(rewards)
         return rewards
     except FileNotFoundError:
