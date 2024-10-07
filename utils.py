@@ -314,7 +314,7 @@ def readRewards(network):
                     continue
                 date_string, amount = line.split("|")
                 amount = float(amount)
-                today = datetime.now().date()
+                today = datetime.now()
                 seven_days_ago = today - timedelta(days=7)
                 formatted_date = datetime.strptime(date_string, "%a, %d %b %Y %H:%M:%S %z") # First to object...
                 if seven_days_ago <= formatted_date <= today:
