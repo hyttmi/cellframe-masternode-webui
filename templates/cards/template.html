@@ -320,7 +320,7 @@
             var blocks = Object.values(blocksData);
             var reward_days = Object.keys(rewardsData);
             var rewards = Object.values(rewardsData);
-        
+
             function formatDate(dateString) {
                 var date = new Date(dateString);
                 return date.toLocaleDateString(undefined, {
@@ -328,17 +328,17 @@
                     day: 'numeric'
                 });
             }
-        
+
             var combined = block_days.map((day, index) => ({
                 date: new Date(day),
                 blocks: blocks[index]
             }));
-        
+
             combined.sort((a, b) => a.date - b.date);
-        
+
             var sortedDays = combined.map(item => formatDate(item.date.toString()));
             var sortedBlocks = combined.map(item => item.blocks);
-        
+
             var blocksCtx = document.getElementById('blocksChart').getContext('2d');
             var blocksChart = new Chart(blocksCtx, {
                 type: 'line',
@@ -378,9 +378,9 @@
                 date: new Date(day),
                 rewards: rewards[index]
             }));
-        
+
             combinedRewards.sort((a, b) => a.date - b.date);
-        
+
             var sortedRewardDays = combinedRewards.map(item => formatDate(item.date.toString()));
             var sortedRewards = combinedRewards.map(item => item.rewards.toString());
             var rewardsCtx = document.getElementById('rewardsChart').getContext('2d');
@@ -413,11 +413,18 @@
                     plugins: {
                         legend: {
                             display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return tooltipItem.raw;
+                                }
+                            }
                         }
                     }
                 }
             });
-        </script>        
+        </script>
         {% endfor %}
         {% endif %}
     </div>
