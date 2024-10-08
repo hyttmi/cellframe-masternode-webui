@@ -261,48 +261,46 @@ def getAutocollectRewards(network):
         return None
     
 def cacheRewards():
-    while True:
-        try:
-            networks = getListNetworks()
-            for network in networks:
-                net_config = readNetworkConfig(network)
-                if net_config is not None:
-                    logNotice("Caching rewards...")
-                    start_time = time.time()
-                    wallet = net_config[1]
-                    cmd_get_tx_history = CLICommand(f"tx_history -addr {wallet}", timeout=60)
-                    rewards = []
-                    reward = {}
-                    is_receiving_reward = False
-                    lines = cmd_get_tx_history.splitlines()
-                    for line in lines:
-                        line = line.strip()
-                        if line.startswith("status: ACCEPTED"):  # OK, we have ACCEPTED status
-                            if reward and is_receiving_reward:
-                                rewards.append(reward)
-                            reward = {}
-                            is_receiving_reward = False
-                        if line.startswith("tx_created:"):
-                            original_date = line.split("tx_created:")[1].strip()[:-6]
-                            reward['tx_created'] = original_date
-                        if line.startswith("recv_coins:"):
-                            reward['recv_coins'] = line.split("recv_coins:")[1].strip()
-                        if line.startswith("source_address: reward collecting"):
-                            is_receiving_reward = True
-                    if reward and is_receiving_reward:
-                        rewards.append(reward)
-                    cache_file_path = os.path.join(getScriptDir(), f".{network}_rewards_cache.txt")
-                    with open(cache_file_path, "w") as f:
-                        for reward in rewards:
-                            f.write(f"{reward['tx_created']}|{reward['recv_coins']}\n")
-                    end_time = time.time()
-                    elapsed_time = end_time - start_time
-                    logNotice(f"Rewards cached! It took {elapsed_time:.2f} seconds!")
-                    time.sleep(1800)  # TODO: Implement different way to this
-                else:
-                    return None
-        except Exception as e:
-            logError(f"Error caching rewards: {e}")
+    try:
+        networks = getListNetworks()
+        for network in networks:
+            net_config = readNetworkConfig(network)
+            if net_config is not None:
+                logNotice("Caching rewards...")
+                start_time = time.time()
+                wallet = net_config[1]
+                cmd_get_tx_history = CLICommand(f"tx_history -addr {wallet}", timeout=60)
+                rewards = []
+                reward = {}
+                is_receiving_reward = False
+                lines = cmd_get_tx_history.splitlines()
+                for line in lines:
+                    line = line.strip()
+                    if line.startswith("status: ACCEPTED"):  # OK, we have ACCEPTED status
+                        if reward and is_receiving_reward:
+                            rewards.append(reward)
+                        reward = {}
+                        is_receiving_reward = False
+                    if line.startswith("tx_created:"):
+                        original_date = line.split("tx_created:")[1].strip()[:-6]
+                        reward['tx_created'] = original_date
+                    if line.startswith("recv_coins:"):
+                        reward['recv_coins'] = line.split("recv_coins:")[1].strip()
+                    if line.startswith("source_address: reward collecting"):
+                        is_receiving_reward = True
+                if reward and is_receiving_reward:
+                    rewards.append(reward)
+                cache_file_path = os.path.join(getScriptDir(), f".{network}_rewards_cache.txt")
+                with open(cache_file_path, "w") as f:
+                    for reward in rewards:
+                        f.write(f"{reward['tx_created']}|{reward['recv_coins']}\n")
+                end_time = time.time()
+                elapsed_time = end_time - start_time
+                logNotice(f"Rewards cached! It took {elapsed_time:.2f} seconds!")
+            else:
+                return None
+    except Exception as e:
+        logError(f"Error: {e}")
             
 def readRewards(network):
     try:
@@ -369,10 +367,13 @@ def generateNetworkData():
     else:
         return None
     
-def funcScheduler(func, scheduled_time):
+def funcScheduler(func, scheduled_time, every_min=False):
     try:
         scheduler = schedule.Scheduler()
-        scheduler.every().day.at(scheduled_time).do(func)
+        if every_min:
+            scheduler.every(every_min).minutes.do(func)
+        else:
+            scheduler.every().day.at(scheduled_time).do(func)
         while True:
             scheduler.run_pending()
             time.sleep(1)
@@ -385,4 +386,12 @@ def validateTime(str):
         return True
     except ValueError as e:
         logError(f"Error: {e}")
+        return False
+
+def validateNum(num):
+    try:
+        int(num)
+        return True
+    except ValueError:
+        logError("{num} is not a valid number")
         return False
