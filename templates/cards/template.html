@@ -451,16 +451,6 @@
 		            }
 	            }
             });
-
-            var order = sortable.options.store.get(sortable);
-            if (order.length) {
-                order.forEach(function (id) {
-                var el = document.querySelector('[data-id="' + id + '"]');
-                if (el) {
-                    el.parentNode.appendChild(el);
-                }
-            });
-            }
         </script>
         {% endfor %}
         {% endif %}
