@@ -13,6 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/Sortable.min.js"></script>
 </head>
 <style>
     body,
@@ -86,7 +87,7 @@
             </div>
         </div>
         {% endif %}
-        <div class="row">
+        <div class="row" id="sysinfo">
             <div class="col-12">
                 <h1 class="text-uppercase text-color-secondary">System Info</h1>
             </div>
@@ -424,6 +425,10 @@
                     }
                 }
             });
+        </script>
+        <script>
+            var el = document.getElementById("sysinfo");
+            var sortable = Sortable.create(el);
         </script>
         {% endfor %}
         {% endif %}
