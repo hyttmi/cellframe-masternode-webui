@@ -520,9 +520,6 @@
                     button.addEventListener('click', function (event) {
                         var card = event.target.closest('.card');
                         if (card) {
-                            var groupName = "localStorage-cfcards-" + Array.from(sortableElements).indexOf(card.closest('.is_sortable'));
-                            console.log(groupName)
-                            
                             card.remove(); // Remove the cfcard element
                         }
                     });
