@@ -555,7 +555,7 @@
                             var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || []; // Init array
                             if (!closedCards.includes(cardId)) {
                                 closedCards.push(cardId) // Push the card to array...
-                                localStorage.setItem('closedCards', JSON.stringify(closedCards)); // And save the list :)
+                                localStorage.setItem('cfclosed', JSON.stringify(closedCards)); // And save the list :)
                             }
                         }
                     });
