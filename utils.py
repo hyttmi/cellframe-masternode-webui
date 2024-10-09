@@ -344,7 +344,7 @@ def generateNetworkData():
                     'all_signed_blocks': getAllSignedBlocks(network),
                     'all_blocks': getAllBlocks(network),
                     'signed_blocks_today': getSignedBlocksToday(network),
-                    'signed_blocks_last_7_days': getSignedBlocksLast7Days(network),
+                    'signed_blocks_last_7_days': getSignedBlocks(network),
                     'autocollect_status': getAutocollectStatus(network),
                     'autocollect_rewards': getAutocollectRewards(network),
                     'fee_wallet_tokens': [{'token': token[1], 'balance': token[0]} for token in tokens] if tokens else None,
