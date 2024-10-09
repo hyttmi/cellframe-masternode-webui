@@ -209,11 +209,11 @@ def getSignedBlocksToday(network):
     else:
         return None
 
-def getSignedBlocks(network):
+def getSignedBlocks(network, today=False):
     net_config = readNetworkConfig(network)
     if net_config is not None:
         cmd_output = CLICommand(f"block list -net {network} signed -cert {net_config[0]}")
-        
+        today_str = datetime.now().strftime("%a, %d %b %Y")
         blocks_signed_per_day = {}
         
         lines = cmd_output.splitlines()
@@ -225,8 +225,11 @@ def getSignedBlocks(network):
                 if block_day not in blocks_signed_per_day:
                     blocks_signed_per_day[block_day] = 1
                 blocks_signed_per_day[block_day] += 1
-
-        return blocks_signed_per_day
+        
+        if today:
+            return blocks_signed_per_day[today_str]
+        else:
+            return blocks_signed_per_day
     else:
         return None
 
