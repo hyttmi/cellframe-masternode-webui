@@ -73,6 +73,10 @@
     .ghost {
         opacity: 0.5;
     }
+
+    .card-header {
+        padding-top: 15px;
+    }
 </style>
 
 <body>
@@ -97,85 +101,109 @@
             </div>
         </div>
         <div class="row is_sortable">
+            
             <div class="col-md-3" data-id="hostname">
                 <div class="card">
-                    <h5 class="card-header text-uppercase">hostname</h5>
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">hostname</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary text-body-secondary-color">{{ hostname }}</h6>
                     </div>
-                    <i class="fa-solid fa-server icon-container"></i>
+                        <i class="fa-solid fa-server icon-container"></i>
                 </div>
             </div>
 
             <div class="col-md-3" data-id="external_ip_address">
                 <div class="card">
-                    <h5 class="card-header text-uppercase">external ip address</h5>
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">external ip address</h5>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ external_ip }}</h6>
                     </div>
                     <i class="fa-solid fa-network-wired icon-container"></i>
                 </div>
             </div>
-
+            
             <div class="col-md-3" data-id="node_cpu_utilization">
                 <div class="card">
-                    <h5 class="card-header text-uppercase">node cpu utilization</h5>
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">node cpu utilization</h5>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ cpu_utilization }}%</h6>
                     </div>
                     <i class="fa-solid fa-microchip icon-container"></i>
                 </div>
             </div>
-
+            
             <div class="col-md-3" data-id="memory_utilization">
                 <div class="card">
-                    <h5 class="card-header text-uppercase">node memory usage</h5>
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">node memory usage</h5>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ memory_utilization }} MB</h6>
                     </div>
                     <i class="fa-solid fa-memory icon-container"></i>
                 </div>
             </div>
-
+            
             <div class="col-md-3" data-id="node_uptime">
                 <div class="card">
-                    <h5 class="card-header text-uppercase">node uptime</h5>
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">node uptime</h5>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ node_uptime }}</h6>
                     </div>
                     <i class="fa-solid fa-clock icon-container"></i>
                 </div>
             </div>
-
+            
             <div class="col-md-3" data-id="system_uptime">
                 <div class="card">
-                    <h5 class="card-header text-uppercase">system uptime</h5>
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">system uptime</h5>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ system_uptime }}</h6>
                     </div>
                     <i class="fa-solid fa-clock icon-container"></i>
                 </div>
             </div>
-
+            
             <div class="col-md-3" data-id="node_version">
                 <div class="card">
-                    <h5 class="card-header text-uppercase">node version</h5>
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">node version</h5>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ node_version }}</h6>
                     </div>
                     <i class="fa-solid fa-code-compare icon-container"></i>
                 </div>
             </div>
-
+            
             <div class="col-md-3" data-id="latest_node_version">
                 <div class="card">
-                    <h5 class="card-header text-uppercase">latest node version</h5>
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">latest node version</h5>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ latest_node_version }}</h6>
                     </div>
                     <i class="fa-solid fa-code-compare icon-container"></i>
                 </div>
-            </div>
+            </div>            
         </div>
         {% if network_data is not none %}
         {% for network in net_info %}
@@ -185,39 +213,49 @@
             </div>
         </div>
         <div class="row is_sortable">
-            <div class="col-md-3">
+            
+            <div class="col-md-3" data-id="state">
                 <div class="card">
-                    <h5 class="card-header text-uppercase">state</h5>
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">state</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.state }}</h6>
                     </div>
                     <i class="fa-solid fa-network-wired icon-container"></i>
                 </div>
             </div>
-
-            <div class="col-md-3">
+            
+            <div class="col-md-3" data-id="target_state">
                 <div class="card">
-                    <h5 class="card-header text-uppercase">target state</h5>
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">target state</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.target_state }}</h6>
                     </div>
                     <i class="fa-solid fa-globe icon-container"></i>
                 </div>
             </div>
-
-            <div class="col-md-3">
+            
+            <div class="col-md-3" data-id="node_address">
                 <div class="card">
-                    <h5 class="card-header text-uppercase">node address</h5>
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">node address</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.address }}</h6>
                     </div>
                     <i class="fa-solid fa-id-card icon-container"></i>
                 </div>
             </div>
+            
             {% if network.first_signed_blocks is not none %}
-            <div class="col-md-3">
+            <div class="col-md-3" data-id="first_signed_blocks">
                 <div class="card">
-                    <h5 class="card-header text-uppercase">first signed blocks</h5>
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">first signed blocks</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.first_signed_blocks }}</h6>
                     </div>
@@ -225,10 +263,13 @@
                 </div>
             </div>
             {% endif %}
+            
             {% if network.all_signed_blocks is not none %}
-            <div class="col-md-3">
+            <div class="col-md-3" data-id="all_signed_blocks">
                 <div class="card">
-                    <h5 class="card-header text-uppercase">All signed blocks</h5>
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">All signed blocks</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.all_signed_blocks }}</h6>
                     </div>
@@ -236,10 +277,13 @@
                 </div>
             </div>
             {% endif %}
+            
             {% if network.signed_blocks_today is not none %}
-            <div class="col-md-3">
+            <div class="col-md-3" data-id="signed_blocks_today">
                 <div class="card">
-                    <h5 class="card-header text-uppercase">Signed blocks today</h5>
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">Signed blocks today</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.signed_blocks_today }}</h6>
                     </div>
@@ -247,10 +291,13 @@
                 </div>
             </div>
             {% endif %}
+            
             {% if network.all_blocks is not none %}
-            <div class="col-md-3">
+            <div class="col-md-3" data-id="amount_of_blocks">
                 <div class="card">
-                    <h5 class="card-header text-uppercase">Amount of blocks</h5>
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">Amount of blocks</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.all_blocks }}</h6>
                     </div>
@@ -258,19 +305,25 @@
                 </div>
             </div>
             {% endif %}
-            <div class="col-md-3">
+            
+            <div class="col-md-3" data-id="autocollect_status">
                 <div class="card">
-                    <h5 class="card-header text-uppercase">autocollect status</h5>
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">autocollect status</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.autocollect_status }}</h6>
                     </div>
                     <i class="fa-solid fa-coins icon-container"></i>
                 </div>
             </div>
+            
             {% if network.autocollect_rewards is not none %}
-            <div class="col-md-3">
+            <div class="col-md-3" data-id="autocollect_rewards">
                 <div class="card">
-                    <h5 class="card-header text-uppercase">autocollect rewards</h5>
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">autocollect rewards</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.autocollect_rewards }}</h6>
                     </div>
@@ -278,11 +331,13 @@
                 </div>
             </div>
             {% endif %}
-
+            
             {% if network.fee_wallet_tokens is not none %}
-            <div class="col-md-3">
+            <div class="col-md-3" data-id="reward_wallet_information">
                 <div class="card">
-                    <h5 class="card-header text-uppercase">reward wallet information</h5>
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">reward wallet information</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
                     <div class="card-body">
                         <table class="tokens">
                             {% for token in network.fee_wallet_tokens %}
@@ -297,28 +352,32 @@
                 </div>
             </div>
             {% endif %}
-
+            
             {% if network.signed_blocks_last_7_days is not none %}
-            <div class="col-md-3">
+            <div class="col-md-3" data-id="signed_blocks_last_7_days">
                 <div class="card">
-                    <h5 class="card-header text-uppercase">Signed blocks from last 7 days</h5>
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">Signed blocks from last 7 days</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
                     <div class="card-body">
-                       <canvas id="blocksChart"></canvas>
+                        <canvas id="blocksChart"></canvas>
                     </div>
                 </div>
             </div>
             {% endif %}
             
             {% if network.rewards is not none %}
-            <div class="col-md-3">
+            <div class="col-md-3" data-id="rewards_last_7_days">
                 <div class="card">
-                    <h5 class="card-header text-uppercase">Rewards from last 7 days</h5>
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">Rewards from last 7 days</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
                     <div class="card-body">
-                       <canvas id="rewardsChart"></canvas>
+                        <canvas id="rewardsChart"></canvas>
                     </div>
                 </div>
             </div>
-            {% endif %}
+            {% endif %}            
             
         </div>
         <script>
@@ -360,7 +419,7 @@
                         borderWidth: 1
                     }]
                 },
-                options: {
+                options: {  
                     scales: {
                         x: {
                             ticks: {
