@@ -518,10 +518,8 @@
             
                 document.querySelectorAll('.btn-close').forEach(function (button) {
                     button.addEventListener('click', function (event) {
-                        var card = event.target.closest('.card');
+                        var card = event.target.closest('.col-md-3');
                         if (card) {
-                            var cardId = card.dataset.id
-                            console.log(cardId)
                             card.remove(); // Remove the cfcard element
                         }
                     });
