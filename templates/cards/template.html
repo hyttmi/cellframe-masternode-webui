@@ -539,7 +539,7 @@
                         ghostClass: "ghost",
                         group: "cfcards-" + index,
                         dataIdAttr: "data-id",
-                        touchStartThreshold: 10,
+                        delay: 400,
                         store: {
                             get: function (sortable) {
                                 var order = localStorage.getItem(sortable.options.group.name);
