@@ -524,33 +524,9 @@
                             console.log(groupName)
                             
                             card.remove(); // Remove the cfcard element
-        
-                            var order = localStorage.getItem(groupName);
-                            if (order) {
-                                order = order.split('|').filter(function (id) {
-                                    return id !== card.dataset.id;
-                                });
-                                localStorage.setItem(groupName, order.join('|'));
-                            }
-        
-                            var closedCards = JSON.parse(localStorage.getItem('closedCards')) || [];
-                            if (!closedCards.includes(card.dataset.id)) {
-                                closedCards.push(card.dataset.id);
-                                localStorage.setItem('closedCards', JSON.stringify(closedCards));
-                            }
                         }
                     });
                 });
-            
-                
-                var closedCards = JSON.parse(localStorage.getItem('closedCards')) || [];
-                closedCards.forEach(function (closedId) {
-                    var closedCard = document.querySelector(`.card[data-id="${closedId}"]`);
-                    if (closedCard) {
-                        closedCard.remove();
-                    }
-                });
-            });
         </script>
         
 
