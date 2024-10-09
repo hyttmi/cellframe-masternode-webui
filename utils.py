@@ -211,10 +211,13 @@ def getSignedBlocks(network, today=False):
                 if block_day not in blocks_signed_per_day:
                     blocks_signed_per_day[block_day] = 1
                 blocks_signed_per_day[block_day] += 1
+
+        sorted_dict = dict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))) # thx google :D
+
         if today:
             return blocks_signed_per_day.get(today_str, 0)
         else:
-            return dict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
+            return sorted_dict
     else:
         return None
 
@@ -299,7 +302,8 @@ def readRewards(network):
                     rewards[formatted_date_str] += amount
                 else:
                     rewards[formatted_date_str] = amount
-        return dict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
+            sorted_dict = dict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
+        return sorted_dict
     except FileNotFoundError:
         logError("Rewards file not found!")
         return None
@@ -332,7 +336,7 @@ def generateNetworkData():
                     'all_signed_blocks': getAllSignedBlocks(network),
                     'all_blocks': getAllBlocks(network),
                     'signed_blocks_today': getSignedBlocks(network, today=True),
-                    'signed_blocks_last_7_days': getSignedBlocks(network),
+                    'signed_blocks_all': getSignedBlocks(network),
                     'autocollect_status': getAutocollectStatus(network),
                     'autocollect_rewards': getAutocollectRewards(network),
                     'fee_wallet_tokens': [{'token': token[1], 'balance': token[0]} for token in tokens] if tokens else None,

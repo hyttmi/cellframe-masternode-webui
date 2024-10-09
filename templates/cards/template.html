@@ -89,7 +89,7 @@
     <div class="container-fluid mt-4">
         <div class="row" id="localstorage">
             <div class="d-grid gap-2 col-md-2 mx-auto">
-                <button id="clearstorage" class="btn-primary text-uppercase clearbutton">reset to default view</button>
+                <button id="clearstorage" class="btn-primary text-uppercase clearbutton"><strong>reset to default view</strong></button>
             </div>
         </div>
         {% if update_available %}
@@ -364,7 +364,7 @@
             </div>
             {% endif %}
             
-            {% if network.signed_blocks_last_7_days is not none %}
+            {% if network.signed_blocks_all is not none %}
             <div class="col-md-3" data-id="signed_blocks_last_7_days">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -392,13 +392,29 @@
             
         </div>
         <script>
-            var blocksData = {{ network.signed_blocks_last_7_days | tojson }};
+            var blocksData = {{ network.signed_blocks_all | tojson }};
             var rewardsData = {{ network.rewards | tojson }};
-            var block_days = Object.keys(blocksData);
-            var blocks = Object.values(blocksData);
-            var reward_days = Object.keys(rewardsData);
-            var rewards = Object.values(rewardsData);
 
+            function updateChart(daysToShow) {
+                var block_days = Object.keys(blocksData).slice(-daysToShow);
+                var blocks = Object.values(blocksData).slice(-daysToShow);
+                var reward_days = Object.keys(rewardsData).slice(-daysToShow);
+                var rewards = Object.values(rewardsData).slice(-daysToShow);
+
+                var sortedDays = block_days.map(formatDate);
+                var sortedBlocks = blocks;
+                var sortedRewardDays = reward_days.map(formatDate);
+                var sortedRewards = rewards.map(reward => reward.toString());
+
+                blocksChart.data.labels = sortedDays;
+                blocksChart.data.datasets[0].data = sortedBlocks;
+                blocksChart.update();
+
+                rewardsChart.data.labels = sortedRewardDays;
+                rewardsChart.data.datasets[0].data = sortedRewards;
+                rewardsChart.update();
+            }
+        
             function formatDate(dateString) {
                 var date = new Date(dateString);
                 return date.toLocaleDateString(undefined, {
@@ -406,31 +422,21 @@
                     day: 'numeric'
                 });
             }
-
-            var combined = block_days.map((day, index) => ({
-                date: new Date(day),
-                blocks: blocks[index]
-            }));
-
-            combined.sort((a, b) => a.date - b.date);
-
-            var sortedDays = combined.map(item => formatDate(item.date.toString()));
-            var sortedBlocks = combined.map(item => item.blocks);
-
+        
             var blocksCtx = document.getElementById('blocksChart').getContext('2d');
             var blocksChart = new Chart(blocksCtx, {
                 type: 'line',
                 data: {
-                    labels: sortedDays,
+                    labels: [],
                     datasets: [{
                         label: 'Blocks',
-                        data: sortedBlocks,
+                        data: [],
                         backgroundColor: '#B3A3FF',
                         borderColor: '#B3A3FF',
                         borderWidth: 1
                     }]
                 },
-                options: {  
+                options: {
                     scales: {
                         x: {
                             ticks: {
@@ -451,24 +457,15 @@
                     }
                 }
             });
-
-            var combinedRewards = reward_days.map((day, index) => ({
-                date: new Date(day),
-                rewards: rewards[index]
-            }));
-
-            combinedRewards.sort((a, b) => a.date - b.date);
-
-            var sortedRewardDays = combinedRewards.map(item => formatDate(item.date.toString()));
-            var sortedRewards = combinedRewards.map(item => item.rewards.toString());
+        
             var rewardsCtx = document.getElementById('rewardsChart').getContext('2d');
             var rewardsChart = new Chart(rewardsCtx, {
                 type: 'line',
                 data: {
-                    labels: sortedRewardDays,
+                    labels: [],
                     datasets: [{
                         label: 'Rewards',
-                        data: sortedRewards,
+                        data: [],
                         backgroundColor: '#B3A3FF',
                         borderColor: '#B3A3FF',
                         borderWidth: 1
@@ -502,6 +499,7 @@
                     }
                 }
             });
+            updateChart(7);
         </script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
