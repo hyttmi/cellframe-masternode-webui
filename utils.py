@@ -211,9 +211,10 @@ def getSignedBlocks(network, today=False):
                 block_day = block_time.strftime("%a, %d %b %Y")
                 if block_day not in blocks_signed_per_day:
                     blocks_signed_per_day[block_day] = 1
-                blocks_signed_per_day[block_day] += 1
+                else:
+                    blocks_signed_per_day[block_day] += 1
 
-        sorted_dict = OrderedDict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")), reverse=True)
+        sorted_dict = OrderedDict(reversed(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))))
         if today:
             return blocks_signed_per_day.get(today_str, 0)
         else:
@@ -302,7 +303,7 @@ def readRewards(network):
                     rewards[formatted_date_str] += amount
                 else:
                     rewards[formatted_date_str] = amount
-            sorted_dict = OrderedDict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")), reverse=True)
+            sorted_dict = OrderedDict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
         return sorted_dict
     except FileNotFoundError:
         logError("Rewards file not found!")
