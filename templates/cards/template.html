@@ -434,7 +434,20 @@
             var el = document.getElementById("sysinfo");
             var sortable = Sortable.create(el, {
                 animation: 150,
-                ghostClass: "ghost"
+                easing: "cubic-bezier(1, 0, 0, 1)",
+                ghostClass: "ghost",
+                group: "localStorage-example",
+	            store: {
+		            get: function (sortable) {
+			        var order = localStorage.getItem(sortable.options.group.name);
+			        return order ? order.split('|') : [];
+		        },
+
+		            set: function (sortable) {
+			        var order = sortable.toArray();
+			        localStorage.setItem(sortable.options.group.name, order.join('|'));
+		            }
+	            }
             });
         </script>
         {% endfor %}
