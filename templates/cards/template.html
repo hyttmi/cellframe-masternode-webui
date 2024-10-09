@@ -81,7 +81,6 @@
         border: none;
         margin-bottom: 10px;
         padding: 10px;
-        max-width: 30%;
     }
 </style>
 
@@ -89,7 +88,7 @@
     <div class="container-fluid mt-4">
         <div class="row" id="localstorage">
             <div class="d-grid gap-2 col-md-3 mx-auto">
-                <button id="clearstorage" class="btn-primary clearbutton">Clear settings</button>
+                <button id="clearstorage" class="btn-primary clearbutton"><h6 class="card-subtitle mb-2 text-body-secondary text-body-secondary-color">Clear settings</h6></button>
             </div>
         </div>
         {% if update_available %}
@@ -522,7 +521,7 @@
                     clearStorageBtn.style.display = 'none';
                 });
 
-                var closedCards = JSON.parse(localStorage.getItem('closedCards')) || [];
+                var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || [];
                 closedCards.forEach(function (closedId) {
                 var closedCard = document.querySelector(`.col-md-3[data-id="${closedId}"]`);
                 if (closedCard) {
