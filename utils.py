@@ -209,29 +209,22 @@ def getSignedBlocksToday(network):
     else:
         return None
 
-def getSignedBlocksLast7Days(network):
+def getSignedBlocks(network):
     net_config = readNetworkConfig(network)
     if net_config is not None:
         cmd_output = CLICommand(f"block list -net {network} signed -cert {net_config[0]}")
-        today = datetime.now()
-        seven_days_ago = today - timedelta(days=7)
         
-        blocks_signed_per_day = { 
-            (today - timedelta(days=i)).strftime("%a, %d %b %Y"): 0 
-            for i in range(7)
-        }
+        blocks_signed_per_day = {}
         
         lines = cmd_output.splitlines()
         for line in lines:
             if "ts_create:" in line:
-                timestamp_str = line.split("ts_create:")[1].strip()
-                timestamp_str = timestamp_str.rsplit(' ', 1)[0]
+                timestamp_str = line.split("ts_create:")[1].strip()[:-6]
                 block_time = datetime.strptime(timestamp_str, "%a, %d %b %Y %H:%M:%S")
-                
-                if seven_days_ago <= block_time <= today:
-                    block_day = block_time.strftime("%a, %d %b %Y")
-                    if block_day in blocks_signed_per_day:
-                        blocks_signed_per_day[block_day] += 1
+                block_day = block_time.strftime("%a, %d %b %Y")
+                if block_day not in blocks_signed_per_day:
+                    blocks_signed_per_day[block_day] = 1
+                blocks_signed_per_day[block_day] += 1
 
         return blocks_signed_per_day
     else:
@@ -312,15 +305,12 @@ def readRewards(network):
                     continue
                 date_string, amount = line.split("|")
                 amount = float(amount)
-                today = datetime.now()
-                seven_days_ago = today - timedelta(days=7)
                 formatted_date = datetime.strptime(date_string, "%a, %d %b %Y %H:%M:%S") # First to object...
                 formatted_date_str = formatted_date.strftime("%a, %d %b %Y")
-                if seven_days_ago <= formatted_date <= today:
-                    if formatted_date_str in rewards:
-                        rewards[formatted_date_str] += amount
-                    else:
-                        rewards[formatted_date_str] = amount
+                if formatted_date_str in rewards:
+                    rewards[formatted_date_str] += amount
+                else:
+                    rewards[formatted_date_str] = amount
         return rewards
     except FileNotFoundError:
         logError("Rewards file not found!")
