@@ -97,7 +97,7 @@
             </div>
         </div>
         <div class="row is_sortable">
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">hostname</h5>
                     <div class="card-body">
@@ -107,7 +107,7 @@
                 </div>
             </div>
 
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">external ip address</h5>
                     <div class="card-body">
@@ -117,7 +117,7 @@
                 </div>
             </div>
 
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">node cpu utilization</h5>
                     <div class="card-body">
@@ -127,7 +127,7 @@
                 </div>
             </div>
 
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">node memory usage</h5>
                     <div class="card-body">
@@ -137,7 +137,7 @@
                 </div>
             </div>
 
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">node uptime</h5>
                     <div class="card-body">
@@ -147,7 +147,7 @@
                 </div>
             </div>
 
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">system uptime</h5>
                     <div class="card-body">
@@ -157,7 +157,7 @@
                 </div>
             </div>
 
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">node version</h5>
                     <div class="card-body">
@@ -167,7 +167,7 @@
                 </div>
             </div>
 
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">latest node version</h5>
                     <div class="card-body">
@@ -185,7 +185,7 @@
             </div>
         </div>
         <div class="row is_sortable">
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">state</h5>
                     <div class="card-body">
@@ -195,7 +195,7 @@
                 </div>
             </div>
 
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">target state</h5>
                     <div class="card-body">
@@ -205,7 +205,7 @@
                 </div>
             </div>
 
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">node address</h5>
                     <div class="card-body">
@@ -215,7 +215,7 @@
                 </div>
             </div>
             {% if network.first_signed_blocks is not none %}
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">first signed blocks</h5>
                     <div class="card-body">
@@ -226,7 +226,7 @@
             </div>
             {% endif %}
             {% if network.all_signed_blocks is not none %}
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">All signed blocks</h5>
                     <div class="card-body">
@@ -237,7 +237,7 @@
             </div>
             {% endif %}
             {% if network.signed_blocks_today is not none %}
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">Signed blocks today</h5>
                     <div class="card-body">
@@ -248,7 +248,7 @@
             </div>
             {% endif %}
             {% if network.all_blocks is not none %}
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">Amount of blocks</h5>
                     <div class="card-body">
@@ -258,7 +258,7 @@
                 </div>
             </div>
             {% endif %}
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">autocollect status</h5>
                     <div class="card-body">
@@ -268,7 +268,7 @@
                 </div>
             </div>
             {% if network.autocollect_rewards is not none %}
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">autocollect rewards</h5>
                     <div class="card-body">
@@ -280,7 +280,7 @@
             {% endif %}
 
             {% if network.fee_wallet_tokens is not none %}
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">reward wallet information</h5>
                     <div class="card-body">
@@ -299,7 +299,7 @@
             {% endif %}
 
             {% if network.signed_blocks_last_7_days is not none %}
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">Signed blocks from last 7 days</h5>
                     <div class="card-body">
@@ -310,7 +310,7 @@
             {% endif %}
             
             {% if network.rewards is not none %}
-            <div class="col-md-auto">
+            <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">Rewards from last 7 days</h5>
                     <div class="card-body">
