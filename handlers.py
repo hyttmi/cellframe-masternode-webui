@@ -8,6 +8,8 @@ env = Environment(
     loader=PackageLoader("cellframe-masternode-webui"),
     autoescape=select_autoescape()
 )
+env.policies['json.dumps_kwargs'] = {'sort_keys': False}
+
 def requestHandler(request: CFSimpleHTTPRequestHandler):
     if request.method == "GET":
         return getRequestHandler(request)
