@@ -69,6 +69,10 @@
     .tokens td {
         padding: 5px;
     }
+
+    .ghost {
+        opacity: 0.5;
+    }
 </style>
 
 <body>
@@ -428,7 +432,10 @@
         </script>
         <script>
             var el = document.getElementById("sysinfo");
-            var sortable = Sortable.create(el);
+            var sortable = Sortable.create(el, {
+                animation: 150,
+                ghostClass: "ghost"
+            });
         </script>
         {% endfor %}
         {% endif %}
