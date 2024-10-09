@@ -96,7 +96,7 @@
                 <h1 class="text-uppercase text-color-secondary">System Info</h1>
             </div>
         </div>
-        <div class="row" id="sysinfo">
+        <div class="row is_sortable">
             <div class="col-md-3" data-id="1">
                 <div class="card">
                     <h5 class="card-header text-uppercase">hostname</h5>
@@ -183,6 +183,8 @@
             <div class="col-12">
                 <h1 class="text-uppercase text-color-secondary">{{ network.name }}</h1>
             </div>
+        </div>
+        <div class="row is_sortable">
             <div class="col-md-3">
                 <div class="card">
                     <h5 class="card-header text-uppercase">state</h5>
@@ -432,25 +434,29 @@
             });
         </script>
         <script>
-            var el = document.getElementById("sysinfo");
-            var sortable = Sortable.create(el, {
-                animation: 150,
-                easing: "cubic-bezier(1, 0, 0, 1)",
-                ghostClass: "ghost",
-                group: "localStorage-example",
-                dataIdAttr: "data-id",
-	            store: {
-		            get: function (sortable) {
-			        var order = localStorage.getItem(sortable.options.group.name);
-			        return order ? order.split('|') : [];
-		        },
-
-		            set: function (sortable) {
-			        var order = sortable.toArray();
-			        localStorage.setItem(sortable.options.group.name, order.join('|'));
-		            }
-	            }
+            document.addEventListener('DOMContentLoaded', function () {
+            var sortableElements = document.querySelectorAll('.is_sortable');
+            
+            sortableElements.forEach(function (el, index) {
+                Sortable.create(el, {
+                    animation: 150,
+                    easing: "cubic-bezier(1, 0, 0, 1)",
+                    ghostClass: "ghost",
+                    group: "localStorage-cfcards-" + index,
+                    dataIdAttr: "data-id",
+                    store: {
+                        get: function (sortable) {
+                            var order = localStorage.getItem(sortable.options.group.name);
+                            return order ? order.split('|') : [];
+                        },
+                        set: function (sortable) {
+                            var order = sortable.toArray();
+                            localStorage.setItem(sortable.options.group.name, order.join('|'));
+                        }
+                    }
+                });
             });
+        });        
         </script>
         {% endfor %}
         {% endif %}
