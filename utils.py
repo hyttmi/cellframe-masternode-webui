@@ -214,7 +214,7 @@ def getSignedBlocks(network, today=False):
         if today:
             return blocks_signed_per_day.get(today_str, 0)
         else:
-            return blocks_signed_per_day
+            return dict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
     else:
         return None
 
@@ -299,7 +299,7 @@ def readRewards(network):
                     rewards[formatted_date_str] += amount
                 else:
                     rewards[formatted_date_str] = amount
-        return rewards
+        return dict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
     except FileNotFoundError:
         logError("Rewards file not found!")
         return None
