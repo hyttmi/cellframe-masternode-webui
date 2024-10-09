@@ -531,7 +531,7 @@
                         animation: 150,
                         easing: "cubic-bezier(1, 0, 0, 1)",
                         ghostClass: "ghost",
-                        group: "localStorage-cfcards-" + index,
+                        group: "cfcards-" + index,
                         dataIdAttr: "data-id",
                         store: {
                             get: function (sortable) {
@@ -552,7 +552,7 @@
                         if (card) {
                             var cardId = card.getAttribute("data-id") 
                             card.remove(); // Remove the cfcard element
-                            var closedCards = JSON.parse(localStorage.getItem('closedCards')) || []; // Init array
+                            var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || []; // Init array
                             if (!closedCards.includes(cardId)) {
                                 closedCards.push(cardId) // Push the card to array...
                                 localStorage.setItem('closedCards', JSON.stringify(closedCards)); // And save the list :)
