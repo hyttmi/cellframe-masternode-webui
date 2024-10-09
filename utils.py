@@ -213,7 +213,7 @@ def getSignedBlocks(network, today=False):
                     blocks_signed_per_day[block_day] = 1
                 blocks_signed_per_day[block_day] += 1
 
-        sorted_dict = OrderedDict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
+        sorted_dict = OrderedDict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")), reversed=True)
         if today:
             return blocks_signed_per_day.get(today_str, 0)
         else:
@@ -296,13 +296,13 @@ def readRewards(network):
                     continue
                 date_string, amount = line.split("|")
                 amount = float(amount)
-                formatted_date = datetime.strptime(date_string, "%a, %d %b %Y %H:%M:%S") # First to object...
+                formatted_date = datetime.strptime(date_string, "%a, %d %b %Y %H:%M:%S")
                 formatted_date_str = formatted_date.strftime("%a, %d %b %Y")
                 if formatted_date_str in rewards:
                     rewards[formatted_date_str] += amount
                 else:
                     rewards[formatted_date_str] = amount
-            sorted_dict = OrderedDict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
+            sorted_dict = OrderedDict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")), reversed=True)
         return sorted_dict
     except FileNotFoundError:
         logError("Rewards file not found!")
