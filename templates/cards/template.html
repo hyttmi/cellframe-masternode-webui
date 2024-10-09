@@ -494,6 +494,15 @@
         </script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
+
+                var closedCards = JSON.parse(localStorage.getItem('closedCards')) || [];
+                closedCards.forEach(function (closedId) {
+                var closedCard = document.querySelector(`.col-md-3[data-id="${closedId}"]`);
+                if (closedCard) {
+                    closedCard.remove();
+                }
+                });
+
                 var sortableElements = document.querySelectorAll('.is_sortable');
                 
                 sortableElements.forEach(function (el, index) {
