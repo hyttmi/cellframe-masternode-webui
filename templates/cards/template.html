@@ -520,8 +520,13 @@
                     button.addEventListener('click', function (event) {
                         var card = event.target.closest('.col-md-3');
                         if (card) {
-                            console.log(card.getAttribute("data-id"))
+                            var cardId = card.getAttribute("data-id") 
                             card.remove(); // Remove the cfcard element
+                            var closedCards = JSON.parse(localStorage.getItem('closedCards')) || []; // Init array
+                            if (!closedCards.includes(cardId)) {
+                                closedCards.push(cardId) // Push the card to array...
+                                localStorage.setItem('closedCards', JSON.stringify(closedCards)); // And save the list :)
+                            }
                         }
                     });
                 });
