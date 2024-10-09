@@ -520,6 +520,7 @@
                     button.addEventListener('click', function (event) {
                         var card = event.target.closest('.col-md-3');
                         if (card) {
+                            console.log(card.getAttribute("data-id"))
                             card.remove(); // Remove the cfcard element
                         }
                     });
