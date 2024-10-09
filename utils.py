@@ -346,7 +346,7 @@ def generateNetworkData():
                     'first_signed_blocks': getFirstSignedBlocks(network),
                     'all_signed_blocks': getAllSignedBlocks(network),
                     'all_blocks': getAllBlocks(network),
-                    'signed_blocks_today': getSignedBlocksToday(network),
+                    'signed_blocks_today': getSignedBlocks(network, today=True),
                     'signed_blocks_last_7_days': getSignedBlocks(network),
                     'autocollect_status': getAutocollectStatus(network),
                     'autocollect_rewards': getAutocollectRewards(network),
