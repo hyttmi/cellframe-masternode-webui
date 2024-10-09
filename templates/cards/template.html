@@ -534,12 +534,12 @@
                 
                 sortableElements.forEach(function (el, index) {
                     Sortable.create(el, {
-                        animation: 150,
+                        animation: 250,
                         easing: "cubic-bezier(1, 0, 0, 1)",
                         ghostClass: "ghost",
                         group: "cfcards-" + index,
                         dataIdAttr: "data-id",
-                        delay: 400,
+                        delay: 100,
                         store: {
                             get: function (sortable) {
                                 var order = localStorage.getItem(sortable.options.group.name);
