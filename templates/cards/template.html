@@ -519,11 +519,12 @@
                 document.querySelectorAll('.btn-close').forEach(function (button) {
                     button.addEventListener('click', function (event) {
                         var card = event.target.closest('.card');
-                        if (card) {
+                        if (card) {                            
                             card.remove(); // Remove the cfcard element
                         }
                     });
                 });
+            });
         </script>
         
 
