@@ -5,7 +5,6 @@ from pycfhelpers.node.net import CFNet
 from pycfhelpers.node.types import CFNetState
 from command_runner import command_runner
 from packaging.version import Version
-from collections import OrderedDict
 
 import socket, requests, re, time, psutil, json, os, time, schedule
 from datetime import datetime, timedelta
@@ -213,7 +212,8 @@ def getSignedBlocks(network, today=False):
                     blocks_signed_per_day[block_day] = 1
                 blocks_signed_per_day[block_day] += 1
 
-        sorted_dict = OrderedDict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))) # thx google :D
+        sorted_dict = dict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))) # thx google :D
+        logNotice(sorted_dict)
 
         if today:
             return blocks_signed_per_day.get(today_str, 0)
@@ -303,7 +303,8 @@ def readRewards(network):
                     rewards[formatted_date_str] += amount
                 else:
                     rewards[formatted_date_str] = amount
-            sorted_dict = OrderedDict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
+            sorted_dict = dict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
+            logNotice(sorted_dict)
         return sorted_dict
     except FileNotFoundError:
         logError("Rewards file not found!")
