@@ -96,7 +96,7 @@
                 <h1 class="text-uppercase text-color-secondary">System Info</h1>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-3" data-id="{{ hostname }}">
                 <div class="card">
                     <h5 class="card-header text-uppercase">hostname</h5>
                     <div class="card-body">
@@ -106,7 +106,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-3" data-id="{{ external_ip }}">
                 <div class="card">
                     <h5 class="card-header text-uppercase">external ip address</h5>
                     <div class="card-body">
@@ -116,7 +116,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-3" data-id="{{ cpu_utilization }}">
                 <div class="card">
                     <h5 class="card-header text-uppercase">node cpu utilization</h5>
                     <div class="card-body">
@@ -126,7 +126,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-3" data-id="{{ memory_utilization }}">
                 <div class="card">
                     <h5 class="card-header text-uppercase">node memory usage</h5>
                     <div class="card-body">
@@ -136,7 +136,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-3" data-id="{{ node_uptime }}">
                 <div class="card">
                     <h5 class="card-header text-uppercase">node uptime</h5>
                     <div class="card-body">
@@ -146,7 +146,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-3" data-id="{{ system_uptime }}">
                 <div class="card">
                     <h5 class="card-header text-uppercase">system uptime</h5>
                     <div class="card-body">
@@ -156,7 +156,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-3" data-id="{{ node_version }}">
                 <div class="card">
                     <h5 class="card-header text-uppercase">node version</h5>
                     <div class="card-body">
@@ -166,7 +166,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-3" data-id="{{ latest_node_version }}">
                 <div class="card">
                     <h5 class="card-header text-uppercase">latest node version</h5>
                     <div class="card-body">
@@ -437,6 +437,7 @@
                 easing: "cubic-bezier(1, 0, 0, 1)",
                 ghostClass: "ghost",
                 group: "localStorage-example",
+                dataIdAttr: "data-id",
 	            store: {
 		            get: function (sortable) {
 			        var order = localStorage.getItem(sortable.options.group.name);
