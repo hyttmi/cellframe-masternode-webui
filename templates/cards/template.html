@@ -509,12 +509,16 @@
                 var localStorageDiv = document.getElementById('localstorage');
                 var clearStorageBtn = document.getElementById("clearstorage")
 
-                if (localStorage.length > 0) {
-                    localStorageDiv.style.display = 'block';
-                }
+                var hasOtherKeys = Object.keys(localStorage).some(function(key) {
+                    return key !== 'loglevel';
+                });
+
+                ocalStorageDiv.style.display = hasOtherKeys ? 'block' : 'none';
 
                 clearStorageBtn.addEventListener('click', function () {
                     localStorage.clear();
+                    alert("Local storage cleared, refreshing page!")
+                    location.reload()
                     clearStorageBtn.style.display = 'none';
                 });
 
