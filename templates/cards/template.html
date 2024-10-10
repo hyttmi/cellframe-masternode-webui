@@ -404,8 +404,8 @@
 
             function updateChart(chart, daysToShow) {
             if (chart === blocksChart) {
-                var block_days = Object.keys(blocksData).slice(-daysToShow);
-                var blocks = Object.values(blocksData).slice(-daysToShow);
+                var block_days = Object.keys(blocksData{{ network.name }}).slice(-daysToShow);
+                var blocks = Object.values(blocksData{{ network.name }}).slice(-daysToShow);
             
                 var sortedDays = block_days.map(formatDate);
                 var sortedBlocks = blocks;
