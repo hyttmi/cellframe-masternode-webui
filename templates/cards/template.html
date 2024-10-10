@@ -413,8 +413,8 @@
                 chart.data.labels = sortedDays;
                 chart.data.datasets[0].data = sortedBlocks;
             } else if (chart === rewardsChart) {
-                var reward_days = Object.keys(rewardsData).slice(-daysToShow);
-                var rewards = Object.values(rewardsData).slice(-daysToShow);
+                var reward_days = Object.keys(rewardsData{{ network.name }}).slice(-daysToShow);
+                var rewards = Object.values(rewardsData{{ network.name }}).slice(-daysToShow);
             
                 var sortedRewardDays = reward_days.map(formatDate);
                 var sortedRewards = rewards.map(reward => reward.toString());
