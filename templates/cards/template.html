@@ -239,7 +239,7 @@
         </div>
         <div class="row is_sortable">
 
-            <div class="col-md-3" data-id="state">
+            <div class="col-md-3" data-id="state_{{ network.name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">state</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -251,7 +251,7 @@
                 </div>
             </div>
             
-            <div class="col-md-3" data-id="target_state">
+            <div class="col-md-3" data-id="target_state_{{ network.name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">target state</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -263,7 +263,7 @@
                 </div>
             </div>
             
-            <div class="col-md-3" data-id="node_address">
+            <div class="col-md-3" data-id="node_address_{{ network.name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">node address</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -276,7 +276,7 @@
             </div>
             
             {% if network.first_signed_blocks is not none %}
-            <div class="col-md-3" data-id="first_signed_blocks">
+            <div class="col-md-3" data-id="first_signed_blocks_{{ network.name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">first signed blocks</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -290,7 +290,7 @@
             {% endif %}
             
             {% if network.all_signed_blocks is not none %}
-            <div class="col-md-3" data-id="all_signed_blocks">
+            <div class="col-md-3" data-id="all_signed_blocks_{{ network.name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">All signed blocks</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -304,7 +304,7 @@
             {% endif %}
             
             {% if network.signed_blocks_today is not none %}
-            <div class="col-md-3" data-id="signed_blocks_today">
+            <div class="col-md-3" data-id="signed_blocks_today_{{ network.name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">Signed blocks today</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -318,7 +318,7 @@
             {% endif %}
             
             {% if network.all_blocks is not none %}
-            <div class="col-md-3" data-id="amount_of_blocks">
+            <div class="col-md-3" data-id="amount_of_blocks_{{ network.name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">Amount of blocks</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -331,7 +331,7 @@
             </div>
             {% endif %}
             
-            <div class="col-md-3" data-id="autocollect_status">
+            <div class="col-md-3" data-id="autocollect_status_{{ network.name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">autocollect status</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -344,7 +344,7 @@
             </div>
             
             {% if network.autocollect_rewards is not none %}
-            <div class="col-md-3" data-id="autocollect_rewards">
+            <div class="col-md-3" data-id="autocollect_rewards_{{ network.name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">autocollect rewards</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -358,7 +358,7 @@
             {% endif %}
             
             {% if network.fee_wallet_tokens is not none %}
-            <div class="col-md-3" data-id="reward_wallet_information">
+            <div class="col-md-3" data-id="reward_wallet_information_{{ network.name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">reward wallet information</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -379,7 +379,7 @@
             {% endif %}
             
             {% if network.signed_blocks_all is not none %}
-            <div class="col-md-3" data-id="signed_blocks_last_7_days">
+            <div class="col-md-3" data-id="signed_blocks_last_n_days_{{ network.name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">Signed blocks from last 7 days</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -392,7 +392,7 @@
             {% endif %}
             
             {% if network.rewards is not none %}
-            <div class="col-md-3" data-id="rewards_last_7_days">
+            <div class="col-md-3" data-id="rewards_last_n_days_{{ network.name }}">
                 <div class="dropdown mx-auto">
                     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Dropdown button
