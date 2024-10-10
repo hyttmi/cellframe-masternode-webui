@@ -108,6 +108,11 @@
         border-radius: 10px;
     }
 
+    .nav-item:hover {
+        background-color: #B3A3FF;
+        color: #242424
+    }
+
     .days_amount {
         color: #B3A3FF;
         text-decoration: none;
@@ -414,13 +419,13 @@
                     </div>
                     <ul class="nav justify-content-center">
                         <li class="nav-item">
-                            <a class="days_amount" onclick="updateChart('blocksChart', 7, '{{ network.name }}'); setActive(this);">7 days</a>
+                            <span class="days_amount" onclick="updateChart('blocksChart', 7, '{{ network.name }}'); setActive(this);">7 days</span>
                         </li>
                         <li class="nav-item">
-                            <a class="days_amount" onclick="updateChart('blocksChart', 14, '{{ network.name }}'); setActive(this);">14 days</a>
+                            <span class="days_amount" onclick="updateChart('blocksChart', 14, '{{ network.name }}'); setActive(this);">14 days</span>
                         </li>
                         <li class="nav-item">
-                            <a class="days_amount" onclick="updateChart('blocksChart', 30, '{{ network.name }}'); setActive(this);">30 days</a>
+                            <span class="days_amount" onclick="updateChart('blocksChart', 30, '{{ network.name }}'); setActive(this);">30 days</span>
                         </li>
                     </ul>
                 </div>
