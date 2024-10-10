@@ -421,10 +421,10 @@
             var blocksData = {};
             var rewardsData = {};
         
-            {% for network in networks %}
+        {% for network in net_info %}
             blocksData['{{ network.name }}'] = {{ network.signed_blocks_all | tojson }};
             rewardsData['{{ network.name }}'] = {{ network.rewards | tojson }};
-            {% endfor %}
+        {% endfor %}
 
             var blocksCharts = {};
             var rewardsCharts = {};
@@ -461,7 +461,7 @@
                 });
             }
         
-            {% for network in networks %}
+            {% for network in net_info %}
             var blocksCtx{{ network.name }} = document.getElementById('blocksChart_{{ network.name }}').getContext('2d');
             blocksCharts['{{ network.name }}'] = new Chart(blocksCtx{{ network.name }}, {
                 type: 'line',
