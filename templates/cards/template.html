@@ -393,6 +393,16 @@
             
             {% if network.rewards is not none %}
             <div class="col-md-3" data-id="rewards_last_7_days">
+                <div class="dropdown mx-auto">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Dropdown button
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="#">Action</a></li>
+                      <li><a class="dropdown-item" href="#">Another action</a></li>
+                      <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </div>
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">Rewards from last 7 days</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -400,16 +410,6 @@
                     <div class="card-body">
                         <canvas id="rewardsChart_{{ network.name }}"></canvas>
                     </div>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                          Dropdown button
-                        </button>
-                        <ul class="dropdown-menu">
-                          <li><a class="dropdown-item" href="#">Action</a></li>
-                          <li><a class="dropdown-item" href="#">Another action</a></li>
-                          <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                      </div>
                 </div>
             </div>
             {% endif %}
@@ -558,7 +558,7 @@
         
                 toggleLocalStorageDiv();
         
-                clearStorageBtn.addEventListener('click', function () {
+                clearStorageBtn.addEventListener('click', function() {
                     localStorage.clear();
                     alert("Settings cleared, refreshing page!");
                     location.reload();
