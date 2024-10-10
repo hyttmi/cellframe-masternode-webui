@@ -90,6 +90,13 @@
         color: #B3A3FF;
         box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
     }
+
+    .fade-out {
+        transition: opacity 0.5s ease, height 0.5s ease;
+        opacity: 0;
+        height: 0;
+        overflow: hidden;
+    }
 </style>
 
 <body>
@@ -566,19 +573,23 @@
                 });
         
                 document.querySelectorAll('.btn-close').forEach(function (button) {
-                    button.addEventListener('click', function (event) {
-                        var card = event.target.closest('.col-md-3');
-                        if (card) {
-                            var cardId = card.getAttribute("data-id");
-                            card.remove(); // Remove the cfcard element
+                button.addEventListener('click', function (event) {
+                    var card = event.target.closest('.col-md-3');
+                    if (card) {
+                        var cardId = card.getAttribute("data-id");
+                    
+                        card.classList.add('fade-out');
+                    
+                        setTimeout(function () {
+                            card.remove();
                             var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || []; // Init array
                             if (!closedCards.includes(cardId)) {
                                 closedCards.push(cardId); // Push the card to array...
                                 localStorage.setItem('cfclosed', JSON.stringify(closedCards)); // And save the list :)
                             }
                             toggleLocalStorageDiv();
-                        }
-                    });
+                        }, 500);
+                    }
                 });
             });
         </script>
