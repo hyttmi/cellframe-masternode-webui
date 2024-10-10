@@ -392,27 +392,30 @@
             
         </div>
         <script>
-            var blocksData = {{ network.signed_blocks_all | tojson }};
-            var rewardsData = {{ network.rewards | tojson }};
+            var blocksData = {{ network.signed_blocks_all | tojson | safe }};
+            var rewardsData = {{ network.rewards | tojson | safe }};
 
-            function updateChart(daysToShow) {
+            function updateChart(chart, daysToShow) {
+            if (chart === blocksChart) {
                 var block_days = Object.keys(blocksData).slice(-daysToShow);
                 var blocks = Object.values(blocksData).slice(-daysToShow);
-                var reward_days = Object.keys(rewardsData).slice(-daysToShow);
-                var rewards = Object.values(rewardsData).slice(-daysToShow);
-
+            
                 var sortedDays = block_days.map(formatDate);
                 var sortedBlocks = blocks;
+            
+                chart.data.labels = sortedDays;
+                chart.data.datasets[0].data = sortedBlocks;
+            } else if (chart === rewardsChart) {
+                var reward_days = Object.keys(rewardsData).slice(-daysToShow);
+                var rewards = Object.values(rewardsData).slice(-daysToShow);
+            
                 var sortedRewardDays = reward_days.map(formatDate);
                 var sortedRewards = rewards.map(reward => reward.toString());
-
-                blocksChart.data.labels = sortedDays;
-                blocksChart.data.datasets[0].data = sortedBlocks;
-                blocksChart.update();
-
-                rewardsChart.data.labels = sortedRewardDays;
-                rewardsChart.data.datasets[0].data = sortedRewards;
-                rewardsChart.update();
+            
+                chart.data.labels = sortedRewardDays;
+                chart.data.datasets[0].data = sortedRewards;
+            }   
+            chart.update();
             }
         
             function formatDate(dateString) {
@@ -503,33 +506,35 @@
         </script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-
                 var localStorageDiv = document.getElementById('localstorage');
-                var clearStorageBtn = document.getElementById("clearstorage")
-
-                var hasOtherKeys = Object.keys(localStorage).some(function(key) {
-                    return key !== 'loglevel';
-                });
-
-                localStorageDiv.style.display = hasOtherKeys ? 'block' : 'none';
-
+                var clearStorageBtn = document.getElementById("clearstorage");
+        
+                function toggleLocalStorageDiv() {
+                    var hasOtherKeys = Object.keys(localStorage).some(function (key) {
+                        return key !== 'loglevel';
+                    });
+                    localStorageDiv.style.display = hasOtherKeys ? 'block' : 'none';
+                }
+        
+                toggleLocalStorageDiv();
+        
                 clearStorageBtn.addEventListener('click', function () {
                     localStorage.clear();
-                    alert("Settings cleared, refreshing page!")
-                    location.reload()
+                    alert("Settings cleared, refreshing page!");
+                    location.reload();
                     clearStorageBtn.style.display = 'none';
                 });
-
+        
                 var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || [];
                 closedCards.forEach(function (closedId) {
-                var closedCard = document.querySelector(`.col-md-3[data-id="${closedId}"]`);
-                if (closedCard) {
-                    closedCard.remove();
-                }
+                    var closedCard = document.querySelector(`.col-md-3[data-id="${closedId}"]`);
+                    if (closedCard) {
+                        closedCard.remove();
+                    }
                 });
-
+        
                 var sortableElements = document.querySelectorAll('.is_sortable');
-                
+        
                 sortableElements.forEach(function (el, index) {
                     Sortable.create(el, {
                         animation: 250,
@@ -546,22 +551,24 @@
                             set: function (sortable) {
                                 var order = sortable.toArray();
                                 localStorage.setItem(sortable.options.group.name, order.join('|'));
+                                toggleLocalStorageDiv();
                             }
                         }
                     });
                 });
-            
+        
                 document.querySelectorAll('.btn-close').forEach(function (button) {
                     button.addEventListener('click', function (event) {
                         var card = event.target.closest('.col-md-3');
                         if (card) {
-                            var cardId = card.getAttribute("data-id") 
+                            var cardId = card.getAttribute("data-id");
                             card.remove(); // Remove the cfcard element
                             var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || []; // Init array
                             if (!closedCards.includes(cardId)) {
-                                closedCards.push(cardId) // Push the card to array...
+                                closedCards.push(cardId); // Push the card to array...
                                 localStorage.setItem('cfclosed', JSON.stringify(closedCards)); // And save the list :)
                             }
+                            toggleLocalStorageDiv();
                         }
                     });
                 });
