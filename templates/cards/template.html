@@ -400,36 +400,55 @@
                     <div class="card-body">
                         <canvas id="rewardsChart_{{ network.name }}"></canvas>
                     </div>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Dropdown button
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="#">Action</a></li>
+                          <li><a class="dropdown-item" href="#">Another action</a></li>
+                          <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                      </div>
                 </div>
             </div>
             {% endif %}            
             
         </div>
         <script>
-            var blocksData{{ network.name }} = {{ network.signed_blocks_all | tojson }};
-            var rewardsData{{ network.name }} = {{ network.rewards | tojson }};
-
-            function updateChart(chart, daysToShow) {
-            if (chart === blocksChart) {
-                var block_days = Object.keys(blocksData{{ network.name }}).slice(-daysToShow);
-                var blocks = Object.values(blocksData{{ network.name }}).slice(-daysToShow);
+            var blocksData = {};
+            var rewardsData = {};
+        
+            {% for network in networks %}
+            blocksData['{{ network.name }}'] = {{ network.signed_blocks_all | tojson }};
+            rewardsData['{{ network.name }}'] = {{ network.rewards | tojson }};
+            {% endfor %}
             
-                var sortedDays = block_days.map(formatDate);
-                var sortedBlocks = blocks;
-            
-                chart.data.labels = sortedDays;
-                chart.data.datasets[0].data = sortedBlocks;
-            } else if (chart === rewardsChart) {
-                var reward_days = Object.keys(rewardsData{{ network.name }}).slice(-daysToShow);
-                var rewards = Object.values(rewardsData{{ network.name }}).slice(-daysToShow);
-            
-                var sortedRewardDays = reward_days.map(formatDate);
-                var sortedRewards = rewards.map(reward => reward.toString());
-            
-                chart.data.labels = sortedRewardDays;
-                chart.data.datasets[0].data = sortedRewards;
-            }   
-            chart.update();
+            var blocksCharts = {};
+            var rewardsCharts = {};
+        
+            function updateChart(chart, daysToShow, networkName) {
+                if (chart === 'blocksChart') {
+                    var block_days = Object.keys(blocksData[networkName]).slice(-daysToShow);
+                    var blocks = Object.values(blocksData[networkName]).slice(-daysToShow);
+        
+                    var sortedDays = block_days.map(formatDate);
+                    var sortedBlocks = blocks;
+        
+                    blocksCharts[networkName].data.labels = sortedDays;
+                    blocksCharts[networkName].data.datasets[0].data = sortedBlocks;
+                    blocksCharts[networkName].update();
+                } else if (chart === 'rewardsChart') {
+                    var reward_days = Object.keys(rewardsData[networkName]).slice(-daysToShow);
+                    var rewards = Object.values(rewardsData[networkName]).slice(-daysToShow);
+        
+                    var sortedRewardDays = reward_days.map(formatDate);
+                    var sortedRewards = rewards.map(reward => reward.toString());
+        
+                    rewardsCharts[networkName].data.labels = sortedRewardDays;
+                    rewardsCharts[networkName].data.datasets[0].data = sortedRewards;
+                    rewardsCharts[networkName].update();
+                }
             }
         
             function formatDate(dateString) {
@@ -440,8 +459,9 @@
                 });
             }
         
-            var blocksCtx = document.getElementById('blocksChart_{{ network.name }}').getContext('2d');
-            var blocksChart = new Chart(blocksCtx, {
+            {% for network in networks %}
+            var blocksCtx{{ network.name }} = document.getElementById('blocksChart_{{ network.name }}').getContext('2d');
+            blocksCharts['{{ network.name }}'] = new Chart(blocksCtx{{ network.name }}, {
                 type: 'line',
                 data: {
                     labels: [],
@@ -475,8 +495,8 @@
                 }
             });
         
-            var rewardsCtx = document.getElementById('rewardsChart_{{ network.name }}').getContext('2d');
-            var rewardsChart = new Chart(rewardsCtx, {
+            var rewardsCtx{{ network.name }} = document.getElementById('rewardsChart_{{ network.name }}').getContext('2d');
+            rewardsCharts['{{ network.name }}'] = new Chart(rewardsCtx{{ network.name }}, {
                 type: 'line',
                 data: {
                     labels: [],
@@ -516,9 +536,12 @@
                     }
                 }
             });
-            updateChart(blocksChart, 7);
-            updateChart(rewardsChart, 7)
+            updateChart('blocksChart', 7, '{{ network.name }}');
+            updateChart('rewardsChart', 7, '{{ network.name }}');
+        {% endfor %}
         </script>
+        
+        
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 var localStorageDiv = document.getElementById('localstorage');
