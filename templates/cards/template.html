@@ -400,21 +400,15 @@
                     <div class="card-body">
                         <canvas id="rewardsChart_{{ network.name }}"></canvas>
                     </div>
+                    <ul class="nav justify-content-center">
+                        <li class="nav-item">
+                          <a class="nav-link" onclick="updateChart(blocksChart, 14, {{ network.name }})" href="#">14 days</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="updateChart(blocksChart, 30, {{ network.name }})" href="#">30 days</a>
+                        </li>
+                    </ul>
                 </div>
-                <ul class="nav justify-content-center">
-                    <li class="nav-item">
-                      <a class="nav-link active" aria-current="page" href="#">Active</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                    </li>
-                  </ul>
             </div>
             {% endif %}
         {% endfor %}
