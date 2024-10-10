@@ -428,6 +428,17 @@
                     <div class="card-body">
                         <canvas id="rewardsChart_{{ network.name }}"></canvas>
                     </div>
+                    <ul class="nav justify-content-center">
+                        <li class="nav-item active" onclick="updateChart('rewardsChart', 7, '{{ network.name }}'); setActive(this);">
+                            <span class="days_amount">7 days</span>
+                        </li>
+                        <li class="nav-item" onclick="updateChart('rewardsChart', 14, '{{ network.name }}'); setActive(this);">
+                            <span class="days_amount">14 days</span>
+                        </li>
+                        <li class="nav-item" onclick="updateChart('rewardsChart', 30, '{{ network.name }}'); setActive(this);">
+                            <span class="days_amount">30 days</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
             {% endif %}
