@@ -393,17 +393,17 @@
             <div class="col-md-3" data-id="signed_blocks_last_n_days_{{ network.name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">Signed blocks from last 7 days</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h5 class="card-title text-uppercase">Signed blocks</h5><button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <canvas id="blocksChart_{{ network.name }}"></canvas>
                     </div>
                     <ul class="nav justify-content-center">
                         <li class="nav-item">
-                            <a class="nav-link" onclick="updateChart('blocksChart', 14, '{{ network.name }}')" href="#">14 days</a>
+                            <a class="nav-link" onclick="updateChart('blocksChart', 14, '{{ network.name }}'); setActive(this);" href="#">14 days</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" onclick="updateChart('blocksChart', 30, '{{ network.name }}')" href="#">30 days</a>
+                            <a class="nav-link" onclick="updateChart('blocksChart', 30, '{{ network.name }}'); setActive(this);" href="#">30 days</a>
                         </li>
                     </ul>
                 </div>
@@ -414,7 +414,7 @@
             <div class="col-md-3" data-id="rewards_last_n_days_{{ network.name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">Rewards from last 7 days</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h5 class="card-title text-uppercase">Rewards</h5><button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <canvas id="rewardsChart_{{ network.name }}"></canvas>
@@ -551,8 +551,6 @@
             updateChart('rewardsChart', 7, '{{ network.name }}');
         {% endfor %}
         </script>
-        
-        
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 var localStorageDiv = document.getElementById('localstorage');
@@ -622,6 +620,17 @@
                     });
                 });
             });
+        </script>
+        <script>
+            function setActive(element) {
+                var navLinks = document.querySelectorAll('.nav-link');
+        
+                navLinks.forEach(function(link) {
+                    link.classList.remove('active');
+                });
+    
+                element.classList.add('active');
+            }
         </script>
     </div>
 </body>
