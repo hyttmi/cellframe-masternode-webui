@@ -444,213 +444,213 @@
         {% endif %}
             
         </div>
-        <script>
-            var blocksData = {};
-            var rewardsData = {};
-        
-        {% for network in net_info %}
-            blocksData['{{ network.name }}'] = {{ network.signed_blocks_all | tojson }};
-            rewardsData['{{ network.name }}'] = {{ network.rewards | tojson }};
-        {% endfor %}
+    </div>
+    <script>
+        var blocksData = {};
+        var rewardsData = {};
+    
+    {% for network in net_info %}
+        blocksData['{{ network.name }}'] = {{ network.signed_blocks_all | tojson }};
+        rewardsData['{{ network.name }}'] = {{ network.rewards | tojson }};
+    {% endfor %}
 
-            var blocksCharts = {};
-            var rewardsCharts = {};
-        
-            function updateChart(chart, daysToShow, networkName) {
-                if (chart === 'blocksChart') {
-                    var block_days = Object.keys(blocksData[networkName]).slice(-daysToShow);
-                    var blocks = Object.values(blocksData[networkName]).slice(-daysToShow);
-        
-                    var sortedDays = block_days.map(formatDate);
-                    var sortedBlocks = blocks;
-        
-                    blocksCharts[networkName].data.labels = sortedDays;
-                    blocksCharts[networkName].data.datasets[0].data = sortedBlocks;
-                    blocksCharts[networkName].update();
-                } else if (chart === 'rewardsChart') {
-                    var reward_days = Object.keys(rewardsData[networkName]).slice(-daysToShow);
-                    var rewards = Object.values(rewardsData[networkName]).slice(-daysToShow);
-        
-                    var sortedRewardDays = reward_days.map(formatDate);
-                    var sortedRewards = rewards.map(reward => reward.toString());
-        
-                    rewardsCharts[networkName].data.labels = sortedRewardDays;
-                    rewardsCharts[networkName].data.datasets[0].data = sortedRewards;
-                    rewardsCharts[networkName].update();
-                }
+        var blocksCharts = {};
+        var rewardsCharts = {};
+    
+        function updateChart(chart, daysToShow, networkName) {
+            if (chart === 'blocksChart') {
+                var block_days = Object.keys(blocksData[networkName]).slice(-daysToShow);
+                var blocks = Object.values(blocksData[networkName]).slice(-daysToShow);
+    
+                var sortedDays = block_days.map(formatDate);
+                var sortedBlocks = blocks;
+    
+                blocksCharts[networkName].data.labels = sortedDays;
+                blocksCharts[networkName].data.datasets[0].data = sortedBlocks;
+                blocksCharts[networkName].update();
+            } else if (chart === 'rewardsChart') {
+                var reward_days = Object.keys(rewardsData[networkName]).slice(-daysToShow);
+                var rewards = Object.values(rewardsData[networkName]).slice(-daysToShow);
+    
+                var sortedRewardDays = reward_days.map(formatDate);
+                var sortedRewards = rewards.map(reward => reward.toString());
+    
+                rewardsCharts[networkName].data.labels = sortedRewardDays;
+                rewardsCharts[networkName].data.datasets[0].data = sortedRewards;
+                rewardsCharts[networkName].update();
             }
-        
-            function formatDate(dateString) {
-                var date = new Date(dateString);
-                return date.toLocaleDateString(undefined, {
-                    month: 'numeric',
-                    day: 'numeric'
-                });
-            }
-        
-            {% for network in net_info %}
-            var blocksCtx{{ network.name }} = document.getElementById('blocksChart_{{ network.name }}').getContext('2d');
-            blocksCharts['{{ network.name }}'] = new Chart(blocksCtx{{ network.name }}, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Blocks',
-                        data: [],
-                        backgroundColor: '#B3A3FF',
-                        borderColor: '#B3A3FF',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        x: {
-                            ticks: {
-                                color: '#B3A3FF'
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                color: '#B3A3FF'
-                            }
+        }
+    
+        function formatDate(dateString) {
+            var date = new Date(dateString);
+            return date.toLocaleDateString(undefined, {
+                month: 'numeric',
+                day: 'numeric'
+            });
+        }
+    
+        {% for network in net_info %}
+        var blocksCtx{{ network.name }} = document.getElementById('blocksChart_{{ network.name }}').getContext('2d');
+        blocksCharts['{{ network.name }}'] = new Chart(blocksCtx{{ network.name }}, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Blocks',
+                    data: [],
+                    backgroundColor: '#B3A3FF',
+                    borderColor: '#B3A3FF',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#B3A3FF'
                         }
                     },
-                    plugins: {
-                        legend: {
-                            display: false
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#B3A3FF'
                         }
                     }
-                }
-            });
-        
-            var rewardsCtx{{ network.name }} = document.getElementById('rewardsChart_{{ network.name }}').getContext('2d');
-            rewardsCharts['{{ network.name }}'] = new Chart(rewardsCtx{{ network.name }}, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Rewards',
-                        data: [],
-                        backgroundColor: '#B3A3FF',
-                        borderColor: '#B3A3FF',
-                        borderWidth: 1
-                    }]
                 },
-                options: {
-                    scales: {
-                        x: {
-                            ticks: {
-                                color: '#B3A3FF'
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                color: '#B3A3FF'
-                            }
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    
+        var rewardsCtx{{ network.name }} = document.getElementById('rewardsChart_{{ network.name }}').getContext('2d');
+        rewardsCharts['{{ network.name }}'] = new Chart(rewardsCtx{{ network.name }}, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Rewards',
+                    data: [],
+                    backgroundColor: '#B3A3FF',
+                    borderColor: '#B3A3FF',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#B3A3FF'
                         }
                     },
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(tooltipItem) {
-                                    return tooltipItem.raw;
-                                }
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#B3A3FF'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.raw;
                             }
                         }
                     }
+                }
+            }
+        });
+        updateChart('blocksChart', 7, '{{ network.name }}');
+        updateChart('rewardsChart', 7, '{{ network.name }}');
+    {% endfor %}
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var localStorageDiv = document.getElementById('localstorage');
+            var clearStorageBtn = document.getElementById("clearstorage");
+    
+            function toggleLocalStorageDiv() {
+                var hasOtherKeys = Object.keys(localStorage).some(function (key) {
+                    return key !== 'loglevel';
+                });
+                localStorageDiv.style.display = hasOtherKeys ? 'block' : 'none';
+            }
+    
+            toggleLocalStorageDiv();
+    
+            clearStorageBtn.addEventListener('click', function() {
+                localStorage.clear();
+                alert("Settings cleared, refreshing page!");
+                location.reload();
+                clearStorageBtn.style.display = 'none';
+            });
+    
+            var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || [];
+            closedCards.forEach(function (closedId) {
+                var closedCard = document.querySelector(`.col-md-3[data-id="${closedId}"]`);
+                if (closedCard) {
+                    closedCard.remove();
                 }
             });
-            updateChart('blocksChart', 7, '{{ network.name }}');
-            updateChart('rewardsChart', 7, '{{ network.name }}');
-        {% endfor %}
-        </script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                var localStorageDiv = document.getElementById('localstorage');
-                var clearStorageBtn = document.getElementById("clearstorage");
-        
-                function toggleLocalStorageDiv() {
-                    var hasOtherKeys = Object.keys(localStorage).some(function (key) {
-                        return key !== 'loglevel';
-                    });
-                    localStorageDiv.style.display = hasOtherKeys ? 'block' : 'none';
-                }
-        
-                toggleLocalStorageDiv();
-        
-                clearStorageBtn.addEventListener('click', function() {
-                    localStorage.clear();
-                    alert("Settings cleared, refreshing page!");
-                    location.reload();
-                    clearStorageBtn.style.display = 'none';
-                });
-        
-                var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || [];
-                closedCards.forEach(function (closedId) {
-                    var closedCard = document.querySelector(`.col-md-3[data-id="${closedId}"]`);
-                    if (closedCard) {
-                        closedCard.remove();
-                    }
-                });
-        
-                var sortableElements = document.querySelectorAll('.is_sortable');
-        
-                sortableElements.forEach(function (el, index) {
-                    Sortable.create(el, {
-                        animation: 250,
-                        easing: "cubic-bezier(1, 0, 0, 1)",
-                        ghostClass: "ghost",
-                        group: "cfcards-" + index,
-                        dataIdAttr: "data-id",
-                        delay: 100,
-                        store: {
-                            get: function (sortable) {
-                                var order = localStorage.getItem(sortable.options.group.name);
-                                return order ? order.split('|') : [];
-                            },
-                            set: function (sortable) {
-                                var order = sortable.toArray();
-                                localStorage.setItem(sortable.options.group.name, order.join('|'));
-                                toggleLocalStorageDiv();
-                            }
-                        }
-                    });
-                });
-        
-                document.querySelectorAll('.btn-close').forEach(function (button) {
-                    button.addEventListener('click', function (event) {
-                        var card = event.target.closest('.col-md-3');
-                        if (card) {
-                            var cardId = card.getAttribute("data-id");
-                            card.remove(); // Remove the cfcard element
-                            var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || []; // Init array
-                            if (!closedCards.includes(cardId)) {
-                                closedCards.push(cardId); // Push the card to array...
-                                localStorage.setItem('cfclosed', JSON.stringify(closedCards)); // And save the list :)
-                            }
+    
+            var sortableElements = document.querySelectorAll('.is_sortable');
+    
+            sortableElements.forEach(function (el, index) {
+                Sortable.create(el, {
+                    animation: 250,
+                    easing: "cubic-bezier(1, 0, 0, 1)",
+                    ghostClass: "ghost",
+                    group: "cfcards-" + index,
+                    dataIdAttr: "data-id",
+                    delay: 100,
+                    store: {
+                        get: function (sortable) {
+                            var order = localStorage.getItem(sortable.options.group.name);
+                            return order ? order.split('|') : [];
+                        },
+                        set: function (sortable) {
+                            var order = sortable.toArray();
+                            localStorage.setItem(sortable.options.group.name, order.join('|'));
                             toggleLocalStorageDiv();
                         }
-                    });
+                    }
                 });
             });
-        </script>
-        <script>
-            function setActive(element) {
-                var navLinks = document.querySelectorAll('.nav-item');
-        
-                navLinks.forEach(function(link) {
-                    link.classList.remove('active');
-                });
     
-                element.classList.add('active');
-            }
-        </script>
-    </div>
+            document.querySelectorAll('.btn-close').forEach(function (button) {
+                button.addEventListener('click', function (event) {
+                    var card = event.target.closest('.col-md-3');
+                    if (card) {
+                        var cardId = card.getAttribute("data-id");
+                        card.remove(); // Remove the cfcard element
+                        var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || []; // Init array
+                        if (!closedCards.includes(cardId)) {
+                            closedCards.push(cardId); // Push the card to array...
+                            localStorage.setItem('cfclosed', JSON.stringify(closedCards)); // And save the list :)
+                        }
+                        toggleLocalStorageDiv();
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        function setActive(element) {
+            var navLinks = document.querySelectorAll('.nav-item');
+    
+            navLinks.forEach(function(link) {
+                link.classList.remove('active');
+            });
+
+            element.classList.add('active');
+        }
+    </script>
 </body>
 
 </html>
