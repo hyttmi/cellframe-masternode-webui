@@ -110,18 +110,14 @@
 
     .nav-item:hover {
         background-color: #B3A3FF;
-        color: #242424
+        color: #242424;
+        cursor: pointer;
     }
 
     .days_amount {
         color: #B3A3FF;
         text-decoration: none;
         font-size: .875em;
-    }
-
-    .active {
-        background-color: #B3A3FF;
-        color: #242424
     }
 
     .days_amount:hover {
@@ -645,7 +641,7 @@
         </script>
         <script>
             function setActive(element) {
-                var navLinks = document.querySelectorAll('.days_amount');
+                var navLinks = document.querySelectorAll('.nav-item');
         
                 navLinks.forEach(function(link) {
                     link.classList.remove('active');
