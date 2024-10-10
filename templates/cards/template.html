@@ -412,7 +412,9 @@
                       </div>
                 </div>
             </div>
-            {% endif %}            
+            {% endif %}
+        {% endfor %}
+        {% endif %}
             
         </div>
         <script>
@@ -423,7 +425,7 @@
             blocksData['{{ network.name }}'] = {{ network.signed_blocks_all | tojson }};
             rewardsData['{{ network.name }}'] = {{ network.rewards | tojson }};
             {% endfor %}
-            
+
             var blocksCharts = {};
             var rewardsCharts = {};
         
@@ -612,8 +614,6 @@
                 });
             });
         </script>
-        {% endfor %}
-        {% endif %}
     </div>
 </body>
 
