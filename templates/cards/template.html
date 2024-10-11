@@ -392,20 +392,20 @@
             <div class="col-md-3" data-id="signed_blocks_last_n_days_{{ network.name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">Signed blocks</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h5 class="card-title text-uppercase">Signed blocks history</h5><button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <canvas id="blocksChart_{{ network.name }}"></canvas>
                     </div>
                     <ul class="nav justify-content-center">
                         <li class="nav-item active" onclick="updateChart('blocksChart', 7, '{{ network.name }}'); setActive(this);">
-                            <span class="days_amount">7 days</span>
+                            <span class="days_amount">7D</span>
                         </li>
                         <li class="nav-item" onclick="updateChart('blocksChart', 14, '{{ network.name }}'); setActive(this);">
-                            <span class="days_amount">14 days</span>
+                            <span class="days_amount">14D</span>
                         </li>
                         <li class="nav-item" onclick="updateChart('blocksChart', 30, '{{ network.name }}'); setActive(this);">
-                            <span class="days_amount">30 days</span>
+                            <span class="days_amount">30D</span>
                         </li>
                     </ul>
                 </div>
@@ -416,20 +416,20 @@
             <div class="col-md-3" data-id="rewards_last_n_days_{{ network.name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">Rewards</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h5 class="card-title text-uppercase">Rewards history</h5><button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <canvas id="rewardsChart_{{ network.name }}"></canvas>
                     </div>
                     <ul class="nav justify-content-center">
                         <li class="nav-item active" onclick="updateChart('rewardsChart', 7, '{{ network.name }}'); setActive(this);">
-                            <span class="days_amount">7 days</span>
+                            <span class="days_amount">7D</span>
                         </li>
                         <li class="nav-item" onclick="updateChart('rewardsChart', 14, '{{ network.name }}'); setActive(this);">
-                            <span class="days_amount">14 days</span>
+                            <span class="days_amount">14D</span>
                         </li>
                         <li class="nav-item" onclick="updateChart('rewardsChart', 30, '{{ network.name }}'); setActive(this);">
-                            <span class="days_amount">30 days</span>
+                            <span class="days_amount">30D</span>
                         </li>
                     </ul>
                 </div>
