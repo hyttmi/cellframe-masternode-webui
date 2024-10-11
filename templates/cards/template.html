@@ -450,6 +450,85 @@
         </div>
     </div>
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var localStorageDiv = document.getElementById('localstorage');
+            var clearStorageBtn = document.getElementById("clearstorage");
+    
+            function toggleLocalStorageDiv() {
+                var hasOtherKeys = Object.keys(localStorage).some(function (key) {
+                    return key !== 'loglevel';
+                });
+                localStorageDiv.style.display = hasOtherKeys ? 'block' : 'none';
+            }
+    
+            toggleLocalStorageDiv();
+    
+            clearStorageBtn.addEventListener('click', function() {
+                localStorage.clear();
+                alert("Settings cleared, refreshing page!");
+                location.reload();
+                clearStorageBtn.style.display = 'none';
+            });
+    
+            var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || [];
+            closedCards.forEach(function (closedId) {
+                var closedCard = document.querySelector(`.col-md-3[data-id="${closedId}"]`);
+                if (closedCard) {
+                    closedCard.remove();
+                }
+            });
+    
+            var sortableElements = document.querySelectorAll('.is_sortable');
+    
+            sortableElements.forEach(function (el, index) {
+                Sortable.create(el, {
+                    animation: 250,
+                    easing: "cubic-bezier(1, 0, 0, 1)",
+                    ghostClass: "ghost",
+                    group: "cfcards-" + index,
+                    dataIdAttr: "data-id",
+                    delay: 100,
+                    store: {
+                        get: function (sortable) {
+                            var order = localStorage.getItem(sortable.options.group.name);
+                            return order ? order.split('|') : [];
+                        },
+                        set: function (sortable) {
+                            var order = sortable.toArray();
+                            localStorage.setItem(sortable.options.group.name, order.join('|'));
+                            toggleLocalStorageDiv();
+                        }
+                    }
+                });
+            });
+    
+            document.querySelectorAll('.btn-close').forEach(function (button) {
+                button.addEventListener('click', function (event) {
+                    var card = event.target.closest('.col-md-3');
+                    if (card) {
+                        var cardId = card.getAttribute("data-id");
+                        card.remove(); // Remove the cfcard element
+                        var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || []; // Init array
+                        if (!closedCards.includes(cardId)) {
+                            closedCards.push(cardId); // Push the card to array...
+                            localStorage.setItem('cfclosed', JSON.stringify(closedCards)); // And save the list :)
+                        }
+                        toggleLocalStorageDiv();
+                    }
+                });
+            });
+        });
+     
+        function setActive(selectedItem) {
+        var parentCard = selectedItem.closest('.card');
+        var navItems = parentCard.querySelectorAll('.nav-item');
+        navItems.forEach(function(item) {
+            item.classList.remove('active');
+        });
+        selectedItem.classList.add('active');
+        }
+    </script>
+    <script>
         var blocksData = {};
         var rewardsData = {};
     
@@ -573,85 +652,6 @@
         updateChart('blocksChart', 7, '{{ network.name }}');
         updateChart('rewardsChart', 7, '{{ network.name }}');
     {% endfor %}
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var localStorageDiv = document.getElementById('localstorage');
-            var clearStorageBtn = document.getElementById("clearstorage");
-    
-            function toggleLocalStorageDiv() {
-                var hasOtherKeys = Object.keys(localStorage).some(function (key) {
-                    return key !== 'loglevel';
-                });
-                localStorageDiv.style.display = hasOtherKeys ? 'block' : 'none';
-            }
-    
-            toggleLocalStorageDiv();
-    
-            clearStorageBtn.addEventListener('click', function() {
-                localStorage.clear();
-                alert("Settings cleared, refreshing page!");
-                location.reload();
-                clearStorageBtn.style.display = 'none';
-            });
-    
-            var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || [];
-            closedCards.forEach(function (closedId) {
-                var closedCard = document.querySelector(`.col-md-3[data-id="${closedId}"]`);
-                if (closedCard) {
-                    closedCard.remove();
-                }
-            });
-    
-            var sortableElements = document.querySelectorAll('.is_sortable');
-    
-            sortableElements.forEach(function (el, index) {
-                Sortable.create(el, {
-                    animation: 250,
-                    easing: "cubic-bezier(1, 0, 0, 1)",
-                    ghostClass: "ghost",
-                    group: "cfcards-" + index,
-                    dataIdAttr: "data-id",
-                    delay: 100,
-                    store: {
-                        get: function (sortable) {
-                            var order = localStorage.getItem(sortable.options.group.name);
-                            return order ? order.split('|') : [];
-                        },
-                        set: function (sortable) {
-                            var order = sortable.toArray();
-                            localStorage.setItem(sortable.options.group.name, order.join('|'));
-                            toggleLocalStorageDiv();
-                        }
-                    }
-                });
-            });
-    
-            document.querySelectorAll('.btn-close').forEach(function (button) {
-                button.addEventListener('click', function (event) {
-                    var card = event.target.closest('.col-md-3');
-                    if (card) {
-                        var cardId = card.getAttribute("data-id");
-                        card.remove(); // Remove the cfcard element
-                        var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || []; // Init array
-                        if (!closedCards.includes(cardId)) {
-                            closedCards.push(cardId); // Push the card to array...
-                            localStorage.setItem('cfclosed', JSON.stringify(closedCards)); // And save the list :)
-                        }
-                        toggleLocalStorageDiv();
-                    }
-                });
-            });
-        });
-     
-        function setActive(selectedItem) {
-        var parentCard = selectedItem.closest('.card');
-        var navItems = parentCard.querySelectorAll('.nav-item');
-        navItems.forEach(function(item) {
-            item.classList.remove('active');
-        });
-        selectedItem.classList.add('active');
-        }
     </script>
     
 </body>
