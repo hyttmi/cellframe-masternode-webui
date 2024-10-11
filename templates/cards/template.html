@@ -643,18 +643,17 @@
                 });
             });
         });
-    </script>
-    <script>
-        function setActive(element) {
-            var navLinks = document.querySelectorAll('.nav-item');
-    
-            navLinks.forEach(function(link) {
-                link.classList.remove('active');
-            });
-
-            element.classList.add('active');
+     
+        function setActive(selectedItem) {
+        var parentCard = selectedItem.closest('.card');
+        var navItems = parentCard.querySelectorAll('.nav-item');
+        navItems.forEach(function(item) {
+            item.classList.remove('active');
+        });
+        selectedItem.classList.add('active');
         }
     </script>
+    
 </body>
 
 </html>
