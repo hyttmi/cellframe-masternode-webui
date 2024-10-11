@@ -8,7 +8,7 @@ from packaging.version import Version
 from collections import OrderedDict
 
 import socket, requests, re, time, psutil, json, os, time, schedule
-from datetime import datetime, timedelta
+from datetime import datetime
 
 log = CFLog()
 
@@ -378,3 +378,11 @@ def validateNum(num):
     except ValueError:
         logError("{num} is not a valid number")
         return False
+    
+def isValidHex(color_str):
+    if re.match(r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", color_str):
+        logNotice(f"Using {color_str} as the accent color.")
+        return color_str
+    else:
+        logError(f"Not a valid hexadecimal of colour code: {color_str}")
+        return "#B3A3FF"
