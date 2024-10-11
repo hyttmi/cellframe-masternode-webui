@@ -4,6 +4,7 @@ import handlers
 def generateHTML(template_name):
     sys_stats = getSysStats()
     is_update_available, curr_version, latest_version = checkForUpdate()
+    accent_color = isValidHex(getConfigValue("webui", "accent_color", default="B3A3FF"))
 
     info = {
         'update_available': is_update_available,
@@ -19,6 +20,7 @@ def generateHTML(template_name):
         "cpu_utilization": sys_stats["node_cpu_usage"],
         "memory_utilization": sys_stats["node_memory_usage_mb"],
         "header_text": getConfigValue("webui", "header_text", default=False),
+        "accent_color": accent_color,
         "net_info": generateNetworkData()
     }
 
