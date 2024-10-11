@@ -28,6 +28,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/op
 - `telegram_stats_time=23:59` - Time to send the message **24h format (HH:MM)**
 - `cache_rewards=true|false`- Cache rewards to a text file **MANDATORY FOR SHOWING REWARDS FROM LAST 7 DAYS**
 - `cache_rewards_time=10` - Time (in minutes) between rewards cache renew, **DON'T USE VALUE BELOW 10, IT USES QUITE A LOT OF CPU**
+- `accent_color=FFFFFF` - Use hex code color as the accent color (without #) 
 
 ## Installation
 
@@ -77,6 +78,7 @@ Here are the variables that are passed to the Jinja templates:
 - `latest_node_version`: Returns the latest version of Cellframe node
 - `cpu_utilization`: Returns the current CPU utilization of Cellframe node
 - `memory_utilization`: Returns the current memory utilization of Cellframe node
+- `accent_color`: Returns the accent color from cellframe-node.cfg
 - `network_data`: A list of dictionaries containing network information.
   - `name`: The name of the network
   - `state`: The current state of the network (online/offline)
