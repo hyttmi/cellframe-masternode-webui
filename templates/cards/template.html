@@ -471,9 +471,8 @@
             clearStorageBtn.addEventListener('click', function() {
                 swal({
                     icon: "success",
-                });
+                    });
                 localStorage.clear();
-                alert("Settings cleared, refreshing page!");
                 location.reload();
                 clearStorageBtn.style.display = 'none';
             });
