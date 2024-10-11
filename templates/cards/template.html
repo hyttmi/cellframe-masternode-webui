@@ -454,8 +454,8 @@
         var rewardsData = {};
     
     {% for network in net_info %}
-        blocksData['{{ network.name }}'] = {{ network.signed_blocks_all | tojson }};
-        rewardsData['{{ network.name }}'] = {{ network.rewards | tojson }};
+        blocksData['{{ network.name }}'] = {{ network.signed_blocks_all | tojson | safe }};
+        rewardsData['{{ network.name }}'] = {{ network.rewards | tojson | safe }};
     {% endfor %}
 
         var blocksCharts = {};
