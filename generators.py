@@ -5,6 +5,7 @@ def generateHTML(template_name):
     sys_stats = getSysStats()
     is_update_available, curr_version, latest_version = checkForUpdate()
     accent_color = isValidHex(getConfigValue("webui", "accent_color", default="B3A3FF"))
+    print(accent_color)
 
     info = {
         'update_available': is_update_available,
