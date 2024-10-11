@@ -14,6 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/Sortable.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </head>
 <style>
     :root {
@@ -468,6 +469,9 @@
             toggleLocalStorageDiv();
     
             clearStorageBtn.addEventListener('click', function() {
+                swal({
+                    icon: "success",
+                });
                 localStorage.clear();
                 alert("Settings cleared, refreshing page!");
                 location.reload();
