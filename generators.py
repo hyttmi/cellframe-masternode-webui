@@ -5,7 +5,6 @@ def generateHTML(template_name):
     sys_stats = getSysStats()
     is_update_available, curr_version, latest_version = checkForUpdate()
     accent_color = isValidHex(getConfigValue("webui", "accent_color", default="B3A3FF"))
-    print(accent_color)
 
     info = {
         'update_available': is_update_available,
@@ -34,4 +33,27 @@ def generateHTML(template_name):
     except Exception as e:
         logError(f"Error in generating HTML: {e}")
         output = f"<h1>Got an error: {e}</h1>"
+    return output
+
+def generateJSON():
+    sys_stats = getSysStats()
+    
+    info = {
+        "title": PLUGIN_NAME,
+        "hostname": getHostname(),
+        "external_ip": getExtIP(),
+        "system_uptime": sys_stats["system_uptime"],
+        "node_uptime": sys_stats["node_uptime"],
+        "node_version": getCurrentNodeVersion(),
+        "latest_node_version": getLatestNodeVersion(),
+        "cpu_utilization": sys_stats["node_cpu_usage"],
+        "memory_utilization": sys_stats["node_memory_usage_mb"],
+        "net_info": generateNetworkData()
+    }
+    try:
+        logNotice(f"Generating JSON content...")
+        output = json.dumps(info, sort_keys=True)
+    except Exception as e:
+        logError(f"Error in generating JSON: {e}")
+        output = json.dumps({"Error": str(e)})
     return output

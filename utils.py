@@ -329,7 +329,7 @@ def generateNetworkData():
             
             if state_match and target_state_match:
                 network_info = {
-                    'name': network,
+                    'name': str(network), # Make sure it's a string, otherwise JSON output won't work
                     'state': state_match.group(1),
                     'target_state': target_state_match.group(1),
                     'address': addr_match.group(1),

@@ -28,13 +28,13 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/op
 - `telegram_stats_time=23:59` - Time to send the message **24h format (HH:MM)**
 - `cache_rewards=true|false`- Cache rewards to a text file **MANDATORY FOR SHOWING REWARDS FROM LAST 7 DAYS**
 - `cache_rewards_time=10` - Time (in minutes) between rewards cache renew, **DON'T USE VALUE BELOW 10, IT USES QUITE A LOT OF CPU**
-- `accent_color=FFFFFF` - Use hex code color as the accent color (without #) 
+- `accent_color=FFFFFF` - Use hex code color as the accent color (without #)
 
 ## Installation
 
 You can get the latest release from [releases page](https://github.com/hyttmi/cellframe-masternode-webui/releases) or by cloning this repo.
 
-1. Enable Python plugins in `cellframe-node.cfg` so it looks on the bottom something like this:
+1. Enable Python plugins in `cellframe-node.cfg` so it looks on the end of the file something like this:
 ```
 # Plugins
 [plugins]
