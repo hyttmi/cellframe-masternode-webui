@@ -21,7 +21,6 @@ def requestHandler(request: CFSimpleHTTPRequestHandler):
 
 def getRequestHandler(request: CFSimpleHTTPRequestHandler):
     logNotice(f"Handling request from {request.client_address}...")
-
     headers = request.headers
     query = request.query
     api_token = headers.get("API_TOKEN")
@@ -88,7 +87,7 @@ def getRequestHandler(request: CFSimpleHTTPRequestHandler):
     if query:
         logNotice("Got a query GET request with valid API_TOKEN...")
 
-        if "get_info" in query:
+        if "as_json" in query:
             response_body = generateJSON()
             response = CFSimpleHTTPResponse(body=response_body.encode("utf-8"), code=200)
             response.headers = {

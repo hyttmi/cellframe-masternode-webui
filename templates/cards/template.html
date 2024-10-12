@@ -459,11 +459,13 @@
             var clearStorageBtn = document.getElementById("clearstorage");
     
             function toggleLocalStorageDiv() {
-                var hasOtherKeys = Object.keys(localStorage).some(function (key) {
-                    return key !== 'loglevel';
-                });
-                localStorageDiv.style.display = hasOtherKeys ? 'block' : 'none';
-            }
+                var hasCardsHidden = localStorage.getItem('cfclosed');
+                if (!hasCardsHidden) {
+                    localStorageDiv.style.display = 'none';
+                } else {
+                    localStorageDiv.style.display = 'block';
+                }
+            }   
     
             toggleLocalStorageDiv();
     
