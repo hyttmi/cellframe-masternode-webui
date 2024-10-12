@@ -1,14 +1,13 @@
 # Cellframe masternode WebUI
 ![image](https://github.com/user-attachments/assets/6c311087-77bd-40aa-99fc-a42ca284a3f1)
+
 ![image](https://github.com/user-attachments/assets/22442c89-f47b-434a-b288-1039e9c867df)
-
-
 
 With this plugin, it's easy to check your node autocollect stats and some other things too. 100% themeable!
 
 ## Configuration
 
-**NOTICE: Email feature supports only GMail for now. And for using it, you MUST HAVE 2-factor authentication enabled and you HAVE TO create an app password from this link:  https://myaccount.google.com/apppasswords**
+**NOTICE: Email feature supports only GMail for now. And for using it, you MUST HAVE 2-factor authentication enabled and you HAVE TO create an app password from this link: https://myaccount.google.com/apppasswords**
 
 Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/opt/cellframe-node/etc/cellframe-node.cfg`. You just need to add new section `[webui]` to the end of the file and below that, add the settings which you want to change:
 
@@ -29,6 +28,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/op
 - `cache_rewards=true|false`- Cache rewards to a text file **MANDATORY FOR SHOWING REWARDS FROM LAST 7 DAYS**
 - `cache_rewards_time=10` - Time (in minutes) between rewards cache renew, **DON'T USE VALUE BELOW 10, IT USES QUITE A LOT OF CPU**
 - `accent_color=FFFFFF` - Use hex code color as the accent color (without #)
+- `api_token=your_own_api_token`- Used in accessing plain JSON data (You can generate your own or use a service like https://it-tools.tech/token-generator).
 
 ## Installation
 
@@ -94,7 +94,37 @@ Here are the variables that are passed to the Jinja templates:
   - `fee_wallet_tokens`: A list of token balances in the network's fee wallet
   - `rewards`: A dict of rewards from last 7 days
 
+## Accessing data as JSON
+By default, this plugin has support for fetching all the important data from your node as JSON if you have `api_token` set in settings. Here's a sample code for fetching the data with Python.
 
+```
+import requests, json
 
+def fetch_node_info(url, api_token):
+    headers = {
+        "API_TOKEN": api_token
+    }
+
+    try:
+        response = requests.get(url, headers=headers)
+
+        if response.status_code == 200:
+            json_data = response.json()
+            return json_data
+        else:
+            print(f"Error with a status code {response.status_code}")
+            return None
+    except requests.exceptions.RequestException as e:
+        print(f"Request failed: {e}")
+        return None
+
+url = "http://<your_node_ip:8079/webui?as_json"
+api_token = "<your_custom_api_token"
+
+data = fetch_node_info(url, api_token)
+
+if data is not None:
+    print(json.dumps(data, indent=4))
+```
 
 
