@@ -52,7 +52,7 @@ def generateJSON():
     }
     try:
         logNotice(f"Generating JSON content...")
-        output = json.dumps(info, sort_keys=True)
+        output = json.dumps(info)
     except Exception as e:
         logError(f"Error in generating JSON: {e}")
         output = json.dumps({"Error": str(e)})
