@@ -1,28 +1,38 @@
 <pre>
-{{ title }}
-
-CPU utilization:     {{ cpu_utilization }}
-Memory utilization:  {{ memory_utilization }}
-Uptime:              {{ node_uptime }}
-System uptime:       {{ system_uptime }}
-Node version:        {{ node_version }}
-Latest node version: {{ latest_node_version }}
-{% for network in net_info %}
-
-{{ network.name }}
-
-Network state:       {{ network.state }}
-Target state:        {{ network.target_state }}
-Node address:        {{ network.address}}
-Signed blocks today: {{ network.signed_blocks_today }}
-Autocollect status:  {{ network.autocollect_status }}
-Current rewards:     {{ network.rewards }}
-
-Reward wallet:
-{% for token in network.fee_wallet_tokens %}
-{{ token.token }}
-{{ token.balance }}
-{% endfor %}
-
-{% endfor %}
+    {{ title }}
+    
+    CPU utilization:     {{ cpu_utilization }}
+    Memory utilization:  {{ memory_utilization }}
+    Uptime:              {{ node_uptime }}
+    System uptime:       {{ system_uptime }}
+    Node version:        {{ node_version }}
+    Latest node version: {{ latest_node_version }}
+    
+    {% if net_info is not none %}
+        {% for network_name, network in net_info.items() %}
+    
+        {{ network_name }}
+    
+        Network state:       {{ network.state }}
+        Target state:        {{ network.target_state }}
+        Node address:        {{ network.address }}
+        Signed blocks today: {{ network.signed_blocks_today }}
+        Autocollect status:  {{ network.autocollect_status }}
+        Current rewards:     {{ network.rewards }}
+    
+        Reward wallet:
+        {% if network.fee_wallet_tokens is not none %}
+            {% for token in network.fee_wallet_tokens.values() %}
+                Token: {{ token.token }}
+                Balance: {{ token.balance }}
+            {% endfor %}
+        {% else %}
+            No tokens available.
+        {% endif %}
+    
+        {% endfor %}
+    {% else %}
+    No network information available.
+    {% endif %}
 </pre>
+    

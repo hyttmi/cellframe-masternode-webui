@@ -63,87 +63,91 @@
     <div class="container">
         <div class="system">
             <h3>System stats</h3>
-                <table>
-                    <tr>
-                        <td><strong>System uptime:</strong></td>
-                        <td>{{ system_uptime }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Node uptime:</strong></td>
-                        <td>{{ node_uptime }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Node version:</strong></td>
-                        <td>{{ node_version }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Latest node version:</strong></td>
-                        <td>{{ latest_node_version }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>CPU utilization:</strong></td>
-                        <td>{{ cpu_utilization }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Memory utilization:</strong></td>
-                        <td>{{ memory_utilization }}</td>
-                    </tr>
-                </table>
-        </div>
-
-        {% for network in net_info %}
-        <div class="network">
-            <h3>{{ network.name }}</h3>
             <table>
                 <tr>
-                    <td><strong>State:</strong></td>
-                    <td>{{ network.state }}</td>
+                    <td><strong>System uptime:</strong></td>
+                    <td>{{ system_uptime }}</td>
                 </tr>
                 <tr>
-                    <td><strong>Target state:</strong></td>
-                    <td>{{ network.target_state }}</td>
+                    <td><strong>Node uptime:</strong></td>
+                    <td>{{ node_uptime }}</td>
                 </tr>
                 <tr>
-                    <td><strong>Node address:</strong></td>
-                    <td>{{ network.address }}</td>
+                    <td><strong>Node version:</strong></td>
+                    <td>{{ node_version }}</td>
                 </tr>
                 <tr>
-                    <td><strong>First signed blocks:</strong></td>
-                    <td>{{ network.first_signed_blocks }}</td>
+                    <td><strong>Latest node version:</strong></td>
+                    <td>{{ latest_node_version }}</td>
                 </tr>
                 <tr>
-                    <td><strong>All signed blocks:</strong></td>
-                    <td>{{ network.all_signed_blocks }}</td>
+                    <td><strong>CPU utilization:</strong></td>
+                    <td>{{ cpu_utilization }}</td>
                 </tr>
                 <tr>
-                    <td><strong>Signed blocks today:</strong></td>
-                    <td>{{ network.signed_blocks_today }}</td>
+                    <td><strong>Memory utilization:</strong></td>
+                    <td>{{ memory_utilization }}</td>
                 </tr>
-                <tr>
-                    <td><strong>All blocks:</strong></td>
-                    <td>{{ network.all_blocks }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Autocollect status:</strong></td>
-                    <td>{{ network.autocollect_status }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Autocollect rewards:</strong></td>
-                    <td>{{ network.rewards }}</td>
-                </tr>
-                {% if network.fee_wallet_tokens %}
-                <tr>
-                    <td><strong>Reward wallet information:</strong></td>
-                    <td>
-                        {% for token in network.fee_wallet_tokens %}
-                        {{ token.token }}: {{ token.balance }}<br>
-                        {% endfor %}
-                    </td>
-                </tr>
-                {% endif %}
             </table>
         </div>
-        {% endfor %}
+
+        {% if net_info is not none %}
+            {% for network_name, network in net_info.items() %}
+            <div class="network">
+                <h3>{{ network_name }}</h3>
+                <table>
+                    <tr>
+                        <td><strong>State:</strong></td>
+                        <td>{{ network.state }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Target state:</strong></td>
+                        <td>{{ network.target_state }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Node address:</strong></td>
+                        <td>{{ network.address }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>First signed blocks:</strong></td>
+                        <td>{{ network.first_signed_blocks }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>All signed blocks:</strong></td>
+                        <td>{{ network.all_signed_blocks }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Signed blocks today:</strong></td>
+                        <td>{{ network.signed_blocks_today }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>All blocks:</strong></td>
+                        <td>{{ network.all_blocks }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Autocollect status:</strong></td>
+                        <td>{{ network.autocollect_status }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Autocollect rewards:</strong></td>
+                        <td>{{ network.rewards }}</td>
+                    </tr>
+                    {% if network.fee_wallet_tokens is not none %}
+                    <tr>
+                        <td><strong>Reward wallet information:</strong></td>
+                        <td>
+                            {% for token in network.fee_wallet_tokens.values() %}
+                                {{ token.token }}: {{ token.balance }}<br>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    {% endif %}
+                </table>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No network information available.</p>
+        {% endif %}
     </div>
 </body>
 
