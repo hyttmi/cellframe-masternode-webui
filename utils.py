@@ -340,7 +340,7 @@ def generateNetworkData():
                     'signed_blocks_all': getSignedBlocks(network),
                     'autocollect_status': getAutocollectStatus(network),
                     'autocollect_rewards': getAutocollectRewards(network),
-                    'fee_wallet_tokens': [{'token': token[1], 'balance': token[0]} for token in tokens] if tokens else None,
+                    'fee_wallet_tokens': {token[1]: token[0] for token in tokens} if tokens else None,
                     'rewards': readRewards(network)
                 }
                 network_data[network] = network_info

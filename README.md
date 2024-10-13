@@ -28,7 +28,8 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/op
 - `cache_rewards=true|false`- Cache rewards to a text file **MANDATORY FOR SHOWING REWARDS FROM LAST 7 DAYS**
 - `cache_rewards_time=10` - Time (in minutes) between rewards cache renew, **DON'T USE VALUE BELOW 10, IT USES QUITE A LOT OF CPU**
 - `accent_color=FFFFFF` - Use hex code color as the accent color (without #)
-- `api_token=your_own_api_token`- Used in accessing plain JSON data (You can generate your own or use a service like https://it-tools.tech/token-generator).
+- `api_token=your_own_api_token`- Used in accessing plain JSON data (You can generate your own or use a service like https://it-tools.tech/token-generator)
+- `rate_limit=true|false` - If set, rate limit per request will be set to 15 seconds
 
 ## Installation
 
@@ -79,7 +80,7 @@ Here are the variables that are passed to the Jinja templates:
 - `cpu_utilization`: Returns the current CPU utilization of Cellframe node
 - `memory_utilization`: Returns the current memory utilization of Cellframe node
 - `accent_color`: Returns the accent color from cellframe-node.cfg
-- `network_data`: A list of dictionaries containing network information.
+- `network_info`: A list of dictionaries containing network information.
   - `name`: The name of the network
   - `state`: The current state of the network (online/offline)
   - `target_state`: The target state of the network

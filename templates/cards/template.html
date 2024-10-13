@@ -389,14 +389,15 @@
             <div class="col-md-3" data-id="reward_wallet_information_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">reward wallet information</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h5 class="card-title text-uppercase">Reward Wallet Information</h5>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <table class="tokens">
-                            {% for token in network.fee_wallet_tokens %}
+                            {% for token, balance in network.fee_wallet_tokens.items() %}
                             <tr>
-                                <td><h6 class="text-body-secondary card-subtitle">{{ token.token }}</h6></td>
-                                <td><h6 class="text-body-secondary card-subtitle">{{ token.balance }}</h6></td>
+                                <td><h6 class="text-body-secondary card-subtitle">{{ token }}</h6></td>
+                                <td><h6 class="text-body-secondary card-subtitle">{{ balance }}</h6></td>
                             </tr>
                             {% endfor %}
                         </table>
