@@ -463,7 +463,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             var localStorageDiv = document.getElementById('localstorage');
             var clearStorageBtn = document.getElementById("clearstorage");
-    
+
             function toggleLocalStorageDiv() {
                 var hasCardsHidden = localStorage.getItem('cfclosed');
                 if (!hasCardsHidden) {
@@ -471,16 +471,15 @@
                 } else {
                     localStorageDiv.style.display = 'block';
                 }
-            }   
-    
+            }
+
             toggleLocalStorageDiv();
-    
+
             clearStorageBtn.addEventListener('click', function() {
                 localStorage.clear();
                 location.reload();
-                clearStorageBtn.style.display = 'none';
             });
-    
+
             var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || [];
             closedCards.forEach(function (closedId) {
                 var closedCard = document.querySelector(`.col-md-3[data-id="${closedId}"]`);
@@ -488,9 +487,9 @@
                     closedCard.remove();
                 }
             });
-    
+
             var sortableElements = document.querySelectorAll('.is_sortable');
-    
+
             sortableElements.forEach(function (el, index) {
                 Sortable.create(el, {
                     animation: 250,
@@ -512,36 +511,39 @@
                     }
                 });
             });
-    
+            
             document.querySelectorAll('.btn-close').forEach(function (button) {
                 button.addEventListener('click', function (event) {
                     var card = event.target.closest('.col-md-3');
                     if (card) {
                         var cardId = card.getAttribute("data-id");
                         card.classList.add('hidden'); // Use hidden class to hide the card
-                    
-                        card.addEventListener('transitionend', function () { // need to wait until transition is done
+
+                        card.addEventListener('transitionend', function () { // Wait until the transition is done
                             card.remove(); // Remove the cfcard element
                             var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || []; // Init array
                             if (!closedCards.includes(cardId)) {
-                                closedCards.push(cardId); // Push the card to array...
-                                localStorage.setItem('cfclosed', JSON.stringify(closedCards)); // And save the list :)
+                                closedCards.push(cardId); // Push the card to the array
+                                localStorage.setItem('cfclosed', JSON.stringify(closedCards)); // Save the list
                             }
                             toggleLocalStorageDiv();
                         }, { once: true });
                     }
                 });
             });
-     
-        function setActive(selectedItem) {
-        var parentCard = selectedItem.closest('.card');
-        var navItems = parentCard.querySelectorAll('.nav-item');
-        navItems.forEach(function(item) {
-            item.classList.remove('active');
+
+            function setActive(selectedItem) {
+                var parentCard = selectedItem.closest('.card');
+                var navItems = parentCard.querySelectorAll('.nav-item');
+                navItems.forEach(function(item) {
+                    item.classList.remove('active');
+                });
+                selectedItem.classList.add('active');
+            }
+
         });
-        selectedItem.classList.add('active');
-        }
     </script>
+    
     <script>
         var blocksData = {};
         var rewardsData = {};
