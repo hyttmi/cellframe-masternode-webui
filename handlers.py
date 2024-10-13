@@ -16,27 +16,31 @@ rate_limit_interval = 15
 
 def requestHandler(request: CFSimpleHTTPRequestHandler):
     if request.method == "GET":
-        client_ip = request.client_address
-        current_time = time.time()
+        rate_limit_active = getConfigValue("webui", "rate_limit", default=False)
+        if rate_limit_active:
+            client_ip = request.client_address
+            current_time = time.time()
 
-        if client_ip in last_request_time:
-            elapsed_time = current_time - last_request_time[client_ip]
+            if client_ip in last_request_time:
+                elapsed_time = current_time - last_request_time[client_ip]
 
-            if elapsed_time < rate_limit_interval:
-                remaining_time = rate_limit_interval - elapsed_time
-                res = f"Rate limit exceeded. Please wait {int(remaining_time)} seconds.".encode("utf-8")
-                response = CFSimpleHTTPResponse(
-                    body=res,
-                    code=200
-                )
-                response.headers = {
-                    "Content-Type": "text/plain"
-                }
-                logError(f"Rate limit exceeded from {client_ip}")
-                return response
+                if elapsed_time < rate_limit_interval:
+                    remaining_time = rate_limit_interval - elapsed_time
+                    res = f"Rate limit exceeded. Please wait {int(remaining_time)} seconds.".encode("utf-8")
+                    response = CFSimpleHTTPResponse(
+                        body=res,
+                        code=200
+                    )
+                    response.headers = {
+                        "Content-Type": "text/plain"
+                    }
+                    logError(f"Rate limit exceeded from {client_ip}")
+                    return response
 
-        last_request_time[client_ip] = current_time
-        return getRequestHandler(request)
+            last_request_time[client_ip] = current_time
+            return getRequestHandler(request)
+        else:
+            return getRequestHandler(request)
     else:
         logError(f"Unsupported method: {request.method}")
         response = CFSimpleHTTPResponse(body=b"Unsupported method", code=200)
