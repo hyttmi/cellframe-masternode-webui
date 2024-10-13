@@ -120,6 +120,11 @@
         font-size: .875em;
         text-transform: uppercase;
     }
+
+    .hidden {
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
 </style>
 
 <body>
@@ -512,17 +517,20 @@
                     var card = event.target.closest('.col-md-3');
                     if (card) {
                         var cardId = card.getAttribute("data-id");
-                        card.remove()
-                        var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || []; // Init array
-                        if (!closedCards.includes(cardId)) {
-                            closedCards.push(cardId); // Push the card to array...
-                            localStorage.setItem('cfclosed', JSON.stringify(closedCards)); // And save the list :)
-                        }
-                        toggleLocalStorageDiv();
+                        card.classList.add('hidden'); // Use hidden class to hide the card
+                    
+                        card.addEventListener('transitionend', function () { // need to wait until transition is done
+                            card.remove(); // Remove the cfcard element
+                            var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || []; // Init array
+                            if (!closedCards.includes(cardId)) {
+                                closedCards.push(cardId); // Push the card to array...
+                                localStorage.setItem('cfclosed', JSON.stringify(closedCards)); // And save the list :)
+                            }
+                            toggleLocalStorageDiv();
+                        }, { once: true });
                     }
                 });
             });
-        });
      
         function setActive(selectedItem) {
         var parentCard = selectedItem.closest('.card');
