@@ -35,8 +35,8 @@ PLUGIN_URI = getConfigValue("webui", "uri", default="webui")
     
 def checkForUpdate():
     try:
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        with open(f"{dir_path}/manifest.json") as manifest:
+        manifest_path = os.path.join(getScriptDir(), "manifest.json")
+        with open(manifest_path) as manifest:
             data = json.load(manifest)
             curr_version = Version(data["version"])
             logNotice(f"Current plugin version: {curr_version}")
