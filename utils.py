@@ -45,7 +45,7 @@ def checkForUpdate():
         res = requests.get(url).json()
         latest_version = Version(res["version"])
         logNotice(f"Latest plugin version: {latest_version}")
-        return curr_version < latest_version, curr_version, latest_version
+        return curr_version < latest_version, str(curr_version), str(latest_version)
     except Exception as e:
         logError(f"Error: {e}")
         return f"Error: {e}"
@@ -141,7 +141,6 @@ def getListNetworks():
         return None
 
 def readNetworkConfig(network):
-    net_config = []
     config_file = f"/opt/cellframe-node/etc/network/{network}.cfg"
     with open(config_file, "r") as file:
         text = file.read()
@@ -150,8 +149,10 @@ def readNetworkConfig(network):
     cert_match = re.search(pattern_cert, text, re.MULTILINE)
     wallet_match = re.search(pattern_wallet, text, re.MULTILINE)
     if cert_match and wallet_match:
-        net_config.append(cert_match.group(1))
-        net_config.append(wallet_match.group(1))
+        net_config = {
+            "blocks_sign_cert": cert_match.group(1),
+            "wallet": wallet_match.group(1)
+        }
         return net_config
     else:
         return None
@@ -175,7 +176,7 @@ def getAllBlocks(network):
 def getFirstSignedBlocks(network):
     net_config = readNetworkConfig(network)
     if net_config is not None:
-        cmd_get_first_signed_blocks = CLICommand(f"block list -net {network} chain -main first_signed -cert {net_config[0]} -limit 1")
+        cmd_get_first_signed_blocks = CLICommand(f"block list -net {network} chain -main first_signed -cert {net_config['wallet']} -limit 1")
         pattern = r"have blocks: (\d+)"
         blocks_match = re.search(pattern, cmd_get_first_signed_blocks)
         if blocks_match:
@@ -187,7 +188,7 @@ def getFirstSignedBlocks(network):
 def getAllSignedBlocks(network):
     net_config = readNetworkConfig(network)
     if net_config is not None:
-        cmd_get_all_signed_blocks = CLICommand(f"block list -net {network} chain -main signed -cert {net_config[0]} -limit 1")
+        cmd_get_all_signed_blocks = CLICommand(f"block list -net {network} chain -main signed -cert {net_config['blocks_sign_cert']} -limit 1")
         pattern = r"have blocks: (\d+)"
         blocks_match = re.search(pattern, cmd_get_all_signed_blocks)
         if blocks_match:
@@ -199,7 +200,7 @@ def getAllSignedBlocks(network):
 def getSignedBlocks(network, today=False):
     net_config = readNetworkConfig(network)
     if net_config is not None:
-        cmd_output = CLICommand(f"block list -net {network} signed -cert {net_config[0]}")
+        cmd_output = CLICommand(f"block list -net {network} signed -cert {net_config['blocks_sign_cert']}")
         today_str = datetime.now().strftime("%a, %d %b %Y")
         blocks_signed_per_day = {}
         
@@ -225,7 +226,7 @@ def getSignedBlocks(network, today=False):
 def getRewardWalletTokens(network):
     net_config = readNetworkConfig(network)
     if net_config is not None:
-        cmd_get_wallet_info = CLICommand(f"wallet info -addr {net_config[1]}")
+        cmd_get_wallet_info = CLICommand(f"wallet info -addr {net_config['wallet']}")
         if cmd_get_wallet_info:
             balance_pattern = r"coins:\s+([\d.]+)[\s\S]+?ticker:\s+(\w+)"
             tokens = re.findall(balance_pattern, cmd_get_wallet_info)
@@ -253,8 +254,7 @@ def cacheRewards():
             if net_config is not None:
                 logNotice("Caching rewards...")
                 start_time = time.time()
-                wallet = net_config[1]
-                cmd_get_tx_history = CLICommand(f"tx_history -addr {wallet}", timeout=60)
+                cmd_get_tx_history = CLICommand(f"tx_history -addr {net_config['wallet']}", timeout=60)
                 rewards = []
                 reward = {}
                 is_receiving_reward = False
@@ -316,8 +316,9 @@ def readRewards(network):
 def generateNetworkData():
     networks = getListNetworks()
     if networks is not None:
-        network_data = []
+        network_data = {}
         for network in networks:
+            network = str(network)
             net_status = CLICommand(f"net -net {network} get status")
             addr_pattern = r"([A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*)"
             state_pattern = r"states:\s+current: (\w+)"
@@ -329,7 +330,6 @@ def generateNetworkData():
             
             if state_match and target_state_match:
                 network_info = {
-                    'name': str(network), # Make sure it's a string, otherwise JSON output won't work
                     'state': state_match.group(1),
                     'target_state': target_state_match.group(1),
                     'address': addr_match.group(1),
@@ -343,7 +343,7 @@ def generateNetworkData():
                     'fee_wallet_tokens': [{'token': token[1], 'balance': token[0]} for token in tokens] if tokens else None,
                     'rewards': readRewards(network)
                 }
-                network_data.append(network_info)
+                network_data[network] = network_info
             else:
                 return None
         return network_data
