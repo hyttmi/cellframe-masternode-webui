@@ -120,6 +120,11 @@
         font-size: .875em;
         text-transform: uppercase;
     }
+
+    .hidden {
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
 </style>
 
 <body>
@@ -512,17 +517,20 @@
                     var card = event.target.closest('.col-md-3');
                     if (card) {
                         var cardId = card.getAttribute("data-id");
-                        card.remove(); // Remove the cfcard element
-                        var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || []; // Init array
-                        if (!closedCards.includes(cardId)) {
-                            closedCards.push(cardId); // Push the card to array...
-                            localStorage.setItem('cfclosed', JSON.stringify(closedCards)); // And save the list :)
-                        }
-                        toggleLocalStorageDiv();
+                        card.classList.add('hidden');
+                        card.addEventListener('transitionend', function () {
+                            card.remove(); // Remove the cfcard element
+                            var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || []; // Init array
+                            if (!closedCards.includes(cardId)) {
+                                closedCards.push(cardId); // Push the card to array...
+                                localStorage.setItem('cfclosed', JSON.stringify(closedCards)); // And save the list :)
+                            }
+                            toggleLocalStorageDiv();
+                        }, { once: true });
                     }
                 });
             });
-        });
+
      
         function setActive(selectedItem) {
         var parentCard = selectedItem.closest('.card');
@@ -614,7 +622,7 @@
                 }
             }
         });
-    
+
         var rewardsCtx{{ network_name }} = document.getElementById('rewardsChart_{{ network_name }}').getContext('2d');
         rewardsCharts['{{ network_name }}'] = new Chart(rewardsCtx{{ network_name }}, {
             type: 'line',
@@ -656,7 +664,7 @@
                 }
             }
         });
-        
+
         updateChart('blocksChart', 7, '{{ network_name }}');
         updateChart('rewardsChart', 7, '{{ network_name }}');
     {% endfor %}
