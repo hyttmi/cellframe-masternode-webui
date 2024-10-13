@@ -176,7 +176,7 @@ def getAllBlocks(network):
 def getFirstSignedBlocks(network):
     net_config = readNetworkConfig(network)
     if net_config is not None:
-        cmd_get_first_signed_blocks = CLICommand(f"block list -net {network} chain -main first_signed -cert {net_config['wallet']} -limit 1")
+        cmd_get_first_signed_blocks = CLICommand(f"block list -net {network} chain -main first_signed -cert {net_config['block_sign_cert']} -limit 1")
         pattern = r"have blocks: (\d+)"
         blocks_match = re.search(pattern, cmd_get_first_signed_blocks)
         if blocks_match:
