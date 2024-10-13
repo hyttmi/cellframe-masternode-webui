@@ -86,8 +86,8 @@ Here are the variables that are passed to the Jinja templates:
   - `target_state`: The target state of the network
   - `address`: The network address
   - `first_signed_blocks`: The number of first signed blocks
-  - `all_signed_blocks`: The total number of signed blocks
-  - `all_blocks`: The total number of blocks
+  - `all_signed_blocks`: The number of all signed blocks
+  - `all_blocks`: The number of blocks
   - `signed_blocks_today`: The number of blocks signed today
   - `signed_blocks_all`: A dictionary of all signed blocks (day, amount)
   - `autocollect_status`: The status of reward autocollection
@@ -96,7 +96,7 @@ Here are the variables that are passed to the Jinja templates:
   - `rewards`: A dict of rewards from last 7 days
 
 ## Accessing data as JSON
-By default, this plugin has support for fetching all the important data from your node as JSON if you have `api_token` set in settings. Here's a sample code for fetching the data with Python.
+By default, this plugin has support for fetching all the important data from your node as JSON if you have `api_token` set in settings. Here's a sample code for fetching the data with Python:
 
 ```
 import requests, json
@@ -127,5 +127,20 @@ data = fetch_node_info(url, api_token)
 if data is not None:
     print(json.dumps(data, indent=4))
 ```
+
+And with on terminal with `curl` piping to `jq`:
+```
+curl -v -X GET "http://<your_node_ext_ip>:8079/webui?as_json" -H "API_TOKEN: <your_api_token>" | jq .net_info.Backbone.signed_blocks_today -> Returns the amount of signed blocks today
+```
+
+```
+curl -v -X GET "http://<your_node_ext_ip>:8079/webui?as_json" -H "API_TOKEN: <your_api_token>" | jq .node_uptime -> Returns node uptime in (days), hours, minutes, seconds
+```
+
+```
+curl -v -X GET "http://<your_node_ext_ip>:8079/webui?as_json" -H "API_TOKEN: <your_api_token>" | jq -> Returns all data
+```
+
+
 
 
