@@ -253,16 +253,16 @@
                 </div>
             </div>            
         </div>
-        {% if network_data is not none %}
-        {% for network in net_info %}
+        {% if net_info is not none %}
+        {% for network_name, network in net_info.items() %}
         <div class="row">
             <div class="col-12">
-                <h1 class="text-uppercase text-color-secondary">{{ network.name }}</h1>
+                <h1 class="text-uppercase text-color-secondary">{{ network_name }}</h1>
             </div>
         </div>
         <div class="row is_sortable">
 
-            <div class="col-md-3" data-id="state_{{ network.name }}">
+            <div class="col-md-3" data-id="state_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">state</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -274,7 +274,7 @@
                 </div>
             </div>
             
-            <div class="col-md-3" data-id="target_state_{{ network.name }}">
+            <div class="col-md-3" data-id="target_state_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">target state</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -286,7 +286,7 @@
                 </div>
             </div>
             
-            <div class="col-md-3" data-id="node_address_{{ network.name }}">
+            <div class="col-md-3" data-id="node_address_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">node address</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -299,7 +299,7 @@
             </div>
             
             {% if network.first_signed_blocks is not none %}
-            <div class="col-md-3" data-id="first_signed_blocks_{{ network.name }}">
+            <div class="col-md-3" data-id="first_signed_blocks_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">first signed blocks</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -313,7 +313,7 @@
             {% endif %}
             
             {% if network.all_signed_blocks is not none %}
-            <div class="col-md-3" data-id="all_signed_blocks_{{ network.name }}">
+            <div class="col-md-3" data-id="all_signed_blocks_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">All signed blocks</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -327,7 +327,7 @@
             {% endif %}
             
             {% if network.signed_blocks_today is not none %}
-            <div class="col-md-3" data-id="signed_blocks_today_{{ network.name }}">
+            <div class="col-md-3" data-id="signed_blocks_today_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">Signed blocks today</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -341,7 +341,7 @@
             {% endif %}
             
             {% if network.all_blocks is not none %}
-            <div class="col-md-3" data-id="amount_of_blocks_{{ network.name }}">
+            <div class="col-md-3" data-id="amount_of_blocks_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">Amount of blocks</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -354,7 +354,7 @@
             </div>
             {% endif %}
             
-            <div class="col-md-3" data-id="autocollect_status_{{ network.name }}">
+            <div class="col-md-3" data-id="autocollect_status_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">autocollect status</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -367,7 +367,7 @@
             </div>
             
             {% if network.autocollect_rewards is not none %}
-            <div class="col-md-3" data-id="autocollect_rewards_{{ network.name }}">
+            <div class="col-md-3" data-id="autocollect_rewards_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">autocollect rewards</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -381,7 +381,7 @@
             {% endif %}
             
             {% if network.fee_wallet_tokens is not none %}
-            <div class="col-md-3" data-id="reward_wallet_information_{{ network.name }}">
+            <div class="col-md-3" data-id="reward_wallet_information_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">reward wallet information</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -402,7 +402,7 @@
             {% endif %}
             
             {% if network.signed_blocks_all is not none %}
-            <div class="col-md-3" data-id="signed_blocks_last_n_days_{{ network.name }}">
+            <div class="col-md-3" data-id="signed_blocks_last_n_days_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">Signed blocks history</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -426,7 +426,7 @@
             {% endif %}
             
             {% if network.rewards is not none %}
-            <div class="col-md-3" data-id="rewards_last_n_days_{{ network.name }}">
+            <div class="col-md-3" data-id="rewards_last_n_days_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">Rewards history</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -537,10 +537,11 @@
         var blocksData = {};
         var rewardsData = {};
     
-    {% for network in net_info %}
-        blocksData['{{ network.name }}'] = {{ network.signed_blocks_all | tojson | safe }};
-        rewardsData['{{ network.name }}'] = {{ network.rewards | tojson | safe }};
-    {% endfor %}
+        {% for network_name, network in net_info.items() %}
+        blocksData['{{ network_name }}'] = {{ network.signed_blocks_all | tojson | safe }};
+        rewardsData['{{ network_name }}'] = {{ network.rewards | tojson | safe }};
+        {% endfor %}
+
 
         var blocksCharts = {};
         var rewardsCharts = {};
@@ -578,9 +579,9 @@
             });
         }
     
-        {% for network in net_info %}
-        var blocksCtx{{ network.name }} = document.getElementById('blocksChart_{{ network.name }}').getContext('2d');
-        blocksCharts['{{ network.name }}'] = new Chart(blocksCtx{{ network.name }}, {
+        {% for network_name, network in net_info.items() %}
+        var blocksCtx{{ network_name }} = document.getElementById('blocksChart_{{ network_name }}').getContext('2d');
+        blocksCharts['{{ network_name }}'] = new Chart(blocksCtx{{ network_name }}, {
             type: 'line',
             data: {
                 labels: [],
@@ -614,8 +615,8 @@
             }
         });
     
-        var rewardsCtx{{ network.name }} = document.getElementById('rewardsChart_{{ network.name }}').getContext('2d');
-        rewardsCharts['{{ network.name }}'] = new Chart(rewardsCtx{{ network.name }}, {
+        var rewardsCtx{{ network_name }} = document.getElementById('rewardsChart_{{ network_name }}').getContext('2d');
+        rewardsCharts['{{ network_name }}'] = new Chart(rewardsCtx{{ network_name }}, {
             type: 'line',
             data: {
                 labels: [],
@@ -655,9 +656,11 @@
                 }
             }
         });
-        updateChart('blocksChart', 7, '{{ network.name }}');
-        updateChart('rewardsChart', 7, '{{ network.name }}');
+        
+        updateChart('blocksChart', 7, '{{ network_name }}');
+        updateChart('rewardsChart', 7, '{{ network_name }}');
     {% endfor %}
+
     </script>
     
 </body>
