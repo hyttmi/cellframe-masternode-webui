@@ -512,7 +512,7 @@
                     var card = event.target.closest('.col-md-3');
                     if (card) {
                         var cardId = card.getAttribute("data-id");
-                        card.classList.add('hidden'); // Remove the cfcard element
+                        card.remove()
                         var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || []; // Init array
                         if (!closedCards.includes(cardId)) {
                             closedCards.push(cardId); // Push the card to array...
