@@ -463,8 +463,6 @@
     <script>
         function setActive(selectedItem) {
             var parentCard = selectedItem.closest('.card');
-            console.log(selectedItem);
-            console.log(parentCard);
             var navItems = parentCard.querySelectorAll('.nav-item');
             navItems.forEach(function(item) {
                 item.classList.remove('active');
