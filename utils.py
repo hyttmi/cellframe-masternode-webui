@@ -169,7 +169,7 @@ def getAllBlocks(network):
     pattern_all_blocks = r":\s+(\d+)"
     all_blocks_match = re.search(pattern_all_blocks, all_blocks_cmd)
     if all_blocks_match:
-        return all_blocks_match.group(1)
+        return int(all_blocks_match.group(1))
     else:
         return None
 
@@ -180,8 +180,7 @@ def getFirstSignedBlocks(network):
         pattern = r"have blocks: (\d+)"
         blocks_match = re.search(pattern, cmd_get_first_signed_blocks)
         if blocks_match:
-            result = blocks_match.group(1)
-            return result
+            return int(blocks_match.group(1))
     else:
         return None
 
@@ -192,8 +191,7 @@ def getAllSignedBlocks(network):
         pattern = r"have blocks: (\d+)"
         blocks_match = re.search(pattern, cmd_get_all_signed_blocks)
         if blocks_match:
-            result = blocks_match.group(1)
-            return result
+            return int(blocks_match.group(1))
     else:
         return None
 
@@ -340,7 +338,7 @@ def generateNetworkData():
                     'signed_blocks_all': getSignedBlocks(network),
                     'autocollect_status': getAutocollectStatus(network),
                     'autocollect_rewards': getAutocollectRewards(network),
-                    'fee_wallet_tokens': {token[1]: token[0] for token in tokens} if tokens else None,
+                    'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
                     'rewards': readRewards(network)
                 }
                 network_data[network] = network_info
