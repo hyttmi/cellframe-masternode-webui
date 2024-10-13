@@ -23,7 +23,6 @@ def generateHTML(template_name):
         "accent_color": accent_color,
         "net_info": generateNetworkData()
     }
-    logNotice(info)
 
     template_setting = getConfigValue("webui", "template", default="cards")
     template_path = f"{template_setting}/{template_name}"
