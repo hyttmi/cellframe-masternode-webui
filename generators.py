@@ -30,7 +30,7 @@ def getInfo(exclude=None, format_time=True):
     return info
 
 def generateHTML(template_name):
-    info = getInfo(exclude=[])
+    info = getInfo(exclude=[], format_time=True)
     template_setting = getConfigValue("webui", "template", default="cards")
     template_path = f"{template_setting}/{template_name}"
     try:
