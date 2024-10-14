@@ -433,6 +433,7 @@
             {% endif %}
             
             {% if network.rewards is not none %}
+            {% for network_name, network in net_info.items() %}
             <div class="col-md-3" data-id="rewards_last_n_days_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -445,15 +446,20 @@
                         <li class="nav-item active" onclick="updateChart('rewardsChart', 7, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">7 days</span>
                         </li>
+                        {% if network.rewards | length >= 14 %}
                         <li class="nav-item" onclick="updateChart('rewardsChart', 14, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">14 days</span>
                         </li>
+                        {% endif %}
+                        {% if network.rewards | length >= 30 %}
                         <li class="nav-item" onclick="updateChart('rewardsChart', 30, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">30 days</span>
                         </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
+            {% endfor %}
             {% endif %}
         {% endfor %}
         {% endif %}
