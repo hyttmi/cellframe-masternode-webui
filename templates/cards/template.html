@@ -438,9 +438,9 @@
                             <span class="days_amount">30 days</span>
                         </li>
                         {% endif %}
-                        {% if network.signed_blocks_all | length > 30 %}
-                        <li class="nav-item" onclick="updateChart('blocksChart', {{ network.signed_blocks_all | length }}, '{{ network_name }}'); setActive(this);">
-                            <span class="days_amount">all</span>
+                        {% if network.signed_blocks_all | length >= 60 %}
+                        <li class="nav-item" onclick="updateChart('blocksChart', 60, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">60 days</span>
                         </li>
                         {% endif %}
                     </ul>
@@ -479,9 +479,9 @@
                             <span class="days_amount">30 days</span>
                         </li>
                         {% endif %}
-                        {% if network.rewards | length > 30 %}
-                        <li class="nav-item" onclick="updateChart('rewardsChart', {{ network.rewards | length }}, '{{ network_name }}'); setActive(this);">
-                            <span class="days_amount">ALL</span>
+                        {% if network.rewards | length >= 60 %}
+                        <li class="nav-item" onclick="updateChart('rewardsChart', 60, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">60 days</span>
                         </li>
                         {% endif %}
                     </ul>
