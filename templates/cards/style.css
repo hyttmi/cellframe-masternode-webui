@@ -19,10 +19,6 @@ html {
     transition: transform 0.2s ease;
 }
 
-.card-title {
-    color: var(--accent-color)
-}
-
 .card-subtitle {
     padding-top: 15px;
 }
@@ -31,17 +27,11 @@ html {
     color: var(--accent-color);
 }
 
-.card-header {
-    border: none;   
-}
-
 .text-body-secondary {
     color: var(--accent-color) !important;
-    opacity: 0.7;
 }
 
 .icon-container {
-    opacity: 0.7;
     position: absolute;
     bottom: 10px;
     right: 10px;
@@ -67,6 +57,7 @@ html {
 
 .card-header {
     padding-top: 15px;
+    border: none;
 }
 
 #localstorage {
