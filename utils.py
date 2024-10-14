@@ -1,13 +1,9 @@
-import inspect
-import DAP
+import DAP, socket, requests, re, time, psutil, json, os, time, schedule, inspect
 from pycfhelpers.node.logging import CFLog
 from pycfhelpers.node.net import CFNet
-from pycfhelpers.node.types import CFNetState
 from command_runner import command_runner
 from packaging.version import Version
 from collections import OrderedDict
-
-import socket, requests, re, time, psutil, json, os, time, schedule
 from datetime import datetime
 
 log = CFLog()
