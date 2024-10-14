@@ -49,20 +49,20 @@
     }
 
     .icon-container {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            font-size: 20px;
-            color: var(--accent-color);
-            background: #242424;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 25px;
-        }
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        font-size: 20px;
+        color: var(--accent-color);
+        background: #242424;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 25px;
+    }
 
     .tokens td {
         padding: 5px;
@@ -122,7 +122,7 @@
     }
 
     .hidden {
-       opacity: 0;
+        opacity: 0;
         transform: scale(0.75);
         transition: opacity 0.5s ease, transform 0.5s ease;
     }
@@ -486,7 +486,7 @@
             toggleLocalStorageDiv();
     
             clearStorageBtn.addEventListener('click', function() {
-                localStorage.clear();
+                localStorage.removeItem('cfclosed');
                 location.reload();
             });
     
