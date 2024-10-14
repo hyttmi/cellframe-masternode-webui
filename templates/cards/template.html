@@ -409,6 +409,7 @@
             {% endif %}
             
             {% if network.signed_blocks_all is not none %}
+            {% for network_name, network in net_info.items() %}
             <div class="col-md-3" data-id="signed_blocks_last_n_days_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -418,18 +419,34 @@
                         <canvas id="blocksChart_{{ network_name }}"></canvas>
                     </div>
                     <ul class="nav justify-content-center">
+                        {% if network.signed_blocks_all | length < 7 %}
+                        <li class="nav-item active" onclick="updateChart('blocksChart', {{ network.signed_blocks_all | length }}, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">{{ network.signed_blocks_all | length }} days</span>
+                        </li>
+                        {% else %}
                         <li class="nav-item active" onclick="updateChart('blocksChart', 7, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">7 days</span>
                         </li>
+                        {% endif %}
+                        {% if network.signed_blocks_all | length >= 14 %}
                         <li class="nav-item" onclick="updateChart('blocksChart', 14, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">14 days</span>
                         </li>
+                        {% endif %}
+                        {% if network.signed_blocks_all | length >= 30 %}
                         <li class="nav-item" onclick="updateChart('blocksChart', 30, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">30 days</span>
                         </li>
+                        {% endif %}
+                        {% if network.signed_blocks_all | length > 30 %}
+                        <li class="nav-item" onclick="updateChart('blocksChart', {{ network.signed_blocks_all | length }}, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">all</span>
+                        </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
+            {% endfor %}
             {% endif %}
             
             {% if network.rewards is not none %}
@@ -443,7 +460,7 @@
                         <canvas id="rewardsChart_{{ network_name }}"></canvas>
                     </div>
                     <ul class="nav justify-content-center">
-                        {% if network.rewards | length <= 7 %}
+                        {% if network.rewards | length < 7 %}
                         <li class="nav-item active" onclick="updateChart('rewardsChart', {{ network.rewards | length }}, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">{{ network.rewards | length }} days</span>
                         </li>
@@ -460,6 +477,11 @@
                         {% if network.rewards | length >= 30 %}
                         <li class="nav-item" onclick="updateChart('rewardsChart', 30, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">30 days</span>
+                        </li>
+                        {% endif %}
+                        {% if network.rewards | length > 30 %}
+                        <li class="nav-item" onclick="updateChart('rewardsChart', {{ network.rewards | length }}, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">ALL</span>
                         </li>
                         {% endif %}
                     </ul>
