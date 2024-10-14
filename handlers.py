@@ -26,13 +26,13 @@ def requestHandler(request: CFSimpleHTTPRequestHandler):
 
                 if elapsed_time < rate_limit_interval:
                     remaining_time = rate_limit_interval - elapsed_time
-                    res = f"Rate limit exceeded. Please wait {int(remaining_time)} seconds.".encode("utf-8")
+                    res = f'{{"Error": "Rate limit exceeded. Please wait {int(remaining_time)} seconds."}}'.encode("utf-8")
                     response = CFSimpleHTTPResponse(
                         body=res,
                         code=200
                     )
                     response.headers = {
-                        "Content-Type": "text/plain"
+                        "Content-Type": "application/json"
                     }
                     logError(f"Rate limit exceeded from {client_ip}")
                     return response
