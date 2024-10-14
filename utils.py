@@ -99,19 +99,19 @@ def getSysStats():
         process = psutil.Process(PID)
         sys_stats = {}
         cpu_usage = process.cpu_percent(interval=1)
-        sys_stats['node_cpu_usage'] = cpu_usage if cpu_usage is not None else "N/A"
+        sys_stats['node_cpu_usage'] = cpu_usage
 
         memory_info = process.memory_info()
         memory_usage_mb = memory_info.rss / 1024 / 1024
-        sys_stats['node_memory_usage_mb'] = round(memory_usage_mb, 2) if memory_usage_mb is not None else "N/A"
+        sys_stats['node_memory_usage_mb'] = round(memory_usage_mb, 2)
         
         create_time = process.create_time()
         uptime_seconds = time.time() - create_time
-        sys_stats['node_uptime'] = formatUptime(uptime_seconds) if uptime_seconds is not None else "N/A"
+        sys_stats['node_uptime'] = uptime_seconds 
 
         boot_time = psutil.boot_time()
         system_uptime_seconds = time.time() - boot_time
-        sys_stats['system_uptime'] = formatUptime(system_uptime_seconds) if system_uptime_seconds is not None else "N/A"
+        sys_stats['system_uptime'] = system_uptime_seconds
 
         return sys_stats
     except Exception as e:

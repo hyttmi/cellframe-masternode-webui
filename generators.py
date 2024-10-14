@@ -1,7 +1,7 @@
 from utils import *
 import handlers
 
-def getInfo(exclude=None):
+def getInfo(exclude=None, format_time=True):
     if exclude is None:
         exclude = []
     sys_stats = getSysStats()
@@ -14,8 +14,8 @@ def getInfo(exclude=None):
         "title": PLUGIN_NAME,
         "hostname": getHostname(),
         "external_ip": getExtIP(),
-        "system_uptime": sys_stats["system_uptime"],
-        "node_uptime": sys_stats["node_uptime"],
+        "system_uptime": formatUptime(sys_stats["system_uptime"]) if format_time else sys_stats["system_uptime"],
+        "node_uptime": formatUptime(sys_stats["node_uptime"]) if format_time else sys_stats["node_uptime"],
         "node_version": getCurrentNodeVersion(),
         "latest_node_version": getLatestNodeVersion(),
         "cpu_utilization": sys_stats["node_cpu_usage"],
@@ -43,7 +43,7 @@ def generateHTML(template_name):
     return output
 
 def generateJSON():
-    info = getInfo(exclude=["update_available", "current_version", "latest_version", "title", "accent_color", "header_text"])
+    info = getInfo(exclude=["update_available", "current_version", "latest_version", "title", "accent_color", "header_text"], format_time=False)
     try:
         logNotice(f"Generating JSON content...")
         output = json.dumps(info)
