@@ -443,9 +443,13 @@
                         <canvas id="rewardsChart_{{ network_name }}"></canvas>
                     </div>
                     <ul class="nav justify-content-center">
-                        {% if network.rewards | length >= 7 %}
+                        {% if network.rewards | length <= 7 %}
                         <li class="nav-item active" onclick="updateChart('rewardsChart', {{ network.rewards | length }}, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">{{ network.rewards | length }} days</span>
+                        </li>
+                        {% else %}
+                        <li class="nav-item active" onclick="updateChart('rewardsChart', 7, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">7 days</span>
                         </li>
                         {% endif %}
                         {% if network.rewards | length >= 14 %}
