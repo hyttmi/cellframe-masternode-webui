@@ -502,6 +502,7 @@
     
             sortableElements.forEach(function (el, index) {
                 Sortable.create(el, {
+                    handle: ".card-header",
                     animation: 250,
                     easing: "cubic-bezier(1, 0, 0, 1)",
                     ghostClass: "ghost",
