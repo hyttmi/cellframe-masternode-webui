@@ -1,10 +1,11 @@
 from utils import *
 import handlers
 
-def generateHTML(template_name):
+def getInfo(exclude=None):
+    if exclude is None:
+        exclude = []
     sys_stats = getSysStats()
     is_update_available, curr_version, latest_version = checkForUpdate()
-    accent_color = validateHex(getConfigValue("webui", "accent_color", default="B3A3FF"))
 
     info = {
         'update_available': is_update_available,
@@ -20,10 +21,16 @@ def generateHTML(template_name):
         "cpu_utilization": sys_stats["node_cpu_usage"],
         "memory_utilization": sys_stats["node_memory_usage_mb"],
         "header_text": getConfigValue("webui", "header_text", default=False),
-        "accent_color": accent_color,
+        "accent_color": validateHex(getConfigValue("webui", "accent_color", default="B3A3FF")),
         "net_info": generateNetworkData()
     }
+    
+    for key in exclude:
+        info.pop(key)
+    return info
 
+def generateHTML(template_name):
+    info = getInfo(exclude=[])
     template_setting = getConfigValue("webui", "template", default="cards")
     template_path = f"{template_setting}/{template_name}"
     try:
@@ -36,20 +43,7 @@ def generateHTML(template_name):
     return output
 
 def generateJSON():
-    sys_stats = getSysStats()
-    
-    info = {
-        "title": PLUGIN_NAME,
-        "hostname": getHostname(),
-        "external_ip": getExtIP(),
-        "system_uptime": sys_stats["system_uptime"],
-        "node_uptime": sys_stats["node_uptime"],
-        "node_version": getCurrentNodeVersion(),
-        "latest_node_version": getLatestNodeVersion(),
-        "cpu_utilization": sys_stats["node_cpu_usage"],
-        "memory_utilization": sys_stats["node_memory_usage_mb"],
-        "net_info": generateNetworkData()
-    }
+    info = getInfo(exclude=["update_available", "current_version", "latest_version", "title", "accent_color", "header_text"])
     try:
         logNotice(f"Generating JSON content...")
         output = json.dumps(info)
