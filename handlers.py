@@ -3,7 +3,6 @@ from generators import generateHTML, generateJSON
 import base64
 from pycfhelpers.node.http.simple import CFSimpleHTTPRequestHandler, CFSimpleHTTPResponse
 from jinja2 import Environment, PackageLoader, select_autoescape
-from urllib.parse import parse_qs
 
 env = Environment(
     loader=PackageLoader("cellframe-masternode-webui"),
