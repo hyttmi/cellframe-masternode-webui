@@ -445,7 +445,7 @@
                     <ul class="nav justify-content-center">
                         {% if network.rewards | length >= 7 %}
                         <li class="nav-item active" onclick="updateChart('rewardsChart', {{ network.rewards | length }}, '{{ network_name }}'); setActive(this);">
-                            <span class="days_amount">{{ networks.rewards | length }} days</span>
+                            <span class="days_amount">{{ network.rewards | length }} days</span>
                         </li>
                         {% endif %}
                         {% if network.rewards | length >= 14 %}
