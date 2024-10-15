@@ -344,6 +344,34 @@ def generateNetworkData():
     else:
         return None
     
+def generateInfo(exclude=None, format_time=True):
+    if exclude is None:
+        exclude = []
+    sys_stats = getSysStats()
+    is_update_available, curr_version, latest_version = checkForUpdate()
+
+    info = {
+        'plugin_update_available': is_update_available,
+        'current_plugin_version': curr_version,
+        'latest_plugin_version': latest_version,
+        "plugin_name": PLUGIN_NAME,
+        "hostname": getHostname(),
+        "external_ip": getExtIP(),
+        "system_uptime": formatUptime(sys_stats["system_uptime"]) if format_time else sys_stats["system_uptime"],
+        "node_uptime": formatUptime(sys_stats["node_uptime"]) if format_time else sys_stats["node_uptime"],
+        "node_version": getCurrentNodeVersion(),
+        "latest_node_version": getLatestNodeVersion(),
+        "node_cpu_utilization": sys_stats["node_cpu_usage"],
+        "node_memory_utilization": sys_stats["node_memory_usage_mb"],
+        "website_header_text": getConfigValue("webui", "header_text", default=False),
+        "website_accent_color": validateHex(getConfigValue("webui", "accent_color", default="B3A3FF")),
+        "networks": generateNetworkData()
+    }
+
+    for key in exclude:
+        info.pop(key)
+    return info
+
 def funcScheduler(func, scheduled_time, every_min=False):
     try:
         scheduler = schedule.Scheduler()

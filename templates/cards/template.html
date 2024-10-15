@@ -26,17 +26,17 @@
                 <button id="clearstorage" class="btn-primary text-uppercase clearbutton"><strong>restore default cards</strong></button>
             </div>
         </div>
-        {% if update_available %}
+        {% if plugin_update_available %}
         <div class="row">
             <div class="alert alert-danger" role="alert">
                 New version {{ latest_version }} available! You are running version {{ current_version }}.
             </div>
         </div>
         {% endif %}
-        {% if header_text %}
+        {% if website_header_text %}
         <div class="row">
             <div class="col-12 text-center">
-                <h1 class="text-uppercase text-color-secondary display-4"><b>{{ header_text }}</b></h1>
+                <h1 class="text-uppercase text-color-secondary display-4"><b>{{ website_header_text }}</b></h1>
             </div>
         </div>
         {% endif %}
@@ -79,7 +79,7 @@
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ cpu_utilization }}%</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ node_cpu_utilization }}%</h6>
                     </div>
                     <i class="fa-solid fa-microchip icon-container"></i>
                 </div>
@@ -92,7 +92,7 @@
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ memory_utilization }} MB</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ node_memory_utilization }} MB</h6>
                     </div>
                     <i class="fa-solid fa-memory icon-container"></i>
                 </div>
@@ -150,8 +150,8 @@
                 </div>
             </div>            
         </div>
-        {% if net_info is not none %}
-        {% for network_name, network in net_info.items() %}
+        {% if networks is not none %}
+        {% for network_name, network in networks.items() %}
         <div class="row">
             <div class="col-12">
                 <h1 class="text-uppercase text-color-secondary">{{ network_name }}</h1>
@@ -300,7 +300,7 @@
             {% endif %}
             
             {% if network.signed_blocks_all is not none %}
-            {% for network_name, network in net_info.items() %}
+            {% for network_name, network in networks.items() %}
             <div class="col-md-3" data-id="signed_blocks_last_n_days_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -341,7 +341,7 @@
             {% endif %}
             
             {% if network.rewards is not none %}
-            {% for network_name, network in net_info.items() %}
+            {% for network_name, network in networks.items() %}
             <div class="col-md-3" data-id="rewards_last_n_days_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -474,7 +474,7 @@
         var blocksData = {};
         var rewardsData = {};
     
-        {% for network_name, network in net_info.items() %}
+        {% for network_name, network in networks.items() %}
         blocksData['{{ network_name }}'] = {{ network.signed_blocks_all | tojson | safe }};
         rewardsData['{{ network_name }}'] = {{ network.rewards | tojson | safe }};
         {% endfor %}
@@ -515,7 +515,7 @@
             });
         }
     
-        {% for network_name, network in net_info.items() %}
+        {% for network_name, network in networks.items() %}
         var blocksCtx{{ network_name }} = document.getElementById('blocksChart_{{ network_name }}').getContext('2d');
         blocksCharts['{{ network_name }}'] = new Chart(blocksCtx{{ network_name }}, {
             type: 'line',

@@ -67,22 +67,22 @@ This plugin renders system and node information to a web interface using Jinja t
 Here are the variables that are passed to the Jinja templates:
 
 - `plugin_name`: The name of the plugin.
-- `update_available`: Checks if there's update available for plugin
-- `current_version`: Shows current version of this plugin
-- `latest_version`: Returns the latest version of this plugin
-- `title`: Return plugin name
+- `plugin_update_available`: Checks if there's update available for plugin
+- `current_plugin_version`: Shows current version of this plugin
+- `latest_plugin_version`: Returns the latest version of this plugin
+- `plugin_title`: Return plugin name
 - `hostname`: Returns your systems hostname
 - `external_ip`: Returns external IP address
 - `system_uptime`: Returns your system uptime
 - `node_uptime`: Returns Cellframe node uptime
 - `node_version`: Returns the currently installed version of Cellframe node
 - `latest_node_version`: Returns the latest version of Cellframe node
-- `cpu_utilization`: Returns the current CPU utilization of Cellframe node
-- `memory_utilization`: Returns the current memory utilization of Cellframe node
-- `accent_color`: Returns the accent color from cellframe-node.cfg
-- `network_info`: A list of dictionaries containing network information.
+- `node_cpu_utilization`: Returns the current CPU utilization of Cellframe node
+- `node_memory_utilization`: Returns the current memory utilization of Cellframe node
+- `website_accent_color`: Returns the accent color from cellframe-node.cfg
+- `networks`: A dictionary containing network information.
   - `name`: The name of the network
-  - `state`: The current state of the network (online/offline)
+  - `state`: The current state of the network
   - `target_state`: The target state of the network
   - `address`: The network address
   - `first_signed_blocks`: The number of first signed blocks
@@ -91,9 +91,9 @@ Here are the variables that are passed to the Jinja templates:
   - `signed_blocks_today`: The number of blocks signed today
   - `signed_blocks_all`: A dictionary of all signed blocks (day, amount)
   - `autocollect_status`: The status of reward autocollection
-  - `autocollect_rewards`: The total rewards currently uncollected
+  - `autocollect_rewards`: The total autocollect rewards currently uncollected
   - `fee_wallet_tokens`: A list of token balances in the network's fee wallet
-  - `rewards`: A dict of rewards from last 7 days
+  - `rewards`: A dictionary of rewards from last 7 days
 
 ## Accessing data as JSON
 By default, this plugin has support for fetching all the important data from your node as JSON if you have `api_token` set in settings. Here's a sample code for fetching the data with Python:

@@ -1,5 +1,5 @@
 :root {
-    --accent-color: #{{ accent_color }};
+    --accent-color: #{{ website_accent_color }};
 }
 
 body,
