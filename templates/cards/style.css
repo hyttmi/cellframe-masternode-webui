@@ -90,21 +90,22 @@ html {
     cursor: pointer;
 }
 
-.nav-item li:hover {
+.nav-item:hover {
     background-color: var(--accent-color);
 }
 
-.nav-item li span {
+.nav-item:hover span {
     color: #242424;
 }
 
-li.active {
+.nav-item.active {
     background-color: var(--accent-color);
 }
 
-li.active span {
+.nav-item.active span {
     color: #242424;
 }
+
 
 .days_amount {
     color: var(--accent-color);
