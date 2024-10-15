@@ -92,6 +92,7 @@ html {
 
 .nav-item:hover {
     background-color: var(--accent-color);
+    transition: background-color 0.2s ease;
 }
 
 .nav-item:hover span {
