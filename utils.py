@@ -18,6 +18,7 @@ def logNotice(msg):
 def logError(msg):
     func_name = inspect.stack()[1].function
     log.error(f"{PLUGIN_NAME} [{func_name}] {msg}")
+    return func_name
 
 def getConfigValue(section, key, default=None):
     try:

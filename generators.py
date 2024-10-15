@@ -10,8 +10,8 @@ def generateHTML(template_name):
         template = handlers.env.get_template(template_path)
         output = template.render(info)
     except Exception as e:
-        logError(f"Error in generating HTML: {e}")
-        output = f"<h1>Got an error: {e}</h1>"
+        error_func = logError(f"Error: {e}")
+        output = f"<h1>Error: {error_func} -> {e}</h1>"
     return output
 
 def generateJSON():
