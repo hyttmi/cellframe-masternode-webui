@@ -80,6 +80,7 @@ html {
 }
 
 .nav-item {
+    transition: background-color 0.2s ease;
     background-color: #242424;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -106,7 +107,6 @@ html {
 .nav-item.active span {
     color: #242424;
 }
-
 
 .days_amount {
     color: var(--accent-color);
