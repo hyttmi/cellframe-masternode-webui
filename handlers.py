@@ -51,8 +51,8 @@ def getRequestHandler(request: CFSimpleHTTPRequestHandler):
     query = request.query
     api_token = headers.get("API_TOKEN")
     auth_header = headers.get("Authorization")
-    expected_username = getConfigValue("webui", "username")
-    expected_password = getConfigValue("webui", "password")
+    expected_username = getConfigValue("webui", "username", default=False)
+    expected_password = getConfigValue("webui", "password" default=False)
     expected_api_token = getConfigValue("webui", "api_token", default=False)
 
     if not expected_username or not expected_password:
