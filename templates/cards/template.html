@@ -532,15 +532,21 @@
             options: {
                 scales: {
                     x: {
+                        grid: {
+                            display: false
+                        },
                         ticks: {
                             color: '#{{ website_accent_color }}'
                         }
                     },
                     y: {
+                        grid: {
+                            display: false
+                        },
                         beginAtZero: true,
                         ticks: {
                             color: '#{{ website_accent_color }}'
-                        }
+                        },
                     }
                 },
                 plugins: {
@@ -567,11 +573,17 @@
             options: {
                 scales: {
                     x: {
+                        grid {
+                            display: false
+                        },
                         ticks: {
                             color: '#{{ website_accent_color }}'
                         }
                     },
                     y: {
+                        grid {
+                            display: false
+                        },
                         beginAtZero: true,
                         ticks: {
                             color: '#{{ website_accent_color }}'
