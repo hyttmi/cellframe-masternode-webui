@@ -90,6 +90,14 @@ html {
     cursor: pointer;
 }
 
+.nav-item li:hover {
+    background-color: var(--accent-color);
+}
+
+.nav-item li span {
+    color: #242424;
+}
+
 li.active {
     background-color: var(--accent-color);
 }
