@@ -16,8 +16,12 @@ def logNotice(msg):
     log.notice(f"{PLUGIN_NAME} [{func_name}] {msg}")
 
 def logError(msg):
-    func_name = inspect.stack()[1].function
-    log_message = f"{PLUGIN_NAME} [{func_name}] {msg}"
+    frame_info = inspect.stack()[1]
+    func_name = frame_info.function
+    file_name = frame_info.filename
+    line_number = frame_info.lineno
+    
+    log_message = f"{PLUGIN_NAME} [{func_name} in {file_name} in line {line_number}] {msg}"
     log.error(log_message)
     try:
         curr_time = datetime.now().strftime("%d.%m.%Y, %H:%M:%S")
@@ -123,8 +127,12 @@ def getSysStats():
         return f"Error {e}"
 
 def getCurrentNodeVersion():
-    version = CLICommand("version")
-    return version.split()[2].replace("-",".")
+    try:
+        version = CLICommand("version")
+        return version.split()[2].replace("-",".")
+    except Exception as e:
+        logError(f"Error: {e}")
+        return "N/A"
 
 def getLatestNodeVersion():
     badge_url = "https://pub.cellframe.net/linux/cellframe-node/master/node-version-badge.svg"
