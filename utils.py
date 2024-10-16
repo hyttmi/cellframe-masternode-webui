@@ -17,7 +17,14 @@ def logNotice(msg):
 
 def logError(msg):
     func_name = inspect.stack()[1].function
-    log.error(f"{PLUGIN_NAME} [{func_name}] {msg}")
+    log_message = f"{PLUGIN_NAME} [{func_name}] {msg}"
+    log.error(log_message)
+    try:
+        curr_time = datetime.now().strftime("%d.%m.%Y, %H:%M:%S")
+        with open(os.path.join(getScriptDir(), "log.txt"), "a") as f:
+            f.write(f"[{curr_time}] {log_message}\n")
+    except Exception as e:
+        log.error(f"Failed to write to log file: {e}")
     return func_name
 
 def getConfigValue(section, key, default=None):
