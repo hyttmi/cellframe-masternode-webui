@@ -334,11 +334,11 @@ def cacheRewards():
                             f.write(f"{reward['tx_created']}|{reward['recv_coins']}\n")
                     end_time = time.time()
                     elapsed_time = end_time - start_time
-                    logNotice(f"Rewards cached! It took {elapsed_time:.2f} seconds!")
+                    logNotice(f"Rewards cached for {network}! It took {elapsed_time:.2f} seconds!")
                 else:
                     return None
             else:
-                logError(f"Node is not synced yet!")
+                logNotice(f"Node is not synced yet for {network}!")
                 return None
     except Exception as e:
         logError(f"Error: {e}")
