@@ -16,11 +16,11 @@ def HTTPServer():
     return 0
 
 def init():
-    t = threading.Thread(target=startInitialization)
+    t = threading.Thread(target=onInit)
     t.start()
     return 0
 
-def startInitialization():
+def onInit():
     email_stats_enabled = getConfigValue("webui", "email_stats", default=False)
     email_stats_time = getConfigValue("webui", "email_time")
     telegram_stats_enabled = getConfigValue("webui", "telegram_stats", default=False)
