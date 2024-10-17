@@ -11,8 +11,8 @@ def generateHTML(template_name):
         output = template.render(info)
     except Exception as e:
         error_func = logError(f"Error: {e}")
-        output = f"<h1>Error: {error_func} -> {e}</h1>"
-    return output
+        err = json.dumps({"status": "error", "message": f"{error_func}"})
+    return err
 
 def generateJSON():
     info = generateInfo(exclude=["plugin_update_available", "current_plugin_version", "latest_plugin_version", "plugin_name", "website_accent_color", "website_header_text"], format_time=False)
