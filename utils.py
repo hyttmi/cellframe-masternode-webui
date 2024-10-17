@@ -153,21 +153,26 @@ def getListNetworks():
         return None
 
 def readNetworkConfig(network):
-    config_file = f"/opt/cellframe-node/etc/network/{network}.cfg"
-    with open(config_file, "r") as file:
-        text = file.read()
-    pattern_cert = r"^blocks-sign-cert=(.+)"
-    pattern_wallet = r"^fee_addr=(.+)"
-    cert_match = re.search(pattern_cert, text, re.MULTILINE)
-    wallet_match = re.search(pattern_wallet, text, re.MULTILINE)
-    if cert_match and wallet_match:
-        net_config = {
-            "blocks_sign_cert": cert_match.group(1),
-            "wallet": wallet_match.group(1)
-        }
-        return net_config
-    else:
-        return None
+    try:
+        config_file = f"/opt/cellframe-node/etc/network/{network}.cfg"
+        with open(config_file, "r") as file:
+            text = file.read()
+        pattern_cert = r"^blocks-sign-cert=(.+)"
+        pattern_wallet = r"^fee_addr=(.+)"
+        cert_match = re.search(pattern_cert, text, re.MULTILINE)
+        wallet_match = re.search(pattern_wallet, text, re.MULTILINE)
+        if cert_match and wallet_match:
+            net_config = {
+                "blocks_sign_cert": cert_match.group(1),
+                "wallet": wallet_match.group(1)
+            }
+            return net_config
+        else:
+            return None
+    except FileNotFoundError:
+        logError(f"Configuration file for {network} not found!")
+    except Exception as e:
+        logError(f"Error: {e}")
 
 def getAutocollectStatus(network):
     autocollect_cmd = CLICommand(f"block autocollect status -net {network} -chain main")
@@ -177,34 +182,50 @@ def getAutocollectStatus(network):
         return "Active"
 
 def getAllBlocks(network):
-    all_blocks_cmd = CLICommand(f"block count -net {network}")
-    pattern_all_blocks = r":\s+(\d+)"
-    all_blocks_match = re.search(pattern_all_blocks, all_blocks_cmd)
-    if all_blocks_match:
-        return int(all_blocks_match.group(1))
-    else:
+    try:
+        all_blocks_cmd = CLICommand(f"block count -net {network}")
+        pattern_all_blocks = r":\s+(\d+)"
+        all_blocks_match = re.search(pattern_all_blocks, all_blocks_cmd)
+        if all_blocks_match:
+            return int(all_blocks_match.group(1))
+        else:
+            return None
+    except Exception as e:
+        logError(f"Error: {e}")
         return None
 
 def getFirstSignedBlocks(network):
-    net_config = readNetworkConfig(network)
-    if net_config is not None:
-        cmd_get_first_signed_blocks = CLICommand(f"block list -net {network} chain -main first_signed -cert {net_config['blocks_sign_cert']} -limit 1")
-        pattern = r"have blocks: (\d+)"
-        blocks_match = re.search(pattern, cmd_get_first_signed_blocks)
-        if blocks_match:
-            return int(blocks_match.group(1))
-    else:
+    try:
+        net_config = readNetworkConfig(network)
+        if net_config is not None:
+            cmd_get_first_signed_blocks = CLICommand(f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']} -limit 1")
+            pattern = r"have blocks: (\d+)"
+            blocks_match = re.search(pattern, cmd_get_first_signed_blocks)
+            if blocks_match:
+                return int(blocks_match.group(1))
+            else:
+                return None
+        else:
+            return None
+    except Exception as e:
+        logError(f"Error: {e}")
         return None
 
 def getAllSignedBlocks(network):
-    net_config = readNetworkConfig(network)
-    if net_config is not None:
-        cmd_get_all_signed_blocks = CLICommand(f"block list -net {network} chain -main signed -cert {net_config['blocks_sign_cert']} -limit 1")
-        pattern = r"have blocks: (\d+)"
-        blocks_match = re.search(pattern, cmd_get_all_signed_blocks)
-        if blocks_match:
-            return int(blocks_match.group(1))
-    else:
+    try:
+        net_config = readNetworkConfig(network)
+        if net_config is not None:
+            cmd_get_all_signed_blocks = CLICommand(f"block list -net {network} signed -cert {net_config['blocks_sign_cert']} -limit 1")
+            pattern = r"have blocks: (\d+)"
+            blocks_match = re.search(pattern, cmd_get_all_signed_blocks)
+            if blocks_match:
+                return int(blocks_match.group(1))
+            else:
+                return None
+        else:
+            return None
+    except Exception as e:
+        logError(f"Error: {e}")
         return None
 
 def getSignedBlocks(network, today=False):
@@ -245,16 +266,21 @@ def getRewardWalletTokens(network):
         return None
     
 def getAutocollectRewards(network):
-    net_config = readNetworkConfig(network)
-    if net_config is not None:
-        cmd_get_autocollect_rewards = CLICommand(f"block -net {network} autocollect status")
-        if cmd_get_autocollect_rewards:
-            amount_pattern = r"profit is (\d+.\d+)"
-            amounts = re.findall(amount_pattern, cmd_get_autocollect_rewards)
-            total_amount = sum(float(amount) for amount in amounts)
-            return total_amount
-    else:
-        return None
+    try:
+        net_config = readNetworkConfig(network)
+        if net_config is not None:
+            cmd_get_autocollect_rewards = CLICommand(f"block -net {network} autocollect status")
+            if cmd_get_autocollect_rewards:
+                amount_pattern = r"profit is (\d+.\d+)"
+                amounts = re.findall(amount_pattern, cmd_get_autocollect_rewards)
+                if amounts:
+                    return sum(float(amount) for amount in amounts)
+                else:
+                    return None
+        else:
+            return None
+    except Exception as e:
+        logError(f"Error: {e}")
     
 def cacheRewards():
     try:
