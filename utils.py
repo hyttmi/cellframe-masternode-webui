@@ -287,9 +287,9 @@ def getAutocollectRewards(network):
         logError(f"Error: {e}")
         
 def isNodeSynced(network):
-    try: 
+    try:
         net_status = CLICommand(f"net -net {network} get status")
-        match = re.search(r"main:[\s\S]+percent: \d{3}", net_status) # I guess we're synced if we have 100 on percent?
+        match = re.search(r"main:[\s\S]+percent: \d{3}", net_status)
         if match:
             return True
         else:
