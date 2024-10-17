@@ -467,6 +467,7 @@
     
     
     <script>
+        {% if networks and networks.items() %}
         {% for network_name, network in networks.items() %}
         {% if network.signed_blocks_all is not none %}
         var blocksData = {};
@@ -609,6 +610,7 @@
         updateChart('rewardsChart', 7, '{{ network_name }}');
         {% endif %}
     {% endfor %}
+    {% endif %}
 
     </script>
     
