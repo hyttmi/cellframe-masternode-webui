@@ -299,7 +299,6 @@ def isNodeSynced(network):
     
 def cacheRewards():
     try:
-        time.sleep(60) # Give a 60 second rest
         networks = getListNetworks()
         for network in networks:
             if isNodeSynced(network):
