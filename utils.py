@@ -1,7 +1,6 @@
-import DAP, socket, requests, re, time, psutil, json, os, time, schedule, inspect
+import DAP, socket, requests, re, time, psutil, json, os, time, schedule, inspect, subprocess
 from pycfhelpers.node.logging import CFLog
 from pycfhelpers.node.net import CFNet
-from command_runner import command_runner
 from packaging.version import Version
 from collections import OrderedDict
 from datetime import datetime
@@ -60,13 +59,23 @@ def checkForUpdate():
     
 def CLICommand(command, timeout=5):
     try:
-        exit_code, output = command_runner(f"/opt/cellframe-node/bin/cellframe-node-cli {command}", timeout=timeout)
-        if exit_code == 0:
-            return output.strip()
+        command_list = ["/opt/cellframe-node/bin/cellframe-node-cli"] + command.split()
+        result = subprocess.run(
+            command_list,
+            capture_output=True,
+            text=True,
+            timeout=timeout
+        )
+        if result.returncode == 0:
+            return result.stdout.strip()
         else:
-            ret = f"Command failed with error: {output.strip()}"
+            ret = f"Command {command} failed with error: {result.stderr.strip()}"
             logError(ret)
             return ret
+    except subprocess.TimeoutExpired:
+        ret = f"Command {command} timed out after {timeout} seconds!"
+        logError(ret)
+        return ret
     except Exception as e:
         logError(f"Error: {e}")
         return f"Error: {e}"
@@ -135,15 +144,17 @@ def getCurrentNodeVersion():
         return "N/A"
 
 def getLatestNodeVersion():
-    badge_url = "https://pub.cellframe.net/linux/cellframe-node/master/node-version-badge.svg"
-    res = requests.get(badge_url).text
-    version_pattern = r'>(\d.\d.\d+)'
-    match = re.search(version_pattern, res)
-    if match:
-        latest_version = match.group(1)
-        return latest_version
-    else:
-        return "N/A"
+    try:
+        badge_url = "https://pub.cellframe.net/linux/cellframe-node/master/node-version-badge.svg"
+        res = requests.get(badge_url).text
+        match = re.search(r">(\d.\d.\d+)", res)
+        if match:
+            latest_version = match.group(1)
+            return latest_version
+        else:
+            return "N/A"
+    except Exception as e:
+        logError(f"Error: {e}")
 
 def getListNetworks():
     try:
@@ -157,10 +168,8 @@ def readNetworkConfig(network):
         config_file = f"/opt/cellframe-node/etc/network/{network}.cfg"
         with open(config_file, "r") as file:
             text = file.read()
-        pattern_cert = r"^blocks-sign-cert=(.+)"
-        pattern_wallet = r"^fee_addr=(.+)"
-        cert_match = re.search(pattern_cert, text, re.MULTILINE)
-        wallet_match = re.search(pattern_wallet, text, re.MULTILINE)
+        cert_match = re.search(r"^blocks-sign-cert=(.+)", text, re.MULTILINE)
+        wallet_match = re.search(r"^fee_addr=(.+)", text, re.MULTILINE)
         if cert_match and wallet_match:
             net_config = {
                 "blocks_sign_cert": cert_match.group(1),
@@ -176,16 +185,15 @@ def readNetworkConfig(network):
 
 def getAutocollectStatus(network):
     autocollect_cmd = CLICommand(f"block autocollect status -net {network} -chain main")
-    if not "is active" in autocollect_cmd:
-        return "Inactive"
-    else:
+    if "is active" in autocollect_cmd:
         return "Active"
+    else:
+        return "Inactive"
 
 def getAllBlocks(network):
     try:
         all_blocks_cmd = CLICommand(f"block count -net {network}")
-        pattern_all_blocks = r":\s+(\d+)"
-        all_blocks_match = re.search(pattern_all_blocks, all_blocks_cmd)
+        all_blocks_match = re.search(r":\s+(\d+)", all_blocks_cmd)
         if all_blocks_match:
             return int(all_blocks_match.group(1))
         else:
@@ -199,8 +207,7 @@ def getFirstSignedBlocks(network):
         net_config = readNetworkConfig(network)
         if net_config is not None:
             cmd_get_first_signed_blocks = CLICommand(f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']} -limit 1")
-            pattern = r"have blocks: (\d+)"
-            blocks_match = re.search(pattern, cmd_get_first_signed_blocks)
+            blocks_match = re.search(r"have blocks: (\d+)", cmd_get_first_signed_blocks)
             if blocks_match:
                 return int(blocks_match.group(1))
             else:
@@ -216,8 +223,7 @@ def getAllSignedBlocks(network):
         net_config = readNetworkConfig(network)
         if net_config is not None:
             cmd_get_all_signed_blocks = CLICommand(f"block list -net {network} signed -cert {net_config['blocks_sign_cert']} -limit 1")
-            pattern = r"have blocks: (\d+)"
-            blocks_match = re.search(pattern, cmd_get_all_signed_blocks)
+            blocks_match = re.search(r"have blocks: (\d+)", cmd_get_all_signed_blocks)
             if blocks_match:
                 return int(blocks_match.group(1))
             else:
@@ -259,8 +265,7 @@ def getRewardWalletTokens(network):
     if net_config is not None:
         cmd_get_wallet_info = CLICommand(f"wallet info -addr {net_config['wallet']}")
         if cmd_get_wallet_info:
-            balance_pattern = r"coins:\s+([\d.]+)[\s\S]+?ticker:\s+(\w+)"
-            tokens = re.findall(balance_pattern, cmd_get_wallet_info)
+            tokens = re.findall(r"coins:\s+([\d.]+)[\s\S]+?ticker:\s+(\w+)", cmd_get_wallet_info)
             return tokens
     else:
         return None
@@ -271,8 +276,7 @@ def getAutocollectRewards(network):
         if net_config is not None:
             cmd_get_autocollect_rewards = CLICommand(f"block -net {network} autocollect status")
             if cmd_get_autocollect_rewards:
-                amount_pattern = r"profit is (\d+.\d+)"
-                amounts = re.findall(amount_pattern, cmd_get_autocollect_rewards)
+                amounts = re.findall(r"profit is (\d+.\d+)", cmd_get_autocollect_rewards)
                 if amounts:
                     return sum(float(amount) for amount in amounts)
                 else:
@@ -356,12 +360,9 @@ def generateNetworkData():
         for network in networks:
             network = str(network)
             net_status = CLICommand(f"net -net {network} get status")
-            addr_pattern = r"([A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*)"
-            state_pattern = r"states:\s+current: (\w+)"
-            target_state_pattern = r"target: (\w+)"
-            addr_match = re.search(addr_pattern, net_status)
-            state_match = re.search(state_pattern, net_status)
-            target_state_match = re.search(target_state_pattern, net_status)
+            addr_match = re.search(r"([A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*)", net_status)
+            state_match = re.search(r"states:\s+current: (\w+)", net_status)
+            target_state_match = re.search(r"target: (\w+)", net_status)
             tokens = getRewardWalletTokens(network)
             
             if state_match and target_state_match:
