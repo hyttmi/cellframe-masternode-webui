@@ -24,5 +24,9 @@ def generateJSON():
         output = json.dumps(info)
     except Exception as e:
         logError(f"Error in generating JSON: {e}")
-        output = json.dumps({"Error": str(e)})
+        error_func = logError(f"Error: {e}")
+        output = json.dumps({
+            "status": "error",
+            "message": f"{error_func} -> {e}"
+        })
     return output
