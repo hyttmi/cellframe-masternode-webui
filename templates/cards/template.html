@@ -475,8 +475,12 @@
         var rewardsData = {};
     
         {% for network_name, network in networks.items() %}
+        {% if network.signed_blocks_all is not none %}
         blocksData['{{ network_name }}'] = {{ network.signed_blocks_all | tojson | safe }};
+        {% endif }
+        {% if network.rewards is not none %}
         rewardsData['{{ network_name }}'] = {{ network.rewards | tojson | safe }};
+        {% endif }
         {% endfor %}
 
 
@@ -516,6 +520,7 @@
         }
     
         {% for network_name, network in networks.items() %}
+        {% if network.signed_blocks_all is not none %}
         var blocksCtx{{ network_name }} = document.getElementById('blocksChart_{{ network_name }}').getContext('2d');
         blocksCharts['{{ network_name }}'] = new Chart(blocksCtx{{ network_name }}, {
             type: 'line',
@@ -556,7 +561,10 @@
                 }
             }
         });
-
+        updateChart('blocksChart', 7, '{{ network_name }}');
+        {% endif %}
+        
+        {% if network.rewards is not none %}
         var rewardsCtx{{ network_name }} = document.getElementById('rewardsChart_{{ network_name }}').getContext('2d');
         rewardsCharts['{{ network_name }}'] = new Chart(rewardsCtx{{ network_name }}, {
             type: 'line',
@@ -604,9 +612,8 @@
                 }
             }
         });
-
-        updateChart('blocksChart', 7, '{{ network_name }}');
         updateChart('rewardsChart', 7, '{{ network_name }}');
+        {% endif %}
     {% endfor %}
 
     </script>
