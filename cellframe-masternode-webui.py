@@ -44,7 +44,6 @@ def onInit():
         if cache_rewards and validateNum(cache_rewards_time):
             if cache_rewards_time < 10:
                 logError("Rewards caching time is below 10 minutes which is not recommended as it uses lots of CPU. Consider higher value.")
-            executor.submit(cacheRewards) # Run once on startup, then with the timer as we know that both settings are set
             executor.submit(funcScheduler, cacheRewards, False, cache_rewards_time)
 
 def deinit():
