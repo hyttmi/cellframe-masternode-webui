@@ -285,44 +285,61 @@ def getAutocollectRewards(network):
             return None
     except Exception as e:
         logError(f"Error: {e}")
+        
+def isNodeSynced(network):
+    try: 
+        net_status = CLICommand(f"net -net {network} get status")
+        match = re.search("main:[\s\S]+percent: \d{3}", net_status) # I guess we're synced if we have 100 on percent?
+        if match:
+            return True
+        else:
+            return False
+    except Exception as e:
+        logError(f"Error: {e}")
     
 def cacheRewards():
     try:
+        time.sleep(60) # Give a 60 second rest
         networks = getListNetworks()
         for network in networks:
-            net_config = readNetworkConfig(network)
-            if net_config is not None:
-                logNotice("Caching rewards...")
-                start_time = time.time()
-                cmd_get_tx_history = CLICommand(f"tx_history -addr {net_config['wallet']}", timeout=60)
-                rewards = []
-                reward = {}
-                is_receiving_reward = False
-                lines = cmd_get_tx_history.splitlines()
-                for line in lines:
-                    line = line.strip()
-                    if line.startswith("status: ACCEPTED"):  # OK, we have ACCEPTED status
-                        if reward and is_receiving_reward:
-                            rewards.append(reward)
-                        reward = {}
-                        is_receiving_reward = False
-                    if line.startswith("tx_created:"):
-                        original_date = line.split("tx_created:")[1].strip()[:-6]
-                        reward['tx_created'] = original_date
-                    if line.startswith("recv_coins:"):
-                        reward['recv_coins'] = line.split("recv_coins:")[1].strip()
-                    if line.startswith("source_address: reward collecting"):
-                        is_receiving_reward = True
-                if reward and is_receiving_reward:
-                    rewards.append(reward)
-                cache_file_path = os.path.join(getScriptDir(), f".{network}_rewards_cache.txt")
-                with open(cache_file_path, "w") as f:
-                    for reward in rewards:
-                        f.write(f"{reward['tx_created']}|{reward['recv_coins']}\n")
-                end_time = time.time()
-                elapsed_time = end_time - start_time
-                logNotice(f"Rewards cached! It took {elapsed_time:.2f} seconds!")
+            if isNodeSynced(network):
+                logNotice("Network is probably synced...")
+                net_config = readNetworkConfig(network)
+                if net_config is not None:
+                    logNotice("Caching rewards...")
+                    start_time = time.time()
+                    cmd_get_tx_history = CLICommand(f"tx_history -addr {net_config['wallet']}", timeout=60)
+                    rewards = []
+                    reward = {}
+                    is_receiving_reward = False
+                    lines = cmd_get_tx_history.splitlines()
+                    for line in lines:
+                        line = line.strip()
+                        if line.startswith("status: ACCEPTED"):  # OK, we have ACCEPTED status
+                            if reward and is_receiving_reward:
+                                rewards.append(reward)
+                            reward = {}
+                            is_receiving_reward = False
+                        if line.startswith("tx_created:"):
+                            original_date = line.split("tx_created:")[1].strip()[:-6]
+                            reward['tx_created'] = original_date
+                        if line.startswith("recv_coins:"):
+                            reward['recv_coins'] = line.split("recv_coins:")[1].strip()
+                        if line.startswith("source_address: reward collecting"):
+                            is_receiving_reward = True
+                    if reward and is_receiving_reward:
+                        rewards.append(reward)
+                    cache_file_path = os.path.join(getScriptDir(), f".{network}_rewards_cache.txt")
+                    with open(cache_file_path, "w") as f:
+                        for reward in rewards:
+                            f.write(f"{reward['tx_created']}|{reward['recv_coins']}\n")
+                    end_time = time.time()
+                    elapsed_time = end_time - start_time
+                    logNotice(f"Rewards cached! It took {elapsed_time:.2f} seconds!")
+                else:
+                    return None
             else:
+                logError(f"Node is not synced yet!")
                 return None
     except Exception as e:
         logError(f"Error: {e}")
