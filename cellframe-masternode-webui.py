@@ -27,6 +27,8 @@ def onInit():
     telegram_stats_time = getConfigValue("webui", "telegram_stats_time")
     cache_rewards = getConfigValue("webui", "cache_rewards", default=False)
     cache_rewards_time = getConfigValue("webui", "cache_rewards_time")
+    sendTelegram(generateHTML("telegram.html"))
+    sendMail(generateHTML("mail.html"))
             
     with ThreadPoolExecutor() as executor:
         executor.submit(HTTPServer)
