@@ -289,8 +289,7 @@ def getAutocollectRewards(network):
 def isNodeSynced(network):
     try:
         net_status = CLICommand(f"net -net {network} get status")
-        match = re.search(r"main:[\s\S]+percent: \d{3}", net_status)
-        if match:
+        if "status: synced" in net_status:
             return True
         else:
             return False
