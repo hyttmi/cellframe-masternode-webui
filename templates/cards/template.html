@@ -491,7 +491,11 @@
         blocksData['{{ network_name }}'] = {{ network.signed_blocks_all | tojson | safe }};
         var blocksCharts = {};
         {% endif %}
-        
+        {% if network.rewards is not none %}
+        var rewardsData = {};
+
+        var rewardsCharts = {};
+        {% endif %}
         {% endfor %}
 
     

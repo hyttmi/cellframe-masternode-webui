@@ -336,7 +336,7 @@ def readRewards(network):
                     rewards[formatted_date_str] += amount
                 else:
                     rewards[formatted_date_str] = amount
-            sorted_dict = OrderedDict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
+            sorted_dict = dict(OrderedDict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))))
         return sorted_dict
     except FileNotFoundError:
         logError("Rewards file not found!")
@@ -384,7 +384,6 @@ def generateNetworkData():
                         }
 
                     network_data[network] = network_info
-        logNotice(network_data)
         return network_data
     else:
         return None
