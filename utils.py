@@ -4,6 +4,7 @@ from pycfhelpers.node.net import CFNet
 from packaging.version import Version
 from collections import OrderedDict
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 log = CFLog()
 
@@ -366,41 +367,50 @@ def readRewards(network):
     except Exception as e:
         logError(f"Error reading rewards: {e}")
         return None
-                
+
+
+def processNetworkData(network):
+    network = str(network)
+    net_status = CLICommand(f"net -net {network} get status")
+    addr_match = re.search(r"([A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*)", net_status)
+    state_match = re.search(r"states:\s+current: (\w+)", net_status)
+    target_state_match = re.search(r"target: (\w+)", net_status)
+    tokens = getRewardWalletTokens(network)
+
+    if state_match and target_state_match:
+        return {
+            network: {
+                'state': state_match.group(1),
+                'target_state': target_state_match.group(1),
+                'address': addr_match.group(1),
+                'first_signed_blocks': getFirstSignedBlocks(network),
+                'all_signed_blocks': getAllSignedBlocks(network),
+                'all_blocks': getAllBlocks(network),
+                'signed_blocks_today': getSignedBlocks(network, today=True),
+                'signed_blocks_all': getSignedBlocks(network),
+                'autocollect_status': getAutocollectStatus(network),
+                'autocollect_rewards': getAutocollectRewards(network),
+                'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
+                'rewards': readRewards(network)
+            }
+        }
+    else:
+        return None
 
 def generateNetworkData():
     networks = getListNetworks()
     if networks is not None:
         network_data = {}
-        for network in networks:
-            network = str(network)
-            net_status = CLICommand(f"net -net {network} get status")
-            addr_match = re.search(r"([A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*)", net_status)
-            state_match = re.search(r"states:\s+current: (\w+)", net_status)
-            target_state_match = re.search(r"target: (\w+)", net_status)
-            tokens = getRewardWalletTokens(network)
-            
-            if state_match and target_state_match:
-                network_info = {
-                    'state': state_match.group(1),
-                    'target_state': target_state_match.group(1),
-                    'address': addr_match.group(1),
-                    'first_signed_blocks': getFirstSignedBlocks(network),
-                    'all_signed_blocks': getAllSignedBlocks(network),
-                    'all_blocks': getAllBlocks(network),
-                    'signed_blocks_today': getSignedBlocks(network, today=True),
-                    'signed_blocks_all': getSignedBlocks(network),
-                    'autocollect_status': getAutocollectStatus(network),
-                    'autocollect_rewards': getAutocollectRewards(network),
-                    'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
-                    'rewards': readRewards(network)
-                }
-                network_data[network] = network_info
-            else:
-                return None
+        with ThreadPoolExecutor() as executor:
+            future_to_network = {executor.submit(processNetworkData, network): network for network in networks}
+            for future in as_completed(future_to_network):
+                result = future.result()
+                if result:
+                    network_data.update(result)
         return network_data
     else:
         return None
+
     
 def generateInfo(exclude=None, format_time=True):
     if exclude is None:
