@@ -22,7 +22,7 @@ def sendTelegram(text):
             'parse_mode': "HTML"
         }
         res = requests.get(url, params=payload)
-        if res.status_code == requests.codes.ok:
+        if res.status_code == 200:
             logNotice("Telegram message sent!")
         else:
             logError("Sending Telegram message failed!")

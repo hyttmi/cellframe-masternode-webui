@@ -1,38 +1,36 @@
+<pre>{{ title }}</pre>
+
 <pre>
-    {{ title }}
-    
     CPU utilization:     {{ node_cpu_utilization }}
     Memory utilization:  {{ node_memory_utilization }}
     Uptime:              {{ node_uptime }}
     System uptime:       {{ system_uptime }}
     Node version:        {{ node_version }}
     Latest node version: {{ latest_node_version }}
-    
-    {% if networks and networks.items() %}
-        {% for network_name, network in networks.items() %}
-    
-        {{ network_name }}
-    
+</pre>
+
+{% if networks and networks.items() %}
+    {% for network_name, network in networks.items() %}
+        <pre>{{ network_name }}</pre>
+        <pre>
         Network state:       {{ network.state }}
         Target state:        {{ network.target_state }}
         Node address:        {{ network.address }}
         Signed blocks today: {{ network.signed_blocks_today }}
         Autocollect status:  {{ network.autocollect_status }}
         Current rewards:     {{ network.rewards }}
-    
-        Reward wallet:
-        {% if network.fee_wallet_tokens %}
+        </pre>
+        
+        <pre>Reward wallet:</pre>
+        {% if network.fee_wallet_tokens is not none %}
             {% for token, balance in network.fee_wallet_tokens.items() %}
-                Token: {{ token }}
-                Balance: {{ balance }}
+                <pre>Token: {{ token }}</pre>
+                <pre>Balance: {{ balance }}</pre>
             {% endfor %}
         {% else %}
-            No tokens available.
+            <pre>No tokens available.</pre>
         {% endif %}
-    
-        {% endfor %}
-    {% else %}
-    No network information available.
-    {% endif %}
-</pre>
-    
+    {% endfor %}
+{% else %}
+    <pre>No network information available.</pre>
+{% endif %}
