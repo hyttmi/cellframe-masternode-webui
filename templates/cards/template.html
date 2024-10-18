@@ -390,7 +390,6 @@
                         {% endif %}
                     </ul>
                 </div>
-                {{networks | tojson}}
             </div>
             {% endif %}
         {% endfor %}
@@ -481,19 +480,19 @@
             });
         });
     </script>
-    
+    {{ network.rewards | tojson | safe }}
     
     <script>
         {% if networks and networks.items() %}
         {% for network_name, network in networks.items() %}
         {% if network.signed_blocks_all is not none %}
         var blocksData = {};
-        blocksData['{{ network_name }}'] = {{ network.signed_blocks_all }};
+        blocksData['{{ network_name }}'] = {{ network.signed_blocks_all | tojson | safe }};
         var blocksCharts = {};
         {% endif %}
         {% if network.rewards is not none %}
         var rewardsData = {};
-
+        rewardsData['{{ network_name }}'] = {{ network.rewards | tojson | safe }};
         var rewardsCharts = {};
         {% endif %}
         {% endfor %}
