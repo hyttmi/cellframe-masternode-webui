@@ -26,27 +26,27 @@
                 <button id="clearstorage" class="btn-primary text-uppercase clearbutton"><strong>restore default cards</strong></button>
             </div>
         </div>
-        {% if plugin_update_available %}
+    {% if plugin_update_available %}
         <div class="row">
             <div class="alert alert-danger" role="alert">
                 New version {{ latest_plugin_version }} available! You are running version {{ current_plugin_version }}.
             </div>
         </div>
-        {% endif %}
-        {% if website_header_text %}
+    {% endif %}
+    {% if website_header_text %}
         <div class="row">
             <div class="col-12 text-center">
                 <h1 class="text-uppercase text-color-secondary display-4"><b>{{ website_header_text }}</b></h1>
             </div>
         </div>
-        {% endif %}
+    {% endif %}
         <div class="row">
             <div class="col-12">
                 <h1 class="text-uppercase text-color-secondary">System Info</h1>
             </div>
         </div>
         <div class="row is_sortable">
-            
+        {% if hostname %}
             <div class="col-md-3" data-id="hostname">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -58,7 +58,9 @@
                         <i class="fa-solid fa-server icon-container"></i>
                 </div>
             </div>
-
+        {% endif %}
+    
+        {% if external_ip %}
             <div class="col-md-3" data-id="external_ip_address">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -71,7 +73,9 @@
                     <i class="fa-solid fa-network-wired icon-container"></i>
                 </div>
             </div>
-            
+        {% endif %}
+
+        {% if node_cpu_utilization %}
             <div class="col-md-3" data-id="node_cpu_utilization">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -84,7 +88,9 @@
                     <i class="fa-solid fa-microchip icon-container"></i>
                 </div>
             </div>
+        {% endif %}
             
+        {% if node_memory_utilization %}
             <div class="col-md-3" data-id="memory_utilization">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -97,7 +103,9 @@
                     <i class="fa-solid fa-memory icon-container"></i>
                 </div>
             </div>
+        {% endif %}
             
+        {% if node_uptime %}
             <div class="col-md-3" data-id="node_uptime">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -110,7 +118,9 @@
                     <i class="fa-solid fa-clock icon-container"></i>
                 </div>
             </div>
-            
+        {% endif %}
+
+        {% if system_uptime %}
             <div class="col-md-3" data-id="system_uptime">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -123,7 +133,9 @@
                     <i class="fa-solid fa-clock icon-container"></i>
                 </div>
             </div>
+        {% endif %}
             
+        {% if node_version %}
             <div class="col-md-3" data-id="node_version">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -136,7 +148,9 @@
                     <i class="fa-solid fa-code-compare icon-container"></i>
                 </div>
             </div>
+        {% endif %}
             
+        {% if latest_node_version %}
             <div class="col-md-3" data-id="latest_node_version">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -148,8 +162,10 @@
                     </div>
                     <i class="fa-solid fa-code-compare icon-container"></i>
                 </div>
-            </div>            
+            </div>
+        {% endif %}
         </div>
+
         {% if networks and networks.items() %}
         {% for network_name, network in networks.items() %}
         <div class="row">
