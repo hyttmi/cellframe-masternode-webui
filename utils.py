@@ -58,7 +58,7 @@ def checkForUpdate():
         logError(f"Error: {e}")
         return f"Error: {e}"
     
-def CLICommand(command, timeout=10):
+def CLICommand(command, timeout=30):
     try:
         command_list = ["/opt/cellframe-node/bin/cellframe-node-cli"] + command.split()
         result = subprocess.run(
