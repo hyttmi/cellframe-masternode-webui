@@ -191,88 +191,60 @@ def getAutocollectStatus(network):
     else:
         return "Inactive"
 
-def getAllBlocks(network):
-    try:
-        all_blocks_cmd = CLICommand(f"block count -net {network}")
-        all_blocks_match = re.search(r":\s+(\d+)", all_blocks_cmd)
-        if all_blocks_match:
-            return int(all_blocks_match.group(1))
-        else:
-            return None
-    except Exception as e:
-        logError(f"Error: {e}")
-        return None
-
 @cachetools.func.ttl_cache(maxsize=128, ttl=1200)
-def getFirstSignedBlocks(network):
+def getBlocks(network, cert=None, block_type='all', today=False):
     try:
-        net_config = readNetworkConfig(network)
-        if net_config is not None:
-            cmd_get_first_signed_blocks = CLICommand(f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']} -limit 1")
+        if block_type == 'all':
+            all_blocks_cmd = CLICommand(f"block count -net {network}")
+            all_blocks_match = re.search(r":\s+(\d+)", all_blocks_cmd)
+            if all_blocks_match:
+                return int(all_blocks_match.group(1))
+            else:
+                return None
+        elif block_type == 'first_signed' and cert:
+            cmd_get_first_signed_blocks = CLICommand(f"block list -net {network} first_signed -cert {cert} -limit 1")
             blocks_match = re.search(r"have blocks: (\d+)", cmd_get_first_signed_blocks)
             if blocks_match:
                 return int(blocks_match.group(1))
             else:
                 return None
-        else:
-            return None
-    except Exception as e:
-        logError(f"Error: {e}")
-        return None
+        elif block_type == 'signed' and cert:
+            cmd_output = CLICommand(f"block list -net {network} signed -cert {cert}")
+            today_str = datetime.now().strftime("%a, %d %b %Y")
+            blocks_signed_per_day = {}
+            lines = cmd_output.splitlines()
+            for line in lines:
+                if "ts_create:" in line:
+                    timestamp_str = line.split("ts_create:")[1].strip()[:-6]
+                    block_time = datetime.strptime(timestamp_str, "%a, %d %b %Y %H:%M:%S")
+                    block_day = block_time.strftime("%a, %d %b %Y")
+                    if block_day not in blocks_signed_per_day:
+                        blocks_signed_per_day[block_day] = 1
+                    else:
+                        blocks_signed_per_day[block_day] += 1
 
-@cachetools.func.ttl_cache(maxsize=128, ttl=1200)
-def getAllSignedBlocks(network):
-    try:
-        net_config = readNetworkConfig(network)
-        if net_config is not None:
-            cmd_get_all_signed_blocks = CLICommand(f"block list -net {network} signed -cert {net_config['blocks_sign_cert']} -limit 1")
-            blocks_match = re.search(r"have blocks: (\d+)", cmd_get_all_signed_blocks)
-            if blocks_match:
-                return int(blocks_match.group(1))
+            sorted_dict = OrderedDict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
+            if today:
+                return blocks_signed_per_day.get(today_str, 0)
             else:
-                return None
+                return sorted_dict
         else:
             return None
     except Exception as e:
         logError(f"Error: {e}")
         return None
 
-@cachetools.func.ttl_cache(maxsize=128, ttl=1200)
-def getSignedBlocks(network, today=False):
-    net_config = readNetworkConfig(network)
-    if net_config is not None:
-        cmd_output = CLICommand(f"block list -net {network} signed -cert {net_config['blocks_sign_cert']}")
-        today_str = datetime.now().strftime("%a, %d %b %Y")
-        blocks_signed_per_day = {}
-        
-        lines = cmd_output.splitlines()
-        for line in lines:
-            if "ts_create:" in line:
-                timestamp_str = line.split("ts_create:")[1].strip()[:-6]
-                block_time = datetime.strptime(timestamp_str, "%a, %d %b %Y %H:%M:%S")
-                block_day = block_time.strftime("%a, %d %b %Y")
-                if block_day not in blocks_signed_per_day:
-                    blocks_signed_per_day[block_day] = 1
-                else:
-                    blocks_signed_per_day[block_day] += 1
 
-        sorted_dict = OrderedDict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
-        if today:
-            return blocks_signed_per_day.get(today_str, 0)
-        else:
-            return sorted_dict
-    else:
-        return None
-
-def getRewardWalletTokens(network):
-    net_config = readNetworkConfig(network)
-    if net_config is not None:
-        cmd_get_wallet_info = CLICommand(f"wallet info -addr {net_config['wallet']}")
+def getRewardWalletTokens(wallet):
+    try:
+        cmd_get_wallet_info = CLICommand(f"wallet info -addr {wallet}")
         if cmd_get_wallet_info:
             tokens = re.findall(r"coins:\s+([\d.]+)[\s\S]+?ticker:\s+(\w+)", cmd_get_wallet_info)
             return tokens
-    else:
-        return None
+        else:
+            return None
+    except Exception as e:
+        logError(f"Error: {e}")
     
 def getAutocollectRewards(network):
     try:
@@ -373,41 +345,51 @@ def readRewards(network):
         return None
                 
 
+from concurrent.futures import ThreadPoolExecutor
+
 def generateNetworkData():
     networks = getListNetworks()
     if networks is not None:
         network_data = {}
         for network in networks:
-            net_config = readNetworkConfig(network) ## Just process masternodes. There's no need to process normal ones
+            net_config = readNetworkConfig(network)  # Just process masternodes. No need to process normal ones
             if net_config is not None:
                 network = str(network)
+                cert = net_config['blocks_sign_cert']
+                wallet = net_config['wallet']
                 net_status = CLICommand(f"net -net {network} get status")
                 addr_match = re.search(r"([A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*)", net_status)
                 state_match = re.search(r"states:\s+current: (\w+)", net_status)
                 target_state_match = re.search(r"target: (\w+)", net_status)
-                tokens = getRewardWalletTokens(network)
+                tokens = getRewardWalletTokens(wallet)
 
                 if state_match and target_state_match:
-                    network_info = {
-                        'state': state_match.group(1),
-                        'target_state': target_state_match.group(1),
-                        'address': addr_match.group(1),
-                        'first_signed_blocks': getFirstSignedBlocks(network),
-                        'all_signed_blocks': getAllSignedBlocks(network),
-                        'all_blocks': getAllBlocks(network),
-                        'signed_blocks_today': getSignedBlocks(network, today=True),
-                        'signed_blocks_all': getSignedBlocks(network),
-                        'autocollect_status': getAutocollectStatus(network),
-                        'autocollect_rewards': getAutocollectRewards(network),
-                        'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
-                        'rewards': readRewards(network)
-                    }
+                    with ThreadPoolExecutor() as executor:
+                        futures = {
+                            'first_signed_blocks': executor.submit(getBlocks, network, cert=cert, block_type="first_signed"),
+                            'all_signed_blocks': executor.submit(getBlocks, network, cert=cert, block_type="signed"),
+                            'all_blocks': executor.submit(getBlocks, network, block_type="all"),
+                            'signed_blocks_today': executor.submit(getBlocks, network, cert=cert, block_type="signed", today=True)
+                        }
+                        network_info = {
+                            'state': state_match.group(1),
+                            'target_state': target_state_match.group(1),
+                            'address': addr_match.group(1) if addr_match else None,
+                            'first_signed_blocks': futures['first_signed_blocks'].result(),
+                            'all_signed_blocks': futures['all_signed_blocks'].result(),
+                            'all_blocks': futures['all_blocks'].result(),
+                            'signed_blocks_today': futures['signed_blocks_today'].result(),
+                            'autocollect_status': getAutocollectStatus(network),
+                            'autocollect_rewards': getAutocollectRewards(network),
+                            'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
+                            'rewards': readRewards(network)
+                        }
+
                     network_data[network] = network_info
-                else:
-                    return None
-            return network_data
+        return network_data
     else:
         return None
+
     
 def generateInfo(exclude=None, format_time=True):
     if exclude is None:
