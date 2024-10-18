@@ -289,7 +289,8 @@ def getAutocollectRewards(network):
 def isNodeSynced(network):
     try:
         net_status = CLICommand(f"net -net {network} get status")
-        if "status: synced" in net_status:
+        match = re.search(r"main:\s*status: synced", net_status)
+        if match:
             return True
         else:
             return False
