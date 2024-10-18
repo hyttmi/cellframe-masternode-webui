@@ -22,9 +22,9 @@
     
         Reward wallet:
         {% if network.fee_wallet_tokens %}
-            {% for token in network.fee_wallet_tokens.values() %}
-                Token: {{ token.token }}
-                Balance: {{ token.balance }}
+            {% for token, balance in network.fee_wallet_tokens.items() %}
+                Token: {{ token }}
+                Balance: {{ balance }}
             {% endfor %}
         {% else %}
             No tokens available.
