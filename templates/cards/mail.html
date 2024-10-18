@@ -128,16 +128,12 @@
                         <td><strong>Autocollect status:</strong></td>
                         <td>{{ network.autocollect_status }}</td>
                     </tr>
-                    <tr>
-                        <td><strong>Autocollect rewards:</strong></td>
-                        <td>{{ network.rewards }}</td>
-                    </tr>
                     {% if network.fee_wallet_tokens is not none %}
                     <tr>
                         <td><strong>Reward wallet information:</strong></td>
                         <td>
-                            {% for token in network.fee_wallet_tokens.values() %}
-                                {{ token.token }}: {{ token.balance }}<br>
+                            {% for token, balance in network.fee_wallet_tokens.items() %}
+                                {{ token }}: {{ balance }}<br>
                             {% endfor %}
                         </td>
                     </tr>
