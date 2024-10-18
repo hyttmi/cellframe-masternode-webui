@@ -224,7 +224,7 @@ def getBlocks(network, cert=None, block_type='all', today=False):
                     else:
                         blocks_signed_per_day[block_day] += 1
 
-            sorted_dict = OrderedDict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
+            sorted_dict = dict(OrderedDict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))))
             if today:
                 return blocks_signed_per_day.get(today_str, 0)
             else:
