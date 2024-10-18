@@ -391,6 +391,7 @@
                     </ul>
                 </div>
             </div>
+            {{ network.rewards | tojson | safe }}
             {% endif %}
         {% endfor %}
         {% endif %}
@@ -480,7 +481,7 @@
             });
         });
     </script>
-    {{ network.rewards | tojson | safe }}
+
     
     <script>
         {% if networks and networks.items() %}
