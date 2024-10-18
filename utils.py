@@ -4,6 +4,7 @@ from pycfhelpers.node.net import CFNet
 from packaging.version import Version
 from collections import OrderedDict
 from datetime import datetime
+import cachetools
 
 log = CFLog()
 
@@ -202,6 +203,7 @@ def getAllBlocks(network):
         logError(f"Error: {e}")
         return None
 
+@cachetools.func.ttl_cache(maxsize=128, ttl=1200)
 def getFirstSignedBlocks(network):
     try:
         net_config = readNetworkConfig(network)
@@ -218,6 +220,7 @@ def getFirstSignedBlocks(network):
         logError(f"Error: {e}")
         return None
 
+@cachetools.func.ttl_cache(maxsize=128, ttl=1200)
 def getAllSignedBlocks(network):
     try:
         net_config = readNetworkConfig(network)
@@ -234,6 +237,7 @@ def getAllSignedBlocks(network):
         logError(f"Error: {e}")
         return None
 
+@cachetools.func.ttl_cache(maxsize=128, ttl=1200)
 def getSignedBlocks(network, today=False):
     net_config = readNetworkConfig(network)
     if net_config is not None:
