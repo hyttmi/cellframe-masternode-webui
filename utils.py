@@ -375,14 +375,13 @@ def generateNetworkData():
                             'address': addr_match.group(1) if addr_match else None,
                             'first_signed_blocks': futures['first_signed_blocks'].result(),
                             'all_signed_blocks': futures['all_signed_blocks'].result(),
-                            'all_blocks': futures['all_blocks'].result(),
+                            'all_blocks': json.dumps(futures['all_blocks'].result()),
                             'signed_blocks_today': futures['signed_blocks_today'].result(),
                             'autocollect_status': getAutocollectStatus(network),
                             'autocollect_rewards': getAutocollectRewards(network),
                             'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
-                            'rewards': readRewards(network)
+                            'rewards': json.dumps(readRewards(network))
                         }
-
                     network_data[network] = network_info
         logNotice(network_data)
         return network_data
