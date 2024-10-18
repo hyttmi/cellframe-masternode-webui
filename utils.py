@@ -4,7 +4,7 @@ from pycfhelpers.node.net import CFNet
 from packaging.version import Version
 from collections import OrderedDict
 from datetime import datetime
-import cachetools
+import cachetools.func
 
 log = CFLog()
 
