@@ -5,6 +5,7 @@ from packaging.version import Version
 from collections import OrderedDict
 from datetime import datetime
 import cachetools.func
+from concurrent.futures import ThreadPoolExecutor
 
 log = CFLog()
 
@@ -343,9 +344,6 @@ def readRewards(network):
     except Exception as e:
         logError(f"Error reading rewards: {e}")
         return None
-                
-
-from concurrent.futures import ThreadPoolExecutor
 
 def generateNetworkData():
     networks = getListNetworks()
