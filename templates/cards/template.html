@@ -486,12 +486,12 @@
         {% for network_name, network in networks.items() %}
         {% if network.signed_blocks_all is not none %}
         var blocksData = {};
-        blocksData['{{ network_name }}'] = {{ network.all_signed_blocks }};
+        blocksData['{{ network_name }}'] = {{ network.all_signed_blocks | tojson }};
         var blocksCharts = {};
         {% endif %}
         {% if network.rewards is not none %}
         var rewardsData = {};
-        rewardsData['{{ network_name }}'] = {{ network.rewards }};
+        rewardsData['{{ network_name }}'] = {{ network.rewards | tojson }};
         var rewardsCharts = {};
         {% endif %}
         {% endfor %}
