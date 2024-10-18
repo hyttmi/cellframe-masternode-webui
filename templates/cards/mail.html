@@ -82,17 +82,17 @@
                 </tr>
                 <tr>
                     <td><strong>CPU utilization:</strong></td>
-                    <td>{{ cpu_utilization }}</td>
+                    <td>{{ node_cpu_utilization }}</td>
                 </tr>
                 <tr>
                     <td><strong>Memory utilization:</strong></td>
-                    <td>{{ memory_utilization }}</td>
+                    <td>{{ node_memory_utilization }}</td>
                 </tr>
             </table>
         </div>
 
-        {% if net_info is not none %}
-            {% for network_name, network in net_info.items() %}
+        {% if networks and networks.items() %}
+            {% for network_name, network in networks.items() %}
             <div class="network">
                 <h3>{{ network_name }}</h3>
                 <table>
@@ -128,16 +128,12 @@
                         <td><strong>Autocollect status:</strong></td>
                         <td>{{ network.autocollect_status }}</td>
                     </tr>
-                    <tr>
-                        <td><strong>Autocollect rewards:</strong></td>
-                        <td>{{ network.rewards }}</td>
-                    </tr>
                     {% if network.fee_wallet_tokens is not none %}
                     <tr>
                         <td><strong>Reward wallet information:</strong></td>
                         <td>
-                            {% for token in network.fee_wallet_tokens.values() %}
-                                {{ token.token }}: {{ token.balance }}<br>
+                            {% for token, balance in network.fee_wallet_tokens.items() %}
+                                {{ token }}: {{ balance }}<br>
                             {% endfor %}
                         </td>
                     </tr>

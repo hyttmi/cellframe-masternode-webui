@@ -16,11 +16,11 @@ def HTTPServer():
     return 0
 
 def init():
-    t = threading.Thread(target=startInitialization)
+    t = threading.Thread(target=onInit)
     t.start()
     return 0
 
-def startInitialization():
+def onInit():
     email_stats_enabled = getConfigValue("webui", "email_stats", default=False)
     email_stats_time = getConfigValue("webui", "email_time")
     telegram_stats_enabled = getConfigValue("webui", "telegram_stats", default=False)
@@ -44,7 +44,6 @@ def startInitialization():
         if cache_rewards and validateNum(cache_rewards_time):
             if cache_rewards_time < 10:
                 logError("Rewards caching time is below 10 minutes which is not recommended as it uses lots of CPU. Consider higher value.")
-            executor.submit(cacheRewards) # Run once on startup, then with the timer as we know that both settings are set
             executor.submit(funcScheduler, cacheRewards, False, cache_rewards_time)
 
 def deinit():

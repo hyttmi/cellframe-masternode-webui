@@ -5,10 +5,12 @@ def sendTelegram(text):
     API_TOKEN = getConfigValue("webui", "telegram_api_key")
     CHAT_ID = getConfigValue("webui", "telegram_chat_id")
     missing_configs = []
+
     if API_TOKEN is None:
         missing_configs.append("telegram_api_key")
     if CHAT_ID is None:
         missing_configs.append("telegram_chat_id")
+
     if missing_configs:
         for config in missing_configs:
             logError(f"{config} is not set!")
@@ -21,11 +23,11 @@ def sendTelegram(text):
             'text': text,
             'parse_mode': "HTML"
         }
-        res = requests.get(url, params=payload)
-        if res.status_code == requests.codes.ok:
+        res = requests.post(url, params=payload)
+
+        if res.status_code == 200:
             logNotice("Telegram message sent!")
         else:
-            logError("Sending Telegram message failed!")
+            logError(f"Sending Telegram message failed! Status code: {res.status_code}, Response: {res.text}")
     except Exception as e:
         logError(f"Error: {e}")
-        return
