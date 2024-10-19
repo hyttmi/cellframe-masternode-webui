@@ -87,12 +87,12 @@ Here are the variables that are passed to the Jinja templates:
   - `address`: The network address
   - `first_signed_blocks`: The number of first signed blocks
   - `all_signed_blocks`: The number of all signed blocks
-  - `all_blocks`: The number of blocks
+  - `all_blocks`: The number of blocks in main chain
   - `signed_blocks_today`: The number of blocks signed today
-  - `signed_blocks_all`: A dictionary of all signed blocks (day, amount)
+  - `all_signed_blocks_dict`: A dictionary of all signed blocks (day, amount)
   - `autocollect_status`: The status of reward autocollection
   - `autocollect_rewards`: The total autocollect rewards currently uncollected
-  - `fee_wallet_tokens`: A list of token balances in the network's fee wallet
+  - `fee_wallet_tokens`: A dict of token balances in the network's fee wallet
   - `rewards`: A dictionary of rewards from last 7 days
 
 ## Accessing data as JSON

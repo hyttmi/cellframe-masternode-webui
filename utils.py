@@ -390,7 +390,6 @@ def generateNetworkData():
                             'rewards': readRewards(network)
                         }
                     network_data[network] = network_info
-        logNotice(network_data)
         return network_data
     else:
         return None
