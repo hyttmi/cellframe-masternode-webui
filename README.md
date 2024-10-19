@@ -17,7 +17,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/op
 - `uri=something` - Change plugin URI. Defaults to `webui`
 - `header_text=sometext` - Show `sometext` as a website header **WITHOUT SPACES**
 - `email_stats=true|false` - Allow sending scheduled email statistics
-- `email_time=17:39` - Set time when you want to send the statistics **24h format (HH:MM)**
+- `email_time=23:59` - Set time when you want to send the statistics **24h format (HH:MM)**
 - `gmail_app_password=asdf asdf asdf asdf` - GMail app password
 - `gmail_user=somebody@gmail.com` - Your GMail username
 - `email_recipients=somebody@gmail.com|[somebody@gmail.com, another@aol.com]` - Recipient(s) for the email
@@ -73,8 +73,8 @@ Here are the variables that are passed to the Jinja templates:
 - `plugin_title`: Return plugin name
 - `hostname`: Returns your systems hostname
 - `external_ip`: Returns external IP address
-- `system_uptime`: Returns your system uptime
-- `node_uptime`: Returns Cellframe node uptime
+- `system_uptime`: Returns your system uptime in seconds
+- `node_uptime`: Returns Cellframe node uptime in seconds
 - `node_version`: Returns the currently installed version of Cellframe node
 - `latest_node_version`: Returns the latest version of Cellframe node
 - `node_cpu_utilization`: Returns the current CPU utilization of Cellframe node
@@ -87,12 +87,12 @@ Here are the variables that are passed to the Jinja templates:
   - `address`: The network address
   - `first_signed_blocks`: The number of first signed blocks
   - `all_signed_blocks`: The number of all signed blocks
-  - `all_blocks`: The number of blocks
+  - `all_blocks`: The number of blocks in main chain
   - `signed_blocks_today`: The number of blocks signed today
-  - `signed_blocks_all`: A dictionary of all signed blocks (day, amount)
+  - `all_signed_blocks_dict`: A dictionary of all signed blocks (day, amount)
   - `autocollect_status`: The status of reward autocollection
   - `autocollect_rewards`: The total autocollect rewards currently uncollected
-  - `fee_wallet_tokens`: A list of token balances in the network's fee wallet
+  - `fee_wallet_tokens`: A dict of token balances in the network's fee wallet
   - `rewards`: A dictionary of rewards from last 7 days
 
 ## Accessing data as JSON
