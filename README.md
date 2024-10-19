@@ -73,8 +73,8 @@ Here are the variables that are passed to the Jinja templates:
 - `plugin_title`: Return plugin name
 - `hostname`: Returns your systems hostname
 - `external_ip`: Returns external IP address
-- `system_uptime`: Returns your system uptime
-- `node_uptime`: Returns Cellframe node uptime
+- `system_uptime`: Returns your system uptime in seconds
+- `node_uptime`: Returns Cellframe node uptime in seconds
 - `node_version`: Returns the currently installed version of Cellframe node
 - `latest_node_version`: Returns the latest version of Cellframe node
 - `node_cpu_utilization`: Returns the current CPU utilization of Cellframe node
