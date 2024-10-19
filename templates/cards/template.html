@@ -495,9 +495,7 @@
         var rewardsCharts = {};
         {% endif %}
         {% endfor %}
-        console.log(blocksData);
-        console.log(rewardsData);
-    
+
         function updateChart(chart, daysToShow, networkName) {
             if (chart === 'blocksChart') {
                 var block_days = Object.keys(blocksData[networkName]).slice(-daysToShow);
