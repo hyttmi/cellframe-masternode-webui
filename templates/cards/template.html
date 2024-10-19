@@ -326,8 +326,8 @@
                     </div>
                     <ul class="nav justify-content-center">
                         {% if network.all_signed_blocks_dict | length < 7 %}
-                        <li class="nav-item active" onclick="updateChart('blocksChart', {{ network.all_signed_blocks | length }}, '{{ network_name }}'); setActive(this);">
-                            <span class="days_amount">{{ network.all_signed_blocks | length }} days</span>
+                        <li class="nav-item active" onclick="updateChart('blocksChart', {{ network.all_signed_blocks_dict | length }}, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">{{ network.all_signed_blocks_dict | length }} days</span>
                         </li>
                         {% else %}
                         <li class="nav-item active" onclick="updateChart('blocksChart', 7, '{{ network_name }}'); setActive(this);">
