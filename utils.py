@@ -59,7 +59,7 @@ def checkForUpdate():
         logError(f"Error: {e}")
         return f"Error: {e}"
     
-def CLICommand(command, timeout=10):
+def CLICommand(command, timeout=60):
     try:
         command_list = ["/opt/cellframe-node/bin/cellframe-node-cli"] + command.split()
         result = subprocess.run(
@@ -289,7 +289,7 @@ def cacheRewards():
                 if net_config is not None:
                     logNotice("Caching rewards...")
                     start_time = time.time()
-                    cmd_get_tx_history = CLICommand(f"tx_history -addr {net_config['wallet']}", timeout=60)
+                    cmd_get_tx_history = CLICommand(f"tx_history -addr {net_config['wallet']}")
                     rewards = []
                     reward = {}
                     is_receiving_reward = False
