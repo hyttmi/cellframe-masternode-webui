@@ -370,7 +370,8 @@ def generateNetworkData():
                     with ThreadPoolExecutor() as executor:
                         futures = {
                             'first_signed_blocks': executor.submit(getBlocks, network, cert=cert, block_type="first_signed"),
-                            'all_signed_blocks': executor.submit(getBlocks, network, cert=cert, block_type="signed"),
+                            'all_signed_blocks_dict': executor.submit(getBlocks, network, cert=cert, block_type="signed"),
+                            'all_signed_blocks': executor.submit(getBlocks, network, cert=cert, block_type="all_signed"),
                             'all_blocks': executor.submit(getBlocks, network, block_type="all"),
                             'signed_blocks_today': executor.submit(getBlocks, network, cert=cert, block_type="signed", today=True)
                         }
@@ -379,6 +380,7 @@ def generateNetworkData():
                             'target_state': target_state_match.group(1),
                             'address': addr_match.group(1) if addr_match else None,
                             'first_signed_blocks': futures['first_signed_blocks'].result(),
+                            'all_signed_blocks_dict': futures['all_signed_blocks_dict'].result(),
                             'all_signed_blocks': futures['all_signed_blocks'].result(),
                             'all_blocks': futures['all_blocks'].result(),
                             'signed_blocks_today': futures['signed_blocks_today'].result(),
