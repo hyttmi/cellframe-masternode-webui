@@ -197,12 +197,14 @@ def getBlocks(network, cert=None, block_type='all', today=False):
     try:
         if block_type == 'all':
             all_blocks_cmd = CLICommand(f"block count -net {network}")
+            logNotice(f"Fetching block count in {network}")
             all_blocks_match = re.search(r":\s+(\d+)", all_blocks_cmd)
             if all_blocks_match:
                 return int(all_blocks_match.group(1))
             else:
                 return None
         elif block_type == 'first_signed' and cert:
+            logNotice(f"Fetching first signed blocks count in {network}")
             cmd_get_first_signed_blocks = CLICommand(f"block list -net {network} first_signed -cert {cert} -limit 1")
             blocks_match = re.search(r"have blocks: (\d+)", cmd_get_first_signed_blocks)
             if blocks_match:
@@ -210,6 +212,7 @@ def getBlocks(network, cert=None, block_type='all', today=False):
             else:
                 return None
         elif block_type == 'signed' and cert:
+            logNotice(f"Fetching block list in {network}")
             cmd_output = CLICommand(f"block list -net {network} signed -cert {cert}")
             today_str = datetime.now().strftime("%a, %d %b %Y")
             blocks_signed_per_day = {}
@@ -229,6 +232,7 @@ def getBlocks(network, cert=None, block_type='all', today=False):
             else:
                 return sorted_dict
         elif block_type == 'all_signed' and cert:
+            logNotice(f"Fetching all signed blocks count in {network}")
             cmd_get_all_signed_blocks = CLICommand(f"block list -net {network} signed -cert {cert} -limit 1")
             blocks_match = re.search(r"have blocks: (\d+)", cmd_get_all_signed_blocks)
             if blocks_match:
