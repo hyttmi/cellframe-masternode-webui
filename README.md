@@ -17,7 +17,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/op
 - `uri=something` - Change plugin URI. Defaults to `webui`
 - `header_text=sometext` - Show `sometext` as a website header **WITHOUT SPACES**
 - `email_stats=true|false` - Allow sending scheduled email statistics
-- `email_time=17:39` - Set time when you want to send the statistics **24h format (HH:MM)**
+- `email_time=23:59` - Set time when you want to send the statistics **24h format (HH:MM)**
 - `gmail_app_password=asdf asdf asdf asdf` - GMail app password
 - `gmail_user=somebody@gmail.com` - Your GMail username
 - `email_recipients=somebody@gmail.com|[somebody@gmail.com, another@aol.com]` - Recipient(s) for the email
