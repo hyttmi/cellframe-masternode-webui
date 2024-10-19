@@ -144,18 +144,20 @@ def getCurrentNodeVersion():
         logError(f"Error: {e}")
         return "N/A"
 
+@cachetools.func.ttl_cache(maxsize=10, ttl=7200)
 def getLatestNodeVersion():
     try:
-        badge_url = "https://pub.cellframe.net/linux/cellframe-node/master/node-version-badge.svg"
-        res = requests.get(badge_url).text
-        match = re.search(r">(\d.\d.\d+)", res)
-        if match:
-            latest_version = match.group(1)
-            return latest_version
+        request = requests.get("https://pub.cellframe.net/linux/cellframe-node/master/?C=M&O=D")
+        if request.status_code == 200:
+            res = request.text
+            match = re.search(r"(\d.\d-\d{3})", res)
+            if match:
+                return match.group(1).replace("-",".")
         else:
-            return "N/A"
+            return None
     except Exception as e:
         logError(f"Error: {e}")
+        return None
 
 def getListNetworks():
     try:
