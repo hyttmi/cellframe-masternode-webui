@@ -223,18 +223,23 @@ def getBlocks(network, cert=None, block_type='all', today=False):
                         blocks_signed_per_day[block_day] = 1
                     else:
                         blocks_signed_per_day[block_day] += 1
-
             sorted_dict = dict(OrderedDict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))))
             if today:
                 return blocks_signed_per_day.get(today_str, 0)
             else:
                 return sorted_dict
+        elif block_type == 'all_signed' and cert:
+            cmd_get_all_signed_blocks = CLICommand(f"block list -net {network} signed -cert {cert} -limit 1")
+            blocks_match = re.search(r"have blocks: (\d+)", cmd_get_all_signed_blocks)
+            if blocks_match:
+                return int(blocks_match.group(1))
+            else:
+                return None
         else:
             return None
     except Exception as e:
         logError(f"Error: {e}")
         return None
-
 
 def getRewardWalletTokens(wallet):
     try:
