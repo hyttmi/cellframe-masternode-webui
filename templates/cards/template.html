@@ -60,17 +60,17 @@
             </div>
         {% endif %}
     
-        {% if external_ip %}
-            <div class="col-md-3" data-id="external_ip_address">
+        {% if node_active_threads %}
+            <div class="col-md-3" data-id="active_threads">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">external ip address</h5>
+                        <h5 class="card-title text-uppercase">node active threads</h5>
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ external_ip }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ node_active_threads }}</h6>
                     </div>
-                    <i class="fa-solid fa-network-wired icon-container"></i>
+                    <i class="fa-solid fa-gears icon-container"></i>
                 </div>
             </div>
         {% endif %}

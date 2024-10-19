@@ -72,7 +72,7 @@ Here are the variables that are passed to the Jinja templates:
 - `latest_plugin_version`: Returns the latest version of this plugin
 - `plugin_title`: Return plugin name
 - `hostname`: Returns your systems hostname
-- `external_ip`: Returns external IP address
+- `node_active_threads`: Returns active threads spawned by Cellframe node
 - `system_uptime`: Returns your system uptime in seconds
 - `node_uptime`: Returns Cellframe node uptime in seconds
 - `node_version`: Returns the currently installed version of Cellframe node

@@ -92,16 +92,15 @@ def getPID():
         logError(f"Error: {e}")
         return f"Error: {e}"
 
+def getNodeThreadCount():
+    try:
+        process = psutil.Process(getPID())
+        return int(len(process.threads()))
+    except Exception as e:
+        logError("Error: {e}")
+
 def getHostname():
     return socket.gethostname()
-
-def getExtIP():
-    try:
-        res = requests.get('https://ifconfig.me/ip')
-        return res.text
-    except Exception as e:
-        logError(f"Error: {e}")
-        return f"Error: {e}"
 
 def formatUptime(seconds):
     days, remainder = divmod(seconds, 86400)
@@ -411,10 +410,10 @@ def generateInfo(exclude=None, format_time=True):
         'latest_plugin_version': latest_version,
         "plugin_name": PLUGIN_NAME,
         "hostname": getHostname(),
-        "external_ip": getExtIP(),
         "system_uptime": formatUptime(sys_stats["system_uptime"]) if format_time else sys_stats["system_uptime"],
         "node_uptime": formatUptime(sys_stats["node_uptime"]) if format_time else sys_stats["node_uptime"],
         "node_version": getCurrentNodeVersion(),
+        "node_active_threads": getNodeThreadCount(),
         "latest_node_version": getLatestNodeVersion(),
         "node_cpu_utilization": sys_stats["node_cpu_usage"],
         "node_memory_utilization": sys_stats["node_memory_usage_mb"],
