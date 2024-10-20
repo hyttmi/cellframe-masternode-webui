@@ -42,7 +42,7 @@ You can get the latest release from [releases page](https://github.com/hyttmi/ce
 enabled=true
 # Load Python-based plugins
 py_load=true
-py_path=/opt/cellframe-node/var/lib/plugins
+py_path=../var/lib/plugins
 
 ```
 2. Place the `cellframe-masternode-webui` directory to `/opt/cellframe-node/var/lib/plugins/` (If it doesn't exist, create it).
@@ -83,6 +83,7 @@ Here are the variables that are passed to the Jinja templates:
 - `networks`: A dictionary containing network information.
   - `name`: The name of the network
   - `state`: The current state of the network
+  - `target_state`: Target state of the network
   - `address`: The network address
   - `first_signed_blocks`: The number of first signed blocks **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**
   - `all_signed_blocks`: The number of all signed blocks **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**

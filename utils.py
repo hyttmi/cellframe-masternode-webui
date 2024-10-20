@@ -145,6 +145,7 @@ def getSysStats():
 
 def getCurrentNodeVersion():
     try:
+        logNotice("Fetching current node version...")
         version = CLICommand("version")
         return version.split()[2].replace("-",".")
     except Exception as e:
@@ -154,6 +155,7 @@ def getCurrentNodeVersion():
 @cachetools.func.ttl_cache(maxsize=10, ttl=7200)
 def getLatestNodeVersion():
     try:
+        logNotice("Fetching latest node version...")
         request = requests.get("https://pub.cellframe.net/linux/cellframe-node/master/?C=M&O=D", timeout=5)
         if request.status_code == 200:
             res = request.text
@@ -169,6 +171,7 @@ def getLatestNodeVersion():
 @cachetools.func.ttl_cache(maxsize=10, ttl=3600)
 def getCurrentTokenPrice(network):
     try:
+        logNotice("Fetching token price...")
         if network == "Backbone":
             req = requests.get(f"https://coinmarketcap.com/currencies/cellframe/", timeout=5)
             if req.status_code == 200:
@@ -225,20 +228,25 @@ def readNetworkConfig(network):
         logError(f"Error: {e}")
 
 def getAutocollectStatus(network):
-    autocollect_cmd = CLICommand(f"block autocollect status -net {network} -chain main")
-    if "is active" in autocollect_cmd:
-        return "Active"
-    else:
-        return "Inactive"
+    try:
+        autocollect_cmd = CLICommand(f"block autocollect status -net {network} -chain main")
+        if "is active" in autocollect_cmd:
+            return "Active"
+        else:
+            return "Inactive"
+    except Exception as e:
+        logError(f"Error: {e}")
 
 def getNetStatus(network):
     try:
         net_status = CLICommand(f"net -net {network} get status")
         addr_match = re.search(r"([A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*)", net_status)
         state_match = re.search(r"states:\s+current: (\w+)", net_status)
+        target_state_match = re.search(r"target: (\w+)", net_status)
         if state_match and addr_match:
             net_status = {
                 "state": state_match.group(1),
+                "target_state": target_state_match.group(1),
                 "address": addr_match.group(1)
             }
             return net_status
@@ -409,6 +417,16 @@ def readRewards(network):
         logError(f"Error reading rewards: {e}")
         return None
 
+def sumRewards(network):
+    try:
+        rewards = readRewards(network)
+        if rewards is None:
+            return 0.0
+        return sum(rewards.values())
+    except Exception as e:
+        logError(f"Error: {e}")
+        return 0.0
+
 def generateNetworkData():
     networks = getListNetworks()
     if networks is not None:
@@ -430,10 +448,12 @@ def generateNetworkData():
                         'all_blocks': executor.submit(getBlocks, network, block_type="all"),
                         'signed_blocks_today': executor.submit(getBlocks, network, cert=cert, block_type="signed", today=True),
                         'token_price': executor.submit(getCurrentTokenPrice, network),
-                        'rewards': executor.submit(readRewards, network)
+                        'rewards': executor.submit(readRewards, network),
+                        'all_rewards': executor.submit(sumRewards, network)
                     }
                     network_info = {
                         'state': net_status['state'],
+                        'target_state': net_status['target_state'],
                         'address': net_status['address'],
                         'first_signed_blocks': futures['first_signed_blocks'].result(),
                         'all_signed_blocks_dict': futures['all_signed_blocks_dict'].result(),
@@ -444,6 +464,7 @@ def generateNetworkData():
                         'autocollect_rewards': getAutocollectRewards(network),
                         'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
                         'rewards': futures['rewards'].result(),
+                        'all_rewards': futures['all_rewards'].result(),
                         'token_price': futures['token_price'].result()
                     }
                 network_data[network] = network_info
