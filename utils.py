@@ -389,9 +389,9 @@ def generateNetworkData():
                 target_state_match = re.search(r"target: (\w+)", net_status)
                 tokens = getRewardWalletTokens(wallet)
                 if network == "Backbone":
-                    token_price = getCurrentTokenPrice("cellframe")
+                    token_price = float(getCurrentTokenPrice("cellframe"))
                 elif network == "KelVPN":
-                    token_price = getCurrentTokenPrice("kelvpn")
+                    token_price = None
 
                 if state_match and target_state_match:
                     with ThreadPoolExecutor() as executor:
@@ -415,7 +415,7 @@ def generateNetworkData():
                             'autocollect_rewards': getAutocollectRewards(network),
                             'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
                             'rewards': readRewards(network),
-                            'token_price': float(token_price)
+                            'token_price': token_price
                         }
                     network_data[network] = network_info
         return network_data
