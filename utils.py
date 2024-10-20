@@ -392,7 +392,7 @@ def generateNetworkData():
                 elif network == "KelVPN":
                     token_price = None
 
-                if state_match and target_state_match:
+                if state_match:
                     with ThreadPoolExecutor() as executor:
                         futures = {
                             'first_signed_blocks': executor.submit(getBlocks, network, cert=cert, block_type="first_signed"),
