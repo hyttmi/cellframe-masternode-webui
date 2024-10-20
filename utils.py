@@ -233,13 +233,14 @@ def getAutocollectStatus(network):
 
 def getNetStatus(network):
     try:
-        net_status = {}
         net_status = CLICommand(f"net -net {network} get status")
         addr_match = re.search(r"([A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*)", net_status)
         state_match = re.search(r"states:\s+current: (\w+)", net_status)
         if state_match and addr_match:
-            net_status['state'] = state_match.group(1)
-            net_status['address'] = addr_match.group(1)
+            net_status = {
+                "state": state_match.group(1),
+                "address": addr_match.group(1)
+            }
             return net_status
         else:
             return None
