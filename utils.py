@@ -194,6 +194,7 @@ def getCurrentTokenPrice(network):
                 logError(f"Failed to fetch token price from {req.url}")
                 return None
     except Exception as e:
+        logError(f"Error: {e}")
         return None
 
 def getListNetworks():
@@ -445,6 +446,8 @@ def generateNetworkData():
                         'token_price': futures['token_price'].result()
                     }
                 network_data[network] = network_info
+            else:
+                return None
         return network_data
     else:
         return None
