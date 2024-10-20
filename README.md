@@ -29,7 +29,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/op
 - `cache_rewards_time=10` - Time (in minutes) between rewards cache renew, **DON'T USE VALUE BELOW 10, IT USES QUITE A LOT OF CPU**
 - `accent_color=FFFFFF` - Use hex code color as the accent color (without #)
 - `api_token=your_own_api_token`- Used in accessing plain JSON data (You can generate your own or use a service like https://it-tools.tech/token-generator)
-- `rate_limit=true|false` - If set, rate limit per request will be set to 15 seconds
+- `rate_limit=true|false` - If set, rate limit per request will be set to 15 seconds. Default false.
 
 ## Installation
 
@@ -85,11 +85,11 @@ Here are the variables that are passed to the Jinja templates:
   - `state`: The current state of the network
   - `target_state`: The target state of the network
   - `address`: The network address
-  - `first_signed_blocks`: The number of first signed blocks
-  - `all_signed_blocks`: The number of all signed blocks
-  - `all_blocks`: The number of blocks in main chain
-  - `signed_blocks_today`: The number of blocks signed today
-  - `all_signed_blocks_dict`: A dictionary of all signed blocks (day, amount)
+  - `first_signed_blocks`: The number of first signed blocks **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**
+  - `all_signed_blocks`: The number of all signed blocks **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**
+  - `all_blocks`: The number of blocks in main chain **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**
+  - `signed_blocks_today`: The number of blocks signed today **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**
+  - `all_signed_blocks_dict`: A dictionary of all signed blocks (day, amount) **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**
   - `autocollect_status`: The status of reward autocollection
   - `autocollect_rewards`: The total autocollect rewards currently uncollected
   - `fee_wallet_tokens`: A dict of token balances in the network's fee wallet

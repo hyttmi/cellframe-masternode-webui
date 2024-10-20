@@ -193,7 +193,7 @@ def getAutocollectStatus(network):
     else:
         return "Inactive"
 
-@cachetools.func.ttl_cache(maxsize=128, ttl=3600)
+@cachetools.func.ttl_cache(maxsize=16384, ttl=3600)
 def getBlocks(network, cert=None, block_type='all', today=False):
     try:
         if block_type == 'all':
