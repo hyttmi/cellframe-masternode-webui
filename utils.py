@@ -421,11 +421,11 @@ def sumRewards(network):
     try:
         rewards = readRewards(network)
         if rewards is None:
-            return 0.0
+            return None
         return sum(rewards.values())
     except Exception as e:
         logError(f"Error: {e}")
-        return 0.0
+        return None
 
 def generateNetworkData():
     networks = getListNetworks()
