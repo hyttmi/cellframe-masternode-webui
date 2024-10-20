@@ -160,21 +160,33 @@ def getLatestNodeVersion():
         return None
 
 @cachetools.func.ttl_cache(maxsize=10, ttl=3600)
-def getCurrentTokenPrice(token):
+def getCurrentTokenPrice(network):
     try:
-        req = requests.get(f"https://coinmarketcap.com/currencies/{token}/", timeout=5)
-        if req.status_code == 200:
-            res = req.text
-            price_match = re.search(r"price today is \$(\d+.\d+)", res)
-            if price_match:
-                return price_match.group(1)
+        if network == "Backbone":
+            req = requests.get(f"https://coinmarketcap.com/currencies/cellframe/", timeout=5)
+            if req.status_code == 200:
+                res = req.text
+                price_match = re.search(r"price today is \$(\d+.\d+)", res)
+                if price_match:
+                    return float(price_match.group(1))
+                else:
+                    return None
             else:
+                logError(f"Failed to fetch token price from {req.url}")
                 return None
-        else:
-            logError(f"Failed to fetch token price for {token}. Request status code: {req.status_code}")
-            return None
+        elif network == "KelVPN":
+            req = requests.get(f"https://kelvpn.com/about-token", timeout=5)
+            if req.status_code == 200:
+                res = req.text
+                price_match =re.search(r"\$(\d+.\d+)", res)
+                if price_match:
+                    return float(price_match.group(1))
+                else:
+                    return None
+            else:
+                logError(f"Failed to fetch token price from {req.url}")
+                return None
     except Exception as e:
-        logError(f"Error: {e}")
         return None
 
 def getListNetworks():
