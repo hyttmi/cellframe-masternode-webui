@@ -83,7 +83,6 @@ Here are the variables that are passed to the Jinja templates:
 - `networks`: A dictionary containing network information.
   - `name`: The name of the network
   - `state`: The current state of the network
-  - `target_state`: The target state of the network
   - `address`: The network address
   - `first_signed_blocks`: The number of first signed blocks **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**
   - `all_signed_blocks`: The number of all signed blocks **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**
