@@ -176,7 +176,6 @@ def getCurrentTokenPrice(token):
     except Exception as e:
         logError(f"Error: {e}")
         return None
-    
 
 def getListNetworks():
     try:
