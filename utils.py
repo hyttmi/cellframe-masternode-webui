@@ -429,7 +429,7 @@ def generateNetworkData():
                         'all_blocks': executor.submit(getBlocks, network, block_type="all"),
                         'signed_blocks_today': executor.submit(getBlocks, network, cert=cert, block_type="signed", today=True),
                         'token_price': executor.submit(getCurrentTokenPrice, network),
-                        'rewards': executor.submit(readRewards, network),
+                        'rewards': executor.submit(readRewards, network)
                     }
                     network_info = {
                         'state': net_status['state'],
