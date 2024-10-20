@@ -315,6 +315,20 @@
                 </div>
             </div>
             {% endif %}
+
+            {% if network.token_price is not none %}
+            <div class="col-md-3" data-id="autocollect_rewards_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">current token price</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">${{ network.token_price }}</h6>
+                    </div>
+                    <i class="fa-solid fa-dollar-sign icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
             
             {% if network.all_signed_blocks_dict is not none %}
             <div class="col-md-3" data-id="signed_blocks_last_n_days_{{ network_name }}">

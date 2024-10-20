@@ -159,6 +159,25 @@ def getLatestNodeVersion():
         logError(f"Error: {e}")
         return None
 
+@cachetools.func.ttl_cache(maxsize=10, ttl=3600)
+def getCurrentTokenPrice(token):
+    try:
+        req = requests.get(f"https://coinmarketcap.com/currencies/{token}/")
+        if req.status_code == 200:
+            res = req.text
+            price_match = re.search(r"price today is \$(\d+.\d+)", res)
+            if price_match:
+                return price_match.group(1)
+            else:
+                return None
+        else:
+            logError(f"Failed to fetch token price for {token}. Request status code: {req.status_code}")
+            return None
+    except Exception as e:
+        logError(f"Error: {e}")
+        return None
+    
+
 def getListNetworks():
     try:
         return CFNet.active_nets()
@@ -370,6 +389,10 @@ def generateNetworkData():
                 state_match = re.search(r"states:\s+current: (\w+)", net_status)
                 target_state_match = re.search(r"target: (\w+)", net_status)
                 tokens = getRewardWalletTokens(wallet)
+                if network == "Backbone":
+                    token_price = getCurrentTokenPrice("cellframe")
+                elif network == "KelVPN":
+                    token_price = getCurrentTokenPrice("kelvpn")
 
                 if state_match and target_state_match:
                     with ThreadPoolExecutor() as executor:
@@ -392,7 +415,8 @@ def generateNetworkData():
                             'autocollect_status': getAutocollectStatus(network),
                             'autocollect_rewards': getAutocollectRewards(network),
                             'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
-                            'rewards': readRewards(network)
+                            'rewards': readRewards(network),
+                            'token_price': float(token_price)
                         }
                     network_data[network] = network_info
         return network_data
