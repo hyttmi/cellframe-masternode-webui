@@ -14,7 +14,14 @@ def getScriptDir():
 
 def logNotice(msg):
     func_name = inspect.stack()[1].function
-    log.notice(f"{PLUGIN_NAME} [{func_name}] {msg}")
+    log_message = f"{PLUGIN_NAME} [{func_name}] {msg}"
+    log.notice(log_message)
+    try:
+        curr_time = datetime.now().strftime("%d.%m.%Y, %H:%M:%S")
+        with open(os.path.join(getScriptDir(), "notice_log.txt"), "a") as f:
+            f.write(f"[{curr_time}] {log_message}\n")
+    except Exception as e:
+        log.error(f"Failed to write to log file: {e}")
 
 def logError(msg):
     frame_info = inspect.stack()[1]
@@ -223,6 +230,21 @@ def getAutocollectStatus(network):
     else:
         return "Inactive"
 
+def getNetStatus(network):
+    try:
+        net_status = {}
+        net_status = CLICommand(f"net -net {network} get status")
+        addr_match = re.search(r"([A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*)", net_status)
+        state_match = re.search(r"states:\s+current: (\w+)", net_status)
+        if state_match and addr_match:
+            net_status['state'] = state_match.group(1)
+            net_status['address'] = addr_match.group(1)
+            return net_status
+        else:
+            return None
+    except Exception as e:
+        logError(f"Error: {e}")
+
 @cachetools.func.ttl_cache(maxsize=16384, ttl=3600)
 def getBlocks(network, cert=None, block_type='all', today=False):
     try:
@@ -395,39 +417,34 @@ def generateNetworkData():
                 network = str(network)
                 cert = net_config['blocks_sign_cert']
                 wallet = net_config['wallet']
-                net_status = CLICommand(f"net -net {network} get status")
-                addr_match = re.search(r"([A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*)", net_status)
-                state_match = re.search(r"states:\s+current: (\w+)", net_status)
                 tokens = getRewardWalletTokens(wallet)
-                if network == "Backbone":
-                    token_price = float(getCurrentTokenPrice("cellframe"))
-                elif network == "KelVPN":
-                    token_price = None
+                net_status = getNetStatus(network)
 
-                if state_match:
-                    with ThreadPoolExecutor() as executor:
-                        futures = {
-                            'first_signed_blocks': executor.submit(getBlocks, network, cert=cert, block_type="first_signed"),
-                            'all_signed_blocks_dict': executor.submit(getBlocks, network, cert=cert, block_type="signed"),
-                            'all_signed_blocks': executor.submit(getBlocks, network, cert=cert, block_type="all_signed"),
-                            'all_blocks': executor.submit(getBlocks, network, block_type="all"),
-                            'signed_blocks_today': executor.submit(getBlocks, network, cert=cert, block_type="signed", today=True)
-                        }
-                        network_info = {
-                            'state': state_match.group(1),
-                            'address': addr_match.group(1) if addr_match else None,
-                            'first_signed_blocks': futures['first_signed_blocks'].result(),
-                            'all_signed_blocks_dict': futures['all_signed_blocks_dict'].result(),
-                            'all_signed_blocks': futures['all_signed_blocks'].result(),
-                            'all_blocks': futures['all_blocks'].result(),
-                            'signed_blocks_today': futures['signed_blocks_today'].result(),
-                            'autocollect_status': getAutocollectStatus(network),
-                            'autocollect_rewards': getAutocollectRewards(network),
-                            'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
-                            'rewards': readRewards(network),
-                            'token_price': token_price
-                        }
-                    network_data[network] = network_info
+                with ThreadPoolExecutor() as executor:
+                    futures = {
+                        'first_signed_blocks': executor.submit(getBlocks, network, cert=cert, block_type="first_signed"),
+                        'all_signed_blocks_dict': executor.submit(getBlocks, network, cert=cert, block_type="signed"),
+                        'all_signed_blocks': executor.submit(getBlocks, network, cert=cert, block_type="all_signed"),
+                        'all_blocks': executor.submit(getBlocks, network, block_type="all"),
+                        'signed_blocks_today': executor.submit(getBlocks, network, cert=cert, block_type="signed", today=True),
+                        'token_price': executor.submit(getCurrentTokenPrice, network),
+                        'rewards': executor.submit(readRewards, network),
+                    }
+                    network_info = {
+                        'state': net_status['state'],
+                        'address': net_status['address'],
+                        'first_signed_blocks': futures['first_signed_blocks'].result(),
+                        'all_signed_blocks_dict': futures['all_signed_blocks_dict'].result(),
+                        'all_signed_blocks': futures['all_signed_blocks'].result(),
+                        'all_blocks': futures['all_blocks'].result(),
+                        'signed_blocks_today': futures['signed_blocks_today'].result(),
+                        'autocollect_status': getAutocollectStatus(network),
+                        'autocollect_rewards': getAutocollectRewards(network),
+                        'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
+                        'rewards': futures['rewards'].result(),
+                        'token_price': futures['token_price'].result()
+                    }
+                network_data[network] = network_info
         return network_data
     else:
         return None
