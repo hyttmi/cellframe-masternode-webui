@@ -29,7 +29,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/op
 - `cache_rewards_time=10` - Time (in minutes) between rewards cache renew, **DON'T USE VALUE BELOW 10, IT USES QUITE A LOT OF CPU**
 - `accent_color=FFFFFF` - Use hex code color as the accent color (without #)
 - `api_token=your_own_api_token`- Used in accessing plain JSON data (You can generate your own or use a service like https://it-tools.tech/token-generator)
-- `rate_limit=true|false` - If set, rate limit per request will be set to 15 seconds
+- `rate_limit=true|false` - If set, rate limit per request will be set to 15 seconds. Default false.
 
 ## Installation
 
@@ -72,11 +72,11 @@ Here are the variables that are passed to the Jinja templates:
 - `latest_plugin_version`: Returns the latest version of this plugin
 - `plugin_title`: Return plugin name
 - `hostname`: Returns your systems hostname
-- `external_ip`: Returns external IP address
+- `node_active_threads`: Returns active threads spawned by Cellframe node
 - `system_uptime`: Returns your system uptime in seconds
 - `node_uptime`: Returns Cellframe node uptime in seconds
 - `node_version`: Returns the currently installed version of Cellframe node
-- `latest_node_version`: Returns the latest version of Cellframe node
+- `latest_node_version`: Returns the latest version of Cellframe node **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 2 HOURS**
 - `node_cpu_utilization`: Returns the current CPU utilization of Cellframe node
 - `node_memory_utilization`: Returns the current memory utilization of Cellframe node
 - `website_accent_color`: Returns the accent color from cellframe-node.cfg
@@ -85,15 +85,16 @@ Here are the variables that are passed to the Jinja templates:
   - `state`: The current state of the network
   - `target_state`: The target state of the network
   - `address`: The network address
-  - `first_signed_blocks`: The number of first signed blocks
-  - `all_signed_blocks`: The number of all signed blocks
-  - `all_blocks`: The number of blocks in main chain
-  - `signed_blocks_today`: The number of blocks signed today
-  - `all_signed_blocks_dict`: A dictionary of all signed blocks (day, amount)
+  - `first_signed_blocks`: The number of first signed blocks **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**
+  - `all_signed_blocks`: The number of all signed blocks **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**
+  - `all_blocks`: The number of blocks in main chain **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**
+  - `signed_blocks_today`: The number of blocks signed today **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**
+  - `all_signed_blocks_dict`: A dictionary of all signed blocks (day, amount) **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**
   - `autocollect_status`: The status of reward autocollection
   - `autocollect_rewards`: The total autocollect rewards currently uncollected
   - `fee_wallet_tokens`: A dict of token balances in the network's fee wallet
   - `rewards`: A dictionary of rewards from last 7 days
+  - `token_price`: Tries to fetch and return the latest token price from CMC **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**
 
 ## Accessing data as JSON
 By default, this plugin has support for fetching all the important data from your node as JSON if you have `api_token` set in settings. Here's a sample code for fetching the data with Python:
@@ -130,16 +131,20 @@ if data is not None:
 
 And with on terminal with `curl` piping to `jq`:
 ```
-curl "http://<your_node_ext_ip>:8079/webui?as_json" -H "API_TOKEN: <your_api_token>" | jq .net_info.Backbone.signed_blocks_today -> Returns the amount of signed blocks today
+curl -s "http://<your_node_ext_ip>:8079/webui?as_json" -H "API_TOKEN: <your_api_token>" | jq .net_info.Backbone.signed_blocks_today -> Returns the amount of signed blocks today
 ```
 
 ```
-curl "http://<your_node_ext_ip>:8079/webui?as_json" -H "API_TOKEN: <your_api_token>" | jq .node_uptime -> Returns node uptime in (days), hours, minutes, seconds
+curl -s "http://<your_node_ext_ip>:8079/webui?as_json" -H "API_TOKEN: <your_api_token>" | jq .node_uptime -> Returns node uptime in (days), hours, minutes, seconds
 ```
 
 ```
-curl "http://<your_node_ext_ip>:8079/webui?as_json" -H "API_TOKEN: <your_api_token>" | jq -> Returns all data
+curl -s "http://<your_node_ext_ip>:8079/webui?as_json" -H "API_TOKEN: <your_api_token>" | jq -> Returns all data
 ```
+```
+curl -s "http://<your_node_ext_ip>:8079/webui?as_json" -H "API_TOKEN: <your_api_token>" | jq '.networks.Backbone.rewards | add' -> Calculates all your earned rewards in Backbone network
+```
+
 
 
 

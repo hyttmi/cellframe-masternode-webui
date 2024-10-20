@@ -51,7 +51,7 @@ def checkForUpdate():
             logNotice(f"Current plugin version: {curr_version}")
                 
         url = "https://raw.githubusercontent.com/hyttmi/cellframe-masternode-webui/refs/heads/master/manifest.json"
-        res = requests.get(url).json()
+        res = requests.get(url, timeout=5).json()
         latest_version = Version(res["version"])
         logNotice(f"Latest plugin version: {latest_version}")
         return curr_version < latest_version, str(curr_version), str(latest_version)
@@ -92,16 +92,15 @@ def getPID():
         logError(f"Error: {e}")
         return f"Error: {e}"
 
+def getNodeThreadCount():
+    try:
+        process = psutil.Process(getPID())
+        return int(len(process.threads()))
+    except Exception as e:
+        logError("Error: {e}")
+
 def getHostname():
     return socket.gethostname()
-
-def getExtIP():
-    try:
-        res = requests.get('https://ifconfig.me/ip')
-        return res.text
-    except Exception as e:
-        logError(f"Error: {e}")
-        return f"Error: {e}"
 
 def formatUptime(seconds):
     days, remainder = divmod(seconds, 86400)
@@ -145,18 +144,38 @@ def getCurrentNodeVersion():
         logError(f"Error: {e}")
         return "N/A"
 
+@cachetools.func.ttl_cache(maxsize=10, ttl=7200)
 def getLatestNodeVersion():
     try:
-        badge_url = "https://pub.cellframe.net/linux/cellframe-node/master/node-version-badge.svg"
-        res = requests.get(badge_url).text
-        match = re.search(r">(\d.\d.\d+)", res)
-        if match:
-            latest_version = match.group(1)
-            return latest_version
+        request = requests.get("https://pub.cellframe.net/linux/cellframe-node/master/?C=M&O=D", timeout=5)
+        if request.status_code == 200:
+            res = request.text
+            match = re.search(r"(\d.\d-\d{3})", res)
+            if match:
+                return match.group(1).replace("-",".")
         else:
-            return "N/A"
+            return None
     except Exception as e:
         logError(f"Error: {e}")
+        return None
+
+@cachetools.func.ttl_cache(maxsize=10, ttl=3600)
+def getCurrentTokenPrice(token):
+    try:
+        req = requests.get(f"https://coinmarketcap.com/currencies/{token}/", timeout=5)
+        if req.status_code == 200:
+            res = req.text
+            price_match = re.search(r"price today is \$(\d+.\d+)", res)
+            if price_match:
+                return price_match.group(1)
+            else:
+                return None
+        else:
+            logError(f"Failed to fetch token price for {token}. Request status code: {req.status_code}")
+            return None
+    except Exception as e:
+        logError(f"Error: {e}")
+        return None
 
 def getListNetworks():
     try:
@@ -192,17 +211,19 @@ def getAutocollectStatus(network):
     else:
         return "Inactive"
 
-@cachetools.func.ttl_cache(maxsize=128, ttl=3600)
+@cachetools.func.ttl_cache(maxsize=16384, ttl=3600)
 def getBlocks(network, cert=None, block_type='all', today=False):
     try:
         if block_type == 'all':
             all_blocks_cmd = CLICommand(f"block count -net {network}")
+            logNotice(f"Fetching block count in {network}")
             all_blocks_match = re.search(r":\s+(\d+)", all_blocks_cmd)
             if all_blocks_match:
                 return int(all_blocks_match.group(1))
             else:
                 return None
         elif block_type == 'first_signed' and cert:
+            logNotice(f"Fetching first signed blocks count in {network}")
             cmd_get_first_signed_blocks = CLICommand(f"block list -net {network} first_signed -cert {cert} -limit 1")
             blocks_match = re.search(r"have blocks: (\d+)", cmd_get_first_signed_blocks)
             if blocks_match:
@@ -210,6 +231,7 @@ def getBlocks(network, cert=None, block_type='all', today=False):
             else:
                 return None
         elif block_type == 'signed' and cert:
+            logNotice(f"Fetching block list in {network}")
             cmd_output = CLICommand(f"block list -net {network} signed -cert {cert}")
             today_str = datetime.now().strftime("%a, %d %b %Y")
             blocks_signed_per_day = {}
@@ -229,6 +251,7 @@ def getBlocks(network, cert=None, block_type='all', today=False):
             else:
                 return sorted_dict
         elif block_type == 'all_signed' and cert:
+            logNotice(f"Fetching all signed blocks count in {network}")
             cmd_get_all_signed_blocks = CLICommand(f"block list -net {network} signed -cert {cert} -limit 1")
             blocks_match = re.search(r"have blocks: (\d+)", cmd_get_all_signed_blocks)
             if blocks_match:
@@ -363,10 +386,13 @@ def generateNetworkData():
                 net_status = CLICommand(f"net -net {network} get status")
                 addr_match = re.search(r"([A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*)", net_status)
                 state_match = re.search(r"states:\s+current: (\w+)", net_status)
-                target_state_match = re.search(r"target: (\w+)", net_status)
                 tokens = getRewardWalletTokens(wallet)
+                if network == "Backbone":
+                    token_price = float(getCurrentTokenPrice("cellframe"))
+                elif network == "KelVPN":
+                    token_price = None
 
-                if state_match and target_state_match:
+                if state_match:
                     with ThreadPoolExecutor() as executor:
                         futures = {
                             'first_signed_blocks': executor.submit(getBlocks, network, cert=cert, block_type="first_signed"),
@@ -377,7 +403,6 @@ def generateNetworkData():
                         }
                         network_info = {
                             'state': state_match.group(1),
-                            'target_state': target_state_match.group(1),
                             'address': addr_match.group(1) if addr_match else None,
                             'first_signed_blocks': futures['first_signed_blocks'].result(),
                             'all_signed_blocks_dict': futures['all_signed_blocks_dict'].result(),
@@ -387,7 +412,8 @@ def generateNetworkData():
                             'autocollect_status': getAutocollectStatus(network),
                             'autocollect_rewards': getAutocollectRewards(network),
                             'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
-                            'rewards': readRewards(network)
+                            'rewards': readRewards(network),
+                            'token_price': token_price
                         }
                     network_data[network] = network_info
         return network_data
@@ -407,10 +433,10 @@ def generateInfo(exclude=None, format_time=True):
         'latest_plugin_version': latest_version,
         "plugin_name": PLUGIN_NAME,
         "hostname": getHostname(),
-        "external_ip": getExtIP(),
         "system_uptime": formatUptime(sys_stats["system_uptime"]) if format_time else sys_stats["system_uptime"],
         "node_uptime": formatUptime(sys_stats["node_uptime"]) if format_time else sys_stats["node_uptime"],
         "node_version": getCurrentNodeVersion(),
+        "node_active_threads": getNodeThreadCount(),
         "latest_node_version": getLatestNodeVersion(),
         "node_cpu_utilization": sys_stats["node_cpu_usage"],
         "node_memory_utilization": sys_stats["node_memory_usage_mb"],
