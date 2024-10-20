@@ -386,7 +386,6 @@ def generateNetworkData():
                 net_status = CLICommand(f"net -net {network} get status")
                 addr_match = re.search(r"([A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*)", net_status)
                 state_match = re.search(r"states:\s+current: (\w+)", net_status)
-                target_state_match = re.search(r"target: (\w+)", net_status)
                 tokens = getRewardWalletTokens(wallet)
                 if network == "Backbone":
                     token_price = float(getCurrentTokenPrice("cellframe"))
@@ -404,7 +403,6 @@ def generateNetworkData():
                         }
                         network_info = {
                             'state': state_match.group(1),
-                            'target_state': target_state_match.group(1),
                             'address': addr_match.group(1) if addr_match else None,
                             'first_signed_blocks': futures['first_signed_blocks'].result(),
                             'all_signed_blocks_dict': futures['all_signed_blocks_dict'].result(),
