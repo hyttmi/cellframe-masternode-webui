@@ -76,7 +76,7 @@ Here are the variables that are passed to the Jinja templates:
 - `system_uptime`: Returns your system uptime in seconds
 - `node_uptime`: Returns Cellframe node uptime in seconds
 - `node_version`: Returns the currently installed version of Cellframe node
-- `latest_node_version`: Returns the latest version of Cellframe node
+- `latest_node_version`: Returns the latest version of Cellframe node **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 2 HOURS**
 - `node_cpu_utilization`: Returns the current CPU utilization of Cellframe node
 - `node_memory_utilization`: Returns the current memory utilization of Cellframe node
 - `website_accent_color`: Returns the accent color from cellframe-node.cfg
@@ -94,6 +94,7 @@ Here are the variables that are passed to the Jinja templates:
   - `autocollect_rewards`: The total autocollect rewards currently uncollected
   - `fee_wallet_tokens`: A dict of token balances in the network's fee wallet
   - `rewards`: A dictionary of rewards from last 7 days
+  - `token_price`: Tries to fetch and return the latest token price from CMC **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**
 
 ## Accessing data as JSON
 By default, this plugin has support for fetching all the important data from your node as JSON if you have `api_token` set in settings. Here's a sample code for fetching the data with Python:
