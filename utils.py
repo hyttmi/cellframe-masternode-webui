@@ -21,7 +21,7 @@ def logNotice(msg):
     try:
         curr_time = datetime.now().strftime("%d.%m.%Y, %H:%M:%S")
         with logLock:
-            with open(os.path.join(getScriptDir(), "log.txt"), "a") as f:
+            with open(os.path.join(getScriptDir(), "webui.log"), "a") as f:
                 f.write(f"[NOTICE][{curr_time}] {log_message}\n")
     except Exception as e:
         log.error(f"Failed to write to log file: {e}")
@@ -37,7 +37,7 @@ def logError(msg):
     try:
         curr_time = datetime.now().strftime("%d.%m.%Y, %H:%M:%S")
         with logLock:
-            with open(os.path.join(getScriptDir(), "log.txt"), "a") as f:
+            with open(os.path.join(getScriptDir(), "webui.log"), "a") as f:
                 f.write(f"[ERROR][{curr_time}] {log_message}\n")
     except Exception as e:
         log.error(f"Failed to write to log file: {e}")
