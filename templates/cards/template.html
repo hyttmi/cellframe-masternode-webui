@@ -272,6 +272,7 @@
             </div>
             {% endif %}
             
+            {% if network.autocollect_status is not none %}
             <div class="col-md-3" data-id="autocollect_status_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -283,6 +284,7 @@
                     <i class="fa-solid fa-coins icon-container"></i>
                 </div>
             </div>
+            {% endif %}
             
             {% if network.autocollect_rewards is not none %}
             <div class="col-md-3" data-id="autocollect_rewards_{{ network_name }}">
