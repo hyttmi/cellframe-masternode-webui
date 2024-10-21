@@ -437,8 +437,8 @@ def generateNetworkData():
     if networks is not None:
         network_data = {}
         for network in networks:
-            net_config = readNetworkConfig(network)  # Just process masternodes. No need to process normal ones
-            if net_config is not None:
+            net_config = readNetworkConfig(network)
+            if net_config is not None: # Just process masternodes. No need to process normal ones
                 network = str(network)
                 cert = net_config['blocks_sign_cert']
                 wallet = net_config['wallet']
