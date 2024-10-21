@@ -539,7 +539,6 @@ def validateNum(num):
     
 def validateHex(color_str):
     if re.match(r"([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", color_str):
-        logNotice(f"Using {color_str} as the accent color.")
         return color_str
     else:
         logError(f"Not a valid hexadecimal of colour code: {color_str}")
