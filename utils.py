@@ -62,8 +62,8 @@ def checkForUpdate():
             logNotice(f"Current plugin version: {curr_version}")
                 
         url = "https://raw.githubusercontent.com/hyttmi/cellframe-masternode-webui/refs/heads/master/manifest.json"
-        res = requests.get(url, timeout=5).json()
-        latest_version = Version(res["version"])
+        req = requests.get(url, timeout=5).json()
+        latest_version = Version(req["version"])
         logNotice(f"Latest plugin version: {latest_version}")
         return curr_version < latest_version, str(curr_version), str(latest_version)
     except Exception as e:
@@ -160,9 +160,9 @@ def getCurrentNodeVersion():
 def getLatestNodeVersion():
     try:
         logNotice("Fetching latest node version...")
-        request = requests.get("https://pub.cellframe.net/linux/cellframe-node/master/?C=M&O=D", timeout=5)
-        if request.status_code == 200:
-            res = request.text
+        req = requests.get("https://pub.cellframe.net/linux/cellframe-node/master/?C=M&O=D", timeout=5)
+        if req.status_code == 200:
+            res = req.text
             match = re.search(r"(\d.\d-\d{3})", res)
             if match:
                 return match.group(1).replace("-",".")
