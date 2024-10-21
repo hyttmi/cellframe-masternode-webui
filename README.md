@@ -76,7 +76,7 @@ Here are the variables that are passed to the Jinja templates:
 - `system_uptime`: Returns your system uptime in seconds
 - `node_uptime`: Returns Cellframe node uptime in seconds
 - `node_version`: Returns the currently installed version of Cellframe node
-- `latest_node_version`: Returns the latest version of Cellframe node **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 2 HOURS**
+- `latest_node_version`: Returns the latest version of Cellframe node **NOTE: THIS VALUE IS CACHED FOR 2 HOUR AFTER IT'S FETCHED**
 - `node_cpu_utilization`: Returns the current CPU utilization of Cellframe node
 - `node_memory_utilization`: Returns the current memory utilization of Cellframe node
 - `website_accent_color`: Returns the accent color from cellframe-node.cfg
@@ -85,16 +85,16 @@ Here are the variables that are passed to the Jinja templates:
   - `state`: The current state of the network
   - `target_state`: Target state of the network
   - `address`: The network address
-  - `first_signed_blocks`: The number of first signed blocks **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**
-  - `all_signed_blocks`: The number of all signed blocks **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**
-  - `all_blocks`: The number of blocks in main chain **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**
-  - `signed_blocks_today`: The number of blocks signed today **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**
-  - `all_signed_blocks_dict`: A dictionary of all signed blocks (day, amount) **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**
+  - `first_signed_blocks`: The number of first signed blocks **NOTE: THIS VALUE IS CACHED FOR 1 HOUR AFTER IT'S FETCHED**
+  - `all_signed_blocks`: The number of all signed blocks **NOTE: THIS VALUE IS CACHED FOR 1 HOUR AFTER IT'S FETCHED**
+  - `all_blocks`: The number of blocks in main chain **NOTE: THIS VALUE IS CACHED FOR 1 HOUR AFTER IT'S FETCHED**
+  - `signed_blocks_today`: The number of blocks signed today **NOTE: THIS VALUE IS CACHED FOR 1 HOUR AFTER IT'S FETCHED**
+  - `all_signed_blocks_dict`: A dictionary of all signed blocks (day, amount) **NOTE: THIS VALUE IS CACHED FOR 1 HOUR AFTER IT'S FETCHED**
   - `autocollect_status`: The status of reward autocollection
   - `autocollect_rewards`: The total autocollect rewards currently uncollected
   - `fee_wallet_tokens`: A dict of token balances in the network's fee wallet
   - `rewards`: A dictionary of rewards from last 7 days
-  - `token_price`: Tries to fetch and return the latest token price from CMC **NOTE: THIS VALUE IS CACHED AFTER FIRST RUN FOR 1 HOUR**
+  - `token_price`: Tries to fetch and return the latest token price from CMC **NOTE: THIS VALUE IS CACHED FOR 1 HOUR AFTER IT'S FETCHED**
 
 ## Accessing data as JSON
 By default, this plugin has support for fetching all the important data from your node as JSON if you have `api_token` set in settings. Here's a sample code for fetching the data with Python:
