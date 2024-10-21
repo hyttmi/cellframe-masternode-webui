@@ -1,4 +1,4 @@
-import DAP, socket, requests, re, time, psutil, json, os, time, schedule, inspect, subprocess
+import DAP, socket, requests, re, time, psutil, json, os, time, schedule, inspect, subprocess, threading
 from pycfhelpers.node.logging import CFLog
 from pycfhelpers.node.net import CFNet
 from packaging.version import Version
@@ -9,12 +9,22 @@ from concurrent.futures import ThreadPoolExecutor
 
 log = CFLog()
 
+logLock = threading.Lock()
+
 def getScriptDir():
     return os.path.dirname(os.path.abspath(__file__))
 
 def logNotice(msg):
     func_name = inspect.stack()[1].function
-    log.notice(f"{PLUGIN_NAME} [{func_name}] {msg}")
+    log_message = f"{PLUGIN_NAME} [{func_name}] {msg}"
+    log.notice(log_message)
+    try:
+        curr_time = datetime.now().strftime("%d.%m.%Y, %H:%M:%S")
+        with logLock:
+            with open(os.path.join(getScriptDir(), "webui.log"), "a") as f:
+                f.write(f"[NOTICE][{curr_time}] {log_message}\n")
+    except Exception as e:
+        log.error(f"Failed to write to log file: {e}")
 
 def logError(msg):
     frame_info = inspect.stack()[1]
@@ -26,8 +36,9 @@ def logError(msg):
     log.error(log_message)
     try:
         curr_time = datetime.now().strftime("%d.%m.%Y, %H:%M:%S")
-        with open(os.path.join(getScriptDir(), "error_log.txt"), "a") as f:
-            f.write(f"[{curr_time}] {log_message}\n")
+        with logLock:
+            with open(os.path.join(getScriptDir(), "webui.log"), "a") as f:
+                f.write(f"[ERROR][{curr_time}] {log_message}\n")
     except Exception as e:
         log.error(f"Failed to write to log file: {e}")
     return func_name
@@ -51,8 +62,8 @@ def checkForUpdate():
             logNotice(f"Current plugin version: {curr_version}")
                 
         url = "https://raw.githubusercontent.com/hyttmi/cellframe-masternode-webui/refs/heads/master/manifest.json"
-        res = requests.get(url, timeout=5).json()
-        latest_version = Version(res["version"])
+        req = requests.get(url, timeout=5).json()
+        latest_version = Version(req["version"])
         logNotice(f"Latest plugin version: {latest_version}")
         return curr_version < latest_version, str(curr_version), str(latest_version)
     except Exception as e:
@@ -138,6 +149,7 @@ def getSysStats():
 
 def getCurrentNodeVersion():
     try:
+        logNotice("Fetching current node version...")
         version = CLICommand("version")
         return version.split()[2].replace("-",".")
     except Exception as e:
@@ -147,9 +159,10 @@ def getCurrentNodeVersion():
 @cachetools.func.ttl_cache(maxsize=10, ttl=7200)
 def getLatestNodeVersion():
     try:
-        request = requests.get("https://pub.cellframe.net/linux/cellframe-node/master/?C=M&O=D", timeout=5)
-        if request.status_code == 200:
-            res = request.text
+        logNotice("Fetching latest node version...")
+        req = requests.get("https://pub.cellframe.net/linux/cellframe-node/master/?C=M&O=D", timeout=5)
+        if req.status_code == 200:
+            res = req.text
             match = re.search(r"(\d.\d-\d{3})", res)
             if match:
                 return match.group(1).replace("-",".")
@@ -160,19 +173,33 @@ def getLatestNodeVersion():
         return None
 
 @cachetools.func.ttl_cache(maxsize=10, ttl=3600)
-def getCurrentTokenPrice(token):
+def getCurrentTokenPrice(network):
     try:
-        req = requests.get(f"https://coinmarketcap.com/currencies/{token}/", timeout=5)
-        if req.status_code == 200:
-            res = req.text
-            price_match = re.search(r"price today is \$(\d+.\d+)", res)
-            if price_match:
-                return price_match.group(1)
+        logNotice("Fetching token price...")
+        if network == "Backbone":
+            req = requests.get(f"https://coinmarketcap.com/currencies/cellframe/", timeout=5)
+            if req.status_code == 200:
+                res = req.text
+                price_match = re.search(r"price today is \$(\d+.\d+)", res)
+                if price_match:
+                    return float(price_match.group(1))
+                else:
+                    return None
             else:
+                logError(f"Failed to fetch token price from {req.url}")
                 return None
-        else:
-            logError(f"Failed to fetch token price for {token}. Request status code: {req.status_code}")
-            return None
+        elif network == "KelVPN":
+            req = requests.get(f"https://kelvpn.com/about-token", timeout=5)
+            if req.status_code == 200:
+                res = req.text
+                price_match =re.search(r"\$(\d+.\d+)", res)
+                if price_match:
+                    return float(price_match.group(1))
+                else:
+                    return None
+            else:
+                logError(f"Failed to fetch token price from {req.url}")
+                return None
     except Exception as e:
         logError(f"Error: {e}")
         return None
@@ -205,11 +232,32 @@ def readNetworkConfig(network):
         logError(f"Error: {e}")
 
 def getAutocollectStatus(network):
-    autocollect_cmd = CLICommand(f"block autocollect status -net {network} -chain main")
-    if "is active" in autocollect_cmd:
-        return "Active"
-    else:
-        return "Inactive"
+    try:
+        autocollect_cmd = CLICommand(f"block autocollect status -net {network} -chain main")
+        if "is active" in autocollect_cmd:
+            return "Active"
+        else:
+            return "Inactive"
+    except Exception as e:
+        logError(f"Error: {e}")
+
+def getNetStatus(network):
+    try:
+        net_status = CLICommand(f"net -net {network} get status")
+        addr_match = re.search(r"([A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*)", net_status)
+        state_match = re.search(r"states:\s+current: (\w+)", net_status)
+        target_state_match = re.search(r"target: (\w+)", net_status)
+        if state_match and addr_match:
+            net_status = {
+                "state": state_match.group(1),
+                "target_state": target_state_match.group(1),
+                "address": addr_match.group(1)
+            }
+            return net_status
+        else:
+            return None
+    except Exception as e:
+        logError(f"Error: {e}")
 
 @cachetools.func.ttl_cache(maxsize=16384, ttl=3600)
 def getBlocks(network, cert=None, block_type='all', today=False):
@@ -347,6 +395,7 @@ def cacheRewards():
                 return None
     except Exception as e:
         logError(f"Error: {e}")
+        return None
             
 def readRewards(network):
     try:
@@ -373,49 +422,59 @@ def readRewards(network):
         logError(f"Error reading rewards: {e}")
         return None
 
+def sumRewards(network):
+    try:
+        rewards = readRewards(network)
+        if rewards is None:
+            return None
+        return sum(rewards.values())
+    except Exception as e:
+        logError(f"Error: {e}")
+        return None
+
 def generateNetworkData():
     networks = getListNetworks()
     if networks is not None:
         network_data = {}
         for network in networks:
-            net_config = readNetworkConfig(network)  # Just process masternodes. No need to process normal ones
-            if net_config is not None:
+            net_config = readNetworkConfig(network)
+            if net_config is not None: # Just process masternodes. No need to process normal ones
                 network = str(network)
                 cert = net_config['blocks_sign_cert']
                 wallet = net_config['wallet']
-                net_status = CLICommand(f"net -net {network} get status")
-                addr_match = re.search(r"([A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*)", net_status)
-                state_match = re.search(r"states:\s+current: (\w+)", net_status)
                 tokens = getRewardWalletTokens(wallet)
-                if network == "Backbone":
-                    token_price = float(getCurrentTokenPrice("cellframe"))
-                elif network == "KelVPN":
-                    token_price = None
+                net_status = getNetStatus(network)
 
-                if state_match:
-                    with ThreadPoolExecutor() as executor:
-                        futures = {
-                            'first_signed_blocks': executor.submit(getBlocks, network, cert=cert, block_type="first_signed"),
-                            'all_signed_blocks_dict': executor.submit(getBlocks, network, cert=cert, block_type="signed"),
-                            'all_signed_blocks': executor.submit(getBlocks, network, cert=cert, block_type="all_signed"),
-                            'all_blocks': executor.submit(getBlocks, network, block_type="all"),
-                            'signed_blocks_today': executor.submit(getBlocks, network, cert=cert, block_type="signed", today=True)
-                        }
-                        network_info = {
-                            'state': state_match.group(1),
-                            'address': addr_match.group(1) if addr_match else None,
-                            'first_signed_blocks': futures['first_signed_blocks'].result(),
-                            'all_signed_blocks_dict': futures['all_signed_blocks_dict'].result(),
-                            'all_signed_blocks': futures['all_signed_blocks'].result(),
-                            'all_blocks': futures['all_blocks'].result(),
-                            'signed_blocks_today': futures['signed_blocks_today'].result(),
-                            'autocollect_status': getAutocollectStatus(network),
-                            'autocollect_rewards': getAutocollectRewards(network),
-                            'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
-                            'rewards': readRewards(network),
-                            'token_price': token_price
-                        }
-                    network_data[network] = network_info
+                with ThreadPoolExecutor() as executor:
+                    futures = {
+                        'first_signed_blocks': executor.submit(getBlocks, network, cert=cert, block_type="first_signed"),
+                        'all_signed_blocks_dict': executor.submit(getBlocks, network, cert=cert, block_type="signed"),
+                        'all_signed_blocks': executor.submit(getBlocks, network, cert=cert, block_type="all_signed"),
+                        'all_blocks': executor.submit(getBlocks, network, block_type="all"),
+                        'signed_blocks_today': executor.submit(getBlocks, network, cert=cert, block_type="signed", today=True),
+                        'token_price': executor.submit(getCurrentTokenPrice, network),
+                        'rewards': executor.submit(readRewards, network),
+                        'all_rewards': executor.submit(sumRewards, network)
+                    }
+                    network_info = {
+                        'state': net_status['state'],
+                        'target_state': net_status['target_state'],
+                        'address': net_status['address'],
+                        'first_signed_blocks': futures['first_signed_blocks'].result(),
+                        'all_signed_blocks_dict': futures['all_signed_blocks_dict'].result(),
+                        'all_signed_blocks': futures['all_signed_blocks'].result(),
+                        'all_blocks': futures['all_blocks'].result(),
+                        'signed_blocks_today': futures['signed_blocks_today'].result(),
+                        'autocollect_status': getAutocollectStatus(network),
+                        'autocollect_rewards': getAutocollectRewards(network),
+                        'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
+                        'rewards': futures['rewards'].result(),
+                        'all_rewards': futures['all_rewards'].result(),
+                        'token_price': futures['token_price'].result()
+                    }
+                network_data[network] = network_info
+            else:
+                return None
         return network_data
     else:
         return None
@@ -480,7 +539,6 @@ def validateNum(num):
     
 def validateHex(color_str):
     if re.match(r"([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", color_str):
-        logNotice(f"Using {color_str} as the accent color.")
         return color_str
     else:
         logError(f"Not a valid hexadecimal of colour code: {color_str}")

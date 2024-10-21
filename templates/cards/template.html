@@ -47,6 +47,7 @@
             </div>
         </div>
         <div class="row is_sortable">
+
         {% if hostname %}
             <div class="col-md-3" data-id="hostname">
                 <div class="card">
@@ -168,14 +169,14 @@
         </div>
 
         {% if networks and networks.items() %}
-        {% for network_name, network in networks.items() %}
+            {% for network_name, network in networks.items() %}
         <div class="row">
             <div class="col-12">
                 <h1 class="text-uppercase text-color-secondary">{{ network_name }}</h1>
             </div>
         </div>
         <div class="row is_sortable">
-
+            {% if network.state is not none %}
             <div class="col-md-3" data-id="state_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -187,6 +188,21 @@
                     <i class="fa-solid fa-network-wired icon-container"></i>
                 </div>
             </div>
+            {% endif %}
+
+            {% if network.target_state is not none %}
+            <div class="col-md-3" data-id="target_state_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">target state</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.target_state }}</h6>
+                    </div>
+                    <i class="fa-solid fa-network-wired icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
             
             <div class="col-md-3" data-id="node_address_{{ network_name }}">
                 <div class="card">
@@ -256,6 +272,7 @@
             </div>
             {% endif %}
             
+            {% if network.autocollect_status is not none %}
             <div class="col-md-3" data-id="autocollect_status_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -267,6 +284,7 @@
                     <i class="fa-solid fa-coins icon-container"></i>
                 </div>
             </div>
+            {% endif %}
             
             {% if network.autocollect_rewards is not none %}
             <div class="col-md-3" data-id="autocollect_rewards_{{ network_name }}">
@@ -281,7 +299,35 @@
                 </div>
             </div>
             {% endif %}
-            
+
+            {% if network.token_price is not none %}
+            <div class="col-md-3" data-id="autocollect_rewards_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">current token price</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">${{ network.token_price }}</h6>
+                    </div>
+                    <i class="fa-solid fa-dollar-sign icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.all_rewards is not none %}
+            <div class="col-md-3" data-id="autocollect_rewards_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">Rewards all time</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.all_rewards }}</h6>
+                    </div>
+                    <i class="fa-solid fa-dollar-sign icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
             {% if network.fee_wallet_tokens is not none %}
             <div class="col-md-3" data-id="reward_wallet_information_{{ network_name }}">
                 <div class="card">
@@ -300,20 +346,6 @@
                         </table>
                     </div>
                     <i class="fa-solid fa-wallet icon-container"></i>
-                </div>
-            </div>
-            {% endif %}
-
-            {% if network.token_price is not none %}
-            <div class="col-md-3" data-id="autocollect_rewards_{{ network_name }}">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">current token price</h5><button type="button" class="btn-close" aria-label="Close"></button>
-                    </div>
-                    <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">${{ network.token_price }}</h6>
-                    </div>
-                    <i class="fa-solid fa-dollar-sign icon-container"></i>
                 </div>
             </div>
             {% endif %}

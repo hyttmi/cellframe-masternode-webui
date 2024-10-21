@@ -1,35 +1,32 @@
-<pre>{{ title }}</pre>
-
-<pre>
-    CPU utilization:     {{ node_cpu_utilization }}
-    Memory utilization:  {{ node_memory_utilization }}
-    Uptime:              {{ node_uptime }}
-    System uptime:       {{ system_uptime }}
-    Node version:        {{ node_version }}
-    Latest node version: {{ latest_node_version }}
-</pre>
-
+<b>Node System Info</b>
+<code>
+CPU utilization:     {{ node_cpu_utilization }}
+Memory utilization:  {{ node_memory_utilization }}
+Uptime:              {{ node_uptime }}
+System uptime:       {{ system_uptime }}
+Node version:        {{ node_version }}
+Latest node version: {{ latest_node_version }}
+</code>
 {% if networks and networks.items() %}
-    {% for network_name, network in networks.items() %}
-        <pre>{{ network_name }}</pre>
-        <pre>
-        Network state:       {{ network.state }}
-        Target state:        {{ network.target_state }}
-        Node address:        {{ network.address }}
-        Signed blocks today: {{ network.signed_blocks_today }}
-        Autocollect status:  {{ network.autocollect_status }}
-        </pre>
-        
-        <pre>Reward wallet:</pre>
-        {% if network.fee_wallet_tokens is not none %}
-            {% for token, balance in network.fee_wallet_tokens.items() %}
-                <pre>Token: {{ token }}</pre>
-                <pre>Balance: {{ balance }}</pre>
-            {% endfor %}
-        {% else %}
-            <pre>No tokens available.</pre>
-        {% endif %}
-    {% endfor %}
+{% for network_name, network in networks.items() %}
+<b>{{ network_name }} Node Info</b>
+<code>
+Network state:          {{ network.state }}
+Target state:           {{ network.target_state }}
+Node address:           {{ network.address }}
+Signed blocks today:    {{ network.signed_blocks_today }}
+Autocollect status:     {{ network.autocollect_status }}
+</code>
+<b>Reward Wallet Info</b>
+{% if network.fee_wallet_tokens is not none %}{% for token, balance in network.fee_wallet_tokens.items() %}
+<code>
+Token:   {{ token }}
+Balance: {{ balance }}
+</code>{% endfor %}
 {% else %}
-    <pre>No network information available.</pre>
+<b>No tokens available.</b>
+{% endif %}
+{% endfor %}
+{% else %}
+<b>No network information available.</b>
 {% endif %}
