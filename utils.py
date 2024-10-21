@@ -1,4 +1,4 @@
-import DAP, socket, requests, re, time, psutil, json, os, time, schedule, inspect, subprocess
+import DAP, socket, requests, re, time, psutil, json, os, time, schedule, inspect, subprocess, threading
 from pycfhelpers.node.logging import CFLog
 from pycfhelpers.node.net import CFNet
 from packaging.version import Version
@@ -9,6 +9,8 @@ from concurrent.futures import ThreadPoolExecutor
 
 log = CFLog()
 
+logLock = threading.Lock()
+
 def getScriptDir():
     return os.path.dirname(os.path.abspath(__file__))
 
@@ -18,8 +20,9 @@ def logNotice(msg):
     log.notice(log_message)
     try:
         curr_time = datetime.now().strftime("%d.%m.%Y, %H:%M:%S")
-        with open(os.path.join(getScriptDir(), "notice_log.txt"), "a") as f:
-            f.write(f"[{curr_time}] {log_message}\n")
+        with logLock:
+            with open(os.path.join(getScriptDir(), "log.txt"), "a") as f:
+                f.write(f"[NOTICE][{curr_time}] {log_message}\n")
     except Exception as e:
         log.error(f"Failed to write to log file: {e}")
 
@@ -33,8 +36,9 @@ def logError(msg):
     log.error(log_message)
     try:
         curr_time = datetime.now().strftime("%d.%m.%Y, %H:%M:%S")
-        with open(os.path.join(getScriptDir(), "error_log.txt"), "a") as f:
-            f.write(f"[{curr_time}] {log_message}\n")
+        with logLock:
+            with open(os.path.join(getScriptDir(), "log.txt"), "a") as f:
+                f.write(f"[ERROR][{curr_time}] {log_message}\n")
     except Exception as e:
         log.error(f"Failed to write to log file: {e}")
     return func_name
@@ -391,6 +395,7 @@ def cacheRewards():
                 return None
     except Exception as e:
         logError(f"Error: {e}")
+        return None
             
 def readRewards(network):
     try:
