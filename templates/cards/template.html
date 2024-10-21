@@ -47,6 +47,7 @@
             </div>
         </div>
         <div class="row is_sortable">
+
         {% if hostname %}
             <div class="col-md-3" data-id="hostname">
                 <div class="card">
@@ -168,14 +169,14 @@
         </div>
 
         {% if networks and networks.items() %}
-        {% for network_name, network in networks.items() %}
+            {% for network_name, network in networks.items() %}
         <div class="row">
             <div class="col-12">
                 <h1 class="text-uppercase text-color-secondary">{{ network_name }}</h1>
             </div>
         </div>
         <div class="row is_sortable">
-
+            {% if network.state is not none }
             <div class="col-md-3" data-id="state_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -187,7 +188,9 @@
                     <i class="fa-solid fa-network-wired icon-container"></i>
                 </div>
             </div>
+            {% endif %}
 
+            {% if network.state is not none }
             <div class="col-md-3" data-id="target_state_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -199,6 +202,7 @@
                     <i class="fa-solid fa-network-wired icon-container"></i>
                 </div>
             </div>
+            {% endif %}
             
             <div class="col-md-3" data-id="node_address_{{ network_name }}">
                 <div class="card">
