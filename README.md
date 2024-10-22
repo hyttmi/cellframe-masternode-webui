@@ -11,24 +11,25 @@ With this plugin, it's easy to check your node autocollect stats and some other 
 
 Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/opt/cellframe-node/etc/cellframe-node.cfg`. You just need to add new section `[webui]` to the end of the file and below that, add the settings which you want to change:
 
-- `username=john` - Sets http authentication as user john. **MANDATORY**
-- `password=p455w0rd` - Sets password to p455w0rd. **MANDATORY**  
+- `auth_bypass=true|false` Disables HTTP authentication. Useful if you're planning to for example use the plugin behind reverse proxy. Default false.
+- `username=john` - Sets http authentication as user john. **MANDATORY unless `auth_bypass` set to true**
+- `password=p455w0rd` - Sets password to p455w0rd. **MANDATORY unless `auth_bypass` set to true**
 - `template=something` - Change template to something. If not set, default template will be used (cards).
-- `uri=something` - Change plugin URI. Defaults to `webui`
+- `uri=something` - Change plugin URI. Defaults to `webui`.
 - `header_text=sometext` - Show `sometext` as a website header **WITHOUT SPACES**
-- `email_stats=true|false` - Allow sending scheduled email statistics
-- `email_time=23:59` - Set time when you want to send the statistics **24h format (HH:MM)**
-- `gmail_app_password=asdf asdf asdf asdf` - GMail app password
-- `gmail_user=somebody@gmail.com` - Your GMail username
-- `email_recipients=somebody@gmail.com|[somebody@gmail.com, another@aol.com]` - Recipient(s) for the email
-- `telegram_stats=true|false` - Enable timed Telegram messages
-- `telegram_api_key=something` - Your Telegram Bot API token
-- `telegram_chat_id=something` - Your Telegram chat id
-- `telegram_stats_time=23:59` - Time to send the message **24h format (HH:MM)**
-- `cache_rewards=true|false`- Cache rewards to a text file **MANDATORY FOR SHOWING REWARDS FROM LAST 7 DAYS**
-- `cache_rewards_time=10` - Time (in minutes) between rewards cache renew, **DON'T USE VALUE BELOW 10, IT USES QUITE A LOT OF CPU**
-- `accent_color=FFFFFF` - Use hex code color as the accent color (without #)
-- `api_token=your_own_api_token`- Used in accessing plain JSON data (You can generate your own or use a service like https://it-tools.tech/token-generator)
+- `email_stats=true|false` - Allow sending scheduled email statistics.
+- `email_time=23:59` - Set time when you want to send the statistics. **24h format (HH:MM)**
+- `gmail_app_password=asdf asdf asdf asdf` - GMail app password.
+- `gmail_user=somebody@gmail.com` - Your GMail username.
+- `email_recipients=somebody@gmail.com|[somebody@gmail.com, another@aol.com]` - Recipient(s) for the email.
+- `telegram_stats=true|false` - Enable timed Telegram messages.
+- `telegram_api_key=something` - Your Telegram Bot API token.
+- `telegram_chat_id=something` - Your Telegram chat id.
+- `telegram_stats_time=23:59` - Time to send the message. **24h format (HH:MM)**
+- `cache_rewards=true|false`- Cache rewards to a text file. **MANDATORY FOR SHOWING REWARDS FROM LAST 7 DAYS**
+- `cache_rewards_time=10` - Time (in minutes) between rewards cache renew. **DON'T USE VALUE BELOW 10, IT USES QUITE A LOT OF CPU**
+- `accent_color=FFFFFF` - Use hex code color as the accent color (without #).
+- `api_token=your_own_api_token`- Used in accessing plain JSON data (You can generate your own or use a service like https://it-tools.tech/token-generator).
 - `rate_limit=true|false` - If set, rate limit per request will be set to 15 seconds. Default false.
 
 ## Installation

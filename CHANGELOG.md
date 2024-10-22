@@ -1,6 +1,14 @@
 
 # Changelog
 
+## [UNRELEASED] - 2024-10-22
+
+### Added
+- `auth_bypass` setting to allow completely bypass default HTTP Authentication (useful with reverse proxy for example)
+### Changed
+- Improve request handling
+### Fixed
+
 ## [2.93] - 2024-10-21
  
 ### Added
