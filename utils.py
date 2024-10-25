@@ -367,24 +367,27 @@ def cacheRewards():
                     lines = cmd_get_tx_history.splitlines()
                     for line in lines:
                         line = line.strip()
-                        if line.startswith("status: ACCEPTED"):  # OK, we have ACCEPTED status
+                        if line.startswith("status: ACCEPTED"):
                             if reward and is_receiving_reward:
                                 rewards.append(reward)
                             reward = {}
                             is_receiving_reward = False
+                            continue
                         if line.startswith("tx_created:"):
                             original_date = line.split("tx_created:")[1].strip()[:-6]
                             reward['tx_created'] = original_date
+                            continue
                         if line.startswith("recv_coins:"):
                             reward['recv_coins'] = line.split("recv_coins:")[1].strip()
+                            continue
                         if line.startswith("source_address: reward collecting"):
                             is_receiving_reward = True
+                            continue
                     if reward and is_receiving_reward:
                         rewards.append(reward)
-                    cache_file_path = os.path.join(getScriptDir(), f".{network}_rewards_cache.txt")
+                    cache_file_path = os.path.join(getScriptDir(), f".{network}_rewards_cache.json")
                     with open(cache_file_path, "w") as f:
-                        for reward in rewards:
-                            f.write(f"{reward['tx_created']}|{reward['recv_coins']}\n")
+                        json.dump(rewards, f, indent=4)
                     end_time = time.time()
                     elapsed_time = end_time - start_time
                     logNotice(f"Rewards cached for {network}! It took {elapsed_time:.2f} seconds!")
@@ -396,24 +399,25 @@ def cacheRewards():
     except Exception as e:
         logError(f"Error: {e}")
         return None
-            
+
 def readRewards(network):
     try:
         rewards = {}
-        with open(os.path.join(getScriptDir(), f".{network}_rewards_cache.txt")) as f:
-            for line in f:
-                line = line.strip()
-                if not line:
-                    continue
-                date_string, amount = line.split("|")
-                amount = float(amount)
+        cache_file_path = os.path.join(getScriptDir(), f".{network}_rewards_cache.json")
+        with open(cache_file_path) as f:
+            data = json.load(f)
+            for reward in data:
+                date_string = reward['tx_created']
+                amount = float(reward['recv_coins'])
                 formatted_date = datetime.strptime(date_string, "%a, %d %b %Y %H:%M:%S")
                 formatted_date_str = formatted_date.strftime("%a, %d %b %Y")
+                
                 if formatted_date_str in rewards:
                     rewards[formatted_date_str] += amount
                 else:
                     rewards[formatted_date_str] = amount
-            sorted_dict = dict(OrderedDict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))))
+
+        sorted_dict = dict(OrderedDict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))))
         return sorted_dict
     except FileNotFoundError:
         logError("Rewards file not found!")
@@ -479,7 +483,6 @@ def generateNetworkData():
     else:
         return None
 
-    
 def generateInfo(exclude=None, format_time=True):
     if exclude is None:
         exclude = []
