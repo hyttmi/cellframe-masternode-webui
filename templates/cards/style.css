@@ -119,3 +119,12 @@ html {
     transform: scale(0.75);
     transition: opacity 0.5s ease, transform 0.5s ease;
 }
+
+.card-body {
+    position: relative;
+}
+
+.card-body canvas {
+    width: 100% !important;
+    height: auto !important;
+}
