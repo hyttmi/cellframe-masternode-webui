@@ -416,7 +416,6 @@ def readRewards(network):
                     rewards[formatted_date_str] += amount
                 else:
                     rewards[formatted_date_str] = amount
-
         sorted_dict = dict(OrderedDict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))))
         return sorted_dict
     except FileNotFoundError:
