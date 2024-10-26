@@ -413,35 +413,43 @@ def cacheBlocks():
                     'all_signed_blocks': {}
                 }
 
-                block_count_cmd = CLICommand(f"block count -net {network}")
-                first_signed_blocks_cmd = CLICommand(f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']} -limit 1")
-                signed_blocks_cmd = CLICommand(f"block list -net {network} signed -cert {net_config['blocks_sign_cert']}")
+                with ThreadPoolExecutor() as executor:
+                    futures = {
+                        'block_count': executor.submit(CLICommand, f"block count -net {network}"),
+                        'first_signed_blocks': executor.submit(CLICommand, f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']} -limit 1"),
+                        'signed_blocks': executor.submit(CLICommand, f"block list -net {network} signed -cert {net_config['blocks_sign_cert']}")
+                    }
 
-                block_count_match = re.search(r":\s+(\d+)", block_count_cmd)
-                if block_count_match:   
+                block_count_result = futures["block_count"].result()
+                block_count_match = re.search(r":\s+(\d+)", block_count_result)
+                if block_count_match:
                     block_data["block_count"] = int(block_count_match.group(1))
 
-                signed_blocks_match = re.search(r"have blocks: (\d+)", signed_blocks_cmd)
+                signed_blocks_result = futures["signed_blocks"].result()
+                signed_blocks_match = re.search(r"have blocks: (\d+)", signed_blocks_result)
                 if signed_blocks_match:
                     block_data["signed_blocks_count"] = int(signed_blocks_match.group(1))
- 
-                first_signed_match = re.search(r"have blocks: (\d+)", first_signed_blocks_cmd)
+
+                first_signed_match = re.search(r"have blocks: (\d+)", futures["first_signed_blocks"].result())
                 if first_signed_match:
                     block_data["first_signed_blocks_count"] = int(first_signed_match.group(1))
-                    
+
                 blocks_signed_per_day = {}
-                lines = signed_blocks_cmd.splitlines()
+                lines = signed_blocks_result.splitlines()
                 for line in lines:
                     if "ts_create:" in line:
                         timestamp_str = line.split("ts_create:")[1].strip()[:-6]
                         block_time = datetime.strptime(timestamp_str, "%a, %d %b %Y %H:%M:%S")
                         block_day = block_time.strftime("%a, %d %b %Y")
                         blocks_signed_per_day[block_day] = blocks_signed_per_day.get(block_day, 0) + 1
+
                 sorted_blocks = OrderedDict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
                 block_data["all_signed_blocks"] = sorted_blocks
+
                 cache_file_path = os.path.join(getScriptDir(), f".{network}_blocks_cache.json")
                 with open(cache_file_path, "w") as f:
                     json.dump(block_data, f, indent=4)
+
                 elapsed_time = time.time() - start_time
                 logNotice(f"Blocks cached for {network}! It took {elapsed_time:.2f} seconds!")
             else:
