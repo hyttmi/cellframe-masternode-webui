@@ -274,8 +274,8 @@ def cacheBlocks():
                 }
 
                 block_count_cmd = CLICommand(f"block count -net {network}")
-                first_signed_blocks_cmd = CLICommand(f"block list -net {network} first_signed -cert {net_config['cert']} -limit 1")
-                signed_blocks_cmd = CLICommand(f"block list -net {network} signed -cert {net_config['cert']}")
+                first_signed_blocks_cmd = CLICommand(f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']} -limit 1")
+                signed_blocks_cmd = CLICommand(f"block list -net {network} signed -cert {net_config['blocks_sign_cert']}")
 
                 block_count_match = re.search(r":\s+(\d+)", block_count_cmd)
                 if block_count_match:   
