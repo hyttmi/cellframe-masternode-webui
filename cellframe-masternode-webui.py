@@ -26,7 +26,7 @@ def onInit():
     telegram_stats_enabled = getConfigValue("webui", "telegram_stats", default=False)
     telegram_stats_time = getConfigValue("webui", "telegram_stats_time")
     cache_rewards_interval = getConfigValue("webui", "cache_rewards_interval", default=15)
-    block_rewards_interval = getConfigValue("webui", "block_rewards_interval", default=15)
+    cache_blocks_interval = getConfigValue("webui", "cache_blocks_interval", default=15)
             
     with ThreadPoolExecutor() as executor:
         executor.submit(HTTPServer)
@@ -48,8 +48,8 @@ def onInit():
                 logError("Rewards caching time is below 10 minutes which is not recommended as it uses lots of CPU. Consider higher value.")
             executor.submit(funcScheduler, cacheRewards, False, cache_rewards_interval)
         
-        if validateNum(block_rewards_interval):
-            executor.submit(funcScheduler, cacheBlocks, False, block_rewards_interval)
+        if validateNum(cache_blocks_interval):
+            executor.submit(funcScheduler, cacheBlocks, False, cache_blocks_interval)
 
 def deinit():
     logNotice("stopped")
