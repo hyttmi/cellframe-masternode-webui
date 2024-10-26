@@ -26,8 +26,8 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/op
 - `telegram_api_key=something` - Your Telegram Bot API token.
 - `telegram_chat_id=something` - Your Telegram chat id.
 - `telegram_stats_time=23:59` - Time to send the message. **24h format (HH:MM)**
-- `cache_rewards=true|false`- Cache rewards to a text file. **MANDATORY FOR SHOWING REWARDS FROM LAST 7 DAYS**
-- `cache_rewards_time=10` - Time (in minutes) between rewards cache renew. **DON'T USE VALUE BELOW 10, IT USES QUITE A LOT OF CPU**
+- `cache_rewards_interval=10` - Time (in minutes) between rewards cache renew. **DON'T USE VALUE BELOW 10, IT USES QUITE A LOT OF CPU**
+- `cache_blocks_interval=10` - Time (in minutes) between blocks cache renew.
 - `accent_color=FFFFFF` - Use hex code color as the accent color (without #).
 - `api_token=your_own_api_token`- Used in accessing plain JSON data (You can generate your own or use a service like https://it-tools.tech/token-generator).
 - `rate_limit=true|false` - If set, rate limit per request will be set to 15 seconds. Default false.
