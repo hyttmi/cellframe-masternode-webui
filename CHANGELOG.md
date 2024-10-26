@@ -1,6 +1,18 @@
 
 # Changelog
 
+## [2.94] - 2024-10-26
+
+### Added
+- `auth_bypass` setting to allow completely bypass default HTTP Authentication (useful with reverse proxy for example).
+- Add scheduled blocks caching (15 minute interval) because sometimes refreshing the website takes way too long. Interval is configurable on settings (`cache_blocks_interval`).
+
+### Changed
+- Blocks and rewards are now automatically cached to a json file for better performance with 15 minute interval.
+- Rename `cache_rewards_time` to `cache_rewards_interval`.
+- Improve request handling.
+- WebUI layout optimizations (much more responsive layout on all screen sizes).
+
 ## [2.93] - 2024-10-21
  
 ### Added

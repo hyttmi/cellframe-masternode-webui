@@ -25,11 +25,13 @@ def onInit():
     email_stats_time = getConfigValue("webui", "email_time")
     telegram_stats_enabled = getConfigValue("webui", "telegram_stats", default=False)
     telegram_stats_time = getConfigValue("webui", "telegram_stats_time")
-    cache_rewards = getConfigValue("webui", "cache_rewards", default=False)
-    cache_rewards_time = getConfigValue("webui", "cache_rewards_time")
+    cache_rewards_interval = getConfigValue("webui", "cache_rewards_interval", default=15)
+    cache_blocks_interval = getConfigValue("webui", "cache_blocks_interval", default=15)
             
     with ThreadPoolExecutor() as executor:
         executor.submit(HTTPServer)
+        executor.submit(cacheRewards)  # Run this on startup once to fetch current stats
+        executor.submit(cacheBlocks) # Run this on startup once to fetch current stats
         
         if email_stats_enabled and validateTime(email_stats_time):
             logNotice(f"Email sending is activated at {email_stats_time}")
@@ -41,10 +43,13 @@ def onInit():
             executor.submit(sendTelegram, f"Telegram sending is activated at {telegram_stats_time}")
             executor.submit(funcScheduler, lambda: sendTelegram(generateHTML("telegram.html")), telegram_stats_time)
         
-        if cache_rewards and validateNum(cache_rewards_time):
-            if cache_rewards_time < 10:
+        if validateNum(cache_rewards_interval):
+            if cache_rewards_interval < 10:
                 logError("Rewards caching time is below 10 minutes which is not recommended as it uses lots of CPU. Consider higher value.")
-            executor.submit(funcScheduler, cacheRewards, False, cache_rewards_time)
+            executor.submit(funcScheduler, cacheRewards, False, cache_rewards_interval)
+        
+        if validateNum(cache_blocks_interval):
+            executor.submit(funcScheduler, cacheBlocks, False, cache_blocks_interval)
 
 def deinit():
     logNotice("stopped")

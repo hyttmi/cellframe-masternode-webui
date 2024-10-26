@@ -16,8 +16,7 @@ def getScriptDir():
 
 def logNotice(msg):
     func_name = inspect.stack()[1].function
-    log_message = f"{PLUGIN_NAME} [{func_name}] {msg}"
-    log.notice(log_message)
+    log_message = f"[{func_name}] {msg}"
     try:
         curr_time = datetime.now().strftime("%d.%m.%Y, %H:%M:%S")
         with logLock:
@@ -31,9 +30,7 @@ def logError(msg):
     func_name = frame_info.function
     file_name = frame_info.filename
     line_number = frame_info.lineno
-    
-    log_message = f"{PLUGIN_NAME} [{func_name} in {file_name} in line {line_number}] {msg}"
-    log.error(log_message)
+    log_message = f"[{func_name} in {file_name} in line {line_number}] {msg}"
     try:
         curr_time = datetime.now().strftime("%d.%m.%Y, %H:%M:%S")
         with logLock:
@@ -70,7 +67,7 @@ def checkForUpdate():
         logError(f"Error: {e}")
         return f"Error: {e}"
     
-def CLICommand(command, timeout=60):
+def CLICommand(command, timeout=120):
     try:
         command_list = ["/opt/cellframe-node/bin/cellframe-node-cli"] + command.split()
         result = subprocess.run(
@@ -127,7 +124,7 @@ def getSysStats():
         PID = getPID()
         process = psutil.Process(PID)
         sys_stats = {}
-        cpu_usage = process.cpu_percent(interval=1) / psutil.cpu_count() # Divide by CPU cores, it's possible that only one core is @ +100%
+        cpu_usage = process.cpu_percent(interval=1) / psutil.cpu_count() # Divide by CPU cores, it's possible that only one core is @ 100%
         sys_stats['node_cpu_usage'] = cpu_usage
 
         memory_info = process.memory_info()
@@ -259,59 +256,6 @@ def getNetStatus(network):
     except Exception as e:
         logError(f"Error: {e}")
 
-@cachetools.func.ttl_cache(maxsize=16384, ttl=3600)
-def getBlocks(network, cert=None, block_type='all', today=False):
-    try:
-        if block_type == 'all':
-            all_blocks_cmd = CLICommand(f"block count -net {network}")
-            logNotice(f"Fetching block count in {network}")
-            all_blocks_match = re.search(r":\s+(\d+)", all_blocks_cmd)
-            if all_blocks_match:
-                return int(all_blocks_match.group(1))
-            else:
-                return None
-        elif block_type == 'first_signed' and cert:
-            logNotice(f"Fetching first signed blocks count in {network}")
-            cmd_get_first_signed_blocks = CLICommand(f"block list -net {network} first_signed -cert {cert} -limit 1")
-            blocks_match = re.search(r"have blocks: (\d+)", cmd_get_first_signed_blocks)
-            if blocks_match:
-                return int(blocks_match.group(1))
-            else:
-                return None
-        elif block_type == 'signed' and cert:
-            logNotice(f"Fetching block list in {network}")
-            cmd_output = CLICommand(f"block list -net {network} signed -cert {cert}")
-            today_str = datetime.now().strftime("%a, %d %b %Y")
-            blocks_signed_per_day = {}
-            lines = cmd_output.splitlines()
-            for line in lines:
-                if "ts_create:" in line:
-                    timestamp_str = line.split("ts_create:")[1].strip()[:-6]
-                    block_time = datetime.strptime(timestamp_str, "%a, %d %b %Y %H:%M:%S")
-                    block_day = block_time.strftime("%a, %d %b %Y")
-                    if block_day not in blocks_signed_per_day:
-                        blocks_signed_per_day[block_day] = 1
-                    else:
-                        blocks_signed_per_day[block_day] += 1
-            sorted_dict = dict(OrderedDict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))))
-            if today:
-                return blocks_signed_per_day.get(today_str, 0)
-            else:
-                return sorted_dict
-        elif block_type == 'all_signed' and cert:
-            logNotice(f"Fetching all signed blocks count in {network}")
-            cmd_get_all_signed_blocks = CLICommand(f"block list -net {network} signed -cert {cert} -limit 1")
-            blocks_match = re.search(r"have blocks: (\d+)", cmd_get_all_signed_blocks)
-            if blocks_match:
-                return int(blocks_match.group(1))
-            else:
-                return None
-        else:
-            return None
-    except Exception as e:
-        logError(f"Error: {e}")
-        return None
-
 def getRewardWalletTokens(wallet):
     try:
         cmd_get_wallet_info = CLICommand(f"wallet info -addr {wallet}")
@@ -367,24 +311,27 @@ def cacheRewards():
                     lines = cmd_get_tx_history.splitlines()
                     for line in lines:
                         line = line.strip()
-                        if line.startswith("status: ACCEPTED"):  # OK, we have ACCEPTED status
+                        if line.startswith("status: ACCEPTED"):
                             if reward and is_receiving_reward:
                                 rewards.append(reward)
                             reward = {}
                             is_receiving_reward = False
+                            continue
                         if line.startswith("tx_created:"):
                             original_date = line.split("tx_created:")[1].strip()[:-6]
                             reward['tx_created'] = original_date
+                            continue
                         if line.startswith("recv_coins:"):
                             reward['recv_coins'] = line.split("recv_coins:")[1].strip()
+                            continue
                         if line.startswith("source_address: reward collecting"):
                             is_receiving_reward = True
+                            continue
                     if reward and is_receiving_reward:
                         rewards.append(reward)
-                    cache_file_path = os.path.join(getScriptDir(), f".{network}_rewards_cache.txt")
+                    cache_file_path = os.path.join(getScriptDir(), f".{network}_rewards_cache.json")
                     with open(cache_file_path, "w") as f:
-                        for reward in rewards:
-                            f.write(f"{reward['tx_created']}|{reward['recv_coins']}\n")
+                        json.dump(rewards, f, indent=4)
                     end_time = time.time()
                     elapsed_time = end_time - start_time
                     logNotice(f"Rewards cached for {network}! It took {elapsed_time:.2f} seconds!")
@@ -396,24 +343,85 @@ def cacheRewards():
     except Exception as e:
         logError(f"Error: {e}")
         return None
-            
+
+def cacheBlocks():
+    try:
+        networks = getListNetworks()
+        for network in networks:
+            net_config = readNetworkConfig(network)
+            if net_config is not None:
+                logNotice("Caching blocks...")
+                start_time = time.time()
+
+                block_data = {
+                    'block_count': 0,
+                    'signed_blocks_count': 0,
+                    'first_signed_blocks_count': 0,
+                    'all_signed_blocks': {}
+                }
+
+                with ThreadPoolExecutor() as executor:
+                    futures = {
+                        'block_count': executor.submit(CLICommand, f"block count -net {network}"),
+                        'first_signed_blocks': executor.submit(CLICommand, f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']} -limit 1"),
+                        'signed_blocks': executor.submit(CLICommand, f"block list -net {network} signed -cert {net_config['blocks_sign_cert']}")
+                    }
+
+                block_count_result = futures["block_count"].result()
+                block_count_match = re.search(r":\s+(\d+)", block_count_result)
+                if block_count_match:
+                    block_data["block_count"] = int(block_count_match.group(1))
+
+                signed_blocks_result = futures["signed_blocks"].result()
+                signed_blocks_match = re.search(r"have blocks: (\d+)", signed_blocks_result)
+                if signed_blocks_match:
+                    block_data["signed_blocks_count"] = int(signed_blocks_match.group(1))
+
+                first_signed_match = re.search(r"have blocks: (\d+)", futures["first_signed_blocks"].result())
+                if first_signed_match:
+                    block_data["first_signed_blocks_count"] = int(first_signed_match.group(1))
+
+                blocks_signed_per_day = {}
+                lines = signed_blocks_result.splitlines()
+                for line in lines:
+                    if "ts_create:" in line:
+                        timestamp_str = line.split("ts_create:")[1].strip()[:-6]
+                        block_time = datetime.strptime(timestamp_str, "%a, %d %b %Y %H:%M:%S")
+                        block_day = block_time.strftime("%a, %d %b %Y")
+                        blocks_signed_per_day[block_day] = blocks_signed_per_day.get(block_day, 0) + 1
+
+                sorted_blocks = OrderedDict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
+                block_data["all_signed_blocks"] = sorted_blocks
+
+                cache_file_path = os.path.join(getScriptDir(), f".{network}_blocks_cache.json")
+                with open(cache_file_path, "w") as f:
+                    json.dump(block_data, f, indent=4)
+
+                elapsed_time = time.time() - start_time
+                logNotice(f"Blocks cached for {network}! It took {elapsed_time:.2f} seconds!")
+            else:
+                logNotice(f"Network config not found for {network}, skipping caching")
+                return None
+    except Exception as e:
+        logError(f"Error: {e}")
+
 def readRewards(network):
     try:
         rewards = {}
-        with open(os.path.join(getScriptDir(), f".{network}_rewards_cache.txt")) as f:
-            for line in f:
-                line = line.strip()
-                if not line:
-                    continue
-                date_string, amount = line.split("|")
-                amount = float(amount)
+        cache_file_path = os.path.join(getScriptDir(), f".{network}_rewards_cache.json")
+        with open(cache_file_path) as f:
+            data = json.load(f)
+            for reward in data:
+                date_string = reward['tx_created']
+                amount = float(reward['recv_coins'])
                 formatted_date = datetime.strptime(date_string, "%a, %d %b %Y %H:%M:%S")
                 formatted_date_str = formatted_date.strftime("%a, %d %b %Y")
+                
                 if formatted_date_str in rewards:
                     rewards[formatted_date_str] += amount
                 else:
                     rewards[formatted_date_str] = amount
-            sorted_dict = dict(OrderedDict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))))
+        sorted_dict = dict(OrderedDict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))))
         return sorted_dict
     except FileNotFoundError:
         logError("Rewards file not found!")
@@ -422,6 +430,36 @@ def readRewards(network):
         logError(f"Error reading rewards: {e}")
         return None
 
+def readBlocks(network, block_type='count', today=False):
+    cache_file_path = os.path.join(getScriptDir(), f".{network}_blocks_cache.json")
+    if not os.path.exists(cache_file_path):
+        logError(f"Cache file for network {network} does not exist.")
+        return None
+    try:
+        with open(cache_file_path, "r") as f:
+            block_data = json.load(f)
+        
+        if block_type == "count":
+            return block_data["block_count"]
+
+        if block_type == "all_signed_blocks" and today:
+            today_str = datetime.now().strftime("%a, %d %b %Y")
+            today_count = block_data["all_signed_blocks"].get(today_str, 0)
+            return today_count
+        
+        if block_type == "all_signed_blocks_count":
+            return sum(block_data["all_signed_blocks"].values())
+        
+        if block_type == "all_signed_blocks":
+            return block_data["all_signed_blocks"]
+        
+        if block_type == "first_signed_blocks_count":
+            return block_data["first_signed_blocks_count"]
+
+    except Exception as e:
+        logError(f"Error reading blocks for network '{network}': {e}")
+        return None
+    
 def sumRewards(network):
     try:
         rewards = readRewards(network)
@@ -440,18 +478,17 @@ def generateNetworkData():
             net_config = readNetworkConfig(network)
             if net_config is not None: # Just process masternodes. No need to process normal ones
                 network = str(network)
-                cert = net_config['blocks_sign_cert']
                 wallet = net_config['wallet']
                 tokens = getRewardWalletTokens(wallet)
                 net_status = getNetStatus(network)
 
                 with ThreadPoolExecutor() as executor:
                     futures = {
-                        'first_signed_blocks': executor.submit(getBlocks, network, cert=cert, block_type="first_signed"),
-                        'all_signed_blocks_dict': executor.submit(getBlocks, network, cert=cert, block_type="signed"),
-                        'all_signed_blocks': executor.submit(getBlocks, network, cert=cert, block_type="all_signed"),
-                        'all_blocks': executor.submit(getBlocks, network, block_type="all"),
-                        'signed_blocks_today': executor.submit(getBlocks, network, cert=cert, block_type="signed", today=True),
+                        'first_signed_blocks': executor.submit(readBlocks, network, block_type="first_signed_blocks_count"),
+                        'all_signed_blocks_dict': executor.submit(readBlocks, network, block_type="all_signed_blocks"),
+                        'all_signed_blocks': executor.submit(readBlocks, network, block_type="all_signed_blocks_count"),
+                        'all_blocks': executor.submit(readBlocks, network, block_type="count"),
+                        'signed_blocks_today': executor.submit(readBlocks, network, block_type="all_signed_blocks", today=True),
                         'token_price': executor.submit(getCurrentTokenPrice, network),
                         'rewards': executor.submit(readRewards, network),
                         'all_rewards': executor.submit(sumRewards, network)
@@ -479,7 +516,6 @@ def generateNetworkData():
     else:
         return None
 
-    
 def generateInfo(exclude=None, format_time=True):
     if exclude is None:
         exclude = []
