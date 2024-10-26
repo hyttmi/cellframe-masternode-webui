@@ -1,13 +1,14 @@
 
 # Changelog
 
-## [UNRELEASED] - 2024-10-25
+## [UNRELEASED] - 2024-10-26
 
 ### Added
 - `auth_bypass` setting to allow completely bypass default HTTP Authentication (useful with reverse proxy for example)
+- Add hardcoded scheduled blocks updater (10 minute interval) because sometimes refreshing the website takes way too long
 ### Changed
 - Improve request handling
-- WebUI layout optimizations
+- WebUI layout optimizations (much more responsive layout)
 ### Fixed
 
 ## [2.93] - 2024-10-21
