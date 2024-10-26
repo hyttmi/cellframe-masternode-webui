@@ -475,7 +475,7 @@ def readRewards(network):
         logError(f"Error reading rewards: {e}")
         return None
 
-def readBlocks(network, type='all', today=False):
+#def readBlocks(network, type='all', today=False):
     
 def sumRewards(network):
     try:
