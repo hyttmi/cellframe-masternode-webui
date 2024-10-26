@@ -47,7 +47,7 @@ def onInit():
             executor.submit(funcScheduler, cacheRewards, False, cache_rewards_time)
 
         executor.submit(generateNetworkData)
-        executor.submit(funcScheduler, generateNetworkData, 10)
+        executor.submit(funcScheduler, generateNetworkData, False, 10)
 
 
 def deinit():
