@@ -70,7 +70,7 @@ def checkForUpdate():
         logError(f"Error: {e}")
         return f"Error: {e}"
     
-def CLICommand(command, timeout=60):
+def CLICommand(command, timeout=120):
     try:
         command_list = ["/opt/cellframe-node/bin/cellframe-node-cli"] + command.split()
         result = subprocess.run(
@@ -259,7 +259,7 @@ def getNetStatus(network):
     except Exception as e:
         logError(f"Error: {e}")
 
-@cachetools.func.ttl_cache(maxsize=16384, ttl=3600)
+@cachetools.func.ttl_cache(maxsize=16384, ttl=600)
 def getBlocks(network, cert=None, block_type='all', today=False):
     try:
         if block_type == 'all':
