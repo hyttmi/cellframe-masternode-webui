@@ -256,65 +256,6 @@ def getNetStatus(network):
     except Exception as e:
         logError(f"Error: {e}")
 
-def cacheBlocks():
-    try:
-        networks = getListNetworks()
-        for network in networks:
-            net_config = readNetworkConfig(network)
-            if net_config is not None:
-                logNotice("Caching blocks...")
-                start_time = time.time()
-
-                block_data = {
-                    'block_count': None,
-                    'signed_blocks_count': None,
-                    'first_signed_blocks_count': None,
-                    'signed_blocks_today': None,
-                    'all_signed_blocks': {}
-                }
-
-                block_count_cmd = CLICommand(f"block count -net {network}")
-                first_signed_blocks_cmd = CLICommand(f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']} -limit 1")
-                signed_blocks_cmd = CLICommand(f"block list -net {network} signed -cert {net_config['blocks_sign_cert']}")
-
-                block_count_match = re.search(r":\s+(\d+)", block_count_cmd)
-                if block_count_match:   
-                    block_data["block_count"] = int(block_count_match.group(1))
-
-                signed_blocks_match = re.search(r"have blocks: (\d+)", signed_blocks_cmd)
-                if signed_blocks_match:
-                    block_data["signed_blocks_count"] = int(signed_blocks_match.group(1))
- 
-                first_signed_match = re.search(r"have blocks: (\d+)", first_signed_blocks_cmd)
-                if first_signed_match:
-                    block_data["first_signed_blocks_count"] = int(first_signed_match.group(1))
-                    
-                today_str = datetime.now().strftime("%a, %d %b %Y")
-                blocks_signed_per_day = {}
-                lines = signed_blocks_cmd.splitlines()
-                for line in lines:
-                    if "ts_create:" in line:
-                        timestamp_str = line.split("ts_create:")[1].strip()[:-6]
-                        block_time = datetime.strptime(timestamp_str, "%a, %d %b %Y %H:%M:%S")
-                        block_day = block_time.strftime("%a, %d %b %Y")
-                        if block_day == today_str:
-                            block_data["signed_blocks_today"] += 1
-                        if block_day not in blocks_signed_per_day:
-                            blocks_signed_per_day[block_day] = 1
-                        else:
-                            blocks_signed_per_day[block_day] += 1
-                sorted_blocks = OrderedDict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
-                block_data["all_signed_blocks"] = sorted_blocks
-                cache_file_path = os.path.join(getScriptDir(), f"{network}_blocks_cache.json")
-                with open(cache_file_path, "w") as f:
-                    json.dump(block_data, f, indent=4)
-                elapsed_time = time.time() - start_time
-                logNotice(f"Blocks cached for {network}! It took {elapsed_time:.2f} seconds!")
-            else:
-                logNotice(f"Network config not found for {network}. Skipping caching.")
-    except Exception as e:
-        logError(f"Error: {e}")
-
 @cachetools.func.ttl_cache(maxsize=16384, ttl=600)
 def getBlocks(network, cert=None, block_type='all', today=False):
     try:
@@ -456,6 +397,65 @@ def cacheRewards():
         logError(f"Error: {e}")
         return None
 
+def cacheBlocks():
+    try:
+        networks = getListNetworks()
+        for network in networks:
+            net_config = readNetworkConfig(network)
+            if net_config is not None:
+                logNotice("Caching blocks...")
+                start_time = time.time()
+
+                block_data = {
+                    'block_count': 0,
+                    'signed_blocks_count': 0,
+                    'first_signed_blocks_count': 0,
+                    'signed_blocks_today': 0,
+                    'all_signed_blocks': {}
+                }
+
+                block_count_cmd = CLICommand(f"block count -net {network}")
+                first_signed_blocks_cmd = CLICommand(f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']} -limit 1")
+                signed_blocks_cmd = CLICommand(f"block list -net {network} signed -cert {net_config['blocks_sign_cert']}")
+
+                block_count_match = re.search(r":\s+(\d+)", block_count_cmd)
+                if block_count_match:   
+                    block_data["block_count"] = int(block_count_match.group(1))
+
+                signed_blocks_match = re.search(r"have blocks: (\d+)", signed_blocks_cmd)
+                if signed_blocks_match:
+                    block_data["signed_blocks_count"] = int(signed_blocks_match.group(1))
+ 
+                first_signed_match = re.search(r"have blocks: (\d+)", first_signed_blocks_cmd)
+                if first_signed_match:
+                    block_data["first_signed_blocks_count"] = int(first_signed_match.group(1))
+                    
+                today_str = datetime.now().strftime("%a, %d %b %Y")
+                blocks_signed_per_day = {}
+                lines = signed_blocks_cmd.splitlines()
+                for line in lines:
+                    if "ts_create:" in line:
+                        timestamp_str = line.split("ts_create:")[1].strip()[:-6]
+                        block_time = datetime.strptime(timestamp_str, "%a, %d %b %Y %H:%M:%S")
+                        block_day = block_time.strftime("%a, %d %b %Y")
+                        if block_day == today_str:
+                            block_data["signed_blocks_today"] += 1
+                        if block_day not in blocks_signed_per_day:
+                            blocks_signed_per_day[block_day] = 1
+                        else:
+                            blocks_signed_per_day[block_day] += 1
+                sorted_blocks = OrderedDict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
+                block_data["all_signed_blocks"] = sorted_blocks
+                cache_file_path = os.path.join(getScriptDir(), f"{network}_blocks_cache.json")
+                with open(cache_file_path, "w") as f:
+                    json.dump(block_data, f, indent=4)
+                elapsed_time = time.time() - start_time
+                logNotice(f"Blocks cached for {network}! It took {elapsed_time:.2f} seconds!")
+            else:
+                logNotice(f"Network config not found for {network}. Skipping caching.")
+    except Exception as e:
+        logError(f"Error: {e}")
+
 def readRewards(network):
     try:
         rewards = {}
@@ -480,6 +480,8 @@ def readRewards(network):
     except Exception as e:
         logError(f"Error reading rewards: {e}")
         return None
+    
+def readBlocks(network, type, today=False):
 
 def sumRewards(network):
     try:
