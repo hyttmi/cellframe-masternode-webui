@@ -46,6 +46,10 @@ def onInit():
                 logError("Rewards caching time is below 10 minutes which is not recommended as it uses lots of CPU. Consider higher value.")
             executor.submit(funcScheduler, cacheRewards, False, cache_rewards_time)
 
+        executor.submit(generateNetworkData)
+        executor.submit(funcScheduler, generateNetworkData, 10)
+
+
 def deinit():
     logNotice("stopped")
     return 0
