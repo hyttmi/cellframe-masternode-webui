@@ -86,11 +86,11 @@ Here are the variables that are passed to the Jinja templates:
   - `state`: The current state of the network
   - `target_state`: Target state of the network
   - `address`: The network address
-  - `first_signed_blocks`: The number of first signed blocks **NOTE: THIS VALUE IS CACHED FOR 1 HOUR AFTER IT'S FETCHED**
-  - `all_signed_blocks`: The number of all signed blocks **NOTE: THIS VALUE IS CACHED FOR 1 HOUR AFTER IT'S FETCHED**
-  - `all_blocks`: The number of blocks in main chain **NOTE: THIS VALUE IS CACHED FOR 1 HOUR AFTER IT'S FETCHED**
-  - `signed_blocks_today`: The number of blocks signed today **NOTE: THIS VALUE IS CACHED FOR 1 HOUR AFTER IT'S FETCHED**
-  - `all_signed_blocks_dict`: A dictionary of all signed blocks (day, amount) **NOTE: THIS VALUE IS CACHED FOR 1 HOUR AFTER IT'S FETCHED**
+  - `first_signed_blocks`: The number of first signed blocks
+  - `all_signed_blocks`: The number of all signed blocks
+  - `all_blocks`: The number of blocks in main chain
+  - `signed_blocks_today`: The number of blocks signed today
+  - `all_signed_blocks_dict`: A dictionary of all signed blocks (day, amount)
   - `autocollect_status`: The status of reward autocollection
   - `autocollect_rewards`: The total autocollect rewards currently uncollected
   - `fee_wallet_tokens`: A dict of token balances in the network's fee wallet
