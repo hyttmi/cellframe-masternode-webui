@@ -256,59 +256,6 @@ def getNetStatus(network):
     except Exception as e:
         logError(f"Error: {e}")
 
-@cachetools.func.ttl_cache(maxsize=16384, ttl=600)
-def getBlocks(network, cert=None, block_type='all', today=False):
-    try:
-        if block_type == 'all':
-            all_blocks_cmd = CLICommand(f"block count -net {network}")
-            logNotice(f"Fetching block count in {network}")
-            all_blocks_match = re.search(r":\s+(\d+)", all_blocks_cmd)
-            if all_blocks_match:
-                return int(all_blocks_match.group(1))
-            else:
-                return None
-        elif block_type == 'first_signed' and cert:
-            logNotice(f"Fetching first signed blocks count in {network}")
-            cmd_get_first_signed_blocks = CLICommand(f"block list -net {network} first_signed -cert {cert} -limit 1")
-            blocks_match = re.search(r"have blocks: (\d+)", cmd_get_first_signed_blocks)
-            if blocks_match:
-                return int(blocks_match.group(1))
-            else:
-                return None
-        elif block_type == 'signed' and cert:
-            logNotice(f"Fetching block list in {network}")
-            cmd_output = CLICommand(f"block list -net {network} signed -cert {cert}")
-            today_str = datetime.now().strftime("%a, %d %b %Y")
-            blocks_signed_per_day = {}
-            lines = cmd_output.splitlines()
-            for line in lines:
-                if "ts_create:" in line:
-                    timestamp_str = line.split("ts_create:")[1].strip()[:-6]
-                    block_time = datetime.strptime(timestamp_str, "%a, %d %b %Y %H:%M:%S")
-                    block_day = block_time.strftime("%a, %d %b %Y")
-                    if block_day not in blocks_signed_per_day:
-                        blocks_signed_per_day[block_day] = 1
-                    else:
-                        blocks_signed_per_day[block_day] += 1
-            sorted_dict = dict(OrderedDict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))))
-            if today:
-                return blocks_signed_per_day.get(today_str, 0)
-            else:
-                return sorted_dict
-        elif block_type == 'all_signed' and cert:
-            logNotice(f"Fetching all signed blocks count in {network}")
-            cmd_get_all_signed_blocks = CLICommand(f"block list -net {network} signed -cert {cert} -limit 1")
-            blocks_match = re.search(r"have blocks: (\d+)", cmd_get_all_signed_blocks)
-            if blocks_match:
-                return int(blocks_match.group(1))
-            else:
-                return None
-        else:
-            return None
-    except Exception as e:
-        logError(f"Error: {e}")
-        return None
-
 def getRewardWalletTokens(wallet):
     try:
         cmd_get_wallet_info = CLICommand(f"wallet info -addr {wallet}")
@@ -500,10 +447,13 @@ def readBlocks(network, block_type='count', today=False):
             today_count = block_data["all_signed_blocks"].get(today_str, 0)
             return today_count
         
+        if block_type == "all_signed_blocks_count":
+            return sum(block_data["all_signed_blocks"].values())
+        
         if block_type == "all_signed_blocks":
             return block_data["all_signed_blocks"]
         
-        if block_type == "first_signed_blocks":
+        if block_type == "first_signed_blocks_count":
             return block_data["first_signed_blocks_count"]
 
     except Exception as e:
@@ -535,10 +485,10 @@ def generateNetworkData():
 
                 with ThreadPoolExecutor() as executor:
                     futures = {
-                        'first_signed_blocks': executor.submit(getBlocks, network, cert=cert, block_type="first_signed"),
-                        'all_signed_blocks_dict': executor.submit(getBlocks, network, cert=cert, block_type="signed"),
-                        'all_signed_blocks': executor.submit(getBlocks, network, cert=cert, block_type="all_signed"),
-                        'all_blocks': executor.submit(getBlocks, network, block_type="all"),
+                        'first_signed_blocks': executor.submit(getBlocks, network, block_type="first_signed_blocks_count"),
+                        'all_signed_blocks_dict': executor.submit(readBlocks, network, block_type="all_signed_blocks"),
+                        'all_signed_blocks': executor.submit(readBlocks, network, block_type="all_signed_blocks_count"),
+                        'all_blocks': executor.submit(readBlocks, network, block_type="count"),
                         'signed_blocks_today': executor.submit(readBlocks, network, block_type="all_signed_blocks", today=True),
                         'token_price': executor.submit(getCurrentTokenPrice, network),
                         'rewards': executor.submit(readRewards, network),
