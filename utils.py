@@ -478,14 +478,13 @@ def generateNetworkData():
             net_config = readNetworkConfig(network)
             if net_config is not None: # Just process masternodes. No need to process normal ones
                 network = str(network)
-                cert = net_config['blocks_sign_cert']
                 wallet = net_config['wallet']
                 tokens = getRewardWalletTokens(wallet)
                 net_status = getNetStatus(network)
 
                 with ThreadPoolExecutor() as executor:
                     futures = {
-                        'first_signed_blocks': executor.submit(getBlocks, network, block_type="first_signed_blocks_count"),
+                        'first_signed_blocks': executor.submit(readBlocks, network, block_type="first_signed_blocks_count"),
                         'all_signed_blocks_dict': executor.submit(readBlocks, network, block_type="all_signed_blocks"),
                         'all_signed_blocks': executor.submit(readBlocks, network, block_type="all_signed_blocks_count"),
                         'all_blocks': executor.submit(readBlocks, network, block_type="count"),
