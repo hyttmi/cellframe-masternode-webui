@@ -17,7 +17,6 @@ def getScriptDir():
 def logNotice(msg):
     func_name = inspect.stack()[1].function
     log_message = f"{PLUGIN_NAME} [{func_name}] {msg}"
-    log.notice(log_message)
     try:
         curr_time = datetime.now().strftime("%d.%m.%Y, %H:%M:%S")
         with logLock:
@@ -31,9 +30,7 @@ def logError(msg):
     func_name = frame_info.function
     file_name = frame_info.filename
     line_number = frame_info.lineno
-    
     log_message = f"{PLUGIN_NAME} [{func_name} in {file_name} in line {line_number}] {msg}"
-    log.error(log_message)
     try:
         curr_time = datetime.now().strftime("%d.%m.%Y, %H:%M:%S")
         with logLock:
