@@ -483,7 +483,32 @@ def readRewards(network):
         logError(f"Error reading rewards: {e}")
         return None
 
-#def readBlocks(network, type='all', today=False):
+def readBlocks(network, block_type='count', today=False):
+    cache_file_path = os.path.join(getScriptDir(), f".{network}_blocks_cache.json")
+    if not os.path.exists(cache_file_path):
+        logError(f"Cache file for network {network} does not exist.")
+        return None
+    try:
+        with open(cache_file_path, "r") as f:
+            block_data = json.load(f)
+        
+        if block_type == "count":
+            return block_data["block_count"]
+
+        if block_type == "all_signed_blocks" and today:
+            today_str = datetime.now().strftime("%a, %d %b %Y")
+            today_count = block_data["all_signed_blocks"].get(today_str, 0)
+            return today_count
+        
+        if block_type == "all_signed_blocks":
+            return block_data["all_signed_blocks"]
+        
+        if block_type == "first_signed_blocks":
+            return block_data["first_signed_blocks_count"]
+
+    except Exception as e:
+        logError(f"Error reading blocks for network '{network}': {e}")
+        return None
     
 def sumRewards(network):
     try:
@@ -514,7 +539,7 @@ def generateNetworkData():
                         'all_signed_blocks_dict': executor.submit(getBlocks, network, cert=cert, block_type="signed"),
                         'all_signed_blocks': executor.submit(getBlocks, network, cert=cert, block_type="all_signed"),
                         'all_blocks': executor.submit(getBlocks, network, block_type="all"),
-                        'signed_blocks_today': executor.submit(getBlocks, network, cert=cert, block_type="signed", today=True),
+                        'signed_blocks_today': executor.submit(readBlocks, network, block_type="all_signed_blocks", today=True),
                         'token_price': executor.submit(getCurrentTokenPrice, network),
                         'rewards': executor.submit(readRewards, network),
                         'all_rewards': executor.submit(sumRewards, network)
