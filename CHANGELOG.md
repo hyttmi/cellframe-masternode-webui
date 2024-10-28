@@ -1,6 +1,11 @@
 
 # Changelog
 
+## [2.95] - 2024-10-28
+ 
+### Fixed
+- Cards can be removed from the view again.
+
 ## [2.94] - 2024-10-26
 
 ### Added
