@@ -464,7 +464,7 @@
     
             var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || [];
             closedCards.forEach(function (closedId) {
-                var closedCard = document.querySelector(`.col-12 col-sm-6 col-md-4 col-lg-3[data-id="${closedId}"]`);
+                var closedCard = document.querySelector(`.col-12[data-id="${closedId}"]`);
                 if (closedCard) {
                     closedCard.remove();
                 }
@@ -496,7 +496,7 @@
     
             document.querySelectorAll('.btn-close').forEach(function (button) {
                 button.addEventListener('click', function (event) {
-                    var card = event.target.closest('.col-12 col-sm-6 col-md-4 col-lg-3');
+                    var card = event.target.closest('.col-12');
                     if (card) {
                         var cardId = card.getAttribute("data-id");
                         card.classList.add('hidden');
