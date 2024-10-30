@@ -30,8 +30,7 @@ def logError(msg):
     frame_info = inspect.stack()[1]
     func_name = frame_info.function
     file_name = frame_info.filename
-    line_number = frame_info.lineno
-    log_message = f"[{func_name} in {file_name} in line {line_number}] {msg}"
+    log_message = f"[{func_name} in {file_name}] {msg}"
     try:
         curr_time = datetime.now().strftime("%d.%m.%Y, %H:%M:%S")
         with logLock:
