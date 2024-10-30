@@ -2,7 +2,7 @@ from jinja2 import Environment, PackageLoader, select_autoescape
 from utils import getConfigValue
 
 class Config:
-    PLUGIN_NAME = "Cellframe system & node info by Mika H (@CELLgainz)"
+    PLUGIN_NAME = "Cellframe Masternode WebUI"
     API_TOKEN = getConfigValue("webui", "api_token", default=False)
     AUTH_BYPASS = getConfigValue("webui", "auth_bypass", default=False)
     CACHE_BLOCKS_INTERVAL = getConfigValue("webui", "cache_blocks_interval", default=15)
