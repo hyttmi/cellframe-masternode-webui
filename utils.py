@@ -6,6 +6,7 @@ from collections import OrderedDict
 from datetime import datetime
 import cachetools.func
 from concurrent.futures import ThreadPoolExecutor
+from command_runner import command_runner
 
 log = CFLog()
 
@@ -69,23 +70,13 @@ def checkForUpdate():
     
 def CLICommand(command, timeout=120):
     try:
-        command_list = ["/opt/cellframe-node/bin/cellframe-node-cli"] + command.split()
-        result = subprocess.run(
-            command_list,
-            capture_output=True,
-            text=True,
-            timeout=timeout
-        )
-        if result.returncode == 0:
-            return result.stdout.strip()
+        exit_code, output = command_runner(f"/opt/cellframe-node/bin/cellframe-node-cli {command}", timeout=timeout)
+        if exit_code == 0:
+            return output.strip()
         else:
-            ret = f"Command {command} failed with error: {result.stderr.strip()}"
+            ret = f"Command failed with error: {output.strip()}"
             logError(ret)
             return ret
-    except subprocess.TimeoutExpired:
-        ret = f"Command {command} timed out after {timeout} seconds!"
-        logError(ret)
-        return ret
     except Exception as e:
         logError(f"Error: {e}")
         return f"Error: {e}"
