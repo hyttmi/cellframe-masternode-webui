@@ -1,15 +1,17 @@
 from pycfhelpers.node.http.simple import CFSimpleHTTPServer, CFSimpleHTTPRequestHandler
 from concurrent.futures import ThreadPoolExecutor
-from handlers import *
-from utils import *
+from utils import logNotice, logError, cacheBlocks, cacheRewards, funcScheduler, validateTime, validateNum
+from generators import generateHTML
+from handlers import requestHandler
 from mailer import sendMail
 from telegram import sendTelegram
+from config import Config
 import threading
 
 def HTTPServer():
     try:
         handler = CFSimpleHTTPRequestHandler(methods=["GET"], handler=requestHandler)
-        CFSimpleHTTPServer().register_uri_handler(uri=f"/{PLUGIN_URI}", handler=handler)
+        CFSimpleHTTPServer().register_uri_handler(uri=f"/{Config.PLUGIN_URI}", handler=handler)
         logNotice("started")
     except Exception as e:
         logError(f"Error: {e}")
@@ -21,17 +23,17 @@ def init():
     return 0
 
 def onInit():
-    email_stats_enabled = getConfigValue("webui", "email_stats", default=False)
-    email_stats_time = getConfigValue("webui", "email_time")
-    telegram_stats_enabled = getConfigValue("webui", "telegram_stats", default=False)
-    telegram_stats_time = getConfigValue("webui", "telegram_stats_time")
-    cache_rewards_interval = getConfigValue("webui", "cache_rewards_interval", default=15)
-    cache_blocks_interval = getConfigValue("webui", "cache_blocks_interval", default=15)
+    email_stats_enabled = Config.EMAIL_STATS_ENABLED
+    email_stats_time = Config.EMAIL_STATS_TIME
+    telegram_stats_enabled = Config.TELEGRAM_STATS_ENABLED
+    telegram_stats_time = Config.TELEGRAM_STATS_TIME
+    cache_rewards_interval = Config.CACHE_REWARDS_INTERVAL
+    cache_blocks_interval = Config.CACHE_BLOCKS_INTERVAL
             
     with ThreadPoolExecutor() as executor:
         executor.submit(HTTPServer)
-        executor.submit(cacheRewards)  # Run this on startup once to fetch current stats
-        executor.submit(cacheBlocks) # Run this on startup once to fetch current stats
+        executor.submit(cacheRewards)  # Run this on startup once to fetch current rewards
+        executor.submit(cacheBlocks) # Run this on startup once to fetch current signed blocks
         
         if email_stats_enabled and validateTime(email_stats_time):
             logNotice(f"Email sending is activated at {email_stats_time}")

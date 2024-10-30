@@ -1,13 +1,14 @@
-from utils import *
+from utils import logError, logNotice
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from config import Config
 
 def sendMail(msg):
-    gmail_user = getConfigValue("webui", "gmail_user", None)
-    gmail_app_password = getConfigValue("webui", "gmail_app_password", None)
-    email_recipients = getConfigValue("webui", "email_recipients", None)
-    email_subject = getConfigValue("webui", "email_subject", f"{PLUGIN_NAME}")
+    gmail_user = Config.GMAIL_USER
+    gmail_app_password = Config.GMAIL_APP_PASSWORD
+    email_recipients = Config.EMAIL_RECIPIENTS
+    email_subject = Config.EMAIL_RECIPIENTS
     
     missing_configs = []
 

@@ -1,8 +1,9 @@
-from utils import *
+import time, base64
+from utils import logError, logNotice
 from generators import generateHTML, generateJSON
-import base64
 from pycfhelpers.node.http.simple import CFSimpleHTTPRequestHandler, CFSimpleHTTPResponse
 from jinja2 import Environment, PackageLoader, select_autoescape
+from config import Config
 
 env = Environment(
     loader=PackageLoader("cellframe-masternode-webui"),
@@ -15,8 +16,7 @@ rate_limit_interval = 15
 
 def requestHandler(request: CFSimpleHTTPRequestHandler):
     if request.method == "GET":
-        rate_limit_active = getConfigValue("webui", "rate_limit", default=False)
-        if rate_limit_active:
+        if Config.RATE_LIMIT_ACTIVE:
             client_ip = request.client_address
             current_time = time.time()
 
@@ -51,10 +51,10 @@ def getRequestHandler(request: CFSimpleHTTPRequestHandler):
     query = request.query
     api_token = headers.get("API_TOKEN")
     auth_header = headers.get("Authorization")
-    expected_username = getConfigValue("webui", "username", default=False)
-    expected_password = getConfigValue("webui", "password", default=False)
-    expected_api_token = getConfigValue("webui", "api_token", default=False)
-    auth_bypass = getConfigValue("webui", "auth_bypass", default=False)
+    expected_username = Config.USERNAME
+    expected_password = Config.PASSWORD
+    expected_api_token = Config.API_TOKEN
+    auth_bypass = Config.AUTH_BYPASS
 
     if query == "as_json":
         if not api_token:

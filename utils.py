@@ -46,9 +46,6 @@ def getConfigValue(section, key, default=None):
         return value
     except Exception:
         return default
-
-PLUGIN_NAME = "Cellframe system & node info by Mika H (@CELLgainz)"
-PLUGIN_URI = getConfigValue("webui", "uri", default="webui")
     
 def checkForUpdate():
     try:

@@ -1,9 +1,11 @@
-from utils import *
+import json
 import handlers
+from utils import generateInfo, logNotice, logError
+from config import Config
 
 def generateHTML(template_name):
     info = generateInfo(exclude=[], format_time=True)
-    template_setting = getConfigValue("webui", "template", default="cards")
+    template_setting = Config.TEMPLATE
     template_path = f"{template_setting}/{template_name}"
     try:
         logNotice(f"Generating HTML content...")
