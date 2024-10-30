@@ -1,4 +1,4 @@
-import DAP, socket, requests, re, time, psutil, json, os, time, schedule, inspect, subprocess, threading
+import DAP, socket, requests, re, time, psutil, json, os, time, schedule, inspect, threading
 from pycfhelpers.node.logging import CFLog
 from pycfhelpers.node.net import CFNet
 from packaging.version import Version
