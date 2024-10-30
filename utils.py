@@ -7,6 +7,7 @@ from datetime import datetime
 import cachetools.func
 from concurrent.futures import ThreadPoolExecutor
 from command_runner import command_runner
+from config import Config
 
 log = CFLog()
 
@@ -515,7 +516,7 @@ def generateInfo(exclude=None, format_time=True):
         'plugin_update_available': is_update_available,
         'current_plugin_version': curr_version,
         'latest_plugin_version': latest_version,
-        "plugin_name": PLUGIN_NAME,
+        "plugin_name": Config.PLUGIN_NAME,
         "hostname": getHostname(),
         "system_uptime": formatUptime(sys_stats["system_uptime"]) if format_time else sys_stats["system_uptime"],
         "node_uptime": formatUptime(sys_stats["node_uptime"]) if format_time else sys_stats["node_uptime"],
