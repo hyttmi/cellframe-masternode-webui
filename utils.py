@@ -19,7 +19,7 @@ def logNotice(msg):
     func_name = inspect.stack()[1].function
     log_message = f"[{func_name}] {msg}"
     try:
-        curr_time = datetime.now().strftime("%d.%m.%Y, %H:%M:%S")
+        curr_time = datetime.now().isoformat()
         with logLock:
             with open(os.path.join(getScriptDir(), "webui.log"), "a") as f:
                 f.write(f"[NOTICE][{curr_time}] {log_message}\n")
@@ -32,7 +32,7 @@ def logError(msg):
     file_name = frame_info.filename
     log_message = f"[{func_name} in {file_name}] {msg}"
     try:
-        curr_time = datetime.now().strftime("%d.%m.%Y, %H:%M:%S")
+        curr_time = datetime.now().isoformat()
         with logLock:
             with open(os.path.join(getScriptDir(), "webui.log"), "a") as f:
                 f.write(f"[ERROR][{curr_time}] {log_message}\n")
