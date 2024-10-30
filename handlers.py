@@ -2,14 +2,7 @@ import time, base64
 from utils import logError, logNotice
 from generators import generateHTML, generateJSON
 from pycfhelpers.node.http.simple import CFSimpleHTTPRequestHandler, CFSimpleHTTPResponse
-from jinja2 import Environment, PackageLoader, select_autoescape
 from config import Config
-
-env = Environment(
-    loader=PackageLoader("cellframe-masternode-webui"),
-    autoescape=select_autoescape()
-)
-env.policies['json.dumps_kwargs'] = {'sort_keys': False}
 
 last_request_time = {}
 rate_limit_interval = 15

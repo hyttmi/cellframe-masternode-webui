@@ -1,3 +1,4 @@
+from jinja2 import Environment, PackageLoader, select_autoescape
 from utils import getConfigValue
 
 class Config:
@@ -22,3 +23,11 @@ class Config:
     TELEGRAM_STATS_TIME = getConfigValue("webui", "telegram_stats_time")
     TEMPLATE = getConfigValue("webui", "template", default="cards")
     USERNAME = getConfigValue("webui", "username", default=False)
+    
+    def jinjaEnv():
+        env = Environment(
+            loader=PackageLoader("cellframe-masternode-webui"),
+            autoescape=select_autoescape()
+        )
+        env.policies['json.dumps_kwargs'] = {'sort_keys': False}
+        return env

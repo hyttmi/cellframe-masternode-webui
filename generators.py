@@ -1,5 +1,4 @@
 import json
-import handlers
 from utils import generateInfo, logNotice, logError
 from config import Config
 
@@ -9,7 +8,7 @@ def generateHTML(template_name):
     template_path = f"{template_setting}/{template_name}"
     try:
         logNotice(f"Generating HTML content...")
-        template = handlers.env.get_template(template_path)
+        template = Config.jinjaEnv(template_path)
         output = template.render(info)
     except Exception as e:
         error_func = logError(f"Error: {e}")
