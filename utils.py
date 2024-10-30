@@ -45,7 +45,7 @@ def getConfigValue(section, key, default=None):
     try:
         value = DAP.configGetItem(section, key)
         return value
-    except ValueError:
+    except Exception:
         return default
 
 PLUGIN_NAME = "Cellframe system & node info by Mika H (@CELLgainz)"
