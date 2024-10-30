@@ -216,8 +216,10 @@ def readNetworkConfig(network):
             return None
     except FileNotFoundError:
         logError(f"Configuration file for {network} not found!")
+        return None
     except Exception as e:
         logError(f"Error: {e}")
+        return None
 
 def getAutocollectStatus(network):
     try:
