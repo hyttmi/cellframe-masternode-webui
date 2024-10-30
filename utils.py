@@ -1,4 +1,4 @@
-import DAP, socket, requests, re, time, psutil, json, os, time, schedule, inspect, threading
+import socket, requests, re, time, psutil, json, os, time, schedule, inspect, threading
 from pycfhelpers.node.logging import CFLog
 from pycfhelpers.node.net import CFNet
 from packaging.version import Version
@@ -40,13 +40,6 @@ def logError(msg):
     except Exception as e:
         log.error(f"Failed to write to log file: {e}")
     return func_name
-
-def getConfigValue(section, key, default=None):
-    try:
-        value = DAP.configGetItem(section, key)
-        return value
-    except Exception:
-        return default
     
 def checkForUpdate():
     try:
@@ -525,8 +518,8 @@ def generateInfo(exclude=None, format_time=True):
         "latest_node_version": getLatestNodeVersion(),
         "node_cpu_utilization": sys_stats["node_cpu_usage"],
         "node_memory_utilization": sys_stats["node_memory_usage_mb"],
-        "website_header_text": getConfigValue("webui", "header_text", default=False),
-        "website_accent_color": validateHex(getConfigValue("webui", "accent_color", default="B3A3FF")),
+        "website_header_text": Config.HEADER_TEXT,
+        "website_accent_color": validateHex(Config.ACCENT_COLOR),
         "networks": generateNetworkData()
     }
 

@@ -1,5 +1,12 @@
 from jinja2 import Environment, PackageLoader, select_autoescape
-from utils import getConfigValue
+import DAP
+
+def getConfigValue(section, key, default=None):
+    try:
+        value = DAP.configGetItem(section, key)
+        return value
+    except Exception:
+        return default
 
 class Config:
     PLUGIN_NAME = "Cellframe Masternode WebUI"
@@ -23,8 +30,10 @@ class Config:
     TELEGRAM_STATS_TIME = getConfigValue("webui", "telegram_stats_time")
     TEMPLATE = getConfigValue("webui", "template", default="cards")
     USERNAME = getConfigValue("webui", "username", default=False)
+    HEADER_TEXT = getConfigValue("webui", "header_text", default=False)
+    ACCENT_COLOR = getConfigValue("webui", "accent_color", default="B3A3FF")
     
-    def jinjaEnv():
+    def jinjaEnv(self):
         env = Environment(
             loader=PackageLoader("cellframe-masternode-webui"),
             autoescape=select_autoescape()
