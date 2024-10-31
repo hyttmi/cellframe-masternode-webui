@@ -3,8 +3,7 @@ import DAP
 
 def getConfigValue(section, key, default=None):
     try:
-        value = DAP.configGetItem(section, key)
-        return value
+        return DAP.configGetItem(section, key)
     except Exception:
         return default
 
