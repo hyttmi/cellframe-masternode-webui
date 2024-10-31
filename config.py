@@ -33,7 +33,7 @@ class Config:
     HEADER_TEXT = getConfigValue("webui", "header_text", default=False)
     ACCENT_COLOR = getConfigValue("webui", "accent_color", default="B3A3FF")
     
-    def jinjaEnv(self):
+    def jinjaEnv():
         env = Environment(
             loader=PackageLoader("cellframe-masternode-webui"),
             autoescape=select_autoescape()
