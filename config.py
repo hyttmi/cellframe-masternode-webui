@@ -9,6 +9,7 @@ def getConfigValue(section, key, default=None):
 
 class Config:
     PLUGIN_NAME = "Cellframe Masternode WebUI"
+    ACCENT_COLOR = getConfigValue("webui", "accent_color", default="B3A3FF")
     API_TOKEN = getConfigValue("webui", "api_token", default=False)
     AUTH_BYPASS = getConfigValue("webui", "auth_bypass", default=False)
     CACHE_BLOCKS_INTERVAL = getConfigValue("webui", "cache_blocks_interval", default=15)
@@ -19,6 +20,7 @@ class Config:
     EMAIL_SUBJECT = getConfigValue("webui", "email_subject", default=f"{PLUGIN_NAME}")
     GMAIL_APP_PASSWORD = getConfigValue("webui", "gmail_app_password", default=None)
     GMAIL_USER = getConfigValue("webui", "gmail_user", default=None)
+    HEADER_TEXT = getConfigValue("webui", "header_text", default=False)
     PASSWORD = getConfigValue("webui", "password", default=False)
     PLUGIN_URI = getConfigValue("webui", "uri", default="webui")
     RATE_LIMIT_ACTIVE = getConfigValue("webui", "rate_limit", default=False)
@@ -28,8 +30,6 @@ class Config:
     TELEGRAM_STATS_TIME = getConfigValue("webui", "telegram_stats_time")
     TEMPLATE = getConfigValue("webui", "template", default="cards")
     USERNAME = getConfigValue("webui", "username", default=False)
-    HEADER_TEXT = getConfigValue("webui", "header_text", default=False)
-    ACCENT_COLOR = getConfigValue("webui", "accent_color", default="B3A3FF")
     
     def jinjaEnv():
         env = Environment(
