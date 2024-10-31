@@ -1,6 +1,16 @@
 
 # Changelog
 
+## [UNRELEASED] - 2024-10-31
+
+### Added
+- Add support for configuring rate limit via `rate_limit_interval` configuration value.
+
+### Changed
+- Logging time format is changed to `isoformat()`
+- Moved configs to a separate class.
+- Clear button for deleted cards is now opaque so it doesn't block the view unless hovered.
+
 ## [2.95] - 2024-10-28
  
 ### Fixed

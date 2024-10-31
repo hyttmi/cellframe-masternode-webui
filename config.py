@@ -24,6 +24,7 @@ class Config:
     PASSWORD = getConfigValue("webui", "password", default=False)
     PLUGIN_URI = getConfigValue("webui", "uri", default="webui")
     RATE_LIMIT_ACTIVE = getConfigValue("webui", "rate_limit", default=False)
+    RATE_LIMIT_INTERVAL = getConfigValue("webui", "rate_limit_interval", default=15)
     TELEGRAM_API_TOKEN = getConfigValue("webui", "telegram_api_key", default=None)
     TELEGRAM_CHAT_ID = getConfigValue("webui", "telegram_chat_id", default=None)
     TELEGRAM_STATS_ENABLED = getConfigValue("webui", "telegram_stats", default=False)
