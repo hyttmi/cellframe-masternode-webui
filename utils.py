@@ -140,8 +140,7 @@ def getLatestNodeVersion():
         logNotice("Fetching latest node version...")
         req = requests.get("https://pub.cellframe.net/linux/cellframe-node/master/?C=M&O=D", timeout=5)
         if req.status_code == 200:
-            res = req.text
-            match = re.search(r"(\d.\d-\d{3})", res)
+            match = re.search(r"(\d.\d-\d{3})", req.text)
             if match:
                 return match.group(1).replace("-",".")
         else:
@@ -157,8 +156,7 @@ def getCurrentTokenPrice(network):
         if network == "Backbone":
             req = requests.get(f"https://coinmarketcap.com/currencies/cellframe/", timeout=5)
             if req.status_code == 200:
-                res = req.text
-                price_match = re.search(r"price today is \$(\d+.\d+)", res)
+                price_match = re.search(r"price today is \$(\d+.\d+)", req.text)
                 if price_match:
                     return float(price_match.group(1))
                 else:
@@ -169,8 +167,7 @@ def getCurrentTokenPrice(network):
         elif network == "KelVPN":
             req = requests.get(f"https://kelvpn.com/about-token", timeout=5)
             if req.status_code == 200:
-                res = req.text
-                price_match =re.search(r"\$(\d+.\d+)", res)
+                price_match =re.search(r"\$(\d+.\d+)", req.text)
                 if price_match:
                     return float(price_match.group(1))
                 else:
