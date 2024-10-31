@@ -7,8 +7,9 @@ def generateHTML(template_name):
     template_setting = Config.TEMPLATE
     template_path = f"{template_setting}/{template_name}"
     try:
-        logNotice(f"Generating HTML content...")
-        template = Config.jinjaEnv(template_path)
+        logNotice("Generating HTML content...")
+        env = Config.jinjaEnv()
+        template = env.get_template(template_path)
         output = template.render(info)
     except Exception as e:
         error_func = logError(f"Error: {e}")
