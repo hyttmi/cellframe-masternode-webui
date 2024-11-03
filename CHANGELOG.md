@@ -1,7 +1,7 @@
 
 # Changelog
 
-## [UNRELEASED] - 2024-10-31
+## [2.96] - 2024-11-03
 
 ### Added
 - Add support for configuring rate limit via `rate_limit_interval` configuration value.
@@ -10,6 +10,15 @@
 - Logging time format is changed to `isoformat()`
 - Moved configs to a separate class.
 - Clear button for deleted cards is now opaque so it doesn't block the view unless hovered.
+- Removed GMail support only and added support for any SSL/TLS capable SMTP server. **IMPORTANT: CHANGE YOUR CONFIGURATION IN `cellframe-node.cfg` FOR GMAIL**
+```
+smtp_server=smtp.gmail.com
+smtp_port=465
+smtp_password=<your_app_password>
+smtp_user=<your_gmail_user>
+email_use_ssl=true
+```
+
 
 ## [2.95] - 2024-10-28
  
