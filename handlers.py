@@ -5,7 +5,7 @@ from pycfhelpers.node.http.simple import CFSimpleHTTPRequestHandler, CFSimpleHTT
 from config import Config
 
 last_request_time = {}
-rate_limit_interval = 15
+rate_limit_interval = Config.RATE_LIMIT_INTERVAL
 
 def requestHandler(request: CFSimpleHTTPRequestHandler):
     if request.method == "GET":

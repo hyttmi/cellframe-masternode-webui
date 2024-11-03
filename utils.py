@@ -558,4 +558,3 @@ def validateHex(color_str):
         return color_str
     else:
         logError(f"Not a valid hexadecimal of colour code: {color_str}")
-        return "B3A3FF"
