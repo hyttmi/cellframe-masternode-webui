@@ -13,10 +13,10 @@
 - Removed GMail support only and added support for any SSL/TLS capable SMTP server. **IMPORTANT: CHANGE YOUR CONFIGURATION IN `cellframe-node.cfg` FOR GMAIL**
 ```
 smtp_server=smtp.gmail.com
-smtp_port=465
+smtp_port=587
 smtp_password=<your_app_password>
 smtp_user=<your_gmail_user>
-email_use_ssl=true
+email_use_tls=true
 ```
 
 
