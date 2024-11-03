@@ -7,8 +7,6 @@ This plugin offers an easy and efficient way to monitor your node's autocollect 
 
 ## Configuration
 
-**NOTICE: Email feature supports only GMail for now. And for using it, you MUST HAVE 2-factor authentication enabled and you HAVE TO create an app password from this link: https://myaccount.google.com/apppasswords**
-
 Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/opt/cellframe-node/etc/cellframe-node.cfg`. You just need to add new section `[webui]` to the end of the file and below that, add the settings which you want to change:
 
 - `accent_color=FFFFFF` - Use hex code color as the accent color (without #).
@@ -36,6 +34,20 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/op
 - `template=something` - Change template to something. If not set, default template will be used (cards).
 - `uri=something` - Change plugin URI. Defaults to `webui`.
 - `username=john` - Sets http authentication as user john. **MANDATORY UNLESS `auth_bypass` SET TO TRUE**
+
+### Using GMail with email stats
+
+1. Enable 2FA!
+2. Create an app password https://myaccount.google.com/apppasswords
+3. Use the following configuration:
+
+```
+smtp_server=smtp.gmail.com
+smtp_port=587
+smtp_password=<your_app_password>
+smtp_user=<your_gmail_user>
+email_use_tls=true
+```
 
 ## Installation
 
