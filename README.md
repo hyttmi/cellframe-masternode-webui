@@ -153,7 +153,7 @@ curl -s "http://<your_node_ext_ip>:8079/webui?as_json" -H "API_TOKEN: <your_api_
 ```
 
 ```
-curl -s "http://<your_node_ext_ip>:8079/webui?as_json" -H "API_TOKEN: <your_api_token>" | jq .node_uptime -> Returns node uptime in (days), hours, minutes, seconds
+curl -s "http://<your_node_ext_ip>:8079/webui?as_json" -H "API_TOKEN: <your_api_token>" | jq .node_uptime -> Returns node uptime in seconds
 ```
 
 ```
