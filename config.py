@@ -16,7 +16,7 @@ class Config:
     CACHE_REWARDS_INTERVAL = getConfigValue("webui", "cache_rewards_interval", default=15)
     EMAIL_RECIPIENTS = getConfigValue("webui", "email_recipients", default=None)
     EMAIL_STATS_ENABLED = getConfigValue("webui", "email_stats", default=False)
-    EMAIL_STATS_TIME = getConfigValue("webui", "email_time")
+    EMAIL_STATS_TIME = getConfigValue("webui", "email_time", default=False)
     EMAIL_SUBJECT = getConfigValue("webui", "email_subject", default=f"{PLUGIN_NAME}")
     EMAIL_USE_SSL = getConfigValue("webui", "email_use_ssl", default=False)
     EMAIL_USE_TLS = getConfigValue("webui", "email_use_tls", default=False)
@@ -32,7 +32,7 @@ class Config:
     TELEGRAM_API_TOKEN = getConfigValue("webui", "telegram_api_key", default=None)
     TELEGRAM_CHAT_ID = getConfigValue("webui", "telegram_chat_id", default=None)
     TELEGRAM_STATS_ENABLED = getConfigValue("webui", "telegram_stats", default=False)
-    TELEGRAM_STATS_TIME = getConfigValue("webui", "telegram_stats_time")
+    TELEGRAM_STATS_TIME = getConfigValue("webui", "telegram_stats_time", default=False)
     TEMPLATE = getConfigValue("webui", "template", default="cards")
     USERNAME = getConfigValue("webui", "username", default=False)
     
