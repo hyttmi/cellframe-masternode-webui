@@ -38,6 +38,18 @@ def logError(msg):
     except Exception as e:
         log.error(f"Failed to write to log file: {e}")
     return func_name
+
+def logDebug(msg):
+    func_name = inspect.stack()[1].function
+    log_message = f"[{func_name}] {msg}"
+    try:
+        curr_time = datetime.now().isoformat()
+        with logLock:
+            with open(os.path.join(getScriptDir(), "webui.log"), "a") as f:
+                f.write(f"[DBG][{curr_time}] {log_message}\n")
+    except Exception as e:
+        log.error(f"Failed to write to log file: {e}")
+    return func_name
     
 def checkForUpdate():
     try:
@@ -46,7 +58,6 @@ def checkForUpdate():
             data = json.load(manifest)
             curr_version = Version(data["version"])
             logNotice(f"Current plugin version: {curr_version}")
-                
         url = "https://raw.githubusercontent.com/hyttmi/cellframe-masternode-webui/refs/heads/master/manifest.json"
         req = requests.get(url, timeout=5).json()
         latest_version = Version(req["version"])
@@ -61,6 +72,8 @@ def CLICommand(command, timeout=120):
         exit_code, output = command_runner(f"/opt/cellframe-node/bin/cellframe-node-cli {command}", timeout=timeout)
         if exit_code == 0:
             return output.strip()
+        if Config.DEBUG:
+            logDebug(output.strip())
         else:
             ret = f"Command failed with error: {output.strip()}"
             logError(ret)
@@ -203,6 +216,8 @@ def readNetworkConfig(network):
                 if wallet_match:
                     net_config["wallet"] = wallet_match.group(1)
                 if "blocks_sign_cert" in net_config and "wallet" in net_config:
+                    if Config.DEBUG:
+                        logDebug(net_config)
                     return net_config
             logError(f"Necessary information missing in {config_file}, not a masternode?")
             return None
@@ -235,6 +250,8 @@ def getNetStatus(network):
                 "target_state": target_state_match.group(1),
                 "address": addr_match.group(1)
             }
+            if Config.DEBUG:
+                logDebug(net_status)
             return net_status
         else:
             return None
@@ -246,6 +263,8 @@ def getRewardWalletTokens(wallet):
         cmd_get_wallet_info = CLICommand(f"wallet info -addr {wallet}")
         if cmd_get_wallet_info:
             tokens = re.findall(r"coins:\s+([\d.]+)[\s\S]+?ticker:\s+(\w+)", cmd_get_wallet_info)
+            if Config.DEBUG:
+                logDebug(tokens)
             return tokens
         else:
             return None
@@ -260,6 +279,8 @@ def getAutocollectRewards(network):
             if cmd_get_autocollect_rewards:
                 amounts = re.findall(r"profit is (\d+.\d+)", cmd_get_autocollect_rewards)
                 if amounts:
+                    if Config.DEBUG:
+                        logDebug(amounts)
                     return sum(float(amount) for amount in amounts)
                 else:
                     return None
@@ -283,10 +304,9 @@ def cacheRewards():
     try:
         networks = getListNetworks()
         for network in networks:
-            if isNodeSynced(network):
-                logNotice("Network is probably synced...")
-                net_config = readNetworkConfig(network)
-                if net_config is not None:
+            net_config = readNetworkConfig(network)
+            if net_config is not None:
+                if isNodeSynced(network):
                     logNotice("Caching rewards...")
                     start_time = time.time()
                     cmd_get_tx_history = CLICommand(f"tx_history -addr {net_config['wallet']}")
@@ -497,6 +517,8 @@ def generateNetworkData():
                 network_data[network] = network_info
             else:
                 return None
+        if Config.DEBUG:
+            logDebug(network_data)
         return network_data
     else:
         return None
@@ -527,6 +549,8 @@ def generateInfo(exclude=None, format_time=True):
 
     for key in exclude:
         info.pop(key)
+    if Config.DEBUG:
+        logDebug(info)
     return info
 
 def funcScheduler(func, scheduled_time, every_min=False):

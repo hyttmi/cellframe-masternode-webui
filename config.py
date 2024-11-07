@@ -14,6 +14,7 @@ class Config:
     AUTH_BYPASS = getConfigValue("webui", "auth_bypass", default=False)
     CACHE_BLOCKS_INTERVAL = getConfigValue("webui", "cache_blocks_interval", default=15)
     CACHE_REWARDS_INTERVAL = getConfigValue("webui", "cache_rewards_interval", default=15)
+    DEBUG = getConfigValue("webui", "debug", default=False)
     EMAIL_RECIPIENTS = getConfigValue("webui", "email_recipients", default=None)
     EMAIL_STATS_ENABLED = getConfigValue("webui", "email_stats", default=False)
     EMAIL_STATS_TIME = getConfigValue("webui", "email_time", default=False)
