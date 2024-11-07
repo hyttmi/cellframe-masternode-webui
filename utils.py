@@ -199,10 +199,10 @@ def readNetworkConfig(network):
                 line = line.strip()
                 cert_match = re.search(r"blocks-sign-cert=(.+)", line)
                 if cert_match:
-                    net_config["blocks_sign_cert"] = cert_match.group(1).strip()
+                    net_config["blocks_sign_cert"] = cert_match.group(1)
                 wallet_match = re.search(r"fee_addr=(.+)", line)
                 if wallet_match:
-                    net_config["wallet"] = wallet_match.group(1).strip()
+                    net_config["wallet"] = wallet_match.group(1)
                 if "blocks_sign_cert" in net_config and "wallet" in net_config:
                     return net_config
             logError(f"Necessary information missing in {config_file}, not a masternode?")
