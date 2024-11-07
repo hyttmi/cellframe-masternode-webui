@@ -1,7 +1,10 @@
 
 # Changelog
 
-## [2.97] - 2024-11-03
+## [UNRELEASED] - 2024-11-03
+
+### Added
+- Some support for better debugging
 
 ### Changed
 - Better logging when fetching `active_nets()`
