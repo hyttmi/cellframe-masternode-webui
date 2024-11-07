@@ -28,9 +28,8 @@ def logNotice(msg):
         log.error(f"Failed to write to log file: {e}")
 
 def logError(msg):
-    frame_info = inspect.stack()[1]
-    func_name = frame_info.function
-    log_message = f"[{func_name} in {file_name}] {msg}"
+    func_name = inspect.stack()[1].function
+    log_message = f"[{func_name}] {msg}"
     try:
         curr_time = datetime.now().isoformat()
         with logLock:

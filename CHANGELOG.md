@@ -1,6 +1,11 @@
 
 # Changelog
 
+## [2.97] - 2024-11-03
+
+### Changed
+- Better logging when fetching `active_nets()`
+
 ## [2.96] - 2024-11-03
 
 ### Added
@@ -18,7 +23,6 @@ smtp_password=<your_app_password>
 smtp_user=<your_gmail_user>
 email_use_tls=true
 ```
-
 
 ## [2.95] - 2024-10-28
  
