@@ -30,7 +30,6 @@ def logNotice(msg):
 def logError(msg):
     frame_info = inspect.stack()[1]
     func_name = frame_info.function
-    file_name = frame_info.filename
     log_message = f"[{func_name} in {file_name}] {msg}"
     try:
         curr_time = datetime.now().isoformat()
@@ -181,25 +180,32 @@ def getCurrentTokenPrice(network):
 
 def getListNetworks():
     try:
-        return CFNet.active_nets()
+        nets = CFNet.active_nets()
+        if nets:
+            return nets
+        else:
+            logError("Can't get list of networks!")
+            return None
     except Exception as e:
         logError(f"Error retrieving networks: {e}")
         return None
 
 def readNetworkConfig(network):
+    config_file = f"/opt/cellframe-node/etc/network/{network}.cfg"
+    net_config = {}
     try:
-        config_file = f"/opt/cellframe-node/etc/network/{network}.cfg"
         with open(config_file, "r") as file:
-            text = file.read()
-        cert_match = re.search(r"^blocks-sign-cert=(.+)", text, re.MULTILINE)
-        wallet_match = re.search(r"^fee_addr=(.+)", text, re.MULTILINE)
-        if cert_match and wallet_match:
-            net_config = {
-                "blocks_sign_cert": cert_match.group(1),
-                "wallet": wallet_match.group(1)
-            }
-            return net_config
-        else:
+            for line in file:
+                line = line.strip()
+                cert_match = re.search(r"blocks-sign-cert=(.+)", line)
+                if cert_match:
+                    net_config["blocks_sign_cert"] = cert_match.group(1).strip()
+                wallet_match = re.search(r"fee_addr=(.+)", line)
+                if wallet_match:
+                    net_config["wallet"] = wallet_match.group(1).strip()
+                if "blocks_sign_cert" in net_config and "wallet" in net_config:
+                    return net_config
+            logError(f"Necessary information missing in {config_file}, not a masternode?")
             return None
     except FileNotFoundError:
         logError(f"Configuration file for {network} not found!")
