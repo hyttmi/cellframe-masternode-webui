@@ -2,9 +2,11 @@ import logging
 import os
 import threading
 import inspect
-from utils import getScriptDir
 
 logLock = threading.Lock()
+
+def getScriptDir():
+    return os.path.dirname(os.path.abspath(__file__))
 
 log_file = os.path.join(getScriptDir(), "webui.log")
 logging.basicConfig(
@@ -13,9 +15,6 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] [%(funcName)s] %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S"
 )
-
-def getScriptDir():
-    return os.path.dirname(os.path.abspath(__file__))
 
 def logNotice(msg):
     with logLock:
