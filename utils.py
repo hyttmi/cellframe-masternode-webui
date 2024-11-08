@@ -1,55 +1,18 @@
-import socket, requests, re, time, psutil, json, os, time, schedule, inspect, threading
+import socket, requests, re, time, psutil, json, os, time, schedule, cachetools.func
 from pycfhelpers.node.logging import CFLog
 from pycfhelpers.node.net import CFNet
 from packaging.version import Version
 from collections import OrderedDict
 from datetime import datetime
-import cachetools.func
 from concurrent.futures import ThreadPoolExecutor
 from command_runner import command_runner
 from config import Config
+from logger import logDebug, logError, logNotice
 
 log = CFLog()
 
-logLock = threading.Lock()
-
 def getScriptDir():
     return os.path.dirname(os.path.abspath(__file__))
-
-def logNotice(msg):
-    func_name = inspect.stack()[1].function
-    log_message = f"[{func_name}] {msg}"
-    try:
-        curr_time = datetime.now().isoformat()
-        with logLock:
-            with open(os.path.join(getScriptDir(), "webui.log"), "a") as f:
-                f.write(f"[NOTICE][{curr_time}] {log_message}\n")
-    except Exception as e:
-        log.error(f"Failed to write to log file: {e}")
-
-def logError(msg):
-    func_name = inspect.stack()[1].function
-    log_message = f"[{func_name}] {msg}"
-    try:
-        curr_time = datetime.now().isoformat()
-        with logLock:
-            with open(os.path.join(getScriptDir(), "webui.log"), "a") as f:
-                f.write(f"[ERROR][{curr_time}] {log_message}\n")
-    except Exception as e:
-        log.error(f"Failed to write to log file: {e}")
-    return func_name
-
-def logDebug(msg):
-    func_name = inspect.stack()[1].function
-    log_message = f"[{func_name}] {msg}"
-    try:
-        curr_time = datetime.now().isoformat()
-        with logLock:
-            with open(os.path.join(getScriptDir(), "webui.log"), "a") as f:
-                f.write(f"[DBG][{curr_time}] {log_message}\n")
-    except Exception as e:
-        log.error(f"Failed to write to log file: {e}")
-    return func_name
     
 def checkForUpdate():
     try:
