@@ -7,13 +7,10 @@ from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 from command_runner import command_runner
 from config import Config
-from logger import logDebug, logError, logNotice
+from logger import logDebug, logError, logNotice, getScriptDir
 
 log = CFLog()
 
-def getScriptDir():
-    return os.path.dirname(os.path.abspath(__file__))
-    
 def checkForUpdate():
     try:
         manifest_path = os.path.join(getScriptDir(), "manifest.json")

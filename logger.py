@@ -14,6 +14,9 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S"
 )
 
+def getScriptDir():
+    return os.path.dirname(os.path.abspath(__file__))
+
 def logNotice(msg):
     with logLock:
         func_name = inspect.stack()[1].function
