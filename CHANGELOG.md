@@ -1,14 +1,11 @@
 
 # Changelog
 
-## [UNRELEASED] - 2024-11-03
+## [2.97] - 2024-11-09
 
 ### Added
 - Debug support for most necessary functions with a wrapper.
 - Card for showing the node stake value currently in network.
-
-### Changed
-- Better logging when fetching `active_nets()`
 
 ## [2.96] - 2024-11-03
 
