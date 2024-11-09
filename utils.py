@@ -205,7 +205,7 @@ def getNetStatus(network):
         addr_match = re.search(r"([A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*)", net_status)
         state_match = re.search(r"states:\s+current: (\w+)", net_status)
         target_state_match = re.search(r"target: (\w+)", net_status)
-        if state_match and addr_match:
+        if state_match and addr_match and target_state_match:
             net_status = {
                 "state": state_match.group(1),
                 "target_state": target_state_match.group(1),
@@ -216,6 +216,32 @@ def getNetStatus(network):
             return None
     except Exception as e:
         logError(f"Error: {e}")
+
+@logDebug
+def getNodeWeight(network):
+    try:
+        status = getNetStatus(network)
+        if status is not None:
+            addr = status['address']
+            list_keys = CLICommand(f"srv_stake list keys -net {network}")
+            lines = list_keys.splitlines()
+            idx = None
+            for i, line in enumerate(lines):
+                if addr in line:
+                    idx = i
+                    break
+            if idx is None:
+                return None  # Address not found?
+            while lines[idx].strip() != "": # Search for the emptiness
+                idx -= 1
+            for line in lines[idx + 1:]:
+                if "stake_value:" in line:
+                    stake_value = float(re.search(r"[\d.]+", line).group(0))
+                    return stake_value
+        return None
+    except Exception as e:
+        logError(f"Error: {e}")
+        return None
 
 @logDebug
 def getRewardWalletTokens(wallet):
@@ -457,7 +483,8 @@ def generateNetworkData():
                         'signed_blocks_today': executor.submit(readBlocks, network, block_type="all_signed_blocks", today=True),
                         'token_price': executor.submit(getCurrentTokenPrice, network),
                         'rewards': executor.submit(readRewards, network),
-                        'all_rewards': executor.submit(sumRewards, network)
+                        'all_rewards': executor.submit(sumRewards, network),
+                        'node_weight': executor.submit(getNodeWeight, network)
                     }
                     network_info = {
                         'state': net_status['state'],
@@ -473,7 +500,8 @@ def generateNetworkData():
                         'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
                         'rewards': futures['rewards'].result(),
                         'all_rewards': futures['all_rewards'].result(),
-                        'token_price': futures['token_price'].result()
+                        'token_price': futures['token_price'].result(),
+                        'node_weight': futures['node_weight'].result()
                     }
                 network_data[network] = network_info
             else:

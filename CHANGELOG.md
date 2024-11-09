@@ -4,7 +4,7 @@
 ## [UNRELEASED] - 2024-11-03
 
 ### Added
-- Some support for better debugging
+- Debug support for most necessary functions with a wrapper
 
 ### Changed
 - Better logging when fetching `active_nets()`
