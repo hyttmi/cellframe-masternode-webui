@@ -27,8 +27,11 @@ def logError(msg):
         func_name = inspect.stack()[1].function
         logging.error(f"[{func_name}] {msg}")
 
-def logDebug(msg):
-    if Config.DEBUG:
-        with logLock:
-            func_name = inspect.stack()[1].function
-            logging.debug(f"[{func_name}] {msg}")
+def logDebug(func):
+    def wrapper(*args, **kwargs):
+        func_name = func.__name__
+        logging.info(f"Calling {func_name} with args: {args}, kwargs: {kwargs}")
+        result = func(*args, **kwargs)
+        logging.info(f"{func_name} returned: {result}")
+        return result
+    return wrapper
