@@ -2,6 +2,7 @@ import logging
 import os
 import threading
 import inspect
+from config import Config
 
 logLock = threading.Lock()
 
@@ -27,6 +28,7 @@ def logError(msg):
         logging.error(f"[{func_name}] {msg}")
 
 def logDebug(msg):
-    with logLock:
-        func_name = inspect.stack()[1].function
-        logging.debug(f"[{func_name}] {msg}")
+    if Config.DEBUG:
+        with logLock:
+            func_name = inspect.stack()[1].function
+            logging.debug(f"[{func_name}] {msg}")
