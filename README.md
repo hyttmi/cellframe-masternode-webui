@@ -14,6 +14,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/op
 - `auth_bypass=true|false` Disables HTTP authentication. Useful if you're planning to for example use the plugin behind reverse proxy. Default false.
 - `cache_blocks_interval=10` - Time (in minutes) between blocks cache renew.
 - `cache_rewards_interval=10` - Time (in minutes) between rewards cache renew. **DON'T USE VALUE BELOW 10, IT USES QUITE A LOT OF CPU**
+- `debug=true|false` - Print debugging data to `webui.log`, useful when you're having issues with the plugin.
 - `email_recipients=somebody@gmail.com|[somebody@gmail.com, another@aol.com]` - Recipient(s) for the email.
 - `email_stats=true|false` - Allow sending scheduled email statistics.
 - `email_time=23:59` - Set time when you want to send the statistics. **24h format (HH:MM)**
