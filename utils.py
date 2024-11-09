@@ -219,7 +219,7 @@ def getNetStatus(network):
 
 @cachetools.func.ttl_cache(maxsize=10)
 @logDebug
-def getNodeWeight(network):
+def getNodeStakeValue(network):
     try:
         status = getNetStatus(network)
         if status is not None:
@@ -485,7 +485,7 @@ def generateNetworkData():
                         'token_price': executor.submit(getCurrentTokenPrice, network),
                         'rewards': executor.submit(readRewards, network),
                         'all_rewards': executor.submit(sumRewards, network),
-                        'node_weight': executor.submit(getNodeWeight, network)
+                        'node_stake_value': executor.submit(getNodeStakeValue, network)
                     }
                     network_info = {
                         'state': net_status['state'],
@@ -502,7 +502,7 @@ def generateNetworkData():
                         'rewards': futures['rewards'].result(),
                         'all_rewards': futures['all_rewards'].result(),
                         'token_price': futures['token_price'].result(),
-                        'node_weight': futures['node_weight'].result()
+                        'node_stake_value': futures['node_stake_value'].result()
                     }
                 network_data[network] = network_info
             else:
