@@ -11,7 +11,6 @@ from logger import logDebug, logError, logNotice, getScriptDir
 
 log = CFLog()
 
-@logDebug
 def checkForUpdate():
     try:
         manifest_path = os.path.join(getScriptDir(), "manifest.json")
@@ -27,15 +26,12 @@ def checkForUpdate():
     except Exception as e:
         logError(f"Error: {e}")
         return f"Error: {e}"
-
-@logDebug
+    
 def CLICommand(command, timeout=120):
     try:
         exit_code, output = command_runner(f"/opt/cellframe-node/bin/cellframe-node-cli {command}", timeout=timeout)
         if exit_code == 0:
             return output.strip()
-        if Config.DEBUG:
-            logDebug(output.strip())
         else:
             ret = f"Command failed with error: {output.strip()}"
             logError(ret)
@@ -44,7 +40,6 @@ def CLICommand(command, timeout=120):
         logError(f"Error: {e}")
         return f"Error: {e}"
 
-@logDebug
 def getPID():
     try:
         for proc in psutil.process_iter(['pid', 'name']):
@@ -55,7 +50,6 @@ def getPID():
         logError(f"Error: {e}")
         return f"Error: {e}"
 
-@logDebug
 def getNodeThreadCount():
     try:
         process = psutil.Process(getPID())
@@ -63,11 +57,9 @@ def getNodeThreadCount():
     except Exception as e:
         logError("Error: {e}")
 
-@logDebug
 def getHostname():
     return socket.gethostname()
 
-@logDebug
 def formatUptime(seconds):
     days, remainder = divmod(seconds, 86400)
     hours, remainder = divmod(remainder, 3600)
@@ -77,7 +69,6 @@ def formatUptime(seconds):
     else:
         return f"{int(hours)}h {int(minutes)}m {int(seconds)}s"
 
-@logDebug
 def getSysStats():
     try:
         PID = getPID()
@@ -97,12 +88,12 @@ def getSysStats():
         boot_time = psutil.boot_time()
         system_uptime_seconds = time.time() - boot_time
         sys_stats['system_uptime'] = system_uptime_seconds
+
         return sys_stats
     except Exception as e:
         logError(f"Error: {e}")
         return f"Error {e}"
 
-@logDebug
 def getCurrentNodeVersion():
     try:
         logNotice("Fetching current node version...")
@@ -112,7 +103,6 @@ def getCurrentNodeVersion():
         logError(f"Error: {e}")
         return "N/A"
 
-@logDebug
 @cachetools.func.ttl_cache(maxsize=10, ttl=7200)
 def getLatestNodeVersion():
     try:
@@ -128,7 +118,6 @@ def getLatestNodeVersion():
         logError(f"Error: {e}")
         return None
 
-@logDebug
 @cachetools.func.ttl_cache(maxsize=10, ttl=3600)
 def getCurrentTokenPrice(network):
     try:
@@ -159,7 +148,6 @@ def getCurrentTokenPrice(network):
         logError(f"Error: {e}")
         return None
 
-@logDebug
 def getListNetworks():
     try:
         nets = CFNet.active_nets()
@@ -172,7 +160,6 @@ def getListNetworks():
         logError(f"Error retrieving networks: {e}")
         return None
 
-@logDebug
 def readNetworkConfig(network):
     config_file = f"/opt/cellframe-node/etc/network/{network}.cfg"
     net_config = {}
@@ -187,8 +174,6 @@ def readNetworkConfig(network):
                 if wallet_match:
                     net_config["wallet"] = wallet_match.group(1)
                 if "blocks_sign_cert" in net_config and "wallet" in net_config:
-                    if Config.DEBUG:
-                        logDebug(net_config)
                     return net_config
             logError(f"Necessary information missing in {config_file}, not a masternode?")
             return None
@@ -199,7 +184,6 @@ def readNetworkConfig(network):
         logError(f"Error: {e}")
         return None
 
-@logDebug
 def getAutocollectStatus(network):
     try:
         autocollect_cmd = CLICommand(f"block autocollect status -net {network} -chain main")
@@ -210,7 +194,6 @@ def getAutocollectStatus(network):
     except Exception as e:
         logError(f"Error: {e}")
 
-@logDebug
 def getNetStatus(network):
     try:
         net_status = CLICommand(f"net -net {network} get status")
@@ -223,29 +206,23 @@ def getNetStatus(network):
                 "target_state": target_state_match.group(1),
                 "address": addr_match.group(1)
             }
-            if Config.DEBUG:
-                logDebug(net_status)
             return net_status
         else:
             return None
     except Exception as e:
         logError(f"Error: {e}")
 
-@logDebug
 def getRewardWalletTokens(wallet):
     try:
         cmd_get_wallet_info = CLICommand(f"wallet info -addr {wallet}")
         if cmd_get_wallet_info:
             tokens = re.findall(r"coins:\s+([\d.]+)[\s\S]+?ticker:\s+(\w+)", cmd_get_wallet_info)
-            if Config.DEBUG:
-                logDebug(tokens)
             return tokens
         else:
             return None
     except Exception as e:
         logError(f"Error: {e}")
     
-@logDebug
 def getAutocollectRewards(network):
     try:
         net_config = readNetworkConfig(network)
@@ -254,8 +231,6 @@ def getAutocollectRewards(network):
             if cmd_get_autocollect_rewards:
                 amounts = re.findall(r"profit is (\d+.\d+)", cmd_get_autocollect_rewards)
                 if amounts:
-                    if Config.DEBUG:
-                        logDebug(amounts)
                     return sum(float(amount) for amount in amounts)
                 else:
                     return None
@@ -264,7 +239,6 @@ def getAutocollectRewards(network):
     except Exception as e:
         logError(f"Error: {e}")
         
-@logDebug
 def isNodeSynced(network):
     try:
         net_status = CLICommand(f"net -net {network} get status")
@@ -494,8 +468,6 @@ def generateNetworkData():
                 network_data[network] = network_info
             else:
                 return None
-        if Config.DEBUG:
-            logDebug(network_data)
         return network_data
     else:
         return None
@@ -527,8 +499,6 @@ def generateInfo(exclude=None, format_time=True):
 
     for key in exclude:
         info.pop(key)
-    if Config.DEBUG:
-        logDebug(info)
     return info
 
 def funcScheduler(func, scheduled_time, every_min=False):
