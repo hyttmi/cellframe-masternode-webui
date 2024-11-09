@@ -217,6 +217,7 @@ def getNetStatus(network):
     except Exception as e:
         logError(f"Error: {e}")
 
+@cachetools.func.ttl_cache(maxsize=10)
 @logDebug
 def getNodeWeight(network):
     try:
