@@ -126,7 +126,7 @@ def getCurrentTokenPrice(network):
         if network == "Backbone":
             req = requests.get(f"https://coinmarketcap.com/currencies/cellframe/", timeout=5)
             if req.status_code == 200:
-                price_match = re.search(r"price today is \$([\d.]+", req.text)
+                price_match = re.search(r"price today is \$(\d+.\d+)", req.text)
                 if price_match:
                     return float(price_match.group(1))
                 else:
@@ -137,7 +137,7 @@ def getCurrentTokenPrice(network):
         elif network == "KelVPN":
             req = requests.get(f"https://kelvpn.com/about-token", timeout=5)
             if req.status_code == 200:
-                price_match =re.search(r"\$([\d.]+)", req.text)
+                price_match =re.search(r"\$(\d+.\d+)", req.text)
                 if price_match:
                     return float(price_match.group(1))
                 else:
