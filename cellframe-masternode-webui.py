@@ -35,15 +35,17 @@ def onInit():
         executor.submit(cacheRewards)  # Run this on startup once to fetch current rewards
         executor.submit(cacheBlocks) # Run this on startup once to fetch current signed blocks
         
-        if email_stats_enabled and validateTime(email_stats_time):
-            logNotice(f"Email sending is activated at {email_stats_time}")
-            executor.submit(sendMail, f"Email sending is activated at {email_stats_time}")
-            executor.submit(funcScheduler, lambda: sendMail(generateHTML("mail.html")), email_stats_time)
+        if email_stats_enabled and email_stats_time:
+            if validateTime(email_stats_time):
+                logNotice(f"Email sending is activated at {email_stats_time}")
+                executor.submit(sendMail, f"Email sending is activated at {email_stats_time}")
+                executor.submit(funcScheduler, lambda: sendMail(generateHTML("mail.html")), email_stats_time)
         
-        if telegram_stats_enabled and validateTime(telegram_stats_time):
-            logNotice(f"Telegram sending is activated at {telegram_stats_time}")
-            executor.submit(sendTelegram, f"Telegram sending is activated at {telegram_stats_time}")
-            executor.submit(funcScheduler, lambda: sendTelegram(generateHTML("telegram.html")), telegram_stats_time)
+        if telegram_stats_enabled and telegram_stats_time:
+            if validateTime(telegram_stats_time):
+                logNotice(f"Telegram sending is activated at {telegram_stats_time}")
+                executor.submit(sendTelegram, f"Telegram sending is activated at {telegram_stats_time}")
+                executor.submit(funcScheduler, lambda: sendTelegram(generateHTML("telegram.html")), telegram_stats_time)
         
         if validateNum(cache_rewards_interval):
             if cache_rewards_interval < 10:

@@ -1,46 +1,17 @@
-import socket, requests, re, time, psutil, json, os, time, schedule, inspect, threading
+import socket, requests, re, time, psutil, json, os, time, schedule, cachetools.func
 from pycfhelpers.node.logging import CFLog
 from pycfhelpers.node.net import CFNet
 from packaging.version import Version
 from collections import OrderedDict
 from datetime import datetime
-import cachetools.func
 from concurrent.futures import ThreadPoolExecutor
 from command_runner import command_runner
 from config import Config
+from logger import logDebug, logError, logNotice, getScriptDir
 
 log = CFLog()
 
-logLock = threading.Lock()
-
-def getScriptDir():
-    return os.path.dirname(os.path.abspath(__file__))
-
-def logNotice(msg):
-    func_name = inspect.stack()[1].function
-    log_message = f"[{func_name}] {msg}"
-    try:
-        curr_time = datetime.now().isoformat()
-        with logLock:
-            with open(os.path.join(getScriptDir(), "webui.log"), "a") as f:
-                f.write(f"[NOTICE][{curr_time}] {log_message}\n")
-    except Exception as e:
-        log.error(f"Failed to write to log file: {e}")
-
-def logError(msg):
-    frame_info = inspect.stack()[1]
-    func_name = frame_info.function
-    file_name = frame_info.filename
-    log_message = f"[{func_name} in {file_name}] {msg}"
-    try:
-        curr_time = datetime.now().isoformat()
-        with logLock:
-            with open(os.path.join(getScriptDir(), "webui.log"), "a") as f:
-                f.write(f"[ERROR][{curr_time}] {log_message}\n")
-    except Exception as e:
-        log.error(f"Failed to write to log file: {e}")
-    return func_name
-    
+@logDebug
 def checkForUpdate():
     try:
         manifest_path = os.path.join(getScriptDir(), "manifest.json")
@@ -48,7 +19,6 @@ def checkForUpdate():
             data = json.load(manifest)
             curr_version = Version(data["version"])
             logNotice(f"Current plugin version: {curr_version}")
-                
         url = "https://raw.githubusercontent.com/hyttmi/cellframe-masternode-webui/refs/heads/master/manifest.json"
         req = requests.get(url, timeout=5).json()
         latest_version = Version(req["version"])
@@ -179,27 +149,36 @@ def getCurrentTokenPrice(network):
         logError(f"Error: {e}")
         return None
 
+@logDebug
 def getListNetworks():
     try:
-        return CFNet.active_nets()
+        nets = CFNet.active_nets()
+        if nets:
+            return nets
+        else:
+            logError("Can't get list of networks!")
+            return None
     except Exception as e:
         logError(f"Error retrieving networks: {e}")
         return None
 
+@logDebug
 def readNetworkConfig(network):
+    config_file = f"/opt/cellframe-node/etc/network/{network}.cfg"
+    net_config = {}
     try:
-        config_file = f"/opt/cellframe-node/etc/network/{network}.cfg"
         with open(config_file, "r") as file:
-            text = file.read()
-        cert_match = re.search(r"^blocks-sign-cert=(.+)", text, re.MULTILINE)
-        wallet_match = re.search(r"^fee_addr=(.+)", text, re.MULTILINE)
-        if cert_match and wallet_match:
-            net_config = {
-                "blocks_sign_cert": cert_match.group(1),
-                "wallet": wallet_match.group(1)
-            }
-            return net_config
-        else:
+            for line in file:
+                line = line.strip()
+                cert_match = re.search(r"blocks-sign-cert=(.+)", line)
+                if cert_match:
+                    net_config["blocks_sign_cert"] = cert_match.group(1)
+                wallet_match = re.search(r"fee_addr=(.+)", line)
+                if wallet_match:
+                    net_config["wallet"] = wallet_match.group(1)
+                if "blocks_sign_cert" in net_config and "wallet" in net_config:
+                    return net_config
+            logError(f"Necessary information missing in {config_file}, not a masternode?")
             return None
     except FileNotFoundError:
         logError(f"Configuration file for {network} not found!")
@@ -208,6 +187,7 @@ def readNetworkConfig(network):
         logError(f"Error: {e}")
         return None
 
+@logDebug
 def getAutocollectStatus(network):
     try:
         autocollect_cmd = CLICommand(f"block autocollect status -net {network} -chain main")
@@ -218,13 +198,14 @@ def getAutocollectStatus(network):
     except Exception as e:
         logError(f"Error: {e}")
 
+@logDebug
 def getNetStatus(network):
     try:
         net_status = CLICommand(f"net -net {network} get status")
         addr_match = re.search(r"([A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*)", net_status)
         state_match = re.search(r"states:\s+current: (\w+)", net_status)
         target_state_match = re.search(r"target: (\w+)", net_status)
-        if state_match and addr_match:
+        if state_match and addr_match and target_state_match:
             net_status = {
                 "state": state_match.group(1),
                 "target_state": target_state_match.group(1),
@@ -236,6 +217,34 @@ def getNetStatus(network):
     except Exception as e:
         logError(f"Error: {e}")
 
+@cachetools.func.ttl_cache(maxsize=10)
+@logDebug
+def getNodeStakeValue(network):
+    try:
+        status = getNetStatus(network)
+        if status is not None:
+            addr = status['address']
+            list_keys = CLICommand(f"srv_stake list keys -net {network}")
+            lines = list_keys.splitlines()
+            idx = None
+            for i, line in enumerate(lines):
+                if addr in line:
+                    idx = i
+                    break
+            if idx is None:
+                return None  # Address not found?
+            while lines[idx].strip() != "": # Search for the emptiness
+                idx -= 1
+            for line in lines[idx + 1:]:
+                if "stake_value:" in line:
+                    stake_value = float(re.search(r"[\d.]+", line).group(0))
+                    return stake_value
+        return None
+    except Exception as e:
+        logError(f"Error: {e}")
+        return None
+
+@logDebug
 def getRewardWalletTokens(wallet):
     try:
         cmd_get_wallet_info = CLICommand(f"wallet info -addr {wallet}")
@@ -247,6 +256,7 @@ def getRewardWalletTokens(wallet):
     except Exception as e:
         logError(f"Error: {e}")
     
+@logDebug
 def getAutocollectRewards(network):
     try:
         net_config = readNetworkConfig(network)
@@ -263,6 +273,7 @@ def getAutocollectRewards(network):
     except Exception as e:
         logError(f"Error: {e}")
         
+@logDebug
 def isNodeSynced(network):
     try:
         net_status = CLICommand(f"net -net {network} get status")
@@ -278,10 +289,9 @@ def cacheRewards():
     try:
         networks = getListNetworks()
         for network in networks:
-            if isNodeSynced(network):
-                logNotice("Network is probably synced...")
-                net_config = readNetworkConfig(network)
-                if net_config is not None:
+            net_config = readNetworkConfig(network)
+            if net_config is not None:
+                if isNodeSynced(network):
                     logNotice("Caching rewards...")
                     start_time = time.time()
                     cmd_get_tx_history = CLICommand(f"tx_history -addr {net_config['wallet']}")
@@ -385,6 +395,7 @@ def cacheBlocks():
     except Exception as e:
         logError(f"Error: {e}")
 
+@logDebug
 def readRewards(network):
     try:
         rewards = {}
@@ -410,6 +421,7 @@ def readRewards(network):
         logError(f"Error reading rewards: {e}")
         return None
 
+@logDebug
 def readBlocks(network, block_type='count', today=False):
     cache_file_path = os.path.join(getScriptDir(), f".{network}_blocks_cache.json")
     if not os.path.exists(cache_file_path):
@@ -450,6 +462,7 @@ def sumRewards(network):
         logError(f"Error: {e}")
         return None
 
+@logDebug
 def generateNetworkData():
     networks = getListNetworks()
     if networks is not None:
@@ -471,7 +484,8 @@ def generateNetworkData():
                         'signed_blocks_today': executor.submit(readBlocks, network, block_type="all_signed_blocks", today=True),
                         'token_price': executor.submit(getCurrentTokenPrice, network),
                         'rewards': executor.submit(readRewards, network),
-                        'all_rewards': executor.submit(sumRewards, network)
+                        'all_rewards': executor.submit(sumRewards, network),
+                        'node_stake_value': executor.submit(getNodeStakeValue, network)
                     }
                     network_info = {
                         'state': net_status['state'],
@@ -487,7 +501,8 @@ def generateNetworkData():
                         'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
                         'rewards': futures['rewards'].result(),
                         'all_rewards': futures['all_rewards'].result(),
-                        'token_price': futures['token_price'].result()
+                        'token_price': futures['token_price'].result(),
+                        'node_stake_value': futures['node_stake_value'].result()
                     }
                 network_data[network] = network_info
             else:
@@ -496,6 +511,7 @@ def generateNetworkData():
     else:
         return None
 
+@logDebug
 def generateInfo(exclude=None, format_time=True):
     if exclude is None:
         exclude = []
