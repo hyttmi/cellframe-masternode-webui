@@ -300,6 +300,20 @@
             </div>
             {% endif %}
 
+            {% if network.node_weight is not none %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_weight_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">Node weight</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_weight }}</h6>
+                    </div>
+                    <i class="fa-solid fa-weight-scale icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
             {% if network.token_price is not none %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="autocollect_rewards_{{ network_name }}">
                 <div class="card">
@@ -346,20 +360,6 @@
                         </table>
                     </div>
                     <i class="fa-solid fa-wallet icon-container"></i>
-                </div>
-            </div>
-            {% endif %}
-
-            {% if network.node_weight is not none %}
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_weight_{{ network_name }}">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">Node weight</h5><button type="button" class="btn-close" aria-label="Close"></button>
-                    </div>
-                    <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_weight }}</h6>
-                    </div>
-                    <i class="fa-solid fa-weight-scale icon-container"></i>
                 </div>
             </div>
             {% endif %}
