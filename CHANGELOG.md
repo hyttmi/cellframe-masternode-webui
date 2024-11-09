@@ -5,7 +5,7 @@
 
 ### Added
 - Debug support for most necessary functions with a wrapper.
-- Card for showing the node weight currently in network.
+- Card for showing the node stake value currently in network.
 
 ### Changed
 - Better logging when fetching `active_nets()`
