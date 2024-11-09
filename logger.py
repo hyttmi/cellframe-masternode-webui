@@ -28,10 +28,13 @@ def logError(msg):
         logging.error(f"[{func_name}] {msg}")
 
 def logDebug(func):
-    def wrapper(*args, **kwargs):
-        func_name = func.__name__
-        logging.info(f"Calling {func_name} with args: {args}, kwargs: {kwargs}")
-        result = func(*args, **kwargs)
-        logging.info(f"{func_name} returned: {result}")
-        return result
-    return wrapper
+    if Config.DEBUG:
+        def wrapper(*args, **kwargs):
+            func_name = func.__name__
+            logging.info(f"Calling {func_name} with args: {args}, kwargs: {kwargs}")
+            result = func(*args, **kwargs)
+            logging.info(f"{func_name} returned: {result}")
+            return result
+        return wrapper
+    else:
+        return func
