@@ -11,6 +11,7 @@ from logger import logDebug, logError, logNotice, getScriptDir
 
 log = CFLog()
 
+@logDebug
 def checkForUpdate():
     try:
         manifest_path = os.path.join(getScriptDir(), "manifest.json")
@@ -148,6 +149,7 @@ def getCurrentTokenPrice(network):
         logError(f"Error: {e}")
         return None
 
+@logDebug
 def getListNetworks():
     try:
         nets = CFNet.active_nets()
@@ -160,6 +162,7 @@ def getListNetworks():
         logError(f"Error retrieving networks: {e}")
         return None
 
+@logDebug
 def readNetworkConfig(network):
     config_file = f"/opt/cellframe-node/etc/network/{network}.cfg"
     net_config = {}
@@ -184,6 +187,7 @@ def readNetworkConfig(network):
         logError(f"Error: {e}")
         return None
 
+@logDebug
 def getAutocollectStatus(network):
     try:
         autocollect_cmd = CLICommand(f"block autocollect status -net {network} -chain main")
@@ -194,6 +198,7 @@ def getAutocollectStatus(network):
     except Exception as e:
         logError(f"Error: {e}")
 
+@logDebug
 def getNetStatus(network):
     try:
         net_status = CLICommand(f"net -net {network} get status")
@@ -212,6 +217,7 @@ def getNetStatus(network):
     except Exception as e:
         logError(f"Error: {e}")
 
+@logDebug
 def getRewardWalletTokens(wallet):
     try:
         cmd_get_wallet_info = CLICommand(f"wallet info -addr {wallet}")
@@ -223,6 +229,7 @@ def getRewardWalletTokens(wallet):
     except Exception as e:
         logError(f"Error: {e}")
     
+@logDebug
 def getAutocollectRewards(network):
     try:
         net_config = readNetworkConfig(network)
@@ -239,6 +246,7 @@ def getAutocollectRewards(network):
     except Exception as e:
         logError(f"Error: {e}")
         
+@logDebug
 def isNodeSynced(network):
     try:
         net_status = CLICommand(f"net -net {network} get status")
@@ -360,6 +368,7 @@ def cacheBlocks():
     except Exception as e:
         logError(f"Error: {e}")
 
+@logDebug
 def readRewards(network):
     try:
         rewards = {}
@@ -385,6 +394,7 @@ def readRewards(network):
         logError(f"Error reading rewards: {e}")
         return None
 
+@logDebug
 def readBlocks(network, block_type='count', today=False):
     cache_file_path = os.path.join(getScriptDir(), f".{network}_blocks_cache.json")
     if not os.path.exists(cache_file_path):
