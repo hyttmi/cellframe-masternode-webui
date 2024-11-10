@@ -1,15 +1,15 @@
-import socket, requests, re, time, psutil, json, os, time, schedule, cachetools.func
-from pycfhelpers.node.logging import CFLog
-from pycfhelpers.node.net import CFNet
-from packaging.version import Version
-from collections import OrderedDict
-from datetime import datetime
-from concurrent.futures import ThreadPoolExecutor
-from command_runner import command_runner
-from config import Config
-from logger import logDebug, logError, logNotice, getScriptDir
-
-log = CFLog()
+try:
+    import socket, requests, re, time, psutil, json, os, time, schedule, cachetools.func
+    from pycfhelpers.node.net import CFNet
+    from packaging.version import Version
+    from collections import OrderedDict
+    from datetime import datetime
+    from concurrent.futures import ThreadPoolExecutor
+    from command_runner import command_runner
+    from config import Config
+    from logger import logDebug, logError, logNotice, getScriptDir
+except ImportError as e:
+    logError(f"ImportError: {e}")
 
 @logDebug
 def checkForUpdate():
@@ -274,6 +274,28 @@ def getAutocollectRewards(network):
         logError(f"Error: {e}")
         
 @logDebug
+def getGeneralNodeInfo(network):
+    try:
+        with ThreadPoolExecutor() as executor:
+            futures = {
+                'node_dump': executor.submit(CLICommand, f"node dump -net {network}"),
+                'node_connections': executor.submit(CLICommand, f"node connections -net {network}")
+            }
+
+            data = (
+                "NODE DUMP\n"
+                "========================================================================\n"
+                f"{futures['node_dump'].result()}\n\n"
+                "NODE CONNECTIONS\n"
+                "========================================================================\n"
+                f"{futures['node_connections'].result()}\n"
+            )
+        return data
+    except Exception as e:
+        logError(f"Error: {e}")
+        return None
+    
+@logDebug
 def isNodeSynced(network):
     try:
         net_status = CLICommand(f"net -net {network} get status")
@@ -464,81 +486,86 @@ def sumRewards(network):
 
 @logDebug
 def generateNetworkData():
-    networks = getListNetworks()
-    if networks is not None:
-        network_data = {}
-        for network in networks:
-            net_config = readNetworkConfig(network)
-            if net_config is not None: # Just process masternodes. No need to process normal ones
-                network = str(network)
-                wallet = net_config['wallet']
-                tokens = getRewardWalletTokens(wallet)
-                net_status = getNetStatus(network)
+    try:
+        networks = getListNetworks()
+        if networks is not None:
+            network_data = {}
+            for network in networks:
+                net_config = readNetworkConfig(network)
+                if net_config is not None: # Just process masternodes. No need to process normal ones
+                    network = str(network)
+                    wallet = net_config['wallet']
+                    tokens = getRewardWalletTokens(wallet)
+                    net_status = getNetStatus(network)
 
-                with ThreadPoolExecutor() as executor:
-                    futures = {
-                        'first_signed_blocks': executor.submit(readBlocks, network, block_type="first_signed_blocks_count"),
-                        'all_signed_blocks_dict': executor.submit(readBlocks, network, block_type="all_signed_blocks"),
-                        'all_signed_blocks': executor.submit(readBlocks, network, block_type="all_signed_blocks_count"),
-                        'all_blocks': executor.submit(readBlocks, network, block_type="count"),
-                        'signed_blocks_today': executor.submit(readBlocks, network, block_type="all_signed_blocks", today=True),
-                        'token_price': executor.submit(getCurrentTokenPrice, network),
-                        'rewards': executor.submit(readRewards, network),
-                        'all_rewards': executor.submit(sumRewards, network),
-                        'node_stake_value': executor.submit(getNodeStakeValue, network)
-                    }
-                    network_info = {
-                        'state': net_status['state'],
-                        'target_state': net_status['target_state'],
-                        'address': net_status['address'],
-                        'first_signed_blocks': futures['first_signed_blocks'].result(),
-                        'all_signed_blocks_dict': futures['all_signed_blocks_dict'].result(),
-                        'all_signed_blocks': futures['all_signed_blocks'].result(),
-                        'all_blocks': futures['all_blocks'].result(),
-                        'signed_blocks_today': futures['signed_blocks_today'].result(),
-                        'autocollect_status': getAutocollectStatus(network),
-                        'autocollect_rewards': getAutocollectRewards(network),
-                        'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
-                        'rewards': futures['rewards'].result(),
-                        'all_rewards': futures['all_rewards'].result(),
-                        'token_price': futures['token_price'].result(),
-                        'node_stake_value': futures['node_stake_value'].result()
-                    }
-                network_data[network] = network_info
-            else:
-                return None
-        return network_data
-    else:
-        return None
+                    with ThreadPoolExecutor() as executor:
+                        futures = {
+                            'first_signed_blocks': executor.submit(readBlocks, network, block_type="first_signed_blocks_count"),
+                            'all_signed_blocks_dict': executor.submit(readBlocks, network, block_type="all_signed_blocks"),
+                            'all_signed_blocks': executor.submit(readBlocks, network, block_type="all_signed_blocks_count"),
+                            'all_blocks': executor.submit(readBlocks, network, block_type="count"),
+                            'signed_blocks_today': executor.submit(readBlocks, network, block_type="all_signed_blocks", today=True),
+                            'token_price': executor.submit(getCurrentTokenPrice, network),
+                            'rewards': executor.submit(readRewards, network),
+                            'all_rewards': executor.submit(sumRewards, network),
+                            'node_stake_value': executor.submit(getNodeStakeValue, network),
+                            'general_node_info': executor.submit(getGeneralNodeInfo, network),
+                            'autocollect_status': executor.submit(getAutocollectStatus, network),
+                            'autocollect_rewards': executor.submit(getAutocollectRewards, network)
+                        }
+                        network_info = {
+                            'state': net_status['state'],
+                            'target_state': net_status['target_state'],
+                            'address': net_status['address'],
+                            'first_signed_blocks': futures['first_signed_blocks'].result(),
+                            'all_signed_blocks_dict': futures['all_signed_blocks_dict'].result(),
+                            'all_signed_blocks': futures['all_signed_blocks'].result(),
+                            'all_blocks': futures['all_blocks'].result(),
+                            'signed_blocks_today': futures['signed_blocks_today'].result(),
+                            'autocollect_status': futures['autocollect_status'].result(),
+                            'autocollect_rewards': futures['autocollect_rewards'].result(),
+                            'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
+                            'rewards': futures['rewards'].result(),
+                            'all_rewards': futures['all_rewards'].result(),
+                            'token_price': futures['token_price'].result(),
+                            'node_stake_value': futures['node_stake_value'].result(),
+                            'general_node_info': futures['general_node_info'].result()
+                        }
+                        network_data[network] = network_info
+                else:
+                    return None
+            return network_data
+        else:
+            return None
+    except Exception as e:
+        logError(f"Error: {e}")
 
 @logDebug
-def generateInfo(exclude=None, format_time=True):
-    if exclude is None:
-        exclude = []
-    sys_stats = getSysStats()
-    is_update_available, curr_version, latest_version = checkForUpdate()
+def generateInfo(format_time=True):
+    try:
+        sys_stats = getSysStats()
+        is_update_available, curr_version, latest_version = checkForUpdate()
 
-    info = {
-        'plugin_update_available': is_update_available,
-        'current_plugin_version': curr_version,
-        'latest_plugin_version': latest_version,
-        "plugin_name": Config.PLUGIN_NAME,
-        "hostname": getHostname(),
-        "system_uptime": formatUptime(sys_stats["system_uptime"]) if format_time else sys_stats["system_uptime"],
-        "node_uptime": formatUptime(sys_stats["node_uptime"]) if format_time else sys_stats["node_uptime"],
-        "node_version": getCurrentNodeVersion(),
-        "node_active_threads": getNodeThreadCount(),
-        "latest_node_version": getLatestNodeVersion(),
-        "node_cpu_utilization": sys_stats["node_cpu_usage"],
-        "node_memory_utilization": sys_stats["node_memory_usage_mb"],
-        "website_header_text": Config.HEADER_TEXT,
-        "website_accent_color": validateHex(Config.ACCENT_COLOR),
-        "networks": generateNetworkData()
-    }
-
-    for key in exclude:
-        info.pop(key)
-    return info
+        info = {
+            'plugin_update_available': is_update_available,
+            'current_plugin_version': curr_version,
+            'latest_plugin_version': latest_version,
+            "plugin_name": Config.PLUGIN_NAME,
+            "hostname": getHostname(),
+            "system_uptime": formatUptime(sys_stats["system_uptime"]) if format_time else sys_stats["system_uptime"],
+            "node_uptime": formatUptime(sys_stats["node_uptime"]) if format_time else sys_stats["node_uptime"],
+            "node_version": getCurrentNodeVersion(),
+            "node_active_threads": getNodeThreadCount(),
+            "latest_node_version": getLatestNodeVersion(),
+            "node_cpu_utilization": sys_stats["node_cpu_usage"],
+            "node_memory_utilization": sys_stats["node_memory_usage_mb"],
+            "website_header_text": Config.HEADER_TEXT,
+            "website_accent_color": validateHex(Config.ACCENT_COLOR),
+            "networks": generateNetworkData()
+        }
+        return info
+    except Exception as e:
+        logError(f"Error: {e}")
 
 def funcScheduler(func, scheduled_time, every_min=False):
     try:

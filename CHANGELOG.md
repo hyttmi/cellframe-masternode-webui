@@ -1,6 +1,17 @@
 
 # Changelog
 
+## [2.98] - 2024-11-10
+ 
+### Added
+- Support for excluding root level keys from JSON output.
+- Info button per network to show some information from node.
+- Startup delay, useful for making sure node gets online and synced.
+- Try, except blocks for imports and logging the errors.
+
+### Changed
+- Logging is now done via Python `logging` library.
+
 ## [2.97] - 2024-11-09
 
 ### Added
@@ -24,7 +35,6 @@ smtp_password=<your_app_password>
 smtp_user=<your_gmail_user>
 email_use_tls=true
 ```
-
 ## [2.95] - 2024-10-28
  
 ### Fixed

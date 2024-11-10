@@ -133,3 +133,11 @@ html {
     width: 100% !important;
     height: auto !important;
 }
+
+.info {
+    color: var(--accent-color);
+}
+
+.custom-modal-bg {
+    background-color: #151515 !important;
+}
