@@ -1,6 +1,14 @@
 
 # Changelog
 
+## [2.99] - 2024-10-28
+
+### Fixed
+- Regex for reading network config file.
+
+### Removed
+- Node connections info from general node info, node dump gives connections already.
+
 ## [2.98] - 2024-11-10
  
 ### Added

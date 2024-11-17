@@ -170,10 +170,10 @@ def readNetworkConfig(network):
         with open(config_file, "r") as file:
             for line in file:
                 line = line.strip()
-                cert_match = re.search(r"blocks-sign-cert=(.+)", line)
+                cert_match = re.search(r"^blocks-sign-cert=(.+)", line)
                 if cert_match:
                     net_config["blocks_sign_cert"] = cert_match.group(1)
-                wallet_match = re.search(r"fee_addr=(.+)", line)
+                wallet_match = re.search(r"^fee_addr=(.+)", line)
                 if wallet_match:
                     net_config["wallet"] = wallet_match.group(1)
                 if "blocks_sign_cert" in net_config and "wallet" in net_config:
@@ -278,17 +278,13 @@ def getGeneralNodeInfo(network):
     try:
         with ThreadPoolExecutor() as executor:
             futures = {
-                'node_dump': executor.submit(CLICommand, f"node dump -net {network}"),
-                'node_connections': executor.submit(CLICommand, f"node connections -net {network}")
+                'node_dump': executor.submit(CLICommand, f"node dump -net {network}")
             }
 
             data = (
                 "NODE DUMP\n"
                 "========================================================================\n"
-                f"{futures['node_dump'].result()}\n\n"
-                "NODE CONNECTIONS\n"
-                "========================================================================\n"
-                f"{futures['node_connections'].result()}\n"
+                f"{futures['node_dump'].result()}\n"
             )
         return data
     except Exception as e:
@@ -328,6 +324,9 @@ def cacheRewards():
                                 rewards.append(reward)
                             reward = {}
                             is_receiving_reward = False
+                            continue
+                        if line.startswith("hash:"):
+                            reward['hash'] = line.split("hash:")[1].strip()
                             continue
                         if line.startswith("tx_created:"):
                             original_date = line.split("tx_created:")[1].strip()[:-6]
@@ -379,19 +378,19 @@ def cacheBlocks():
                         'signed_blocks': executor.submit(CLICommand, f"block list -net {network} signed -cert {net_config['blocks_sign_cert']}")
                     }
 
-                block_count_result = futures["block_count"].result()
+                block_count_result = futures['block_count'].result()
                 block_count_match = re.search(r":\s+(\d+)", block_count_result)
                 if block_count_match:
-                    block_data["block_count"] = int(block_count_match.group(1))
+                    block_data['block_count'] = int(block_count_match.group(1))
 
                 signed_blocks_result = futures["signed_blocks"].result()
                 signed_blocks_match = re.search(r"have blocks: (\d+)", signed_blocks_result)
                 if signed_blocks_match:
-                    block_data["signed_blocks_count"] = int(signed_blocks_match.group(1))
+                    block_data['signed_blocks_count'] = int(signed_blocks_match.group(1))
 
                 first_signed_match = re.search(r"have blocks: (\d+)", futures["first_signed_blocks"].result())
                 if first_signed_match:
-                    block_data["first_signed_blocks_count"] = int(first_signed_match.group(1))
+                    block_data['first_signed_blocks_count'] = int(first_signed_match.group(1))
 
                 blocks_signed_per_day = {}
                 lines = signed_blocks_result.splitlines()
@@ -444,7 +443,7 @@ def readRewards(network):
         return None
 
 @logDebug
-def readBlocks(network, block_type='count', today=False):
+def readBlocks(network, block_type="count", today=False):
     cache_file_path = os.path.join(getScriptDir(), f".{network}_blocks_cache.json")
     if not os.path.exists(cache_file_path):
         logError(f"Cache file for network {network} does not exist.")
@@ -454,7 +453,7 @@ def readBlocks(network, block_type='count', today=False):
             block_data = json.load(f)
         
         if block_type == "count":
-            return block_data["block_count"]
+            return block_data['block_count']
 
         if block_type == "all_signed_blocks" and today:
             today_str = datetime.now().strftime("%a, %d %b %Y")
@@ -462,13 +461,13 @@ def readBlocks(network, block_type='count', today=False):
             return today_count
         
         if block_type == "all_signed_blocks_count":
-            return sum(block_data["all_signed_blocks"].values())
+            return sum(block_data['all_signed_blocks'].values())
         
         if block_type == "all_signed_blocks":
-            return block_data["all_signed_blocks"]
+            return block_data['all_signed_blocks']
         
         if block_type == "first_signed_blocks_count":
-            return block_data["first_signed_blocks_count"]
+            return block_data['first_signed_blocks_count']
 
     except Exception as e:
         logError(f"Error reading blocks for network '{network}': {e}")
@@ -600,4 +599,4 @@ def validateHex(color_str):
     if re.match(r"([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", color_str):
         return color_str
     else:
-        logError(f"Not a valid hexadecimal of colour code: {color_str}")
+        logError(f"Not a valid hexadecimal colour code: {color_str}")
