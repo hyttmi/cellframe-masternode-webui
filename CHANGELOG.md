@@ -1,7 +1,7 @@
 
 # Changelog
 
-## [2.99] - 2024-10-28
+## [2.99] - 2024-11-17
 
 ### Fixed
 - Regex for reading network config file.
