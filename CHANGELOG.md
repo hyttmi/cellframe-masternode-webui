@@ -1,13 +1,22 @@
 
 # Changelog
 
+## [2.100] - 2024-11-24
+
+### Improved
+- Regex again for reading wallet from network configuration file.
+
+### Changed
+- Prettify button for clearing localStorage (closed cards).
+- Remove KeyError exception, `key.pop()` method changed.
+
 ## [2.99] - 2024-11-17
 
 ### Fixed
 - Regex for reading network config file.
 
 ### Removed
-- Node connections info from general node info, node dump gives connections already.
+- Node connections info from general node info, node dump shows current connections already.
 
 ## [2.98] - 2024-11-10
  

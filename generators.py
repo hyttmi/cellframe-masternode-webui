@@ -24,11 +24,7 @@ def generateJSON():
     if Config.JSON_EXCLUDE and isinstance(Config.JSON_EXCLUDE, list):
         for key in Config.JSON_EXCLUDE:
             if key in info:
-                try:
-                    info.pop(key)
-                except KeyError:
-                    logError(f"Key {key} not found!")
-                    pass
+                info.pop(key, None)
     else:
         logError("Error: json_exclude is not a list!")
     try:

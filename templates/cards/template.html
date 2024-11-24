@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
     <title>{{ plugin_name }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -23,11 +23,8 @@
 
 <body>
     <div class="container-fluid mt-4">
-        <div class="row" id="localstorage">
-            <div class="d-grid gap-2 col-md-2 mx-auto">
-                <button id="clearstorage" class="btn-primary text-uppercase clearbutton"><strong>restore default cards</strong></button>
-            </div>
-        </div>
+        <a href="#" id="clearstorage" class="btn-primary floatbutton text-uppercase"><i class="fa-solid fa-xl fa-rotate-left floatbutton-icon"></i></a>
+
     {% if plugin_update_available %}
         <div class="row">
             <div class="alert alert-danger" role="alert">
@@ -35,6 +32,7 @@
             </div>
         </div>
     {% endif %}
+
     {% if website_header_text %}
         <div class="row">
             <div class="col-12 text-center">
@@ -42,6 +40,7 @@
             </div>
         </div>
     {% endif %}
+
         <div class="row">
             <div class="col-12">
                 <h1 class="text-uppercase text-color-secondary">System Info</h1>
@@ -476,15 +475,14 @@
         }
     
         document.addEventListener('DOMContentLoaded', function () {
-            var localStorageDiv = document.getElementById('localstorage');
             var clearStorageBtn = document.getElementById("clearstorage");
     
             function toggleLocalStorageDiv() {
                 var hasCardsHidden = localStorage.getItem('cfclosed');
                 if (!hasCardsHidden) {
-                    localStorageDiv.style.display = 'none';
+                    clearStorageBtn.style.display = 'none';
                 } else {
-                    localStorageDiv.style.display = 'block';
+                    clearStorageBtn.style.display = 'block';
                 }
             }
     
