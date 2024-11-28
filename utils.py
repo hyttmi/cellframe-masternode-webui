@@ -1,7 +1,7 @@
 try:
     import socket, requests, re, time, psutil, json, os, time, schedule, cachetools.func
     from pycfhelpers.node.net import CFNet
-    from packaging.version import Version
+    from packaging.version import Version, parse
     from collections import OrderedDict
     from datetime import datetime
     from concurrent.futures import ThreadPoolExecutor
@@ -110,9 +110,13 @@ def getLatestNodeVersion():
         logNotice("Fetching latest node version...")
         req = requests.get("https://pub.cellframe.net/linux/cellframe-node/master/?C=M&O=D", timeout=5)
         if req.status_code == 200:
-            match = re.search(r"(\d.\d-\d{3})", req.text)
-            if match:
-                return match.group(1).replace("-",".")
+            matches = re.findall(r"(\d\.\d-\d{3})", req.text)
+            if matches:
+                versions = [match.replace("-", ".") for match in matches]
+                latest_version = max(versions, key=parse)
+                return latest_version
+            else:
+                return None
         else:
             return None
     except Exception as e:
