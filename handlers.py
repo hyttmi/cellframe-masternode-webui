@@ -9,10 +9,11 @@ rate_limit_interval = Config.RATE_LIMIT_INTERVAL
 
 def requestHandler(request: CFSimpleHTTPRequestHandler):
     if request.method == "GET":
-        if Config.RATE_LIMIT_ACTIVE:
-            client_ip = request.client_address
-            current_time = time.time()
+        client_ip = request.client_address
+        logNotice(f"Handling request from {client_ip}...")
+        current_time = time.time()
 
+        if Config.RATE_LIMIT_ACTIVE:
             if client_ip in last_request_time:
                 elapsed_time = current_time - last_request_time[client_ip]
 
@@ -30,16 +31,19 @@ def requestHandler(request: CFSimpleHTTPRequestHandler):
                     return response
 
             last_request_time[client_ip] = current_time
+
+        if Config.AUTH_BYPASS:
+            logNotice("Auth bypass set to true, HTTP authentication is not enabled!")
             return getRequestHandler(request)
-        else:
-            return getRequestHandler(request)
-    else:
-        logError(f"Unsupported method: {request.method}")
-        response = CFSimpleHTTPResponse(body=b"Unsupported method", code=200)
-        return response
+
+        return getRequestHandler(request)
+
+    logError(f"Unsupported method: {request.method}")
+    response = CFSimpleHTTPResponse(body=b"Unsupported method", code=200)
+    return response
+
 
 def getRequestHandler(request: CFSimpleHTTPRequestHandler):
-    logNotice(f"Handling request from {request.client_address}...")
     headers = request.headers
     query = request.query
     api_token = headers.get("API_TOKEN")
