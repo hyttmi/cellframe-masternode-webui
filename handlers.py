@@ -1,5 +1,5 @@
 import time, base64
-from utils import logError, logNotice
+from logger import logger
 from generators import generateHTML, generateJSON
 from pycfhelpers.node.http.simple import CFSimpleHTTPRequestHandler, CFSimpleHTTPResponse
 from config import Config
@@ -8,9 +8,12 @@ last_request_time = {}
 rate_limit_interval = Config.RATE_LIMIT_INTERVAL
 
 def requestHandler(request: CFSimpleHTTPRequestHandler):
+    headers = request.headers
+    query = request.query
+    api_token = headers.get("API_TOKEN")
     if request.method == "GET":
         client_ip = request.client_address
-        logNotice(f"Handling request from {client_ip}...")
+        logger("notice", f"Handling request from {client_ip}...")
         current_time = time.time()
 
         if Config.RATE_LIMIT_ACTIVE:
@@ -27,18 +30,21 @@ def requestHandler(request: CFSimpleHTTPRequestHandler):
                     response.headers = {
                         "Content-Type": "application/json"
                     }
-                    logError(f"Rate limit exceeded from {client_ip}")
+                    logger("notice", f"Rate limit exceeded from {client_ip}")
                     return response
 
             last_request_time[client_ip] = current_time
 
         if Config.AUTH_BYPASS:
-            logNotice("Auth bypass set to true, HTTP authentication is not enabled!")
-            return getRequestHandler(request)
+            logger("error", "Auth bypass set, HTTP authentication disabled!")
+            return web_req_handler(request)
+        
+        if api_token and query == "as_json":
+            return json_req_handler
 
-        return getRequestHandler(request)
+        return web_req_handler(request)
 
-    logError(f"Unsupported method: {request.method}")
+    logger("error", f"Unsupported method: {request.method}")
     response = CFSimpleHTTPResponse(body=b"Unsupported method", code=200)
     return response
 
@@ -51,7 +57,6 @@ def getRequestHandler(request: CFSimpleHTTPRequestHandler):
     expected_username = Config.USERNAME
     expected_password = Config.PASSWORD
     expected_api_token = Config.API_TOKEN
-    auth_bypass = Config.AUTH_BYPASS
 
     if query == "as_json":
         if not api_token:
