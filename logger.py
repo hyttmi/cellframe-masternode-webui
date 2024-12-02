@@ -32,7 +32,7 @@ def logger(level, msg):
             logging.warning(f"[{func_name}] Unsupported log level: {level}. Message: {msg}")
 
 def logDebug(func):
-    if getattr(Config, "DEBUG"):
+    if Config.DEBUG:
         def wrapper(*args, **kwargs):
             func_name = func.__name__
             logging.info(f"Calling {func_name} with args: {args}, kwargs: {kwargs}")

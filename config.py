@@ -25,8 +25,6 @@ class Config:
     JSON_EXCLUDE = getConfigValue("webui", "json_exclude", default=None)
     PASSWORD = getConfigValue("webui", "password", default=False)
     PLUGIN_URI = getConfigValue("webui", "uri", default="webui")
-    RATE_LIMIT_ACTIVE = getConfigValue("webui", "rate_limit", default=False)
-    RATE_LIMIT_INTERVAL = getConfigValue("webui", "rate_limit_interval", default=15)
     SMTP_PASSWORD = getConfigValue("webui", "smtp_password", default=None)
     SMTP_PORT = int(getConfigValue("webui", "smtp_port", default="465"))
     SMTP_SERVER = getConfigValue("webui", "smtp_server", default="smtp.gmail.com")
