@@ -1,16 +1,10 @@
 try:
-    import socket, requests, re, time, psutil, json, os, time, schedule, cachetools.func
+    import socket, requests, re, time, psutil, json, os, time, cachetools.func
     from packaging.version import Version, parse
-    from datetime import datetime
-    from concurrent.futures import ThreadPoolExecutor
     from command_runner import command_runner
-    from config import Config
     from logger import log_debug, log_it
-    from sysutils import get_current_script_directory
 except ImportError as e:
     log_it("e", f"ImportError: {e}")
-
-@log_debug
 
 def get_current_script_directory():
     return os.path.dirname(os.path.abspath(__file__))
@@ -47,7 +41,9 @@ def get_node_pid():
     try:
         for proc in psutil.process_iter(['pid', 'name']):
             if proc.info['name'] == "cellframe-node":
-                return proc.info['pid']
+                pid = proc.info['pid']
+                log_it("i", f"PID for Cellframe node is {pid}")
+                return pid
         return None
     except Exception as e:
         log_it(f"Error: {e}")
@@ -59,7 +55,18 @@ def get_system_hostname():
     except:
         return None
 
-@log_debug
+def format_uptime(seconds):
+    try:
+        days, remainder = divmod(seconds, 86400)
+        hours, remainder = divmod(remainder, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        if days > 0:
+            return f"{int(days)}d {int(hours)}h {int(minutes)}m {int(seconds)}s"
+        return f"{int(hours)}h {int(minutes)}m {int(seconds)}s"
+    except Exception as e:
+        log_it("e", f"Error: {e}")
+        return None
+
 def get_sys_stats():
     try:
         PID = get_node_pid()
@@ -89,8 +96,8 @@ def get_sys_stats():
 
 def get_installed_node_version():
     try:
-        log_it("i", "Fetching current node version...")
-        version = cli_command("version")
+        log_it("i", "Fetching installed node version...")
+        version = cli_command("version", timeout=5)
         if version:
             current_version = version.split()[2].replace("-",".")
             log_it("i", f"Installed node version: {current_version}")
@@ -118,14 +125,3 @@ def get_latest_node_version():
         log_it("e", f"Error: {e}")
         return None
 
-def format_uptime(seconds):
-    try:
-        days, remainder = divmod(seconds, 86400)
-        hours, remainder = divmod(remainder, 3600)
-        minutes, seconds = divmod(remainder, 60)
-        if days > 0:
-            return f"{int(days)}d {int(hours)}h {int(minutes)}m {int(seconds)}s"
-        return f"{int(hours)}h {int(minutes)}m {int(seconds)}s"
-    except Exception as e:
-        log_it("e", f"Error: {e}")
-        return None

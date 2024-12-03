@@ -25,10 +25,10 @@
     <div class="container-fluid mt-4">
         <span title="Reset back to default view" id="clearstorage" class="btn-primary floatbutton text-uppercase"><i class="fa-solid fa-xl fa-rotate-left floatbutton-icon"></i></span>
 
-    {% if plugin_update_available %}
+    {% if general_info.plugin_update_available %}
         <div class="row">
             <div class="alert alert-danger" role="alert">
-                New version {{ latest_plugin_version }} available! You are running version {{ current_plugin_version }}.
+                New version {{ general_info.latest_plugin_version }} available! You are running version {{ current_plugin_version }}.
             </div>
         </div>
     {% endif %}
@@ -40,21 +40,21 @@
         </div>
         <div class="row is_sortable">
 
-        {% if hostname %}
+        {% if general_info.hostname%}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="hostname">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">hostname</h5><button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary text-body-secondary-color">{{ hostname }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary text-body-secondary-color">{{ general_info.hostname }}</h6>
                     </div>
                         <i class="fa-solid fa-server icon-container"></i>
                 </div>
             </div>
         {% endif %}
 
-        {% if node_cpu_usage %}
+        {% if general_info.node_cpu_usage %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_cpu_usage">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -62,14 +62,14 @@
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ node_cpu_usage }}%</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ general_info.node_cpu_usage }}%</h6>
                     </div>
                     <i class="fa-solid fa-microchip icon-container"></i>
                 </div>
             </div>
         {% endif %}
             
-        {% if node_memory_usage %}
+        {% if general_info.node_memory_usage %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_memory_usage">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -77,14 +77,14 @@
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ node_memory_usage }} MB</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ general_info.node_memory_usage }} MB</h6>
                     </div>
                     <i class="fa-solid fa-memory icon-container"></i>
                 </div>
             </div>
         {% endif %}
             
-        {% if node_uptime %}
+        {% if general_info.node_uptime %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_uptime">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -92,14 +92,14 @@
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ node_uptime }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ general_info.node_uptime }}</h6>
                     </div>
                     <i class="fa-solid fa-clock icon-container"></i>
                 </div>
             </div>
         {% endif %}
 
-        {% if system_uptime %}
+        {% if general_info.system_uptime %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="system_uptime">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -107,14 +107,14 @@
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ system_uptime }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ general_info.system_uptime }}</h6>
                     </div>
                     <i class="fa-solid fa-clock icon-container"></i>
                 </div>
             </div>
         {% endif %}
             
-        {% if node_version %}
+        {% if general_info.node_version %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_version">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -122,14 +122,14 @@
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ node_version }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ general_info.node_version }}</h6>
                     </div>
                     <i class="fa-solid fa-code-compare icon-container"></i>
                 </div>
             </div>
         {% endif %}
             
-        {% if latest_node_version %}
+        {% if general_info.latest_node_version %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="latest_node_version">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -137,7 +137,7 @@
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ latest_node_version }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ general_info.latest_node_version }}</h6>
                     </div>
                     <i class="fa-solid fa-code-compare icon-container"></i>
                 </div>

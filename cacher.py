@@ -1,7 +1,6 @@
 try:
     import re, time, json, os
-    from utils import cli_command
-    from sysutils import get_current_script_directory
+    from utils import cli_command, get_current_script_directory
     from networkutils import get_active_networks, get_network_config
     from concurrent.futures import ProcessPoolExecutor
     from logger import log_it
@@ -26,11 +25,11 @@ def cache_blocks_data():
                     'all_signed_blocks': {}
                 }
 
-                with ProcessPoolExecutor() as executor:
+                with ProcessPoolExecutor() as pexecutor:
                     futures = {
-                        'block_count': executor.submit(cli_command, f"block count -net {network}"),
-                        'first_signed_blocks': executor.submit(cli_command, f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']} -limit 1"),
-                        'signed_blocks': executor.submit(cli_command, f"block list -net {network} signed -cert {net_config['blocks_sign_cert']}")
+                        'block_count': pexecutor.submit(cli_command, f"block count -net {network}"),
+                        'first_signed_blocks': pexecutor.submit(cli_command, f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']} -limit 1"),
+                        'signed_blocks': pexecutor.submit(cli_command, f"block list -net {network} signed -cert {net_config['blocks_sign_cert']}")
                     }
 
                 block_count_result = futures['block_count'].result()
