@@ -118,56 +118,29 @@ def get_latest_node_version():
         return None
 
 @log_debug
-def get_reward_wallet_tokens(wallet):
+def generate_general_info(format_time=True):
     try:
-        cmd_get_wallet_info = cli_command(f"wallet info -addr {wallet}")
-        if cmd_get_wallet_info:
-            tokens = re.findall(r"coins:\s+([\d.]+)[\s\S]+?ticker:\s+(\w+)", cmd_get_wallet_info)
-            return tokens
-        else:
-            return None
-    except Exception as e:
-        log_it("e", f"Error: {e}")
-
-@log_debug
-def generateInfo(format_time=True):
-    try:
-        sys_stats = getSysStats()
-        is_update_available, curr_version, latest_version = checkForUpdate()
+        sys_stats = get_sys_stats()
+        is_update_available, curr_version, latest_version = check_plugin_update()
 
         info = {
             'plugin_update_available': is_update_available,
             'current_plugin_version': curr_version,
             'latest_plugin_version': latest_version,
             "plugin_name": Config.PLUGIN_NAME,
-            "hostname": getHostname(),
-            "system_uptime": formatUptime(sys_stats["system_uptime"]) if format_time else sys_stats["system_uptime"],
-            "node_uptime": formatUptime(sys_stats["node_uptime"]) if format_time else sys_stats["node_uptime"],
-            "node_version": getCurrentNodeVersion(),
-            "node_active_threads": getNodeThreadCount(),
-            "latest_node_version": getLatestNodeVersion(),
+            "hostname": get_system_hostname(),
+            "system_uptime": format_uptime(sys_stats["system_uptime"]) if format_time else sys_stats["system_uptime"],
+            "node_uptime": format_uptime(sys_stats["node_uptime"]) if format_time else sys_stats["node_uptime"],
+            "node_version": get_installed_node_version(),
+            "latest_node_version": get_latest_node_version(),
             "node_cpu_utilization": sys_stats["node_cpu_usage"],
             "node_memory_utilization": sys_stats["node_memory_usage_mb"],
             "website_header_text": Config.HEADER_TEXT,
-            "website_accent_color": validateHex(Config.ACCENT_COLOR),
-            "networks": generateNetworkData()
+            "website_accent_color": validateHex(Config.ACCENT_COLOR)
         }
         return info
     except Exception as e:
-        logError(f"Error: {e}")
-
-def funcScheduler(func, scheduled_time, every_min=False):
-    try:
-        scheduler = schedule.Scheduler()
-        if every_min:
-            scheduler.every(every_min).minutes.do(func)
-        else:
-            scheduler.every().day.at(scheduled_time).do(func)
-        while True:
-            scheduler.run_pending()
-            time.sleep(1)
-    except Exception as e:
-        logError(f"Error: {e}")
+        log_it("e", f"Error: {e}")
         
 def validateTime(str):
     try:

@@ -1,40 +1,19 @@
-import json
-from utils import generateInfo, logNotice, logError
-from config import Config
+try:
+    from utils import generate_general_info
+    from logger import log_it
+    from config import Config
+except ImportError as e:
+    log_it("e", f"ImportError: {e}")
 
-def generateHTML(template_name):
-    info = generateInfo(format_time=True)
-    template_setting = Config.TEMPLATE
-    template_path = f"{template_setting}/{template_name}"
+def generate_html(template_name):
     try:
-        logNotice("Generating HTML content...")
-        env = Config.jinjaEnv()
+        info = generate_general_info(format_time=True)
+        template = Config.TEMPLATE
+        template_path = f"{template}/{template_name}"
+        log_it("i", "Generating HTML content...")
+        env = Config.jinja_environment()
         template = env.get_template(template_path)
         output = template.render(info)
     except Exception as e:
-        logError(f"Error: {e}")
-        output = json.dumps({
-            "status": "error",
-            "message": f"{e}"
-        })
-    return output
-
-def generateJSON():
-    info = generateInfo(format_time=False)
-    if Config.JSON_EXCLUDE and isinstance(Config.JSON_EXCLUDE, list):
-        for key in Config.JSON_EXCLUDE:
-            if key in info:
-                info.pop(key, None)
-    else:
-        logError("Error: json_exclude is not a list!")
-    try:
-        logNotice(f"Generating JSON content...")
-        output = json.dumps(info)
-    except Exception as e:
-        logError(f"Error in generating JSON: {e}")
-        logError(f"Error: {e}")
-        output = json.dumps({
-            "status": "error",
-            "message": f"{e}"
-        })
-    return output
+        log_it("e", f"Error: {e}")
+        return False

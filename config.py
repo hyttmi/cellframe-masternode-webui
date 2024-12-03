@@ -37,7 +37,7 @@ class Config:
     TEMPLATE = getConfigValue("webui", "template", default="cards")
     USERNAME = getConfigValue("webui", "username", default=False)
     
-    def jinjaEnv():
+    def jinja_environment():
         env = Environment(
             loader=PackageLoader("cellframe-masternode-webui"),
             autoescape=select_autoescape()
