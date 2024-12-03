@@ -6,13 +6,14 @@ try:
     from command_runner import command_runner
     from config import Config
     from logger import log_debug, log_it
+    from sysutils import get_current_script_directory
 except ImportError as e:
     log_it("e", f"ImportError: {e}")
 
 @log_debug
 def check_plugin_update():
     try:
-        manifest_path = os.path.join(getScriptDir(), "manifest.json")
+        manifest_path = os.path.join(get_current_script_directory(), "manifest.json")
         with open(manifest_path) as manifest:
             data = json.load(manifest)
             curr_version = Version(data["version"])
