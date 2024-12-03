@@ -7,61 +7,53 @@ try:
     from concurrent.futures import ThreadPoolExecutor
     from command_runner import command_runner
     from config import Config
-    from logger import logDebug, logError, logNotice, getScriptDir
+    from logger import log_debug, log_it
 except ImportError as e:
-    logError(f"ImportError: {e}")
+    log_it("e", f"ImportError: {e}")
 
-@logDebug
-def checkForUpdate():
+@log_debug
+def check_plugin_update():
     try:
         manifest_path = os.path.join(getScriptDir(), "manifest.json")
         with open(manifest_path) as manifest:
             data = json.load(manifest)
             curr_version = Version(data["version"])
-            logNotice(f"Current plugin version: {curr_version}")
+            log_it("i", f"Current plugin version: {curr_version}")
         url = "https://raw.githubusercontent.com/hyttmi/cellframe-masternode-webui/refs/heads/master/manifest.json"
         req = requests.get(url, timeout=5).json()
         latest_version = Version(req["version"])
-        logNotice(f"Latest plugin version: {latest_version}")
+        log_it("i", f"Latest plugin version: {latest_version}")
         return curr_version < latest_version, str(curr_version), str(latest_version)
     except Exception as e:
-        logError(f"Error: {e}")
+        log_it("e", f"Error: {e}")
         return f"Error: {e}"
     
-def CLICommand(command, timeout=120):
+def cli_command(command, timeout=120):
     try:
         exit_code, output = command_runner(f"/opt/cellframe-node/bin/cellframe-node-cli {command}", timeout=timeout)
         if exit_code == 0:
             return output.strip()
         else:
             ret = f"Command failed with error: {output.strip()}"
-            logError(ret)
+            log_it("i", ret)
             return ret
     except Exception as e:
-        logError(f"Error: {e}")
-        return f"Error: {e}"
+        log_it("e", f"Error: {e}")
+        return None
 
-def getPID():
+def get_node_pid():
     try:
         for proc in psutil.process_iter(['pid', 'name']):
             if proc.info['name'] == "cellframe-node":
                 return proc.info['pid']
+    except Exception as e:
+        log_it(f"Error: {e}")
         return None
-    except Exception as e:
-        logError(f"Error: {e}")
-        return f"Error: {e}"
 
-def getNodeThreadCount():
-    try:
-        process = psutil.Process(getPID())
-        return int(len(process.threads()))
-    except Exception as e:
-        logError("Error: {e}")
+def get_system_hostname():
+    return socket.gethostname() or None
 
-def getHostname():
-    return socket.gethostname()
-
-def formatUptime(seconds):
+def format_uptime(seconds):
     days, remainder = divmod(seconds, 86400)
     hours, remainder = divmod(remainder, 3600)
     minutes, seconds = divmod(remainder, 60)
@@ -70,44 +62,48 @@ def formatUptime(seconds):
     else:
         return f"{int(hours)}h {int(minutes)}m {int(seconds)}s"
 
-def getSysStats():
+def get_sys_stats():
     try:
-        PID = getPID()
-        process = psutil.Process(PID)
-        sys_stats = {}
-        cpu_usage = process.cpu_percent(interval=1) / psutil.cpu_count() # Divide by CPU cores, it's possible that only one core is @ 100%
-        sys_stats['node_cpu_usage'] = cpu_usage
+        PID = get_node_pid()
+        if PID:
+            process = psutil.Process(PID)
+            sys_stats = {}
+            cpu_usage = process.cpu_percent(interval=1) / psutil.cpu_count() # Divide by CPU cores, it's possible that only one core is @ 100%
+            sys_stats['node_cpu_usage'] = cpu_usage
 
-        memory_info = process.memory_info()
-        memory_usage_mb = memory_info.rss / 1024 / 1024
-        sys_stats['node_memory_usage_mb'] = round(memory_usage_mb, 2)
+            memory_info = process.memory_info()
+            memory_usage_mb = memory_info.rss / 1024 / 1024
+            sys_stats['node_memory_usage_mb'] = round(memory_usage_mb, 2)
         
-        create_time = process.create_time()
-        uptime_seconds = time.time() - create_time
-        sys_stats['node_uptime'] = uptime_seconds 
+            create_time = process.create_time()
+            uptime_seconds = time.time() - create_time
+            sys_stats['node_uptime'] = uptime_seconds 
 
-        boot_time = psutil.boot_time()
-        system_uptime_seconds = time.time() - boot_time
-        sys_stats['system_uptime'] = system_uptime_seconds
-
-        return sys_stats
+            boot_time = psutil.boot_time()
+            system_uptime_seconds = time.time() - boot_time
+            sys_stats['system_uptime'] = system_uptime_seconds
+            
+            return sys_stats
+        else:
+            return None
     except Exception as e:
-        logError(f"Error: {e}")
-        return f"Error {e}"
+        log_it("e", f"Error: {e}")
 
-def getCurrentNodeVersion():
+def get_installed_node_version():
     try:
-        logNotice("Fetching current node version...")
-        version = CLICommand("version")
-        return version.split()[2].replace("-",".")
+        log_it("i", "Fetching current node version...")
+        version = cli_command("version")
+        if version:
+            return version.split()[2].replace("-",".")
+        else:
+            return None
     except Exception as e:
-        logError(f"Error: {e}")
-        return "N/A"
+        log_it("e", f"Error: {e}")
 
 @cachetools.func.ttl_cache(maxsize=10, ttl=7200)
-def getLatestNodeVersion():
+def get_latest_node_version():
     try:
-        logNotice("Fetching latest node version...")
+        log_it("i", "Fetching latest node version...")
         req = requests.get("https://pub.cellframe.net/linux/cellframe-node/master/?C=M&O=D", timeout=5)
         if req.status_code == 200:
             matches = re.findall(r"(\d\.\d-\d{3})", req.text)
@@ -120,13 +116,13 @@ def getLatestNodeVersion():
         else:
             return None
     except Exception as e:
-        logError(f"Error: {e}")
+        log_it("e", f"Error: {e}")
         return None
 
 @cachetools.func.ttl_cache(maxsize=10, ttl=3600)
-def getCurrentTokenPrice(network):
+def get_token_price(network):
     try:
-        logNotice("Fetching token price...")
+        log_it("i", "Fetching token price...")
         if network == "Backbone":
             req = requests.get(f"https://coinmarketcap.com/currencies/cellframe/", timeout=5)
             if req.status_code == 200:
@@ -136,7 +132,7 @@ def getCurrentTokenPrice(network):
                 else:
                     return None
             else:
-                logError(f"Failed to fetch token price from {req.url}")
+                log_it("e", f"Failed to fetch token price from {req.url}")
                 return None
         elif network == "KelVPN":
             req = requests.get(f"https://kelvpn.com/about-token", timeout=5)
@@ -147,27 +143,26 @@ def getCurrentTokenPrice(network):
                 else:
                     return None
             else:
-                logError(f"Failed to fetch token price from {req.url}")
+                log_it("e", f"Failed to fetch token price from {req.url}")
                 return None
     except Exception as e:
-        logError(f"Error: {e}")
-        return None
+        log_it("e", f"Error: {e}")
 
-@logDebug
-def getListNetworks():
+@log_debug
+def get_active_networks():
     try:
         nets = CFNet.active_nets()
         if nets:
             return nets
         else:
-            logError("Can't get list of networks!")
+            log_it("e", "Can't get list of networks!")
             return None
     except Exception as e:
-        logError(f"Error retrieving networks: {e}")
+        log_it("e", f"Error retrieving networks: {e}")
         return None
 
-@logDebug
-def readNetworkConfig(network):
+@log_debug
+def get_network_config(network):
     config_file = f"/opt/cellframe-node/etc/network/{network}.cfg"
     net_config = {}
     try:
@@ -182,30 +177,30 @@ def readNetworkConfig(network):
                     net_config["wallet"] = wallet_match.group(1)
                 if "blocks_sign_cert" in net_config and "wallet" in net_config:
                     return net_config
-            logError(f"Necessary information missing in {config_file}, not a masternode?")
+            log_it("e", f"Necessary information missing in {config_file}, not a masternode?")
             return None
     except FileNotFoundError:
-        logError(f"Configuration file for {network} not found!")
+        log_it("e", f"Configuration file for {network} not found!")
         return None
     except Exception as e:
-        logError(f"Error: {e}")
+        log_it("e", f"Error: {e}")
         return None
 
-@logDebug
-def getAutocollectStatus(network):
+@log_debug
+def get_autocollect_status(network):
     try:
-        autocollect_cmd = CLICommand(f"block autocollect status -net {network} -chain main")
+        autocollect_cmd = cli_command(f"block autocollect status -net {network} -chain main")
         if "is active" in autocollect_cmd:
             return "Active"
         else:
             return "Inactive"
     except Exception as e:
-        logError(f"Error: {e}")
-
-@logDebug
-def getNetStatus(network):
+        log_it("e", f"Error: {e}")
+        
+@log_debug
+def get_network_status(network):
     try:
-        net_status = CLICommand(f"net -net {network} get status")
+        net_status = cli_command(f"net -net {network} get status")
         addr_match = re.search(r"([A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*)", net_status)
         state_match = re.search(r"states:\s+current: (\w+)", net_status)
         target_state_match = re.search(r"target: (\w+)", net_status)
@@ -219,7 +214,7 @@ def getNetStatus(network):
         else:
             return None
     except Exception as e:
-        logError(f"Error: {e}")
+        log_it("e", f"Error: {e}")
 
 @cachetools.func.ttl_cache(maxsize=10)
 @logDebug

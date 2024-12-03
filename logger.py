@@ -14,14 +14,14 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S"
 )
 
-def logger(level, msg):
+def log_it(level, msg):
     with logLock:
         caller_frame = inspect.currentframe().f_back
         func_name = caller_frame.f_code.co_name
         
         levels = {
-            "notice": logging.info,
-            "error": logging.error,
+            "i": logging.info,
+            "e": logging.error,
         }
         
         log_func = levels.get(level.lower(), None)
@@ -29,15 +29,15 @@ def logger(level, msg):
         if log_func:
             log_func(f"[{func_name}] {msg}")
         else:
-            logging.warning(f"[{func_name}] Unsupported log level: {level}. Message: {msg}")
+            logging.error(f"[{func_name}] Unsupported log level: {level}. Message: {msg}")
 
-def logDebug(func):
+def log_debug(func):
     if Config.DEBUG:
         def wrapper(*args, **kwargs):
             func_name = func.__name__
-            logging.info(f"Calling {func_name} with args: {args}, kwargs: {kwargs}")
+            log_it("i", f"Calling {func_name} with args: {args}, kwargs: {kwargs}")
             result = func(*args, **kwargs)
-            logging.info(f"{func_name} returned: {result}")
+            log_it("i", f"{func_name} returned: {result}")
             return result
         return wrapper
     else:

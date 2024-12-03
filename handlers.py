@@ -7,7 +7,7 @@ try:
 except ImportError as e:
     logger("error", f"ImportError: {e}")
 
-def requestHandler(request: CFSimpleHTTPRequestHandler):
+def request_handler(request: CFSimpleHTTPRequestHandler):
     headers = request.headers
     query = request.query
     api_token = headers.get("API_TOKEN")
@@ -74,5 +74,5 @@ def json_request_handler(request: CFSimpleHTTPRequestHandler, api_token):
         response = CFSimpleHTTPResponse(body=b"Unauthorized", code=200)
         response.headers = {
         "Content-Type": "application/json"
-    }
-    return response
+        }
+        return response
