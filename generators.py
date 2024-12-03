@@ -16,4 +16,4 @@ def generate_html(template_name):
         output = template.render(info)
     except Exception as e:
         log_it("e", f"Error: {e}")
-        return False
+    return output

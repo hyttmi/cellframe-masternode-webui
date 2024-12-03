@@ -1,13 +1,13 @@
 from pycfhelpers.node.http.simple import CFSimpleHTTPServer, CFSimpleHTTPRequestHandler
 from concurrent.futures import ThreadPoolExecutor
 from logger import log_it
-from handlers import requestHandler
+from handlers import request_handler
 from config import Config
 import threading
 
 def http_server():
     try:
-        handler = CFSimpleHTTPRequestHandler(methods=["GET"], handler=requestHandler)
+        handler = CFSimpleHTTPRequestHandler(methods=["GET"], handler=request_handler)
         CFSimpleHTTPServer().register_uri_handler(uri=f"/{Config.PLUGIN_URI}", handler=handler)
         log_it("i", "HTTP server started")
     except Exception as e:

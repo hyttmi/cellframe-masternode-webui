@@ -4,9 +4,11 @@ try:
     from sysutils import get_current_script_directory
     from network_utils import get_active_networks, get_network_config
     from concurrent.futures import ProcessPoolExecutor
-    from logger import log_debug, log_it
+    from logger import log_it
     from datetime import datetime
     from collections import OrderedDict
+except Exception as e:
+    log_it("err")
 
 def cacheBlocks():
     try:
