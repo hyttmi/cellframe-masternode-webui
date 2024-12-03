@@ -6,6 +6,8 @@ try:
     from pycfhelpers.node.net import CFNet
     from datetime import datetime
     from collections import OrderedDict
+    from wallets import get_reward_wallet_tokens
+    from concurrent.futures import ProcessPoolExecutor
 except ImportError as e:
     log_it("e", f"ImportError: {e}")
 
@@ -206,4 +208,86 @@ def get_total_rewards(network, return_sum=False):
         return None
     except Exception as e:
         log_it("e", f"Error reading rewards: {e}")
+        return None
+    
+@log_debug
+def get_blocks(network, block_type="count", today=False):
+    cache_file_path = os.path.join(get_current_script_directory, f".{network}_blocks_cache.json")
+    if not os.path.exists(cache_file_path):
+        log_it("e", f"Cache file for network {network} does not exist.")
+        return None
+    try:
+        with open(cache_file_path, "r") as f:
+            block_data = json.load(f)
+        
+        if block_type == "count":
+            return block_data['block_count']
+
+        if block_type == "all_signed_blocks" and today:
+            today_str = datetime.now().strftime("%a, %d %b %Y")
+            today_count = block_data["all_signed_blocks"].get(today_str, 0)
+            return today_count
+        
+        if block_type == "all_signed_blocks_count":
+            return sum(block_data['all_signed_blocks'].values())
+        
+        if block_type == "all_signed_blocks":
+            return block_data['all_signed_blocks']
+        
+        if block_type == "first_signed_blocks_count":
+            return block_data['first_signed_blocks_count']
+
+    except Exception as e:
+        log_it("e", f"Error reading blocks for network '{network}': {e}")
+        return None
+
+@log_debug
+def generate_network_data(network):
+    try:
+        network_data = {}
+        net_config = get_network_config(network)
+        if net_config:
+            network = str(network)
+            wallet = net_config['wallet']
+            tokens = get_reward_wallet_tokens(wallet)
+            net_status = get_network_status(network)
+            with ProcessPoolExecutor() as executor:
+                futures = {
+                    'first_signed_blocks': executor.submit(get_blocks, network, block_type="first_signed_blocks_count"),
+                    'all_signed_blocks_dict': executor.submit(get_blocks, network, block_type="all_signed_blocks"),
+                    'all_signed_blocks': executor.submit(get_blocks, network, block_type="all_signed_blocks_count"),
+                    'all_blocks': executor.submit(get_blocks, network, block_type="count"),
+                    'signed_blocks_today': executor.submit(get_blocks, network, block_type="all_signed_blocks", today=True),
+                    'token_price': executor.submit(get_token_price, network),
+                    'rewards': executor.submit(get_total_rewards, network, False),
+                    'sum_rewards': executor.submit(get_total_rewards, network, True),
+                    'node_stake_value': executor.submit(get_current_stake_value, network),
+                    'general_node_info': executor.submit(get_node_dump, network),
+                    'autocollect_status': executor.submit(get_autocollect_status, network),
+                    'autocollect_rewards': executor.submit(get_autocollect_rewards, network)
+                }
+                network_info = {
+                    'state': net_status['state'],
+                    'target_state': net_status['target_state'],
+                    'address': net_status['address'],
+                    'first_signed_blocks': futures['first_signed_blocks'].result(),
+                    'all_signed_blocks_dict': futures['all_signed_blocks_dict'].result(),
+                    'all_signed_blocks': futures['all_signed_blocks'].result(),
+                    'all_blocks': futures['all_blocks'].result(),
+                    'signed_blocks_today': futures['signed_blocks_today'].result(),
+                    'autocollect_status': futures['autocollect_status'].result(),
+                    'autocollect_rewards': futures['autocollect_rewards'].result(),
+                    'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
+                    'rewards': futures['rewards'].result(),
+                    'all_rewards': futures['all_rewards'].result(),
+                    'token_price': futures['token_price'].result(),
+                    'node_stake_value': futures['node_stake_value'].result(),
+                    'general_node_info': futures['general_node_info'].result()
+                }
+                network_data[network] = network_info
+            return network_data
+        else:
+            return None
+    except Exception as e:
+        log_it("e", f"Error: {e}")
         return None
