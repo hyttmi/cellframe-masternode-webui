@@ -25,17 +25,16 @@ def check_plugin_update():
         return curr_version < latest_version, str(curr_version), str(latest_version)
     except Exception as e:
         log_it("e", f"Error: {e}")
-        return f"Error: {e}"
+        return None
     
 def cli_command(command, timeout=120):
     try:
         exit_code, output = command_runner(f"/opt/cellframe-node/bin/cellframe-node-cli {command}", timeout=timeout)
         if exit_code == 0:
+            log_it("i", f"{command} executed succesfully...")
             return output.strip()
-        else:
-            ret = f"Command failed with error: {output.strip()}"
-            log_it("i", ret)
-            return ret
+        log_it("e", f"{command} failed to run succesfully, return code was {exit_code}")
+        return None
     except Exception as e:
         log_it("e", f"Error: {e}")
         return None
@@ -45,21 +44,28 @@ def get_node_pid():
         for proc in psutil.process_iter(['pid', 'name']):
             if proc.info['name'] == "cellframe-node":
                 return proc.info['pid']
+            return None
     except Exception as e:
         log_it(f"Error: {e}")
         return None
 
 def get_system_hostname():
-    return socket.gethostname() or None
+    try:
+        return socket.gethostname()
+    except:
+        return None
 
 def format_uptime(seconds):
-    days, remainder = divmod(seconds, 86400)
-    hours, remainder = divmod(remainder, 3600)
-    minutes, seconds = divmod(remainder, 60)
-    if days > 0:
-        return f"{int(days)}d {int(hours)}h {int(minutes)}m {int(seconds)}s"
-    else:
+    try:
+        days, remainder = divmod(seconds, 86400)
+        hours, remainder = divmod(remainder, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        if days > 0:
+            return f"{int(days)}d {int(hours)}h {int(minutes)}m {int(seconds)}s"
         return f"{int(hours)}h {int(minutes)}m {int(seconds)}s"
+    except Exception as e:
+        log_it("e", f"Error: {e}")
+        return None
 
 def get_sys_stats():
     try:
@@ -83,10 +89,10 @@ def get_sys_stats():
             sys_stats['system_uptime'] = system_uptime_seconds
             
             return sys_stats
-        else:
-            return None
+        return None
     except Exception as e:
         log_it("e", f"Error: {e}")
+        return None
 
 def get_installed_node_version():
     try:
@@ -94,10 +100,10 @@ def get_installed_node_version():
         version = cli_command("version")
         if version:
             return version.split()[2].replace("-",".")
-        else:
-            return None
+        return None
     except Exception as e:
         log_it("e", f"Error: {e}")
+        return None
 
 @cachetools.func.ttl_cache(maxsize=10, ttl=7200)
 def get_latest_node_version():
@@ -110,10 +116,8 @@ def get_latest_node_version():
                 versions = [match.replace("-", ".") for match in matches]
                 latest_version = max(versions, key=parse)
                 return latest_version
-            else:
-                return None
-        else:
             return None
+        return None
     except Exception as e:
         log_it("e", f"Error: {e}")
         return None
@@ -123,7 +127,6 @@ def generate_general_info(format_time=True):
     try:
         sys_stats = get_sys_stats()
         is_update_available, curr_version, latest_version = check_plugin_update()
-
         info = {
             'plugin_update_available': is_update_available,
             'current_plugin_version': curr_version,
