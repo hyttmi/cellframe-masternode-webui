@@ -134,33 +134,10 @@ def generate_general_info(format_time=True):
             "node_uptime": format_uptime(sys_stats["node_uptime"]) if format_time else sys_stats["node_uptime"],
             "node_version": get_installed_node_version(),
             "latest_node_version": get_latest_node_version(),
-            "node_cpu_utilization": sys_stats["node_cpu_usage"],
-            "node_memory_utilization": sys_stats["node_memory_usage_mb"],
-            "website_header_text": Config.HEADER_TEXT,
-            "website_accent_color": validateHex(Config.ACCENT_COLOR)
+            "node_cpu_usage": sys_stats["node_cpu_usage"],
+            "node_memory_usage": sys_stats["node_memory_usage_mb"],
+            "website_header_text": Config.HEADER_TEXT
         }
         return info
     except Exception as e:
         log_it("e", f"Error: {e}")
-        
-def validateTime(str):
-    try:
-        datetime.strptime(str, "%H:%M")
-        return True
-    except ValueError as e:
-        logError(f"Error: {e}")
-        return False
-
-def validateNum(num):
-    try:
-        int(num)
-        return True
-    except ValueError:
-        logError("{num} is not a valid number")
-        return False
-    
-def validateHex(color_str):
-    if re.match(r"([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", color_str):
-        return color_str
-    else:
-        logError(f"Not a valid hexadecimal colour code: {color_str}")

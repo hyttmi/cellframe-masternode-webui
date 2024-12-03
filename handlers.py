@@ -2,7 +2,7 @@ try:
     import base64
     from logger import log_it
     from generators import generate_html
-    from pycfhelpers.node.http.simple import CFSimpleHTTPRequestHandler, CFSimpleHTTPResponse
+    from pycfhelpers.node.http.simple import CFSimpleHTTPResponse
     from config import Config
 except ImportError as e:
     log_it("e", f"ImportError: {e}")
