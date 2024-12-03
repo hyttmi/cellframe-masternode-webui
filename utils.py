@@ -1,8 +1,6 @@
 try:
     import socket, requests, re, time, psutil, json, os, time, schedule, cachetools.func
-    from pycfhelpers.node.net import CFNet
     from packaging.version import Version, parse
-    from collections import OrderedDict
     from datetime import datetime
     from concurrent.futures import ThreadPoolExecutor
     from command_runner import command_runner
@@ -119,329 +117,19 @@ def get_latest_node_version():
         log_it("e", f"Error: {e}")
         return None
 
-@cachetools.func.ttl_cache(maxsize=10, ttl=3600)
-def get_token_price(network):
-    try:
-        log_it("i", "Fetching token price...")
-        if network == "Backbone":
-            req = requests.get(f"https://coinmarketcap.com/currencies/cellframe/", timeout=5)
-            if req.status_code == 200:
-                price_match = re.search(r"price today is \$(\d+.\d+)", req.text)
-                if price_match:
-                    return float(price_match.group(1))
-                else:
-                    return None
-            else:
-                log_it("e", f"Failed to fetch token price from {req.url}")
-                return None
-        elif network == "KelVPN":
-            req = requests.get(f"https://kelvpn.com/about-token", timeout=5)
-            if req.status_code == 200:
-                price_match =re.search(r"\$(\d+.\d+)", req.text)
-                if price_match:
-                    return float(price_match.group(1))
-                else:
-                    return None
-            else:
-                log_it("e", f"Failed to fetch token price from {req.url}")
-                return None
-    except Exception as e:
-        log_it("e", f"Error: {e}")
-
 @log_debug
-def get_active_networks():
+def get_reward_wallet_tokens(wallet):
     try:
-        nets = CFNet.active_nets()
-        if nets:
-            return nets
-        else:
-            log_it("e", "Can't get list of networks!")
-            return None
-    except Exception as e:
-        log_it("e", f"Error retrieving networks: {e}")
-        return None
-
-@log_debug
-def get_network_config(network):
-    config_file = f"/opt/cellframe-node/etc/network/{network}.cfg"
-    net_config = {}
-    try:
-        with open(config_file, "r") as file:
-            for line in file:
-                line = line.strip()
-                cert_match = re.search(r"^blocks-sign-cert=(.+)", line)
-                if cert_match:
-                    net_config["blocks_sign_cert"] = cert_match.group(1)
-                wallet_match = re.search(r"^fee_addr=(.{104})", line)
-                if wallet_match:
-                    net_config["wallet"] = wallet_match.group(1)
-                if "blocks_sign_cert" in net_config and "wallet" in net_config:
-                    return net_config
-            log_it("e", f"Necessary information missing in {config_file}, not a masternode?")
-            return None
-    except FileNotFoundError:
-        log_it("e", f"Configuration file for {network} not found!")
-        return None
-    except Exception as e:
-        log_it("e", f"Error: {e}")
-        return None
-
-@log_debug
-def get_autocollect_status(network):
-    try:
-        autocollect_cmd = cli_command(f"block autocollect status -net {network} -chain main")
-        if "is active" in autocollect_cmd:
-            return "Active"
-        else:
-            return "Inactive"
-    except Exception as e:
-        log_it("e", f"Error: {e}")
-        
-@log_debug
-def get_network_status(network):
-    try:
-        net_status = cli_command(f"net -net {network} get status")
-        addr_match = re.search(r"([A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*)", net_status)
-        state_match = re.search(r"states:\s+current: (\w+)", net_status)
-        target_state_match = re.search(r"target: (\w+)", net_status)
-        if state_match and addr_match and target_state_match:
-            net_status = {
-                "state": state_match.group(1),
-                "target_state": target_state_match.group(1),
-                "address": addr_match.group(1)
-            }
-            return net_status
-        else:
-            return None
-    except Exception as e:
-        log_it("e", f"Error: {e}")
-
-@cachetools.func.ttl_cache(maxsize=10)
-@logDebug
-def getNodeStakeValue(network):
-    try:
-        status = getNetStatus(network)
-        if status is not None:
-            addr = status['address']
-            list_keys = CLICommand(f"srv_stake list keys -net {network}")
-            lines = list_keys.splitlines()
-            idx = None
-            for i, line in enumerate(lines):
-                if addr in line:
-                    idx = i
-                    break
-            if idx is None:
-                return None  # Address not found?
-            while lines[idx].strip() != "": # Search for the emptiness
-                idx -= 1
-            for line in lines[idx + 1:]:
-                if "stake_value:" in line:
-                    stake_value = float(re.search(r"[\d.]+", line).group(0))
-                    return stake_value
-        return None
-    except Exception as e:
-        logError(f"Error: {e}")
-        return None
-
-@logDebug
-def getRewardWalletTokens(wallet):
-    try:
-        cmd_get_wallet_info = CLICommand(f"wallet info -addr {wallet}")
+        cmd_get_wallet_info = cli_command(f"wallet info -addr {wallet}")
         if cmd_get_wallet_info:
             tokens = re.findall(r"coins:\s+([\d.]+)[\s\S]+?ticker:\s+(\w+)", cmd_get_wallet_info)
             return tokens
         else:
             return None
     except Exception as e:
-        logError(f"Error: {e}")
-    
-@logDebug
-def getAutocollectRewards(network):
-    try:
-        net_config = readNetworkConfig(network)
-        if net_config is not None:
-            cmd_get_autocollect_rewards = CLICommand(f"block -net {network} autocollect status")
-            if cmd_get_autocollect_rewards:
-                amounts = re.findall(r"profit is (\d+.\d+)", cmd_get_autocollect_rewards)
-                if amounts:
-                    return sum(float(amount) for amount in amounts)
-                else:
-                    return None
-        else:
-            return None
-    except Exception as e:
-        logError(f"Error: {e}")
-        
-@logDebug
-def getGeneralNodeInfo(network):
-    try:
-        with ThreadPoolExecutor() as executor:
-            futures = {
-                'node_dump': executor.submit(CLICommand, f"node dump -net {network}")
-            }
+        log_it("e", f"Error: {e}")
 
-            data = (
-                "NODE DUMP\n"
-                "========================================================================\n"
-                f"{futures['node_dump'].result()}\n"
-            )
-        return data
-    except Exception as e:
-        logError(f"Error: {e}")
-        return None
-    
-@logDebug
-def isNodeSynced(network):
-    try:
-        net_status = CLICommand(f"net -net {network} get status")
-        match = re.search(r"main:\s*status: synced", net_status)
-        if match:
-            return True
-        else:
-            return False
-    except Exception as e:
-        logError(f"Error: {e}")
-    
-def cacheRewards():
-    try:
-        networks = getListNetworks()
-        for network in networks:
-            net_config = readNetworkConfig(network)
-            if net_config is not None:
-                if isNodeSynced(network):
-                    logNotice("Caching rewards...")
-                    start_time = time.time()
-                    cmd_get_tx_history = CLICommand(f"tx_history -addr {net_config['wallet']}")
-                    rewards = []
-                    reward = {}
-                    is_receiving_reward = False
-                    lines = cmd_get_tx_history.splitlines()
-                    for line in lines:
-                        line = line.strip()
-                        if line.startswith("status: ACCEPTED"):
-                            if reward and is_receiving_reward:
-                                rewards.append(reward)
-                            reward = {}
-                            is_receiving_reward = False
-                            continue
-                        if line.startswith("hash:"):
-                            reward['hash'] = line.split("hash:")[1].strip()
-                            continue
-                        if line.startswith("tx_created:"):
-                            original_date = line.split("tx_created:")[1].strip()[:-6]
-                            reward['tx_created'] = original_date
-                            continue
-                        if line.startswith("recv_coins:"):
-                            reward['recv_coins'] = line.split("recv_coins:")[1].strip()
-                            continue
-                        if line.startswith("source_address: reward collecting"):
-                            is_receiving_reward = True
-                            continue
-                    if reward and is_receiving_reward:
-                        rewards.append(reward)
-                    cache_file_path = os.path.join(getScriptDir(), f".{network}_rewards_cache.json")
-                    with open(cache_file_path, "w") as f:
-                        json.dump(rewards, f, indent=4)
-                    end_time = time.time()
-                    elapsed_time = end_time - start_time
-                    logNotice(f"Rewards cached for {network}! It took {elapsed_time:.2f} seconds!")
-                else:
-                    return None
-            else:
-                logNotice(f"Node is not synced yet for {network}!")
-                return None
-    except Exception as e:
-        logError(f"Error: {e}")
-        return None
-
-def cacheBlocks():
-    try:
-        networks = getListNetworks()
-        for network in networks:
-            net_config = readNetworkConfig(network)
-            if net_config is not None:
-                logNotice("Caching blocks...")
-                start_time = time.time()
-
-                block_data = {
-                    'block_count': 0,
-                    'signed_blocks_count': 0,
-                    'first_signed_blocks_count': 0,
-                    'all_signed_blocks': {}
-                }
-
-                with ThreadPoolExecutor() as executor:
-                    futures = {
-                        'block_count': executor.submit(CLICommand, f"block count -net {network}"),
-                        'first_signed_blocks': executor.submit(CLICommand, f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']} -limit 1"),
-                        'signed_blocks': executor.submit(CLICommand, f"block list -net {network} signed -cert {net_config['blocks_sign_cert']}")
-                    }
-
-                block_count_result = futures['block_count'].result()
-                block_count_match = re.search(r":\s+(\d+)", block_count_result)
-                if block_count_match:
-                    block_data['block_count'] = int(block_count_match.group(1))
-
-                signed_blocks_result = futures["signed_blocks"].result()
-                signed_blocks_match = re.search(r"have blocks: (\d+)", signed_blocks_result)
-                if signed_blocks_match:
-                    block_data['signed_blocks_count'] = int(signed_blocks_match.group(1))
-
-                first_signed_match = re.search(r"have blocks: (\d+)", futures["first_signed_blocks"].result())
-                if first_signed_match:
-                    block_data['first_signed_blocks_count'] = int(first_signed_match.group(1))
-
-                blocks_signed_per_day = {}
-                lines = signed_blocks_result.splitlines()
-                for line in lines:
-                    if "ts_create:" in line:
-                        timestamp_str = line.split("ts_create:")[1].strip()[:-6]
-                        block_time = datetime.strptime(timestamp_str, "%a, %d %b %Y %H:%M:%S")
-                        block_day = block_time.strftime("%a, %d %b %Y")
-                        blocks_signed_per_day[block_day] = blocks_signed_per_day.get(block_day, 0) + 1
-
-                sorted_blocks = OrderedDict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
-                block_data["all_signed_blocks"] = sorted_blocks
-
-                cache_file_path = os.path.join(getScriptDir(), f".{network}_blocks_cache.json")
-                with open(cache_file_path, "w") as f:
-                    json.dump(block_data, f, indent=4)
-
-                elapsed_time = time.time() - start_time
-                logNotice(f"Blocks cached for {network}! It took {elapsed_time:.2f} seconds!")
-            else:
-                logNotice(f"Network config not found for {network}, skipping caching")
-                return None
-    except Exception as e:
-        logError(f"Error: {e}")
-
-@logDebug
-def readRewards(network):
-    try:
-        rewards = {}
-        cache_file_path = os.path.join(getScriptDir(), f".{network}_rewards_cache.json")
-        with open(cache_file_path) as f:
-            data = json.load(f)
-            for reward in data:
-                date_string = reward['tx_created']
-                amount = float(reward['recv_coins'])
-                formatted_date = datetime.strptime(date_string, "%a, %d %b %Y %H:%M:%S")
-                formatted_date_str = formatted_date.strftime("%a, %d %b %Y")
-                
-                if formatted_date_str in rewards:
-                    rewards[formatted_date_str] += amount
-                else:
-                    rewards[formatted_date_str] = amount
-        sorted_dict = dict(OrderedDict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))))
-        return sorted_dict
-    except FileNotFoundError:
-        logError("Rewards file not found!")
-        return None
-    except Exception as e:
-        logError(f"Error reading rewards: {e}")
-        return None
-
-@logDebug
+@log_debug
 def readBlocks(network, block_type="count", today=False):
     cache_file_path = os.path.join(getScriptDir(), f".{network}_blocks_cache.json")
     if not os.path.exists(cache_file_path):
@@ -471,18 +159,8 @@ def readBlocks(network, block_type="count", today=False):
     except Exception as e:
         logError(f"Error reading blocks for network '{network}': {e}")
         return None
-    
-def sumRewards(network):
-    try:
-        rewards = readRewards(network)
-        if rewards is None:
-            return None
-        return sum(rewards.values())
-    except Exception as e:
-        logError(f"Error: {e}")
-        return None
 
-@logDebug
+@log_debug
 def generateNetworkData():
     try:
         networks = getListNetworks()
@@ -538,7 +216,7 @@ def generateNetworkData():
     except Exception as e:
         logError(f"Error: {e}")
 
-@logDebug
+@log_debug
 def generateInfo(format_time=True):
     try:
         sys_stats = getSysStats()
