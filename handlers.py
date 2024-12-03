@@ -14,32 +14,18 @@ def request_handler(request):
     client_ip = request.client_address
     if request.method == "GET":
         log_it("i", f"Handling request from {client_ip}...")
-
         if Config.AUTH_BYPASS:
             log_it("i", "Auth bypass set, HTTP authentication disabled!")
             return web_request_handler(headers, bypass_auth=True)
-        
-        if api_token and query == "as_json":
+        if query == "as_json" and api_token:
             return json_request_handler(api_token)
-
         return web_request_handler(headers, bypass_auth=False)
-
     log_it("i", f"Unsupported method: {request.method}")
     response = CFSimpleHTTPResponse(body=b"Unsupported method", code=200)
     return response
 
 
 def web_request_handler(headers, bypass_auth=False):
-    """
-    Handles HTTP requests with optional Basic Authentication.
-    
-    Args:
-        headers (dict): The HTTP headers received in the request.
-        bypass_auth (bool): If True, skips authentication.
-
-    Returns:
-        CFSimpleHTTPResponse: The HTTP response object.
-    """
     auth_header = headers.get("Authorization")
     expected_username = Config.USERNAME
     expected_password = Config.PASSWORD
@@ -93,7 +79,7 @@ def web_request_handler(headers, bypass_auth=False):
         return response
     except Exception as e:
         log_it("e", f"Error generating response: {e}")
-        return CFSimpleHTTPResponse(body=b"Internal Server Error", code=500)
+        return CFSimpleHTTPResponse(body=b"<h1>Internal Server Error</h1>", code=200)
 
 def json_request_handler(api_token):
     if not api_token or api_token != Config.API_TOKEN:

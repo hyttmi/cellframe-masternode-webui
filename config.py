@@ -9,7 +9,6 @@ def get_config_value(section, key, default=None):
 
 class Config:
     PLUGIN_NAME = "Cellframe Masternode WebUI"
-    ACCENT_COLOR = get_config_value("webui", "accent_color", default="B3A3FF")
     API_TOKEN = get_config_value("webui", "api_token", default=False)
     AUTH_BYPASS = get_config_value("webui", "auth_bypass", default=False)
     CACHE_BLOCKS_INTERVAL = get_config_value("webui", "cache_blocks_interval", default=15)
@@ -21,7 +20,6 @@ class Config:
     EMAIL_SUBJECT = get_config_value("webui", "email_subject", default=f"{PLUGIN_NAME}")
     EMAIL_USE_SSL = get_config_value("webui", "email_use_ssl", default=False)
     EMAIL_USE_TLS = get_config_value("webui", "email_use_tls", default=False)
-    HEADER_TEXT = get_config_value("webui", "header_text", default=False)
     JSON_EXCLUDE = get_config_value("webui", "json_exclude", default=None)
     PASSWORD = get_config_value("webui", "password", default=False)
     PLUGIN_URI = get_config_value("webui", "uri", default="webui")
@@ -29,7 +27,6 @@ class Config:
     SMTP_PORT = int(get_config_value("webui", "smtp_port", default="465"))
     SMTP_SERVER = get_config_value("webui", "smtp_server", default="smtp.gmail.com")
     SMTP_USER = get_config_value("webui", "smtp_user", default=None)
-    STARTUP_DELAY = get_config_value("webui", "startup_delay", default=60)
     TELEGRAM_API_TOKEN = get_config_value("webui", "telegram_api_key", default=None)
     TELEGRAM_CHAT_ID = get_config_value("webui", "telegram_chat_id", default=None)
     TELEGRAM_STATS_ENABLED = get_config_value("webui", "telegram_stats", default=False)

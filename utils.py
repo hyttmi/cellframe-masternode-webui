@@ -11,6 +11,10 @@ except ImportError as e:
     log_it("e", f"ImportError: {e}")
 
 @log_debug
+
+def get_current_script_directory():
+    return os.path.dirname(os.path.abspath(__file__))
+
 def check_plugin_update():
     try:
         manifest_path = os.path.join(get_current_script_directory(), "manifest.json")
@@ -44,7 +48,7 @@ def get_node_pid():
         for proc in psutil.process_iter(['pid', 'name']):
             if proc.info['name'] == "cellframe-node":
                 return proc.info['pid']
-            return None
+        return None
     except Exception as e:
         log_it(f"Error: {e}")
         return None
@@ -55,18 +59,7 @@ def get_system_hostname():
     except:
         return None
 
-def format_uptime(seconds):
-    try:
-        days, remainder = divmod(seconds, 86400)
-        hours, remainder = divmod(remainder, 3600)
-        minutes, seconds = divmod(remainder, 60)
-        if days > 0:
-            return f"{int(days)}d {int(hours)}h {int(minutes)}m {int(seconds)}s"
-        return f"{int(hours)}h {int(minutes)}m {int(seconds)}s"
-    except Exception as e:
-        log_it("e", f"Error: {e}")
-        return None
-
+@log_debug
 def get_sys_stats():
     try:
         PID = get_node_pid()
@@ -99,7 +92,9 @@ def get_installed_node_version():
         log_it("i", "Fetching current node version...")
         version = cli_command("version")
         if version:
-            return version.split()[2].replace("-",".")
+            current_version = version.split()[2].replace("-",".")
+            log_it("i", f"Installed node version: {current_version}")
+            return current_version
         return None
     except Exception as e:
         log_it("e", f"Error: {e}")
@@ -109,38 +104,28 @@ def get_installed_node_version():
 def get_latest_node_version():
     try:
         log_it("i", "Fetching latest node version...")
-        req = requests.get("https://pub.cellframe.net/linux/cellframe-node/master/?C=M&O=D", timeout=5)
-        if req.status_code == 200:
-            matches = re.findall(r"(\d\.\d-\d{3})", req.text)
+        response = requests.get("https://pub.cellframe.net/linux/cellframe-node/master/?C=M&O=D", timeout=5)
+        if response.status_code == 200:
+            matches = re.findall(r"(\d\.\d-\d{3})", response.text)
             if matches:
                 versions = [match.replace("-", ".") for match in matches]
                 latest_version = max(versions, key=parse)
                 return latest_version
             return None
+        log_it("e", f"Error fetching latest node version from {response.url}, status code: {response.status_code}")
         return None
     except Exception as e:
         log_it("e", f"Error: {e}")
         return None
 
-@log_debug
-def generate_general_info(format_time=True):
+def format_uptime(seconds):
     try:
-        sys_stats = get_sys_stats()
-        is_update_available, curr_version, latest_version = check_plugin_update()
-        info = {
-            'plugin_update_available': is_update_available,
-            'current_plugin_version': curr_version,
-            'latest_plugin_version': latest_version,
-            "plugin_name": Config.PLUGIN_NAME,
-            "hostname": get_system_hostname(),
-            "system_uptime": format_uptime(sys_stats["system_uptime"]) if format_time else sys_stats["system_uptime"],
-            "node_uptime": format_uptime(sys_stats["node_uptime"]) if format_time else sys_stats["node_uptime"],
-            "node_version": get_installed_node_version(),
-            "latest_node_version": get_latest_node_version(),
-            "node_cpu_usage": sys_stats["node_cpu_usage"],
-            "node_memory_usage": sys_stats["node_memory_usage_mb"],
-            "website_header_text": Config.HEADER_TEXT
-        }
-        return info
+        days, remainder = divmod(seconds, 86400)
+        hours, remainder = divmod(remainder, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        if days > 0:
+            return f"{int(days)}d {int(hours)}h {int(minutes)}m {int(seconds)}s"
+        return f"{int(hours)}h {int(minutes)}m {int(seconds)}s"
     except Exception as e:
         log_it("e", f"Error: {e}")
+        return None
