@@ -168,7 +168,7 @@ def get_is_node_synced(network):
         log_it("e", f"Error: {e}")
         return None
 
-def get_total_rewards(network, total_sum=False):
+def get_rewards(network, total_sum=False):
     try:
         rewards = {}
         cache_file_path = os.path.join(get_current_script_directory(), f".{network}_rewards_cache.json")
@@ -197,7 +197,7 @@ def get_total_rewards(network, total_sum=False):
         return None
 
 def get_blocks(network, block_type="count", today=False):
-    cache_file_path = os.path.join(get_current_script_directory, f".{network}_blocks_cache.json")
+    cache_file_path = os.path.join(get_current_script_directory(), f".{network}_blocks_cache.json")
     if not os.path.exists(cache_file_path):
         log_it("e", f"Cache file for network {network} does not exist.")
         return None
