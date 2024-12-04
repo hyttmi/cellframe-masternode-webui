@@ -181,7 +181,7 @@ def get_is_node_synced(network):
         return None
         
 @log_debug
-def get_total_rewards(network, return_sum=False):
+def get_total_rewards(network, total_sum=False):
     try:
         rewards = {}
         cache_file_path = os.path.join(get_current_script_directory(), f".{network}_rewards_cache.json")
@@ -198,7 +198,7 @@ def get_total_rewards(network, return_sum=False):
                 else:
                     rewards[formatted_date_str] = amount
         sorted_dict = dict(OrderedDict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))))
-        if not return_sum:
+        if not total_sum:
             return sorted_dict
         else:
             return sum(rewards.values())
