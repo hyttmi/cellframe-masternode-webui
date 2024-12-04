@@ -22,7 +22,7 @@ try:
         get_total_rewards,
     )
     
-    from logger import log_it, log_debug
+    from logger import log_it
     from config import Config
     from concurrent.futures import ProcessPoolExecutor
     

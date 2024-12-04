@@ -1,5 +1,5 @@
 try:
-    from logger import log_debug, log_it
+    from logger import log_it
     from utils import cli_command
     import re
 except ImportError as e:

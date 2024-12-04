@@ -2,7 +2,7 @@ try:
     import socket, requests, re, time, psutil, json, os, time, cachetools.func
     from packaging.version import Version, parse
     from command_runner import command_runner
-    from logger import log_debug, log_it
+    from logger import log_it
 except ImportError as e:
     log_it("e", f"ImportError: {e}")
 
