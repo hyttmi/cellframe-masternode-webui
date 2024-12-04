@@ -145,6 +145,15 @@
         {% endif %}
         </div>
 
+        {% for network_name, network_data in network_info.items() %}
+    <h2>{{ network_name }}</h2>
+    <ul>
+        {% for key, value in network_data.items() %}
+            <li><strong>{{ key }}:</strong> {{ value }}</li>
+        {% endfor %}
+    </ul>
+{% endfor %}
+
         {% if networks and networks.items() %}
             {% for network_name, network in networks.items() %}
         <div class="modal fade" id="nodeInfoModal_{{ network_name }}" tabindex="-1" aria-labelledby="nodeInfoModalLabel" aria-hidden="true">
