@@ -125,4 +125,12 @@ def get_latest_node_version():
     except Exception as e:
         log_it("e", f"Error: {e}")
         return None
+    
+def validate_interval_seconds(num):
+    try:
+        int(num)
+        return True
+    except ValueError:
+        return False
+    
 
