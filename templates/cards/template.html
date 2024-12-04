@@ -525,8 +525,8 @@
     </script>
     
     <script>
-        {% if networks and networks.items() %}
-        {% for network_name, network in networks.items() %}
+        {% if network_info and network_info.items() %}
+        {% for network_name, network in network_info.items() %}
         {% if network.all_signed_blocks is not none %}
         var blocksData = {};
         blocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
@@ -571,7 +571,7 @@
             });
         }
     
-        {% for network_name, network in networks.items() %}
+        {% for network_info, network in network_info.items() %}
         {% if network.all_signed_blocks is not none %}
         var blocksCtx{{ network_name }} = document.getElementById('blocksChart_{{ network_name }}').getContext('2d');
         blocksCharts['{{ network_name }}'] = new Chart(blocksCtx{{ network_name }}, {
