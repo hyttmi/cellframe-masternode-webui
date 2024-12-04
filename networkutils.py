@@ -17,9 +17,8 @@ def get_active_networks():
         nets = CFNet.active_nets()
         if nets:
             return nets
-        else:
-            log_it("e", "Can't get list of networks!")
-            return None
+        log_it("e", "Can't get list of networks!")
+        return None
     except Exception as e:
         log_it("e", f"Error retrieving networks: {e}")
         return None

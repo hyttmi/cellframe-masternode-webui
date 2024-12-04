@@ -9,6 +9,7 @@ try:
     )
     
     from networkutils import (
+        get_active_networks,
         get_autocollect_rewards,
         get_autocollect_status,
         get_blocks,
@@ -55,47 +56,49 @@ def generate_general_info(format_time=True):
 def generate_network_info():
     try:
         network_data = {}
-        net_config = get_network_config(network)
-        if net_config:
-            network = str(network)
-            wallet = net_config['wallet']
-            tokens = get_reward_wallet_tokens(wallet)
-            net_status = get_network_status(network)
-            with ProcessPoolExecutor() as pexecutor:
-                futures = {
-                    'first_signed_blocks': pexecutor.submit(get_blocks, network, block_type="first_signed_blocks_count"),
-                    'all_signed_blocks_dict': pexecutor.submit(get_blocks, network, block_type="all_signed_blocks"),
-                    'all_signed_blocks': pexecutor.submit(get_blocks, network, block_type="all_signed_blocks_count"),
-                    'all_blocks': pexecutor.submit(get_blocks, network, block_type="count"),
-                    'signed_blocks_today': pexecutor.submit(get_blocks, network, block_type="all_signed_blocks", today=True),
-                    'token_price': pexecutor.submit(get_token_price, network),
-                    'rewards': pexecutor.submit(get_total_rewards, network, False),
-                    'sum_rewards': pexecutor.submit(get_total_rewards, network, True),
-                    'node_stake_value': pexecutor.submit(get_current_stake_value, network),
-                    'general_node_info': pexecutor.submit(get_node_dump, network),
-                    'autocollect_status': pexecutor.submit(get_autocollect_status, network),
-                    'autocollect_rewards': pexecutor.submit(get_autocollect_rewards, network)
-                }
-                network_info = {
-                    'state': net_status['state'],
-                    'target_state': net_status['target_state'],
-                    'address': net_status['address'],
-                    'first_signed_blocks': futures['first_signed_blocks'].result(),
-                    'all_signed_blocks_dict': futures['all_signed_blocks_dict'].result(),
-                    'all_signed_blocks': futures['all_signed_blocks'].result(),
-                    'all_blocks': futures['all_blocks'].result(),
-                    'signed_blocks_today': futures['signed_blocks_today'].result(),
-                    'autocollect_status': futures['autocollect_status'].result(),
-                    'autocollect_rewards': futures['autocollect_rewards'].result(),
-                    'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
-                    'rewards': futures['rewards'].result(),
-                    'all_rewards': futures['all_rewards'].result(),
-                    'token_price': futures['token_price'].result(),
-                    'node_stake_value': futures['node_stake_value'].result(),
-                    'general_node_info': futures['general_node_info'].result()
-                }
-                network_data[network] = network_info
-            return network_data
+        networks = get_active_networks()
+        for network in networks:
+            net_config = get_network_config(network)
+            if net_config:
+                network = str(network)
+                wallet = net_config['wallet']
+                tokens = get_reward_wallet_tokens(wallet)
+                net_status = get_network_status(network)
+                with ProcessPoolExecutor() as pexecutor:
+                    futures = {
+                        'first_signed_blocks': pexecutor.submit(get_blocks, network, block_type="first_signed_blocks_count"),
+                        'all_signed_blocks_dict': pexecutor.submit(get_blocks, network, block_type="all_signed_blocks"),
+                        'all_signed_blocks': pexecutor.submit(get_blocks, network, block_type="all_signed_blocks_count"),
+                        'all_blocks': pexecutor.submit(get_blocks, network, block_type="count"),
+                        'signed_blocks_today': pexecutor.submit(get_blocks, network, block_type="all_signed_blocks", today=True),
+                        'token_price': pexecutor.submit(get_token_price, network),
+                        'rewards': pexecutor.submit(get_total_rewards, network, False),
+                        'sum_rewards': pexecutor.submit(get_total_rewards, network, True),
+                        'node_stake_value': pexecutor.submit(get_current_stake_value, network),
+                        'general_node_info': pexecutor.submit(get_node_dump, network),
+                        'autocollect_status': pexecutor.submit(get_autocollect_status, network),
+                        'autocollect_rewards': pexecutor.submit(get_autocollect_rewards, network)
+                    }
+                    network_info = {
+                        'state': net_status['state'],
+                        'target_state': net_status['target_state'],
+                        'address': net_status['address'],
+                        'first_signed_blocks': futures['first_signed_blocks'].result(),
+                        'all_signed_blocks_dict': futures['all_signed_blocks_dict'].result(),
+                        'all_signed_blocks': futures['all_signed_blocks'].result(),
+                        'all_blocks': futures['all_blocks'].result(),
+                        'signed_blocks_today': futures['signed_blocks_today'].result(),
+                        'autocollect_status': futures['autocollect_status'].result(),
+                        'autocollect_rewards': futures['autocollect_rewards'].result(),
+                        'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
+                        'rewards': futures['rewards'].result(),
+                        'all_rewards': futures['all_rewards'].result(),
+                        'token_price': futures['token_price'].result(),
+                        'node_stake_value': futures['node_stake_value'].result(),
+                        'general_node_info': futures['general_node_info'].result()
+                    }
+                    network_data[network] = network_info
+                return network_data
         else:
             return None
     except Exception as e:
