@@ -19,7 +19,7 @@ try:
         get_node_dump,
         get_reward_wallet_tokens,
         get_token_price,
-        get_total_rewards,
+        get_rewards,
     )
     
     from logger import log_it
@@ -73,8 +73,8 @@ def generate_network_info():
                         'all_blocks': executor.submit(get_blocks, network, block_type="count"),
                         'signed_blocks_today': executor.submit(get_blocks, network, block_type="all_signed_blocks", today=True),
                         'token_price': executor.submit(get_token_price, network),
-                        'rewards': executor.submit(get_total_rewards, network, total_sum=False),
-                        #'sum_rewards': executor.submit(get_total_rewards, network, total_sum=True),
+                        'rewards': executor.submit(get_rewards, network, total_sum=False),
+                        'sum_rewards': executor.submit(get_rewards, network, total_sum=True),
                         'node_stake_value': executor.submit(get_current_stake_value, network),
                         'general_node_info': executor.submit(get_node_dump, network),
                         'autocollect_status': executor.submit(get_autocollect_status, network),
