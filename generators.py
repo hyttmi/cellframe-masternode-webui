@@ -98,6 +98,7 @@ def generate_network_info():
                         'general_node_info': futures['general_node_info'].result()
                     }
                     network_data[network] = network_info
+                log_it("i", network_data)
                 return network_data
         else:
             return None
