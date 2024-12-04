@@ -10,7 +10,7 @@ logLock = threading.Lock()
 log_file = os.path.join(get_current_script_directory(), "webui.log")
 logging.basicConfig(
     filename=log_file,
-    level=logging.INFO,
+    level=logging.DEBUG,
     format="%(asctime)s [%(levelname)s] [%(funcName)s] %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S"
 )
