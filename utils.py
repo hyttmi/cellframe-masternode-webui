@@ -17,8 +17,8 @@ def check_plugin_update():
             curr_version = Version(data["version"])
             log_it("i", f"Current plugin version: {curr_version}")
         url = "https://raw.githubusercontent.com/hyttmi/cellframe-masternode-webui/refs/heads/master/manifest.json"
-        req = requests.get(url, timeout=5).json()
-        latest_version = Version(req["version"])
+        response = requests.get(url, timeout=5).json()
+        latest_version = Version(response["version"])
         log_it("i", f"Latest plugin version: {latest_version}")
         return curr_version < latest_version, str(curr_version), str(latest_version)
     except Exception as e:
@@ -94,6 +94,7 @@ def get_sys_stats():
         log_it("e", f"Error: {e}")
         return None
 
+@cachetools.func.ttl_cache(maxsize=10)
 def get_installed_node_version():
     try:
         log_it("i", "Fetching installed node version...")
