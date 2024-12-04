@@ -1,12 +1,33 @@
 try:
-    from utils import get_sys_stats, check_plugin_update, get_system_hostname, format_uptime, get_installed_node_version, get_latest_node_version
-    from networkutils import *
+    from utils import (
+        check_plugin_update,
+        format_uptime,
+        get_installed_node_version,
+        get_latest_node_version,
+        get_sys_stats,
+        get_system_hostname
+    )
+    
+    from networkutils import (
+        get_autocollect_rewards,
+        get_autocollect_status,
+        get_blocks,
+        get_current_stake_value,
+        get_network_config,
+        get_network_status,
+        get_node_dump,
+        get_reward_wallet_tokens,
+        get_token_price,
+        get_total_rewards,
+    )
+    
     from logger import log_it, log_debug
     from config import Config
     from concurrent.futures import ProcessPoolExecutor
+    
 except ImportError as e:
     log_it("e", f"ImportError: {e}")
-    
+        
 def generate_general_info(format_time=True):
     try:
         sys_stats = get_sys_stats()
