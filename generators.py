@@ -56,7 +56,7 @@ def generate_network_info():
     try:
         network_data = {}
         networks = get_active_networks()
-        log_it("d", f"Found the following networks: {networks}")
+        log_it("i", f"Found the following networks: {networks}")
         for network in networks:
             net_config = get_network_config(network)
             if net_config:
