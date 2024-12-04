@@ -26,11 +26,11 @@ def cache_blocks_data():
                     'all_signed_blocks': {}
                 }
 
-                with ProcessPoolExecutor() as pexecutor:
+                with ThreadPoolExecutor() as executor:
                     futures = {
-                        'block_count': pexecutor.submit(cli_command, f"block count -net {network}"),
-                        'first_signed_blocks': pexecutor.submit(cli_command, f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']} -limit 1"),
-                        'signed_blocks': pexecutor.submit(cli_command, f"block list -net {network} signed -cert {net_config['blocks_sign_cert']}")
+                        'block_count': executor.submit(cli_command, f"block count -net {network}"),
+                        'first_signed_blocks': executor.submit(cli_command, f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']} -limit 1"),
+                        'signed_blocks': executor.submit(cli_command, f"block list -net {network} signed -cert {net_config['blocks_sign_cert']}")
                     }
 
                 block_count_result = futures['block_count'].result()

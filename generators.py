@@ -24,7 +24,7 @@ try:
     
     from logger import log_it
     from config import Config
-    from concurrent.futures import ProcessPoolExecutor
+    from concurrent.futures import ThreadPoolExecutor
     
 except ImportError as e:
     log_it("e", f"ImportError: {e}")
@@ -65,20 +65,20 @@ def generate_network_info():
                 wallet = net_config['wallet']
                 tokens = get_reward_wallet_tokens(wallet)
                 net_status = get_network_status(network)
-                with ProcessPoolExecutor() as pexecutor:
+                with ThreadPoolExecutor() as executor:
                     futures = {
-                        'first_signed_blocks': pexecutor.submit(get_blocks, network, block_type="first_signed_blocks_count"),
-                        'all_signed_blocks_dict': pexecutor.submit(get_blocks, network, block_type="all_signed_blocks"),
-                        'all_signed_blocks': pexecutor.submit(get_blocks, network, block_type="all_signed_blocks_count"),
-                        'all_blocks': pexecutor.submit(get_blocks, network, block_type="count"),
-                        'signed_blocks_today': pexecutor.submit(get_blocks, network, block_type="all_signed_blocks", today=True),
-                        'token_price': pexecutor.submit(get_token_price, network),
-                        'rewards': pexecutor.submit(get_total_rewards, network, total_sum=False),
-                        'sum_rewards': pexecutor.submit(get_total_rewards, network, total_sum=True),
-                        'node_stake_value': pexecutor.submit(get_current_stake_value, network),
-                        'general_node_info': pexecutor.submit(get_node_dump, network),
-                        'autocollect_status': pexecutor.submit(get_autocollect_status, network),
-                        'autocollect_rewards': pexecutor.submit(get_autocollect_rewards, network)
+                        'first_signed_blocks': executor.submit(get_blocks, network, block_type="first_signed_blocks_count"),
+                        'all_signed_blocks_dict': executor.submit(get_blocks, network, block_type="all_signed_blocks"),
+                        'all_signed_blocks': executor.submit(get_blocks, network, block_type="all_signed_blocks_count"),
+                        'all_blocks': executor.submit(get_blocks, network, block_type="count"),
+                        'signed_blocks_today': executor.submit(get_blocks, network, block_type="all_signed_blocks", today=True),
+                        'token_price': executor.submit(get_token_price, network),
+                        'rewards': executor.submit(get_total_rewards, network, total_sum=False),
+                        'sum_rewards': executor.submit(get_total_rewards, network, total_sum=True),
+                        'node_stake_value': executor.submit(get_current_stake_value, network),
+                        'general_node_info': executor.submit(get_node_dump, network),
+                        'autocollect_status': executor.submit(get_autocollect_status, network),
+                        'autocollect_rewards': executor.submit(get_autocollect_rewards, network)
                     }
                     network_info = {
                         'state': net_status['state'],

@@ -28,13 +28,10 @@ def on_init():
         with ThreadPoolExecutor() as executor:
             log_it("i", "Submitting HTTP server to ThreadPool")
             executor.submit(http_server)
-        with ProcessPoolExecutor() as pexecutor:
-            log_it("i", "Submitting blocks caching to ProcessPool")
-            blocks_cacher_process = pexecutor.submit(cache_blocks_data)
-            log_it("d", f"Task {blocks_cacher_process} submitted!")
-            log_it("i", "Submitting rewards caching to ProcessPool")
-            rewards_cacher_process = pexecutor.submit(cache_rewards_data)
-            log_it("d", f"Task {rewards_cacher_process} submitted!")
+            log_it("i", "Submitting blocks caching to ThreadPool")
+            executor.submit(cache_blocks_data)
+            log_it("i", "Submitting rewards caching to ThreadPool")
+            executor.submit(cache_rewards_data)
     except Exception as e:
         log_it("e", f"Error: {e}")
 
