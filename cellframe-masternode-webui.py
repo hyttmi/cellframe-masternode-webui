@@ -1,10 +1,14 @@
-from pycfhelpers.node.http.simple import CFSimpleHTTPServer, CFSimpleHTTPRequestHandler
-from concurrent.futures import ThreadPoolExecutor
-from logger import log_it
-from handlers import request_handler
-from config import Config
-from cacher import cache_blocks_data, cache_rewards_data
-import threading
+try:
+    from pycfhelpers.node.http.simple import CFSimpleHTTPServer, CFSimpleHTTPRequestHandler
+    from concurrent.futures import ThreadPoolExecutor
+    from logger import log_it
+    from handlers import request_handler
+    from config import Config
+    from cacher import cache_blocks_data, cache_rewards_data
+    from scheduler import run_scheduler
+    import threading
+except ImportError as e:
+    log_it("e", f"ImportError: {e}")
 
 def http_server():
     try:
@@ -29,9 +33,9 @@ def on_init():
             log_it("i", "Submitting HTTP server to ThreadPool")
             executor.submit(http_server)
             log_it("i", "Submitting blocks caching to ThreadPool")
-            executor.submit(cache_blocks_data)
+            executor.submit(run_scheduler, cache_blocks_data, Config.CACHE_BLOCKS_INTERVAL)
             log_it("i", "Submitting rewards caching to ThreadPool")
-            executor.submit(cache_rewards_data)
+            executor.submit(run_scheduler, cache_rewards_data, Config.CACHE_REWARDS_INTERVAL)
     except Exception as e:
         log_it("e", f"Error: {e}")
 
