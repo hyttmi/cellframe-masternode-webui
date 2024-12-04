@@ -1,6 +1,6 @@
 try:
     import cachetools.func, re, requests, os, json
-    from logger import log_it, log_debug
+    from logger import log_it
     from utils import cli_command
     from sysutils import get_current_script_directory
     from pycfhelpers.node.net import CFNet
@@ -11,7 +11,6 @@ try:
 except ImportError as e:
     log_it("e", f"ImportError: {e}")
 
-@log_debug
 def get_active_networks():
     try:
         nets = CFNet.active_nets()
@@ -23,7 +22,6 @@ def get_active_networks():
         log_it("e", f"Error retrieving networks: {e}")
         return None
 
-@log_debug
 def get_network_config(network):
     config_file = f"/opt/cellframe-node/etc/network/{network}.cfg"
     net_config = {}
@@ -48,7 +46,6 @@ def get_network_config(network):
         log_it("e", f"Error: {e}")
         return None
 
-@log_debug
 def get_autocollect_status(network):
     try:
         autocollect_cmd = cli_command(f"block autocollect status -net {network} -chain main")
@@ -91,7 +88,6 @@ def get_token_price(network):
         return None
         
 @cachetools.func.ttl_cache(maxsize=10)
-@log_debug
 def get_current_stake_value(network):
     try:
         status = get_network_status(network)
@@ -116,8 +112,7 @@ def get_current_stake_value(network):
     except Exception as e:
         log_it("e" f"Error: {e}")
         return None
-        
-@log_debug
+
 def get_network_status(network):
     try:
         net_status = cli_command(f"net -net {network} get status")
@@ -136,8 +131,7 @@ def get_network_status(network):
     except Exception as e:
         log_it("e", f"Error: {e}")
         return None
-        
-@log_debug
+
 def get_autocollect_rewards(network):
     try:
         net_config = get_network_config(network)
@@ -155,7 +149,6 @@ def get_autocollect_rewards(network):
         log_it("e", f"Error: {e}")
         return None
         
-@log_debug
 def get_node_dump(network):
     try:
         cmd_get_node_dump = cli_command(f"node dump -net {network}")
@@ -166,8 +159,7 @@ def get_node_dump(network):
     except Exception as e:
         log_it("e", f"Error: {e}")
         return None
-    
-@log_debug
+
 def get_is_node_synced(network):
     try:
         net_status = cli_command(f"net -net {network} get status")
@@ -179,8 +171,7 @@ def get_is_node_synced(network):
     except Exception as e:
         log_it("e", f"Error: {e}")
         return None
-        
-@log_debug
+
 def get_total_rewards(network, total_sum=False):
     try:
         rewards = {}
@@ -208,8 +199,7 @@ def get_total_rewards(network, total_sum=False):
     except Exception as e:
         log_it("e", f"Error reading rewards: {e}")
         return None
-    
-@log_debug
+
 def get_blocks(network, block_type="count", today=False):
     cache_file_path = os.path.join(get_current_script_directory, f".{network}_blocks_cache.json")
     if not os.path.exists(cache_file_path):

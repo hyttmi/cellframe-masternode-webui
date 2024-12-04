@@ -5,7 +5,6 @@ try:
 except ImportError as e:
     log_it("e", f"ImportError: {e}")
 
-@log_debug
 def get_reward_wallet_tokens(wallet):
     try:
         cmd_get_wallet_info = cli_command(f"wallet info -addr {wallet}")
