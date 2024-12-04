@@ -56,9 +56,11 @@ def generate_network_info():
     try:
         network_data = {}
         networks = get_active_networks()
+        log_it("d", f"Found the following networks: {networks}")
         for network in networks:
             net_config = get_network_config(network)
             if net_config:
+                log_it("d", f"Fetching data for {network} network...")
                 network = str(network)
                 wallet = net_config['wallet']
                 tokens = get_reward_wallet_tokens(wallet)
