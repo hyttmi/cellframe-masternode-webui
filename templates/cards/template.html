@@ -535,7 +535,6 @@
     <script>
         {% if network_info and network_info.items() %}
         {% for network_name, network in network_info.items() %}
-        {{ network.all_signed_blocks_dict }}
         var blocksData = {};
         blocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
         var blocksCharts = {};
