@@ -65,6 +65,7 @@ def cache_blocks_data():
 
                 elapsed_time = time.time() - start_time
                 log_it("i",f"Blocks cached for {network}! It took {elapsed_time:.2f} seconds!")
+                return
             log_it("e", f"Network config not found for {network}, skipping caching")
             return None
     except Exception as e:
@@ -113,6 +114,7 @@ def cache_rewards_data():
                 end_time = time.time()
                 elapsed_time = end_time - start_time
                 log_it("i", f"Rewards cached for {network}! It took {elapsed_time:.2f} seconds!")
+                return
             log_it("e", f"Network config not found for {network}, skipping caching")
             return None
     except Exception as e:

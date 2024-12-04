@@ -93,7 +93,7 @@ def generate_network_info():
                         'autocollect_rewards': futures['autocollect_rewards'].result(),
                         'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
                         'rewards': futures['rewards'].result(),
-                        'all_rewards': futures['all_rewards'].result(),
+                        'all_rewards': futures['sum_rewards'].result(),
                         'token_price': futures['token_price'].result(),
                         'node_stake_value': futures['node_stake_value'].result(),
                         'general_node_info': futures['general_node_info'].result()
