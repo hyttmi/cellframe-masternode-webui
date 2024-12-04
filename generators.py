@@ -72,7 +72,7 @@ def generate_network_info():
                         'all_signed_blocks': executor.submit(get_blocks, network, block_type="all_signed_blocks_count"),
                         'all_blocks': executor.submit(get_blocks, network, block_type="count"),
                         'signed_blocks_today': executor.submit(get_blocks, network, block_type="all_signed_blocks", today=True),
-                        'token_price': executor.submit(get_token_price, network),
+                        #'token_price': executor.submit(get_token_price, network),
                         'rewards': executor.submit(get_total_rewards, network, total_sum=False),
                         'sum_rewards': executor.submit(get_total_rewards, network, total_sum=True),
                         'node_stake_value': executor.submit(get_current_stake_value, network),
@@ -94,7 +94,7 @@ def generate_network_info():
                         'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
                         'rewards': futures['rewards'].result(),
                         'all_rewards': futures['all_rewards'].result(),
-                        'token_price': futures['token_price'].result(),
+                        #'token_price': futures['token_price'].result(),
                         'node_stake_value': futures['node_stake_value'].result(),
                         'general_node_info': futures['general_node_info'].result()
                     }
