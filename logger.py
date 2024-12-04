@@ -20,9 +20,13 @@ def log_it(level, msg):
         caller_frame = inspect.currentframe().f_back
         func_name = caller_frame.f_code.co_name
         
+        if level.lower() == "d" and not Config.DEBUG:
+            return
+        
         levels = {
             "i": logging.info,
             "e": logging.error,
+            "d": logging.debug,
         }
         
         log_func = levels.get(level.lower(), None)
@@ -31,15 +35,3 @@ def log_it(level, msg):
             log_func(f"[{func_name}] {msg}")
         else:
             logging.error(f"[{func_name}] Unsupported log level: {level}. Message: {msg}")
-
-def log_debug(func):
-    if Config.DEBUG:
-        def wrapper(*args, **kwargs):
-            func_name = func.__name__
-            log_it("i", f"Calling {func_name} with args: {args}, kwargs: {kwargs}")
-            result = func(*args, **kwargs)
-            log_it("i", f"{func_name} returned: {result}")
-            return result
-        return wrapper
-    else:
-        return func

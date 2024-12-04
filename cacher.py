@@ -7,11 +7,12 @@ try:
     from datetime import datetime
     from collections import OrderedDict
 except Exception as e:
-    log_it(f"ImportError: {e}")
+    log_it("e", f"ImportError: {e}")
 
 def cache_blocks_data():
     try:
         networks = get_active_networks()
+        log_it("d", f"Found the following networks: {networks}")
         for network in networks:
             net_config = get_network_config(network)
             if net_config:
@@ -72,8 +73,9 @@ def cache_blocks_data():
 def cache_rewards_data():
     try:
         networks = get_active_networks()
+        log_it("d", f"Found the following networks: {networks}")
         for network in networks:
-            net_config = get_active_networks(network)
+            net_config = get_network_config(network)
             if net_config:
                 log_it("i", "Caching rewards...")
                 start_time = time.time()

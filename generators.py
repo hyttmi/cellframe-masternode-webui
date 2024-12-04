@@ -51,8 +51,7 @@ def generate_general_info(format_time=True):
     except Exception as e:
         log_it("e", f"Error: {e}")
         return None
-    
-@log_debug
+
 def generate_network_info():
     try:
         network_data = {}
