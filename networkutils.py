@@ -62,26 +62,26 @@ def get_token_price(network):
     try:
         log_it("i", "Fetching token price...")
         if network == "Backbone":
-            req = requests.get(f"https://coinmarketcap.com/currencies/cellframe/", timeout=5)
-            if req.status_code == 200:
-                price_match = re.search(r"price today is \$(\d+.\d+)", req.text)
+            response = requests.get(f"https://coinmarketcap.com/currencies/cellframe/", timeout=5)
+            if response.status_code == 200:
+                price_match = re.search(r"price today is \$(\d+.\d+)", response.text)
                 if price_match:
                     return float(price_match.group(1))
                 else:
                     return None
             else:
-                log_it("e", f"Failed to fetch token price from {req.url}")
+                log_it("e", f"Failed to fetch token price from {response.url}")
                 return None
         elif network == "KelVPN":
-            req = requests.get(f"https://kelvpn.com/about-token", timeout=5)
-            if req.status_code == 200:
-                price_match =re.search(r"\$(\d+.\d+)", req.text)
+            re = requests.get(f"https://kelvpn.com/about-token", timeout=5)
+            if response.status_code == 200:
+                price_match =re.search(r"\$(\d+.\d+)", response.text)
                 if price_match:
                     return float(price_match.group(1))
                 else:
                     return None
             else:
-                log_it("e", f"Failed to fetch token price from {req.url}")
+                log_it("e", f"Failed to fetch token price from {response.url}")
                 return None
     except Exception as e:
         log_it("e", f"Error: {e}")
