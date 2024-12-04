@@ -22,7 +22,7 @@ def log_it(level, msg):
         
         if level.lower() == "d" and not Config.DEBUG:
             return
-        
+
         levels = {
             "i": logging.info,
             "e": logging.error,
