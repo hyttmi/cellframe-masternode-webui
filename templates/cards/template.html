@@ -522,23 +522,132 @@
                 });
             });
         });
+        
+        function formatDate(dateString) {
+            var date = new Date(dateString);
+            return date.toLocaleDateString(undefined, {
+                month: 'numeric',
+                day: 'numeric'
+            });
+        }
     </script>
     
     <script>
         {% if network_info and network_info.items() %}
-        {% for network_name, network in network_info.items() %}
-        {% if network.all_signed_blocks_dict is not none %}
-        var blocksData = {};
-        blocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
-        var blocksCharts = {};
+            var blocksData = {};
+            var blocksCharts = {};
+            var rewardsData = {};
+            var rewardsCharts = {};
+    
+            {% for network_name, network in network_info.items() %}
+                {% if network.all_signed_blocks_dict %}
+                    blocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
+                {% endif %}
+                {% if network.rewards %}
+                    rewardsData['{{ network_name }}'] = {{ network.rewards | tojson }};
+                {% endif %}
+            
+                {% if network.all_signed_blocks_dict %}
+                    var blocksCtx{{ network_name }} = document.getElementById('blocksChart_{{ network_name }}').getContext('2d');
+                    blocksCharts['{{ network_name }}'] = new Chart(blocksCtx{{ network_name }}, {
+                        type: 'line',
+                        data: {
+                            labels: [],
+                            datasets: [{
+                                label: 'Blocks',
+                                data: [],
+                                backgroundColor: '#B3A3FF',
+                                borderColor: '#B3A3FF',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        color: '#B3A3FF'
+                                    }
+                                },
+                                y: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    beginAtZero: true,
+                                    ticks: {
+                                        color: '#B3A3FF'
+                                    },
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            }
+                        }
+                    });
+                    updateChart('blocksChart', 7, '{{ network_name }}');
+                {% endif %}
+            
+                {% if network.rewards %}
+                    var rewardsCtx{{ network_name }} = document.getElementById('rewardsChart_{{ network_name }}').getContext('2d');
+                    rewardsCharts['{{ network_name }}'] = new Chart(rewardsCtx{{ network_name }}, {
+                        type: 'line',
+                        data: {
+                            labels: [],
+                            datasets: [{
+                                label: 'Rewards',
+                                data: [],
+                                backgroundColor: '#B3A3FF',
+                                borderColor: '#B3A3FF',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        color: '#B3A3FF'
+                                    }
+                                },
+                                y: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    beginAtZero: true,
+                                    ticks: {
+                                        color: '#B3A3FF'
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(tooltipItem) {
+                                            return tooltipItem.raw;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    updateChart('rewardsChart', 7, '{{ network_name }}');
+                {% endif %}
+            {% endfor %}
         {% endif %}
-        {% if network.rewards is not none %}
-        var rewardsData = {};
-        rewardsData['{{ network_name }}'] = {{ network.rewards | tojson }};
-        var rewardsCharts = {};
-        {% endif %}
-        {% endfor %}
-
+        
         function updateChart(chart, daysToShow, networkName) {
             if (chart === 'blocksChart') {
                 var block_days = Object.keys(blocksData[networkName]).slice(-daysToShow);
@@ -562,118 +671,7 @@
                 rewardsCharts[networkName].update();
             }
         }
-    
-        function formatDate(dateString) {
-            var date = new Date(dateString);
-            return date.toLocaleDateString(undefined, {
-                month: 'numeric',
-                day: 'numeric'
-            });
-        }
-    
-        {% for network_info, network in network_info.items() %}
-        {% if network.all_signed_blocks is not none %}
-        var blocksCtx{{ network_name }} = document.getElementById('blocksChart_{{ network_name }}').getContext('2d');
-        blocksCharts['{{ network_name }}'] = new Chart(blocksCtx{{ network_name }}, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Blocks',
-                    data: [],
-                    backgroundColor: '#{{ website_accent_color }}',
-                    borderColor: '#{{ website_accent_color }}',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            color: '#{{ website_accent_color }}'
-                        }
-                    },
-                    y: {
-                        grid: {
-                            display: false
-                        },
-                        beginAtZero: true,
-                        ticks: {
-                            color: '#{{ website_accent_color }}'
-                        },
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
-        });
-        updateChart('blocksChart', 7, '{{ network_name }}');
-        {% endif %}
-
-        {% if network.rewards is not none %}
-        var rewardsCtx{{ network_name }} = document.getElementById('rewardsChart_{{ network_name }}').getContext('2d');
-        rewardsCharts['{{ network_name }}'] = new Chart(rewardsCtx{{ network_name }}, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Rewards',
-                    data: [],
-                    backgroundColor: '#{{ website_accent_color }}',
-                    borderColor: '#{{ website_accent_color }}',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            color: '#{{ website_accent_color }}'
-                        }
-                    },
-                    y: {
-                        grid: {
-                            display: false
-                        },
-                        beginAtZero: true,
-                        ticks: {
-                            color: '#{{ website_accent_color }}'
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(tooltipItem) {
-                                return tooltipItem.raw;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-        updateChart('rewardsChart', 7, '{{ network_name }}');
-        {% endif %}
-    {% endfor %}
-    {% endif %}
-
-    </script>
+    </script>    
     
 </body>
 
