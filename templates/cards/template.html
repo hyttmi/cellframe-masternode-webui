@@ -146,7 +146,7 @@
         </div>
 
         {% if network_info and network_info.items() %}
-            {% for network_name, network in network_info.items() %}
+        {% for network_name, network in network_info.items() %}
         <div class="modal fade" id="nodeInfoModal_{{ network_name }}" tabindex="-1" aria-labelledby="nodeInfoModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content custom-modal-bg">
@@ -360,7 +360,6 @@
             {% endif %}
             
             {% if network.all_signed_blocks_dict is not none %}
-            {{ network.all_signed_blocks_dict }}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="signed_blocks_last_n_days_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -523,16 +522,23 @@
                 });
             });
         });
+
+        function formatDate(dateString) {
+            var date = new Date(dateString);
+            return date.toLocaleDateString(undefined, {
+                month: 'numeric',
+                day: 'numeric'
+            });
+        }
     </script>
     
     <script>
         {% if network_info and network_info.items() %}
         {% for network_name, network in network_info.items() %}
-        {% if network.all_signed_blocks_dict is not none %}
+        {{ network.all_signed_blocks_dict }}
         var blocksData = {};
         blocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
         var blocksCharts = {};
-        {% endif %}
         {% if network.rewards is not none %}
         var rewardsData = {};
         rewardsData['{{ network_name }}'] = {{ network.rewards | tojson }};
@@ -564,14 +570,6 @@
             }
         }
     
-        function formatDate(dateString) {
-            var date = new Date(dateString);
-            return date.toLocaleDateString(undefined, {
-                month: 'numeric',
-                day: 'numeric'
-            });
-        }
-    
         {% for network_info, network in network_info.items() %}
         {% if network.all_signed_blocks is not none %}
         var blocksCtx{{ network_name }} = document.getElementById('blocksChart_{{ network_name }}').getContext('2d');
@@ -582,8 +580,8 @@
                 datasets: [{
                     label: 'Blocks',
                     data: [],
-                    backgroundColor: '#{{ website_accent_color }}',
-                    borderColor: '#{{ website_accent_color }}',
+                    backgroundColor: '#B3A3FF',
+                    borderColor: '#B3A3FF',
                     borderWidth: 1
                 }]
             },
@@ -596,7 +594,7 @@
                             display: false
                         },
                         ticks: {
-                            color: '#{{ website_accent_color }}'
+                            color: '#B3A3FF'
                         }
                     },
                     y: {
@@ -605,7 +603,7 @@
                         },
                         beginAtZero: true,
                         ticks: {
-                            color: '#{{ website_accent_color }}'
+                            color: '#B3A3FF'
                         },
                     }
                 },
@@ -628,8 +626,8 @@
                 datasets: [{
                     label: 'Rewards',
                     data: [],
-                    backgroundColor: '#{{ website_accent_color }}',
-                    borderColor: '#{{ website_accent_color }}',
+                    backgroundColor: '#B3A3FF',
+                    borderColor: '#B3A3FF',
                     borderWidth: 1
                 }]
             },
@@ -642,7 +640,7 @@
                             display: false
                         },
                         ticks: {
-                            color: '#{{ website_accent_color }}'
+                            color: '#B3A3FF'
                         }
                     },
                     y: {
@@ -651,7 +649,7 @@
                         },
                         beginAtZero: true,
                         ticks: {
-                            color: '#{{ website_accent_color }}'
+                            color: '#B3A3FF'
                         }
                     }
                 },
