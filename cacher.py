@@ -2,7 +2,7 @@ try:
     import re, time, json, os
     from utils import cli_command, get_current_script_directory
     from networkutils import get_active_networks, get_network_config
-    from concurrent.futures import ProcessPoolExecutor
+    from concurrent.futures import ThreadPoolExecutor
     from logger import log_it
     from datetime import datetime
     from collections import OrderedDict
