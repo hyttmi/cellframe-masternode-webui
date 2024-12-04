@@ -32,6 +32,9 @@ def log_it(level, msg):
         log_func = levels.get(level.lower(), None)
         
         if log_func:
-            log_func(f"[{func_name}] {msg}")
+            if level.lower() == "d":
+                log_func(f"[DEBUG] [{func_name}] {msg}")
+            else:
+                log_func(f"[{func_name}] {msg}")
         else:
             logging.error(f"[{func_name}] Unsupported log level: {level}. Message: {msg}")
