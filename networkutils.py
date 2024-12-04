@@ -67,22 +67,18 @@ def get_token_price(network):
                 price_match = re.search(r"price today is \$(\d+.\d+)", response.text)
                 if price_match:
                     return float(price_match.group(1))
-                else:
-                    return None
-            else:
-                log_it("e", f"Failed to fetch token price from {response.url}")
                 return None
+            log_it("e", f"Failed to fetch token price from {response.url}")
+            return None
         elif network == "KelVPN":
-            re = requests.get(f"https://kelvpn.com/about-token", timeout=5)
+            response = requests.get(f"https://kelvpn.com/about-token", timeout=5)
             if response.status_code == 200:
                 price_match =re.search(r"\$(\d+.\d+)", response.text)
                 if price_match:
                     return float(price_match.group(1))
-                else:
-                    return None
-            else:
-                log_it("e", f"Failed to fetch token price from {response.url}")
                 return None
+            log_it("e", f"Failed to fetch token price from {response.url}")
+            return None
     except Exception as e:
         log_it("e", f"Error: {e}")
         return None
