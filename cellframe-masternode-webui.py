@@ -4,8 +4,7 @@ try:
     from logger import log_it
     from handlers import request_handler
     from config import Config
-    from cacher import cache_blocks_data, cache_rewards_data
-    from run_scheduler import run_scheduler
+    from run_scheduler import setup_schedules
     import threading
 except ImportError as e:
     log_it("e", f"ImportError: {e}")
@@ -16,7 +15,7 @@ def http_server():
         CFSimpleHTTPServer().register_uri_handler(uri=f"/{Config.PLUGIN_URI}", handler=handler)
         log_it("i", "HTTP server started")
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        log_it("e", f"Error on http_server: {e}")
     return 0
 
 def init():
@@ -24,7 +23,7 @@ def init():
         t = threading.Thread(target=on_init)
         t.start()
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        log_it("e", f"Error on init: {e}")
     return 0
 
 def on_init():
@@ -32,12 +31,10 @@ def on_init():
         with ThreadPoolExecutor() as executor:
             log_it("i", "Submitting HTTP server to ThreadPool")
             executor.submit(http_server)
-            log_it("i", "Submitting blocks caching to ThreadPool")
-            executor.submit(run_scheduler, cache_blocks_data, Config.CACHE_BLOCKS_INTERVAL, every_min=True)
-            log_it("i", "Submitting rewards caching to ThreadPool")
-            executor.submit(run_scheduler, cache_rewards_data, Config.CACHE_REWARDS_INTERVAL, every_min=True)
+            log_it("i", "Submitting scheduled tasks to ThreadPool")
+            executor.submit(setup_schedules)
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        log_it("e", f"Error on on_init: {e}")
 
 def deinit():
     return 0
