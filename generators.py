@@ -129,3 +129,7 @@ def generate_data(template_name, return_as_json=False):
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
+        if return_as_json:
+            return json.dumps({"message": "Error generating data"}).encode("utf-8")
+        else:
+            return f"<h1>Error: {e}</h1>"
