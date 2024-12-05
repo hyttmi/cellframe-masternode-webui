@@ -74,19 +74,19 @@
                 </tr>
                 <tr>
                     <td><strong>Node version:</strong></td>
-                    <td>{{ general_info.ode_version }}</td>
+                    <td>{{ general_info.node_version }}</td>
                 </tr>
                 <tr>
                     <td><strong>Latest node version:</strong></td>
-                    <td>{{ general_info.atest_node_version }}</td>
+                    <td>{{ general_info.latest_node_version }}</td>
                 </tr>
                 <tr>
                     <td><strong>CPU utilization:</strong></td>
-                    <td>{{ general_info.node_cpu_utilization }}</td>
+                    <td>{{ general_info.node_cpu_usage }}</td>
                 </tr>
                 <tr>
                     <td><strong>Memory utilization:</strong></td>
-                    <td>{{ general_info.node_memory_utilization }}</td>
+                    <td>{{ general_info.node_memory_usage }}</td>
                 </tr>
             </table>
         </div>
@@ -94,7 +94,7 @@
         {% if network_info and network_info.items() %}
             {% for network_name, network in network_info.items() %}
             <div class="network">
-                <h3>{{ network.network_name }}</h3>
+                <h3>{{ network_name }}</h3>
                 <table>
                     <tr>
                         <td><strong>State:</strong></td>
