@@ -6,8 +6,6 @@ try:
     from pycfhelpers.node.net import CFNet
     from datetime import datetime
     from collections import OrderedDict
-    from wallets import get_reward_wallet_tokens
-    from concurrent.futures import ProcessPoolExecutor
 except ImportError as e:
     log_it("e", f"ImportError: {e}")
 
@@ -112,7 +110,7 @@ def get_node_data(network):
                 elif "effective_value:" in line:
                     node_data['effective_value'] = float(line.split(":")[1].strip())
                 elif "related_weight:" in line:
-                    node_data['related_weight'] = round(float(line.split(":")[1].strip()),2)
+                    node_data['related_weight'] = round(float(line.split(":")[1].strip()), 2)
                 elif "tx_hash:" in line:
                     node_data['tx_hash'] = line.split(":")[1].strip()
                 elif "node_addr:" in line:

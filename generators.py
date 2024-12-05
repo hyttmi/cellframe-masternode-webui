@@ -17,11 +17,10 @@ try:
         get_network_config,
         get_network_status,
         get_node_dump,
-        get_reward_wallet_tokens,
         get_token_price,
         get_rewards,
     )
-    
+    from wallets import get_reward_wallet_tokens    
     from logger import log_it
     from config import Config
     from concurrent.futures import ThreadPoolExecutor
