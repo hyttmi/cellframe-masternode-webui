@@ -158,7 +158,13 @@
                         <h5>NODE DUMP:</h5>
                         <pre>{{ network.general_node_info }}</pre>
                         <h5>NODE INFORMATION:</h5>
-                        <pre>PKEY HASH: {{ network.node_data.pkey_hash }}<br>TRANSACTION HASH: {{ network.node_data_tx_hash }}<br>SOVEREIGN ADDRESS: {{ network.node_data.sovereign_addr}}<br>SOVEREIGN TAX: {{ network.node_data.sovereign_tax }}</pre>
+                        <pre>
+                        PKEY HASH: {{ network.node_data.pkey_hash }}
+                        TRANSACTION HASH: {{ network.node_data_tx_hash }}
+                        SOVEREIGN ADDRESS: {{ network.node_data.sovereign_addr}}
+                        SOVEREIGN TAX: {{ network.node_data.sovereign_tax }}
+                        ACTIVE: {{ network.node_data.active }}
+                        </pre>
                     </div>
                 </div>
             </div>
