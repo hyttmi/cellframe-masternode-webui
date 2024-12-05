@@ -83,9 +83,13 @@ def web_request_handler(headers, bypass_auth=False):
         return CFSimpleHTTPResponse(body=b"<h1>Internal Server Error</h1>", code=200)
 
 def json_request_handler(api_token):
-    if not api_token or api_token != Config.API_TOKEN:
+    log_it("i", "Processing JSON request...")
+    if api_token != Config.API_TOKEN:
+        log_it("e", "Invalid API token!")
         response = CFSimpleHTTPResponse(body=b"Unauthorized", code=200)
-        response.headers = {
-        "Content-Type": "application/json"
-        }
+        response.headers = {"Content-Type": "application/json"}
         return response
+    log_it("i", "Authorized JSON request.")
+    response = CFSimpleHTTPResponse(body=b'{"message": "Test"}', code=200)
+    response.headers = {"Content-Type": "application/json"}
+    return response
