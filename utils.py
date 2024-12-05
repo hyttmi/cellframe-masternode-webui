@@ -1,5 +1,5 @@
 try:
-    import socket, requests, re, time, psutil, json, os, time, cachetools.func
+    import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect
     from packaging.version import Version, parse
     from command_runner import command_runner
     from logger import log_it
@@ -22,7 +22,8 @@ def check_plugin_update():
         log_it("i", f"Latest plugin version: {latest_version}")
         return curr_version < latest_version, str(curr_version), str(latest_version)
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
         return None
     
 def cli_command(command, timeout=120):
@@ -34,7 +35,8 @@ def cli_command(command, timeout=120):
         log_it("e", f"{command} failed to run succesfully, return code was {exit_code}")
         return None
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
         return None
 
 def get_node_pid():
@@ -46,13 +48,16 @@ def get_node_pid():
                 return pid
         return None
     except Exception as e:
-        log_it(f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
         return None
 
 def get_system_hostname():
     try:
         return socket.gethostname()
-    except:
+    except Exception as e:
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
         return None
 
 def format_uptime(seconds):
@@ -64,7 +69,8 @@ def format_uptime(seconds):
             return f"{int(days)}d {int(hours)}h {int(minutes)}m {int(seconds)}s"
         return f"{int(hours)}h {int(minutes)}m {int(seconds)}s"
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
         return None
 
 def get_sys_stats():
@@ -91,7 +97,8 @@ def get_sys_stats():
             return sys_stats
         return None
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
         return None
 
 @cachetools.func.ttl_cache(maxsize=10)
@@ -105,7 +112,8 @@ def get_installed_node_version():
             return current_version
         return None
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
         return None
 
 @cachetools.func.ttl_cache(maxsize=10, ttl=7200)
@@ -123,7 +131,8 @@ def get_latest_node_version():
         log_it("e", f"Error fetching latest node version from {response.url}, status code: {response.status_code}")
         return None
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
         return None
     
 

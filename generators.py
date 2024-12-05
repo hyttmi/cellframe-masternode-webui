@@ -25,6 +25,7 @@ try:
     from logger import log_it
     from config import Config
     from concurrent.futures import ThreadPoolExecutor
+    import inspect
     
 except ImportError as e:
     log_it("e", f"ImportError: {e}")
@@ -49,7 +50,8 @@ def generate_general_info(format_time=True):
         }
         return info
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
         return None
 
 def generate_network_info():
@@ -103,7 +105,8 @@ def generate_network_info():
         else:
             return None
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
         return None
     
 def generate_html(template_name):
@@ -118,4 +121,5 @@ def generate_html(template_name):
             template = env.get_template(template_path)
             return template.render(general_info=general_info, network_info=network_info)
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
