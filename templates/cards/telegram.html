@@ -1,24 +1,24 @@
 <b>Node System Info</b>
 <code>
 CPU utilization:     {{ general_info.node_cpu_utilization }}
-Memory utilization:  {{ node_memory_utilization }}
-Uptime:              {{ node_uptime }}
-System uptime:       {{ system_uptime }}
-Node version:        {{ node_version }}
-Latest node version: {{ latest_node_version }}
+Memory utilization:  {{ general_info.node_memory_utilization }}
+Uptime:              {{ general_info.node_uptime }}
+System uptime:       {{ general_info.system_uptime }}
+Node version:        {{ general_info.node_version }}
+Latest node version: {{ general_info.latest_node_version }}
 </code>
-{% if networks and networks.items() %}
+{% if network_info and network_info.items() %}
 {% for network_name, network in networks.items() %}
 <b>{{ network_name }} Node Info</b>
 <code>
-Network state:          {{ network.state }}
-Target state:           {{ network.target_state }}
-Node address:           {{ network.address }}
-Signed blocks today:    {{ network.signed_blocks_today }}
-Autocollect status:     {{ network.autocollect_status }}
+Network state:          {{ network_info.state }}
+Target state:           {{ network_info.target_state }}
+Node address:           {{ network_info.address }}
+Signed blocks today:    {{ network_info.signed_blocks_today }}
+Autocollect status:     {{ network_info.autocollect_status }}
 </code>
 <b>Reward Wallet Info</b>
-{% if network.fee_wallet_tokens is not none %}{% for token, balance in network.fee_wallet_tokens.items() %}
+{% if network_info.fee_wallet_tokens is not none %}{% for token, balance in network_info.fee_wallet_tokens.items() %}
 <code>
 Token:   {{ token }}
 Balance: {{ balance }}

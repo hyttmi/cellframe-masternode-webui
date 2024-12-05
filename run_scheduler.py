@@ -3,6 +3,8 @@ try:
     from logger import log_it
     import time
     from cacher import cache_blocks_data, cache_rewards_data
+    from telegram import send_telegram_message
+    from generators import generate_html
     from config import Config
     from concurrent.futures import ThreadPoolExecutor
 except Exception as e:
@@ -13,6 +15,7 @@ def run_scheduler(func, scheduled_time, every_min=False, run_on_startup=False):
     try:
         scheduler = schedule.Scheduler()
         if run_on_startup:
+            log_it("i", f"Running {func} once on startup.")
             func()
         if every_min:
             scheduler.every(scheduled_time).minutes.do(func)
@@ -31,8 +34,14 @@ def setup_schedules():
     try:
         with ThreadPoolExecutor() as executor:
             futures = {
-                'blocks_caching': executor.submit(lambda: run_scheduler(cache_blocks_data, Config.CACHE_BLOCKS_INTERVAL, every_min=True, run_on_startup=True)),
-                'rewards_caching': executor.submit(lambda: run_scheduler(cache_rewards_data, Config.CACHE_REWARDS_INTERVAL, every_min=True, run_on_startup=True))
+                'blocks_caching_schedule': 
+                    executor.submit(lambda: run_scheduler(cache_blocks_data, Config.CACHE_BLOCKS_INTERVAL, every_min=True, run_on_startup=True)),
+                'rewards_caching_schedule': 
+                    executor.submit(lambda: run_scheduler(cache_rewards_data, Config.CACHE_REWARDS_INTERVAL, every_min=True, run_on_startup=True)),
+                'send_telegram_message_notification': 
+                    executor.submit(lambda: run_scheduler(lambda: send_telegram_message(f"Telegram sending scheduled at {Config.TELEGRAM_STATS_TIME}"), Config.TELEGRAM_STATS_TIME, every_min=False, run_on_startup=True)),
+                'send_telegram_message_schedule': 
+                    executor.submit(lambda: run_scheduler(lambda: send_telegram_message(generate_html("telegram.html")), Config.TELEGRAM_STATS_TIME, every_min=False, run_on_startup=False))
             }
             for name, future in futures.items():
                 log_it("i", f"{name} submitted to ThreadPool")

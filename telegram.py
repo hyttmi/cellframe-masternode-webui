@@ -1,6 +1,9 @@
-import requests
-from utils import log_it
-from config import Config
+try:
+    import requests
+    from utils import log_it
+    from config import Config
+except ImportError as e:
+    log_it("e", f"ImportError: {e}")
 
 def send_telegram_message(message):
     missing_configs = []
@@ -22,11 +25,11 @@ def send_telegram_message(message):
             'text': message,
             'parse_mode': "HTML"
         }
-        res = requests.post(url, params=payload)
+        response = requests.post(url, params=payload)
 
-        if res.status_code == 200:
+        if response.status_code == 200:
             log_it("i", "Telegram message sent!")
         else:
-            log_it("i", f"Sending Telegram message failed! Status code: {res.status_code}, Response: {res.text}")
+            log_it("i", f"Sending Telegram message failed! Status code: {response.status_code}, Response: {response.text}")
     except Exception as e:
         log_it("e", f"Error: {e}")
