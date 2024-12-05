@@ -155,8 +155,10 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        <h4>NODE DUMP:</h4>
                         <pre>{{ network.general_node_info }}</pre>
-                        <pre>{{ network.node_data }}</pre>
+                        <h4>NODE INFORMATION:</h4>
+                        <pre>PKEY HASH: {{ network.node_data.pkey_hash }}</pre>
                     </div>
                 </div>
             </div>
@@ -310,8 +312,22 @@
             </div>
             {% endif %}
 
+            {% if network.node_data.effective_value is not none %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_effective_value_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">Node effective value</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.effective_value }}</h6>
+                    </div>
+                    <i class="fa-solid fa-dollar-sign icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
             {% if network.node_data.related_weight is not none %}
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_stake_value_{{ network_name }}">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_related_weight_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">Node related weight</h5><button type="button" class="btn-close" aria-label="Close"></button>
