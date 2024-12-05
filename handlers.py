@@ -18,6 +18,7 @@ def request_handler(request):
             log_it("i", "Auth bypass set, HTTP authentication disabled!")
             return web_request_handler(headers, bypass_auth=True)
         if query == "as_json" and api_token:
+            logit("i", f"Got a JSON request...")
             return json_request_handler(api_token)
         return web_request_handler(headers, bypass_auth=False)
     log_it("i", f"Unsupported method: {request.method}")
