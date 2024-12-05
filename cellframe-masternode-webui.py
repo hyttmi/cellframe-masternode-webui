@@ -5,7 +5,7 @@ try:
     from handlers import request_handler
     from config import Config
     from cacher import cache_blocks_data, cache_rewards_data
-    from scheduler import run_scheduler
+    from run_scheduler import run_scheduler
     import threading
 except ImportError as e:
     log_it("e", f"ImportError: {e}")

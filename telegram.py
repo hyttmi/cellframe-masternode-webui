@@ -1,32 +1,32 @@
 import requests
-from utils import logError, logNotice
+from utils import log_it
 from config import Config
 
-def sendTelegram(text):
+def send_telegram_message(message):
     missing_configs = []
 
-    if Config.TELEGRAM_API_TOKEN is None:
+    if not Config.TELEGRAM_API_TOKEN:
         missing_configs.append("telegram_api_key")
-    if Config.TELEGRAM_CHAT_ID is None:
+    if not Config.TELEGRAM_CHAT_ID:
         missing_configs.append("telegram_chat_id")
 
     if missing_configs:
         for config in missing_configs:
-            logError(f"{config} is not set!")
+            log_it("e", f"{config} is not set!")
         return
             
     try:
         url = f"https://api.telegram.org/bot{Config.TELEGRAM_API_TOKEN}/sendMessage"
         payload = {
             'chat_id': Config.TELEGRAM_CHAT_ID,
-            'text': text,
+            'text': message,
             'parse_mode': "HTML"
         }
         res = requests.post(url, params=payload)
 
         if res.status_code == 200:
-            logNotice("Telegram message sent!")
+            log_it("i", "Telegram message sent!")
         else:
-            logError(f"Sending Telegram message failed! Status code: {res.status_code}, Response: {res.text}")
+            log_it("i", f"Sending Telegram message failed! Status code: {res.status_code}, Response: {res.text}")
     except Exception as e:
-        logError(f"Error: {e}")
+        log_it("e", f"Error: {e}")
