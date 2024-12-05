@@ -91,6 +91,6 @@ def json_request_handler(api_token):
         return response
     log_it("i", "Authorized JSON request.")
     response_body = generate_data(None, return_as_json=True).encode("utf-8")
-    response = CFSimpleHTTPResponse(body=b, code=200)
+    response = CFSimpleHTTPResponse(body=response_body, code=200)
     response.headers = {"Content-Type": "application/json"}
     return response
