@@ -1,8 +1,7 @@
 from collections import OrderedDict
 from datetime import datetime
-from logger import log_it
+from logger import log_it, get_current_script_directory
 from pycfhelpers.node.net import CFNet
-from sysutils import get_current_script_directory
 from utils import cli_command
 import cachetools.func, re, requests, os, json
 

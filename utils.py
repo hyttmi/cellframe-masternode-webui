@@ -1,10 +1,7 @@
 from command_runner import command_runner
-from logger import log_it
+from logger import log_it, get_current_script_directory
 from packaging.version import Version, parse
 import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect
-
-def get_current_script_directory():
-    return os.path.dirname(os.path.abspath(__file__))
 
 def check_plugin_update():
     try:
