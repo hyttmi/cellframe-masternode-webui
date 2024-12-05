@@ -8,11 +8,12 @@
   - Scheduler improved and separated from `on_init()` function.
   - Added much more logging and improved debug logging.
   - Separate handlers for web and JSON content.
+- Javascript is much better now on web template.
 
 ### Removed
 - `header_text`- It can be edited directly from templates.
 - `accent_color`- It can be edited directly via CSS file.
-- `json_exclude`- Keys can be removed while parsing the data.
+- `json_exclude`- Keys can be removed while parsing the data from now on.
 
 ## [2.100] - 2024-11-24
 
