@@ -4,6 +4,7 @@ try:
     import time
     from cacher import cache_blocks_data, cache_rewards_data
     from telegram import send_telegram_message
+    from emailer import send_email
     from generators import generate_html
     from config import Config
     from concurrent.futures import ThreadPoolExecutor
@@ -39,13 +40,15 @@ def setup_schedules():
                 'rewards_caching_schedule': 
                     executor.submit(lambda: run_scheduler(cache_rewards_data, Config.CACHE_REWARDS_INTERVAL, every_min=True, run_on_startup=True)),
                 'send_telegram_message_notification': 
-                    executor.submit(lambda: run_scheduler(lambda: send_telegram_message(f"Telegram sending scheduled at {Config.TELEGRAM_STATS_TIME}"), Config.TELEGRAM_STATS_TIME, every_min=False, run_on_startup=True)),
+                    executor.submit(lambda: send_telegram_message(f"Telegram sending scheduled at {Config.TELEGRAM_STATS_TIME}")),
                 'send_telegram_message_schedule': 
-                    executor.submit(lambda: run_scheduler(lambda: send_telegram_message(generate_html("telegram.html")), Config.TELEGRAM_STATS_TIME, every_min=False, run_on_startup=False))
+                    executor.submit(lambda: run_scheduler(lambda: send_telegram_message(generate_html("telegram.html")), Config.TELEGRAM_STATS_TIME, every_min=False, run_on_startup=False)),
+                'send_email_message_notification':
+                    executor.submit(lambda: send_email(f"Email sending scheduled at {Config.EMAIL_STATS_TIME}"))
             }
             for name, future in futures.items():
                 log_it("i", f"{name} submitted to ThreadPool")
-
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
+
