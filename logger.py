@@ -3,7 +3,7 @@ import os
 import threading
 import inspect
 from config import Config
-from sysutils import get_current_script_directory
+from utils import get_current_script_directory
 
 logLock = threading.Lock()
 
