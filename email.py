@@ -1,10 +1,17 @@
-from utils import logError, logNotice
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from config import Config
+try:
+    from logger import log_it
+    import smtplib, inspect
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
+    from config import Config
+except ImportError as e:
+    log_it("e", f"ImportError: {e}")
 
-def sendMail(msg):
+def send_email(msg):
+    email_stats_enabled = Config.EMAIL_STATS_ENABLED
+    if not email_stats_enabled:
+        log_it("e", "Email stats not enabled! Can't send email!")
+        return
     smtp_server = Config.SMTP_SERVER
     smtp_port = Config.SMTP_PORT
     use_ssl = Config.EMAIL_USE_SSL
@@ -15,6 +22,7 @@ def sendMail(msg):
     email_subject = Config.EMAIL_SUBJECT
 
     missing_configs = []
+
     if not smtp_user:
         missing_configs.append("SMTP_USER")
     if not smtp_password:
@@ -24,11 +32,11 @@ def sendMail(msg):
 
     if missing_configs:
         for config in missing_configs:
-            logError(f"{config} is not set!")
+            log_it("e", f"{config} is not set!")
         return
 
     if not use_ssl and not use_tls:
-        logError("SSL or TLS must be enabled for email sending!")
+        log_it("e", "SSL or TLS must be enabled for email sending!")
         return
 
     email_msg = MIMEMultipart("alternative")
@@ -51,6 +59,8 @@ def sendMail(msg):
         server.login(smtp_user, smtp_password)
         server.sendmail(smtp_user, email_recipients, email_msg.as_string())
         server.close()
-        logNotice("Email sent!")
+        log_it("i", "Email sent!")
     except Exception as e:
-        logError(f"Error sending email: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
+        log_it("e", f"Error sending email: {e}")
