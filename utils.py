@@ -1,10 +1,7 @@
-try:
-    from command_runner import command_runner
-    from logger import log_it
-    from packaging.version import Version, parse
-    import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect
-except ImportError as e:
-    log_it("e", f"ImportError: {e}")
+from command_runner import command_runner
+from logger import log_it
+from packaging.version import Version, parse
+import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect
 
 def get_current_script_directory():
     return os.path.dirname(os.path.abspath(__file__))

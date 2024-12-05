@@ -1,11 +1,8 @@
-try:
-    from config import Config
-    from email.mime.multipart import MIMEMultipart
-    from email.mime.text import MIMEText
-    from logger import log_it
-    import smtplib, inspect
-except ImportError as e:
-    log_it("e", f"ImportError: {e}")
+from config import Config
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from logger import log_it
+import smtplib, inspect
 
 def send_email(msg):
     email_stats_enabled = Config.EMAIL_STATS_ENABLED

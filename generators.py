@@ -1,33 +1,29 @@
-try:
-    from utils import (
-        check_plugin_update,
-        format_uptime,
-        get_installed_node_version,
-        get_latest_node_version,
-        get_sys_stats,
-        get_system_hostname
-    )
+from utils import (
+    check_plugin_update,
+    format_uptime,
+    get_installed_node_version,
+    get_latest_node_version,
+    get_sys_stats,
+    get_system_hostname
+)
     
-    from networkutils import (
-        get_active_networks,
-        get_autocollect_rewards,
-        get_autocollect_status,
-        get_blocks,
-        get_network_config,
-        get_network_status,
-        get_node_data,
-        get_node_dump,
-        get_rewards,
-        get_token_price,
-    )
-    from wallets import get_reward_wallet_tokens    
-    from logger import log_it
-    from config import Config
-    from concurrent.futures import ThreadPoolExecutor
-    import inspect, json
-    
-except ImportError as e:
-    log_it("e", f"ImportError: {e}")
+from networkutils import (
+    get_active_networks,
+    get_autocollect_rewards,
+    get_autocollect_status,
+    get_blocks,
+    get_network_config,
+    get_network_status,
+    get_node_data,
+    get_node_dump,
+    get_rewards,
+    get_token_price,
+)
+from wallets import get_reward_wallet_tokens    
+from logger import log_it
+from config import Config
+from concurrent.futures import ThreadPoolExecutor
+import inspect, json
         
 def generate_general_info(format_time=True):
     try:

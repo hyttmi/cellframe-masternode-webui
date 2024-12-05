@@ -1,13 +1,10 @@
-try:
-    from concurrent.futures import ThreadPoolExecutor
-    from config import Config
-    from handlers import request_handler
-    from logger import log_it
-    from pycfhelpers.node.http.simple import CFSimpleHTTPServer, CFSimpleHTTPRequestHandler
-    from run_scheduler import setup_schedules
-    import threading
-except ImportError as e:
-    log_it("e", f"ImportError: {e}")
+from concurrent.futures import ThreadPoolExecutor
+from config import Config
+from handlers import request_handler
+from logger import log_it
+from pycfhelpers.node.http.simple import CFSimpleHTTPServer, CFSimpleHTTPRequestHandler
+from run_scheduler import setup_schedules
+import threading
 
 def http_server():
     try:
