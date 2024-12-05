@@ -3,6 +3,10 @@
 
 ## [3.00] - XXXX-XX-XX
 
+### Added
+- New cards displaying node related weight, node effective stake value
+- Some more information behind network information button (private key hash, transaction hash, sovereign tax, )
+
 ### Changed
 - Backend changed massively
   - Scheduler improved and separated from `on_init()` function.

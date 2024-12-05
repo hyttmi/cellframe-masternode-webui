@@ -1,9 +1,9 @@
 try:
-    from logger import log_it
-    import smtplib, inspect
+    from config import Config
     from email.mime.multipart import MIMEMultipart
     from email.mime.text import MIMEText
-    from config import Config
+    from logger import log_it
+    import smtplib, inspect
 except ImportError as e:
     log_it("e", f"ImportError: {e}")
 

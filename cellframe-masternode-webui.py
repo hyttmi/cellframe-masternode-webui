@@ -1,9 +1,9 @@
 try:
-    from pycfhelpers.node.http.simple import CFSimpleHTTPServer, CFSimpleHTTPRequestHandler
     from concurrent.futures import ThreadPoolExecutor
-    from logger import log_it
-    from handlers import request_handler
     from config import Config
+    from handlers import request_handler
+    from logger import log_it
+    from pycfhelpers.node.http.simple import CFSimpleHTTPServer, CFSimpleHTTPRequestHandler
     from run_scheduler import setup_schedules
     import threading
 except ImportError as e:

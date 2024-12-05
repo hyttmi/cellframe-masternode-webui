@@ -1,11 +1,11 @@
 try:
-    import cachetools.func, re, requests, os, json
-    from logger import log_it
-    from utils import cli_command
-    from sysutils import get_current_script_directory
-    from pycfhelpers.node.net import CFNet
-    from datetime import datetime
     from collections import OrderedDict
+    from datetime import datetime
+    from logger import log_it
+    from pycfhelpers.node.net import CFNet
+    from sysutils import get_current_script_directory
+    from utils import cli_command
+    import cachetools.func, re, requests, os, json
 except ImportError as e:
     log_it("e", f"ImportError: {e}")
 

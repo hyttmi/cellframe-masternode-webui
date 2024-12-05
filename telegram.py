@@ -1,8 +1,8 @@
 try:
-    import requests
-    from utils import log_it
     from config import Config
+    from utils import log_it
     import inspect
+    import requests
 except ImportError as e:
     log_it("e", f"ImportError: {e}")
 

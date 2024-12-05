@@ -1,12 +1,12 @@
 try:
-    import schedule, inspect, time
-    from logger import log_it
     from cacher import cache_blocks_data, cache_rewards_data
-    from telegram import send_telegram_message
+    from concurrent.futures import ThreadPoolExecutor
+    from config import Config
     from emailer import send_email
     from generators import generate_data
-    from config import Config
-    from concurrent.futures import ThreadPoolExecutor
+    from logger import log_it
+    from telegram import send_telegram_message
+    import schedule, inspect, time
 except Exception as e:
     log_it("e", f"ImportError: {e}")
 

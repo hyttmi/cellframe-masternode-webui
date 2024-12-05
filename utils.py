@@ -1,8 +1,8 @@
 try:
-    import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect
-    from packaging.version import Version, parse
     from command_runner import command_runner
     from logger import log_it
+    from packaging.version import Version, parse
+    import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect
 except ImportError as e:
     log_it("e", f"ImportError: {e}")
 

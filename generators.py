@@ -13,12 +13,12 @@ try:
         get_autocollect_rewards,
         get_autocollect_status,
         get_blocks,
-        get_node_data,
         get_network_config,
         get_network_status,
+        get_node_data,
         get_node_dump,
-        get_token_price,
         get_rewards,
+        get_token_price,
     )
     from wallets import get_reward_wallet_tokens    
     from logger import log_it
