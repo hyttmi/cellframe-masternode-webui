@@ -42,11 +42,11 @@ def setup_schedules():
                 'send_telegram_message_notification': 
                     executor.submit(lambda: send_telegram_message(f"Telegram sending scheduled at {Config.TELEGRAM_STATS_TIME}")),
                 'send_telegram_message_schedule': 
-                    executor.submit(lambda: run_scheduler(lambda: send_telegram_message(generate_data("telegram.html")), Config.TELEGRAM_STATS_TIME, every_min=False, run_on_startup=False)),
+                    executor.submit(lambda: run_scheduler(lambda: send_telegram_message(generate_data("telegram.html", return_as_json=False)), Config.TELEGRAM_STATS_TIME, every_min=False, run_on_startup=False)),
                 'send_email_message_notification':
                     executor.submit(lambda: send_email(f"Email sending scheduled at {Config.EMAIL_STATS_TIME}")),
                 'send_email_message_schedule':
-                    executor.submit(lambda: run_scheduler(lambda: send_email(generate_data("email.html")), Config.EMAIL_STATS_TIME, every_min=False, run_on_startup=False)),
+                    executor.submit(lambda: run_scheduler(lambda: send_email(generate_data("email.html", return_as_json=False)), Config.EMAIL_STATS_TIME, every_min=False, run_on_startup=False)),
             }
             for name, future in futures.items():
                 log_it("d", f"{name} submitted to ThreadPool")

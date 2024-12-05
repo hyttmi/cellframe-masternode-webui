@@ -116,7 +116,7 @@ def get_node_data(network):
                 elif "tx_hash:" in line:
                     node_data['tx_hash'] = line.split(":")[1].strip()
                 elif "node_addr:" in line:
-                    node_data['node_addr'] = line.split(":")[1].strip()
+                    node_data['node_addr'] = line.split(":", 1)[1].strip()
                 elif "sovereign_addr:" in line:
                     node_data['sovereign_addr'] = line.split(":")[1].strip()
                 elif "sovereign_tax:" in line:
