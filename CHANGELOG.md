@@ -12,7 +12,7 @@
 ### Removed
 - `header_text`- It can be edited directly from templates.
 - `accent_color`- It can be edited directly via CSS file.
-- 
+- `json_exclude`- Keys can be removed while parsing the data.
 
 ## [2.100] - 2024-11-24
 

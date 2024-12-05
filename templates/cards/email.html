@@ -92,7 +92,7 @@
         </div>
 
         {% if network_info and network_info.items() %}
-            {% for network_name, network in networks.items() %}
+            {% for network_name, network in network_info.items() %}
             <div class="network">
                 <h3>{{ network.network_name }}</h3>
                 <table>

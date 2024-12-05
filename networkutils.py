@@ -84,7 +84,7 @@ def get_token_price(network):
         return None
         
 @cachetools.func.ttl_cache(maxsize=10)
-def get_current_stake_value(network):
+def get_current_stake_value_and_weight(network):
     try:
         status = get_network_status(network)
         if status:
