@@ -11,14 +11,14 @@ Latest node version: {{ general_info.latest_node_version }}
 {% for network_name, network in network_info.items() %}
 <b>{{ network_name }} Node Info</b>
 <code>
-Network state:          {{ network_info.state }}
-Target state:           {{ network_info.target_state }}
-Node address:           {{ network_info.address }}
-Signed blocks today:    {{ network_info.signed_blocks_today }}
-Autocollect status:     {{ network_info.autocollect_status }}
+Network state:          {{ network.state }}
+Target state:           {{ network.target_state }}
+Node address:           {{ network.address }}
+Signed blocks today:    {{ network.signed_blocks_today }}
+Autocollect status:     {{ network.autocollect_status }}
 </code>
 <b>Reward Wallet Info</b>
-{% if network_info.fee_wallet_tokens is not none %}{% for token, balance in network_info.fee_wallet_tokens.items() %}
+{% if network.fee_wallet_tokens is not none %}{% for token, balance in network.fee_wallet_tokens.items() %}
 <code>
 Token:   {{ token }}
 Balance: {{ balance }}
