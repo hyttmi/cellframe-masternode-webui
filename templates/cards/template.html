@@ -155,10 +155,15 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <h6>NODE DUMP:</h6>
+                        <h5>NODE DUMP:</h5>
                         <pre>{{ network.general_node_info }}</pre>
-                        <h6>NODE INFORMATION:</h6>
-                        <pre>PKEY HASH: {{ network.node_data.pkey_hash }}</pre>
+                        <h5>NODE INFORMATION:</h5>
+                        <pre>
+                            PKEY HASH: {{ network.node_data.pkey_hash }}
+                            TRANSACTION HASH: {{ network.node_data.tx_hash }}
+                            SOVEREIGN ADDRESS: {{ network.node_data.sovereign_addr}}
+                            SOVEREIGN TAX: {{ network.node_data.sovereign.tax }}
+                        </pre>
                     </div>
                 </div>
             </div>
