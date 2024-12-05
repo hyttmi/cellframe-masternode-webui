@@ -1,11 +1,11 @@
-from command_runner import command_runner
 from logger import log_it
 from packaging.version import Version, parse
+from sysutils import cli_command, get_current_script_directory
 import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect
 
 def check_plugin_update():
     try:
-        manifest_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "manifest.json")
+        manifest_path = os.path.join(get_current_script_directory(), "manifest.json")
         with open(manifest_path) as manifest:
             data = json.load(manifest)
             curr_version = Version(data["version"])
@@ -15,19 +15,6 @@ def check_plugin_update():
         latest_version = Version(response["version"])
         log_it("i", f"Latest plugin version: {latest_version}")
         return curr_version < latest_version, str(curr_version), str(latest_version)
-    except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
-        return None
-    
-def cli_command(command, timeout=120):
-    try:
-        exit_code, output = command_runner(f"/opt/cellframe-node/bin/cellframe-node-cli {command}", timeout=timeout)
-        if exit_code == 0:
-            log_it("i", f"{command} executed succesfully...")
-            return output.strip()
-        log_it("e", f"{command} failed to run succesfully, return code was {exit_code}")
-        return None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")

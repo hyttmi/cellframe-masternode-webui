@@ -1,5 +1,5 @@
 from logger import log_it
-from utils import cli_command
+from sysutils import cli_command
 import re
 
 def get_reward_wallet_tokens(wallet):
