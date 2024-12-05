@@ -6,10 +6,7 @@ from config import Config
 
 logLock = threading.Lock()
 
-def get_current_script_directory():
-    return os.path.dirname(os.path.abspath(__file__))
-
-log_file = os.path.join(get_current_script_directory(), "webui.log")
+log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "webui.log")
 logging.basicConfig(
     filename=log_file,
     level=logging.INFO,

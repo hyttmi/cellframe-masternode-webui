@@ -1,11 +1,11 @@
 from command_runner import command_runner
-from logger import log_it, get_current_script_directory
+from logger import log_it
 from packaging.version import Version, parse
 import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect
 
 def check_plugin_update():
     try:
-        manifest_path = os.path.join(get_current_script_directory(), "manifest.json")
+        manifest_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "manifest.json")
         with open(manifest_path) as manifest:
             data = json.load(manifest)
             curr_version = Version(data["version"])

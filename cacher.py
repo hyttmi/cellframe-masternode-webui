@@ -1,7 +1,7 @@
 from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
-from logger import log_it, get_current_script_directory
+from logger import log_it
 from networkutils import get_active_networks, get_network_config
 from utils import cli_command
 import re, time, json, os
@@ -49,7 +49,7 @@ def cache_blocks_data():
                    sorted_blocks = OrderedDict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
                    block_data["all_signed_blocks"] = sorted_blocks
                    log_it("d", block_data)
-                   cache_file_path = os.path.join(get_current_script_directory(), f".{network}_blocks_cache.json")
+                   cache_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), f".{network}_blocks_cache.json")
                    with open(cache_file_path, "w") as f:
                        json.dump(block_data, f, indent=4)
                    elapsed_time = time.time() - start_time
@@ -98,7 +98,7 @@ def cache_rewards_data():
                         continue
                 if reward and is_receiving_reward:
                     rewards.append(reward)
-                cache_file_path = os.path.join(get_current_script_directory(), f".{network}_rewards_cache.json")
+                cache_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), f".{network}_rewards_cache.json")
                 log_it("d", rewards)
                 with open(cache_file_path, "w") as f:
                     json.dump(rewards, f, indent=4)

@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from datetime import datetime
-from logger import log_it, get_current_script_directory
+from logger import log_it
 from pycfhelpers.node.net import CFNet
 from utils import cli_command
 import cachetools.func, re, requests, os, json
@@ -188,7 +188,7 @@ def get_is_node_synced(network):
 def get_rewards(network, total_sum=False):
     try:
         rewards = {}
-        cache_file_path = os.path.join(get_current_script_directory(), f".{network}_rewards_cache.json")
+        cache_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), f".{network}_rewards_cache.json")
         with open(cache_file_path) as f:
             data = json.load(f)
             for reward in data:
@@ -214,7 +214,7 @@ def get_rewards(network, total_sum=False):
         return None
 
 def get_blocks(network, block_type="count", today=False):
-    cache_file_path = os.path.join(get_current_script_directory(), f".{network}_blocks_cache.json")
+    cache_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), f".{network}_blocks_cache.json")
     if not os.path.exists(cache_file_path):
         log_it("e", f"Cache file for network {network} does not exist.")
         return None
