@@ -40,7 +40,7 @@
         </div>
         <div class="row is_sortable">
 
-        {% if general_info.hostname%}
+        {% if general_info.hostname %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="hostname">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -50,6 +50,20 @@
                         <h6 class="card-subtitle mb-2 text-body-secondary text-body-secondary-color">{{ general_info.hostname }}</h6>
                     </div>
                         <i class="fa-solid fa-server icon-container"></i>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if general_info.external_ip %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="external_ip">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">external ip</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary text-body-secondary-color">{{ general_info.external_ip }}</h6>
+                    </div>
+                        <i class="fa-solid network-wired icon-container"></i>
                 </div>
             </div>
         {% endif %}

@@ -4,7 +4,8 @@ from utils import (
     get_installed_node_version,
     get_latest_node_version,
     get_sys_stats,
-    get_system_hostname
+    get_system_hostname,
+    get_external_ip
 )
     
 from networkutils import (
@@ -40,7 +41,8 @@ def generate_general_info(format_time=True):
                 'node_version': get_installed_node_version(),
                 'latest_node_version': get_latest_node_version(),
                 'node_cpu_usage': sys_stats['node_cpu_usage'],
-                'node_memory_usage': sys_stats['node_memory_usage_mb']       
+                'node_memory_usage': sys_stats['node_memory_usage_mb'],
+                'external_ip': get_external_ip
         }
         return info
     except Exception as e:
