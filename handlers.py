@@ -86,10 +86,11 @@ def json_request_handler(api_token):
     log_it("i", "Processing JSON request...")
     if api_token != Config.API_TOKEN:
         log_it("e", "Invalid API token!")
-        response = CFSimpleHTTPResponse(body=b"Unauthorized", code=200)
+        response = CFSimpleHTTPResponse(body=b'{"message": "Unauthorized"}', code=200)
         response.headers = {"Content-Type": "application/json"}
         return response
     log_it("i", "Authorized JSON request.")
-    response = CFSimpleHTTPResponse(body=b'{"message": "Test"}', code=200)
+    response_body = generate_data(None, return_as_json=True).encode("utf-8")
+    response = CFSimpleHTTPResponse(body=b, code=200)
     response.headers = {"Content-Type": "application/json"}
     return response

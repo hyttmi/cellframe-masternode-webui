@@ -24,7 +24,7 @@ try:
     from logger import log_it
     from config import Config
     from concurrent.futures import ThreadPoolExecutor
-    import inspect
+    import inspect, json
     
 except ImportError as e:
     log_it("e", f"ImportError: {e}")
@@ -113,10 +113,10 @@ def generate_network_info():
     
 def generate_data(template_name, return_as_json=False):
     try:
-        if not return_as_json:
+        if return_as_json:
             general_info = generate_general_info(format_time=False)
-        else:
-            general_info = generate_general_info(format_time=True)
+            return json.dumps({"general_info": general_info, "network_info": network_info})
+        general_info = generate_general_info(format_time=True)
         network_info = generate_network_info()
         if generate_general_info:
             template = Config.TEMPLATE
