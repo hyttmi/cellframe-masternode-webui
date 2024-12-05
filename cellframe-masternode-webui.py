@@ -12,7 +12,7 @@ except ImportError as e:
 def http_server():
     try:
         handler = CFSimpleHTTPRequestHandler(methods=["GET"], handler=request_handler)
-        CFSimpleHTTPServer().register_uri_handler(uri=f"/{Config.PLUGIN_URI}", handler=handler)
+        CFSimpleHTTPServer().register_uri_handler(uri=f"/{Config.PLUGIN_URL}", handler=handler)
         log_it("i", "HTTP server started")
     except Exception as e:
         log_it("e", f"Error on http_server: {e}")
