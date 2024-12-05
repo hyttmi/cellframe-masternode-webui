@@ -8,7 +8,7 @@ Node version:        {{ general_info.node_version }}
 Latest node version: {{ general_info.latest_node_version }}
 </code>
 {% if network_info and network_info.items() %}
-{% for network_name, network in networks.items() %}
+{% for network_name, network in network_info.items() %}
 <b>{{ network_name }} Node Info</b>
 <code>
 Network state:          {{ network_info.state }}
