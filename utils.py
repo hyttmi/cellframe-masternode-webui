@@ -20,6 +20,16 @@ def check_plugin_update():
         log_it("e", f"Error in {func}: {e}")
         return None
 
+def get_external_ip():
+    try:
+        response = requests.get('https://ifconfig.me/ip', timeout=5)
+        if response.status_code == 200:
+            return response.text.strip()
+        log_it("e", f"Error fetching IP address from {response.status_code}, status code: {response.reason}")
+        return "Unable to fetch IP"
+    except Exception as e:
+        log_it("e", f"Error: {e}")
+
 def get_node_pid():
     try:
         for proc in psutil.process_iter(['pid', 'name']):
