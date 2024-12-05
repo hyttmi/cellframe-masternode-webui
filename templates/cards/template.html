@@ -295,14 +295,14 @@
             </div>
             {% endif %}
 
-            {% if network.node_stake_value is not none %}
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_related_weight_{{ network_name }}">
+            {% if network.node_data.node_stake_value is not none %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_stake_value_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">Node stake value</h5><button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_stake_value }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.node_stake_value }}</h6>
                     </div>
                     <i class="fa-solid fa-weight-scale icon-container"></i>
                 </div>

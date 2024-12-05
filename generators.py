@@ -13,7 +13,7 @@ try:
         get_autocollect_rewards,
         get_autocollect_status,
         get_blocks,
-        get_current_stake_value,
+        get_node_data,
         get_network_config,
         get_network_status,
         get_node_dump,
@@ -76,7 +76,7 @@ def generate_network_info():
                         'token_price': executor.submit(get_token_price, network),
                         'rewards': executor.submit(get_rewards, network, total_sum=False),
                         'sum_rewards': executor.submit(get_rewards, network, total_sum=True),
-                        'node_stake_value': executor.submit(get_current_stake_value, network),
+                        'node_data': executor.submit(get_node_data, network),
                         'general_node_info': executor.submit(get_node_dump, network),
                         'autocollect_status': executor.submit(get_autocollect_status, network),
                         'autocollect_rewards': executor.submit(get_autocollect_rewards, network)
@@ -96,13 +96,17 @@ def generate_network_info():
                         'rewards': futures['rewards'].result(),
                         'all_rewards': futures['sum_rewards'].result(),
                         'token_price': futures['token_price'].result(),
-                        'node_stake_value': futures['node_stake_value'].result(),
+                        'node_data': futures['node_data'].result(),
                         'general_node_info': futures['general_node_info'].result()
                     }
                     network_data[network] = network_info
-                return network_data
-        else:
-            return None
+
+        return network_data if network_data else None
+    except Exception as e:
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
+        return None
+
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")

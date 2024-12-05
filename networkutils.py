@@ -84,7 +84,7 @@ def get_token_price(network):
         return None
         
 @cachetools.func.ttl_cache(maxsize=10)
-def get_current_stake_value(network):
+def get_node_data(network):
     try:
         status = get_network_status(network)
         if status:
@@ -98,15 +98,36 @@ def get_current_stake_value(network):
                     break
             if idx is None:
                 return None  # Address not found?
-            while lines[idx].strip() != "": # Search for the emptiness
+
+            while lines[idx].strip() != "":
                 idx -= 1
+
+            node_data = {}
+
             for line in lines[idx + 1:]:
-                if "stake_value:" in line:
-                    stake_value = float(re.search(r"[\d.]+", line).group(0))
-                    return stake_value
+                if "pkey_hash:" in line:
+                    node_data['pkey_hash'] = line.split(":")[1].strip()
+                elif "stake_value:" in line:
+                    node_data['stake_value'] = float(line.split(":")[1].strip())
+                elif "effective_value:" in line:
+                    node_data['effective_value'] = float(line.split(":")[1].strip())
+                elif "related_weight:" in line:
+                    node_data['related_weight'] = float(line.split(":")[1].strip())
+                elif "tx_hash:" in line:
+                    node_data['tx_hash'] = line.split(":")[1].strip()
+                elif "node_addr:" in line:
+                    node_data['node_addr'] = line.split(":")[1].strip()
+                elif "sovereign_addr:" in line:
+                    node_data['sovereign_addr'] = line.split(":")[1].strip()
+                elif "sovereign_tax:" in line:
+                    node_data['sovereign_tax'] = float(line.split(":")[1].strip())
+
+                if not line.strip(): # Empty line? Then break.
+                    break
+            return node_data
         return None
     except Exception as e:
-        log_it("e" f"Error: {e}")
+        log_it(f"Error: {e}")
         return None
 
 def get_network_status(network):
