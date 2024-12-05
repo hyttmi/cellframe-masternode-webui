@@ -42,7 +42,7 @@ def generate_general_info(format_time=True):
                 'latest_node_version': get_latest_node_version(),
                 'node_cpu_usage': sys_stats['node_cpu_usage'],
                 'node_memory_usage': sys_stats['node_memory_usage_mb'],
-                'external_ip': get_external_ip
+                'external_ip': get_external_ip()
         }
         return info
     except Exception as e:
