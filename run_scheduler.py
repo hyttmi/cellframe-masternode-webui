@@ -3,6 +3,7 @@ from logger import log_it
 import time
 
 def run_scheduler(func, scheduled_time, every_min=False):
+    log_it("d", f"Received func {func}, scheduled_time={scheduled_time}, every_min={every_min}")
     try:
         scheduler = schedule.Scheduler()
         if every_min:
