@@ -13,23 +13,21 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/op
 - `api_token=your_own_api_token`- Used in accessing plain JSON data (You can generate your own or use a service like https://it-tools.tech/token-generator).
 - `auth_bypass=true|false` Disables HTTP authentication. Useful if you're planning to for example use the plugin behind reverse proxy. Default false.
 - `cache_blocks_interval=10` - Time (in minutes) between blocks cache renew.
-- `cache_rewards_interval=10` - Time (in minutes) between rewards cache renew. **DON'T USE VALUE BELOW 10, IT USES QUITE A LOT OF CPU**
+- `cache_rewards_interval=10` - Time (in minutes) between rewards cache renew.
 - `debug=true|false` - Print debugging data to `webui.log`, useful when you're having issues with the plugin.
 - `email_recipients=somebody@gmail.com|[somebody@gmail.com, another@aol.com]` - Recipient(s) for the email.
 - `email_stats=true|false` - Allow sending scheduled email statistics.
 - `email_time=23:59` - Set time when you want to send the statistics. **24h format (HH:MM)**
 - `email_use_ssl=true|false` - Use SSL for mail delivery.
 - `email_use_tls=true|false` - Use TLS for mail delivery.
-- `header_text=sometext` - Show `sometext` as a website header **WITHOUT SPACES**
-- `json_exclude=[key,key2,key3]` - Allows you to remove root level keys from JSON output. **USE A LIST!**
 - `password=p455w0rd` - Sets password to p455w0rd. **MANDATORY UNLESS `auth_bypass` SET TO TRUE**
 - `rate_limit_interval=n` Sets rate limit interval to `n` seconds. Default value is 15 seconds.
 - `rate_limit=true|false` - If set, rate limit per request will be set to `rate_limit_interval` seconds. Defaults to false.
+- `scheduler_delay_on_startup` - Sets delay for functions which are passed to scheduler and launched directly on startup. Default value is 60 seconds
 - `smtp_password=<your_smtp_password>` - SMTP password for mail delivery.
 - `smtp_port=465` - SMTP port to use for mail delivery.
 - `smtp_server=your.smtp.server.com` - SMTP server to use for mail delivery.
 - `smtp_user=<your_email_user>` - SMTP user for mail delivery.
-- `startup_delay=n` - Set startup delay for n seconds, default value is 60.
 - `telegram_api_key=something` - Your Telegram Bot API token.
 - `telegram_chat_id=something` - Your Telegram chat id.
 - `telegram_stats_time=23:59` - Time to send the message. **24h format (HH:MM)**

@@ -45,8 +45,7 @@ def generate_general_info(format_time=True):
                 'node_version': get_installed_node_version(),
                 'latest_node_version': get_latest_node_version(),
                 'node_cpu_usage': sys_stats['node_cpu_usage'],
-                'node_memory_usage': sys_stats['node_memory_usage_mb']
-                
+                'node_memory_usage': sys_stats['node_memory_usage_mb']       
         }
         return info
     except Exception as e:
@@ -58,7 +57,7 @@ def generate_network_info():
     try:
         network_data = {}
         networks = get_active_networks()
-        log_it("i", f"Found the following networks: {networks}")
+        log_it("d", f"Found the following networks: {networks}")
         for network in networks:
             net_config = get_network_config(network)
             if net_config:
@@ -109,14 +108,17 @@ def generate_network_info():
         log_it("e", f"Error in {func}: {e}")
         return None
     
-def generate_html(template_name):
+def generate_data(template_name, return_as_json=False):
     try:
-        general_info = generate_general_info(format_time=True)
+        if not return_as_json:
+            general_info = generate_general_info(format_time=False)
+        else:
+            general_info = generate_general_info(format_time=True)
         network_info = generate_network_info()
         if generate_general_info:
             template = Config.TEMPLATE
             template_path = f"{template}/{template_name}"
-            log_it("i", "Generating HTML content...")
+            log_it("d", "Generating HTML content...")
             env = Config.jinja_environment()
             template = env.get_template(template_path)
             return template.render(general_info=general_info, network_info=network_info)

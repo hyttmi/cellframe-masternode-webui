@@ -1,6 +1,19 @@
 
 # Changelog
 
+## [3.00] - XXXX-XX-XX
+
+### Changed
+- Backend changed massively
+  - Scheduler improved and separated from `on_init()` function.
+  - Added much more logging and improved debug logging.
+  - Separate handlers for web and JSON content.
+
+### Removed
+- `header_text`- It can be edited directly from templates.
+- `accent_color`- It can be edited directly via CSS file.
+- 
+
 ## [2.100] - 2024-11-24
 
 ### Improved

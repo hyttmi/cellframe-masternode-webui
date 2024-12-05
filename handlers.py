@@ -1,7 +1,7 @@
 try:
     import base64
     from logger import log_it
-    from generators import generate_html
+    from generators import generate_data
     from pycfhelpers.node.http.simple import CFSimpleHTTPResponse
     from config import Config
 except ImportError as e:
@@ -70,7 +70,7 @@ def web_request_handler(headers, bypass_auth=False):
             }
             return response
     try:
-        response_body = generate_html("template.html")
+        response_body = generate_data("template.html")
         response_body = response_body.encode("utf-8")
         response = CFSimpleHTTPResponse(body=response_body, code=200)
         response.headers = {
