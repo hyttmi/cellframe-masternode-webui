@@ -113,7 +113,7 @@ def generate_network_info():
     
 def generate_data(template_name, return_as_json=False):
     try:
-        if return_as_json and generate_general_info:
+        if return_as_json:
             general_info = generate_general_info(format_time=False)
             network_info = generate_network_info()
             return json.dumps({"general_info": general_info, "network_info": network_info})
