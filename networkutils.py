@@ -119,6 +119,8 @@ def get_node_data(network):
                     node_data['sovereign_addr'] = line.split(":")[1].strip()
                 elif "sovereign_tax:" in line:
                     node_data['sovereign_tax'] = float(line.split(":")[1].strip())
+                elif "active:" in line:
+                    node_data['active'] = line.split(":")[1].strip()
 
                 if not line.strip(): # Empty line? Then break.
                     break
