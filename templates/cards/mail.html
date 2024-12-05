@@ -94,45 +94,45 @@
         {% if network_info and network_info.items() %}
             {% for network_name, network in networks.items() %}
             <div class="network">
-                <h3>{{ network_info.network_name }}</h3>
+                <h3>{{ network.network_name }}</h3>
                 <table>
                     <tr>
                         <td><strong>State:</strong></td>
-                        <td>{{ network_info.state }}</td>
+                        <td>{{ network.state }}</td>
                     </tr>
                     <tr>
                         <td><strong>Target state:</strong></td>
-                        <td>{{ network_info.target_state }}</td>
+                        <td>{{ network.target_state }}</td>
                     </tr>
                     <tr>
                         <td><strong>Node address:</strong></td>
-                        <td>{{ network_info.address }}</td>
+                        <td>{{ network.address }}</td>
                     </tr>
                     <tr>
                         <td><strong>First signed blocks:</strong></td>
-                        <td>{{ network_info.first_signed_blocks }}</td>
+                        <td>{{ network.first_signed_blocks }}</td>
                     </tr>
                     <tr>
                         <td><strong>All signed blocks:</strong></td>
-                        <td>{{ network_info.all_signed_blocks }}</td>
+                        <td>{{ network.all_signed_blocks }}</td>
                     </tr>
                     <tr>
                         <td><strong>Signed blocks today:</strong></td>
-                        <td>{{ network_info.signed_blocks_today }}</td>
+                        <td>{{ network.signed_blocks_today }}</td>
                     </tr>
                     <tr>
                         <td><strong>All blocks:</strong></td>
-                        <td>{{ network_info.all_blocks }}</td>
+                        <td>{{ network.all_blocks }}</td>
                     </tr>
                     <tr>
                         <td><strong>Autocollect status:</strong></td>
-                        <td>{{ network_info.autocollect_status }}</td>
+                        <td>{{ network.autocollect_status }}</td>
                     </tr>
-                    {% if network_info.fee_wallet_tokens is not none %}
+                    {% if network.fee_wallet_tokens is not none %}
                     <tr>
                         <td><strong>Reward wallet information:</strong></td>
                         <td>
-                            {% for token, balance in network_info.fee_wallet_tokens.items() %}
+                            {% for token, balance in network.fee_wallet_tokens.items() %}
                                 {{ token }}: {{ balance }}<br>
                             {% endfor %}
                         </td>

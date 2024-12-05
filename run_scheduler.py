@@ -1,7 +1,6 @@
 try:
-    import schedule, inspect
+    import schedule, inspect, time
     from logger import log_it
-    import time
     from cacher import cache_blocks_data, cache_rewards_data
     from telegram import send_telegram_message
     from emailer import send_email
@@ -44,7 +43,9 @@ def setup_schedules():
                 'send_telegram_message_schedule': 
                     executor.submit(lambda: run_scheduler(lambda: send_telegram_message(generate_html("telegram.html")), Config.TELEGRAM_STATS_TIME, every_min=False, run_on_startup=False)),
                 'send_email_message_notification':
-                    executor.submit(lambda: send_email(f"Email sending scheduled at {Config.EMAIL_STATS_TIME}"))
+                    executor.submit(lambda: send_email(f"Email sending scheduled at {Config.EMAIL_STATS_TIME}")),
+                'send_email_message_schedule':
+                    executor.submit(lambda: run_scheduler(lambda: send_email(generate_html("email.html")), Config.EMAIL_STATS_TIME, every_min=False, run_on_startup=False)),
             }
             for name, future in futures.items():
                 log_it("i", f"{name} submitted to ThreadPool")
