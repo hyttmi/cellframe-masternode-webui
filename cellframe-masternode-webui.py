@@ -33,9 +33,9 @@ def on_init():
             log_it("i", "Submitting HTTP server to ThreadPool")
             executor.submit(http_server)
             log_it("i", "Submitting blocks caching to ThreadPool")
-            executor.submit(run_scheduler, cache_blocks_data, Config.CACHE_BLOCKS_INTERVAL)
+            executor.submit(run_scheduler, cache_blocks_data, Config.CACHE_BLOCKS_INTERVAL, every_min=True)
             log_it("i", "Submitting rewards caching to ThreadPool")
-            executor.submit(run_scheduler, cache_rewards_data, Config.CACHE_REWARDS_INTERVAL)
+            executor.submit(run_scheduler, cache_rewards_data, Config.CACHE_REWARDS_INTERVAL, every_min=True)
     except Exception as e:
         log_it("e", f"Error: {e}")
 
