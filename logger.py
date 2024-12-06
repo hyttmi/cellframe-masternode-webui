@@ -5,7 +5,7 @@ try:
     import inspect
     from config import Config
 except ImportError as e:
-    print(f"{Config.PLUGIN_NAME} [ERROR] ImportError: {e}")
+    print(f"[ERROR] ImportError: {e}")
 
 logLock = threading.Lock()
 
