@@ -4,9 +4,8 @@ try:
     import threading
     import inspect
     from config import Config
-    from DAP.Common import logIt # Use as a fallback
 except ImportError as e:
-    logIt.error(f"{Config.PLUGIN_NAME} [ERROR] ImportError: {e}")
+    print(f"{Config.PLUGIN_NAME} [ERROR] ImportError: {e}")
 
 logLock = threading.Lock()
 
