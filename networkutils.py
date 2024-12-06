@@ -118,7 +118,8 @@ def get_node_data(network):
                 elif "node_addr:" in line:
                     node_data['node_addr'] = line.split(":", 1)[1].strip()
                 elif "sovereign_addr:" in line:
-                    node_data['sovereign_addr'] = line.split(":")[1].strip()
+                    value = line.split(":")[1].strip()
+                    node_data['sovereign_addr'] = "N/A" if value.lower() == "null" else value
                 elif "sovereign_tax:" in line:
                     node_data['sovereign_tax'] = float(line.split(":")[1].strip())
                 elif "active:" in line:
@@ -149,7 +150,8 @@ def get_network_status(network):
         else:
             return None
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
         return None
 
 def get_autocollect_rewards(network):
@@ -166,7 +168,8 @@ def get_autocollect_rewards(network):
         else:
             return None
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
         return None
         
 def get_node_dump(network):
@@ -177,7 +180,8 @@ def get_node_dump(network):
         else:
             return None
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
         return None
 
 def get_is_node_synced(network):
@@ -189,7 +193,8 @@ def get_is_node_synced(network):
         else:
             return False
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
         return None
 
 def get_rewards(network, total_sum=False):
@@ -217,7 +222,8 @@ def get_rewards(network, total_sum=False):
         log_it("e", "Rewards file not found!")
         return None
     except Exception as e:
-        log_it("e", f"Error reading rewards: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
         return None
 
 def get_blocks(network, block_type="count", today=False):
@@ -247,5 +253,6 @@ def get_blocks(network, block_type="count", today=False):
             return block_data['first_signed_blocks_count']
 
     except Exception as e:
-        log_it("e", f"Error reading blocks for network '{network}': {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
         return None
