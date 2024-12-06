@@ -28,11 +28,11 @@ import inspect, json
 def generate_general_info(format_time=True):
     try:
         sys_stats = get_sys_stats()
-        is_update_available, curr_version, latest_version = check_plugin_update()
+        plugin_data = check_plugin_update()
         info = {
-                'plugin_update_available': is_update_available,
-                'current_plugin_version': curr_version,
-                'latest_plugin_version': latest_version,
+                'plugin_update_available': plugin_data['update_available'],
+                'current_plugin_version': plugin_data['current_version'],
+                'latest_plugin_version': plugin_data['latest_version'],
                 'plugin_name': Config.PLUGIN_NAME,
                 'hostname': get_system_hostname(),
                 'system_uptime': format_uptime(sys_stats['system_uptime']) if format_time else sys_stats['system_uptime'],

@@ -6,7 +6,7 @@ def cli_command(command, timeout=120):
     try:
         exit_code, output = command_runner(f"/opt/cellframe-node/bin/cellframe-node-cli {command}", timeout=timeout)
         if exit_code == 0:
-            log_it("i", f"{command} executed succesfully...")
+            log_it("d", f"{command} executed succesfully...")
             return output.strip()
         log_it("e", f"{command} failed to run succesfully, return code was {exit_code}")
         return None

@@ -9,23 +9,33 @@ def check_plugin_update():
         with open(manifest_path) as manifest:
             data = json.load(manifest)
             curr_version = Version(data["version"])
-            log_it("i", f"Current plugin version: {curr_version}")
+            log_it("d", f"Current plugin version: {curr_version}")
         url = "https://raw.githubusercontent.com/hyttmi/cellframe-masternode-webui/refs/heads/master/manifest.json"
-        response = requests.get(url, timeout=5).json()
-        latest_version = Version(response["version"])
-        log_it("i", f"Latest plugin version: {latest_version}")
-        return curr_version < latest_version, str(curr_version), str(latest_version)
+        response = requests.get(url, timeout=5)
+        if response.status_code == 200:
+            data = response.json()
+            latest_version = Version(data["version"])
+            log_it("d", f"Latest plugin version: {latest_version}")
+            plugin_version_data = {
+                'update_available': curr_version < latest_version,
+                'current_version': str(curr_version),
+                'latest_version': str(latest_version)
+            }
+            return plugin_version_data
+        log_it("e", f"Error fetching manifest.json from {response.url}, status code: {response.status_code}")
+        return None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
         return None
+
 
 def get_external_ip():
     try:
         response = requests.get('https://ifconfig.me/ip', timeout=5)
         if response.status_code == 200:
             return response.text.strip()
-        log_it("e", f"Error fetching IP address from {response.status_code}, status code: {response.reason}")
+        log_it("e", f"Error fetching IP address from {response.url}, status code: {response.status_code}")
         return "Unable to fetch IP"
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
@@ -37,7 +47,7 @@ def get_node_pid():
         for proc in psutil.process_iter(['pid', 'name']):
             if proc.info['name'] == "cellframe-node":
                 pid = proc.info['pid']
-                log_it("i", f"PID for Cellframe node is {pid}")
+                log_it("d", f"PID for Cellframe node is {pid}")
                 return pid
         return None
     except Exception as e:
