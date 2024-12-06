@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>{{ plugin_name }}</title>
+    <meta charset="UTF-8">
+</head>
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        background-color: #000000;
+        color: #00ff41;
+    }
+
+    .blink {
+        animation: blinker 1.5s linear infinite;
+        color: red;
+    }
+    @keyframes blinker {
+        50% {
+            opacity: 0;
+        }
+    }
+
+    .heading {
+        background: #00ff41;
+        display: inline;
+        color: #000000;
+        padding: 5px;
+    }
+
+    h1, h2 {
+        text-transform: uppercase;
+    }
+
+    pre {
+        font-family: monospace;
+    }
+</style>
+<body>
+    <pre>
+        ▗▖  ▗▖ ▗▄▖  ▗▄▄▖▗▄▄▄▖▗▄▄▄▖▗▄▄▖ ▗▖  ▗▖ ▗▄▖ ▗▄▄▄  ▗▄▄▄▖    ▗▖ ▗▖▗▄▄▄▖▗▄▄▖ ▗▖ ▗▖▗▄▄▄▖
+        ▐▛▚▞▜▌▐▌ ▐▌▐▌     █  ▐▌   ▐▌ ▐▌▐▛▚▖▐▌▐▌ ▐▌▐▌  █ ▐▌       ▐▌ ▐▌▐▌   ▐▌ ▐▌▐▌ ▐▌  █  
+        ▐▌  ▐▌▐▛▀▜▌ ▝▀▚▖  █  ▐▛▀▀▘▐▛▀▚▖▐▌ ▝▜▌▐▌ ▐▌▐▌  █ ▐▛▀▀▘    ▐▌ ▐▌▐▛▀▀▘▐▛▀▚▖▐▌ ▐▌  █  
+        ▐▌  ▐▌▐▌ ▐▌▗▄▄▞▘  █  ▐▙▄▄▖▐▌ ▐▌▐▌  ▐▌▝▚▄▞▘▐▙▄▄▀ ▐▙▄▄▖    ▐▙█▟▌▐▙▄▄▖▐▙▄▞▘▝▚▄▞▘▗▄█▄▖
+    </pre>
+
+    {% if general_info.plugin_update_available %}
+        <pre class="blink"><h1>New version {{ general_info.latest_plugin_version }} available!</h1></pre>
+    {% endif %}
+
+        {% if general_info.hostname %}
+        <pre><h1 class="heading">HOSTNAME</h1></pre>
+        <pre><h2>{{ general_info.hostname }}</h2></pre>
+        {% endif %}
+
+        {% if general_info.external_ip %}
+        <pre><h1 class="heading">external ip address</h1></pre>
+        <pre><h2>{{ general_info.external_ip }}</h2></pre>
+        {% endif %}
+
+        {% if general_info.node_cpu_usage %}
+        <pre><h1 class="heading">node cpu usage</h1></pre>
+        <pre><h2>{{ general_info.node_cpu_usage }}</h2></pre>
+        {% endif %}
+            
+        {% if general_info.node_memory_usage %}
+        <pre><h1 class="heading">node memory usage</h1></pre>
+        <pre><h2>{{ general_info.node_memory_usage }}</h2></pre>
+        {% endif %}
+            
+        {% if general_info.node_uptime %}
+        <pre><h1 class="heading">node uptime</h1></pre>
+        <pre><h2>{{ general_info.node_uptime }}</h2></pre>
+        {% endif %}
+
+        {% if general_info.system_uptime %}
+        <pre><h1 class="heading">system uptime</h1></pre>
+        <pre><h2>{{ general_info.system_uptime }}</h2></pre>
+        {% endif %}
+            
+        {% if general_info.node_version %}
+        <pre><h1 class="heading">node version</h1></pre>
+        <pre><h2>{{ general_info.node_version }}</h2></pre>
+        {% endif %}
+            
+        {% if general_info.latest_node_version %}
+        <pre><h1 class="heading">latest node version</h1></pre>
+        <pre><h2>{{ general_info.latest_node_version }}</h2></pre>
+        {% endif %}
+
+        {% if network_info and network_info.items() %}
+        {% for network_name, network in network_info.items() %}
+        <pre><h1 class="heading">{{ network_name }}</h1></pre>
+        {% if network.state is not none %}
+        <br>
+        <pre><h1 class="heading">current state</h1></pre>
+        <pre><h2>{{ network.state }}</h2></pre>
+        {% endif %}
+
+        {% if network.target_state is not none %}
+        <pre><h1 class="heading">target state</h1></pre>
+        <pre><h2>{{ network.target_state }}</h2></pre>
+        {% endif %}
+            
+        {% if network.address is not none %}
+        <pre><h1 class="heading">address</h1></pre>
+        <pre><h2>{{ network.address }}</h2></pre>
+        {% endif %}
+            
+        {% if network.first_signed_blocks is not none %}
+        <pre><h1 class="heading">first signed blocks</h1></pre>
+        <pre><h2>{{ network.first_signed_blocks }}</h2></pre>
+        {% endif %}
+            
+        {% if network.all_signed_blocks is not none %}
+        <pre><h1 class="heading">all signed blocks</h1></pre>
+        <pre><h2>{{ network.all_signed_blocks }}</h2></pre>
+        {% endif %}
+            
+        {% if network.signed_blocks_today is not none %}
+        <pre><h1 class="heading">signed blocks today</h1></pre>
+        <pre><h2>{{ network.signed_blocks_today }}</h2></pre>
+        {% endif %}
+            
+        {% if network.all_blocks is not none %}
+        <pre><h1 class="heading">all blocks</h1></pre>
+        <pre><h2>{{ network.all_blocks }}</h2></pre>
+        {% endif %}
+            
+        {% if network.autocollect_status is not none %}
+        <pre><h1 class="heading">autocollect status</h1></pre>
+        <pre><h2>{{ network.autocollect_status }}</h2></pre>
+        {% endif %}
+            
+        {% if network.autocollect_rewards is not none %}
+        <pre><h1 class="heading">autocollect rewards</h1></pre>
+        <pre><h2>{{ network.autocollect_rewards }}</h2></pre>
+        {% endif %}
+
+        {% if network.node_data.stake_value is not none %}
+        <pre><h1 class="heading">stake value</h1></pre>
+        <pre><h2>{{ network.node_data.stake_value }}</h2></pre>
+        {% endif %}
+
+        {% if network.node_data.effective_value is not none %}
+        <pre><h1 class="heading">stake effective value</h1></pre>
+        <pre><h2>{{ network.node_data.effective_value }}</h2></pre>
+        {% endif %}
+
+        {% if network.node_data.related_weight is not none %}
+        <pre><h1 class="heading">related weight</h1></pre>
+        <pre><h2>{{ network.node_data.related_weight }}</h2></pre>
+        {% endif %}
+
+        {% if network.token_price is not none %}
+        <pre><h1 class="heading">token price</h1></pre>
+        <pre><h2>{{ network.token_price }}</h2></pre>
+        {% endif %}
+
+        {% if network.all_rewards is not none %}
+        <pre><h1 class="heading">rewards all time</h1></pre>
+        <pre><h2>{{ network.all_rewards }}</h2></pre>
+        {% endif %}
+
+        {% if network.fee_wallet_tokens is not none %}
+        <pre><h1 class="heading">reward wallet info</h1></pre>
+            {% for token, balance in network.fee_wallet_tokens.items() %}
+                <pre><h2 class="text-body-secondary card-subtitle">{{ token }}  {{ balance }}<h2></pre>
+            {% endfor %}
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+    
+</body>
+
+</html>

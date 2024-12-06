@@ -66,33 +66,33 @@
             <table>
                 <tr>
                     <td><strong>System uptime:</strong></td>
-                    <td>{{ system_uptime }}</td>
+                    <td>{{ general_info.system_uptime }}</td>
                 </tr>
                 <tr>
                     <td><strong>Node uptime:</strong></td>
-                    <td>{{ node_uptime }}</td>
+                    <td>{{ general_info.node_uptime }}</td>
                 </tr>
                 <tr>
                     <td><strong>Node version:</strong></td>
-                    <td>{{ node_version }}</td>
+                    <td>{{ general_info.node_version }}</td>
                 </tr>
                 <tr>
                     <td><strong>Latest node version:</strong></td>
-                    <td>{{ latest_node_version }}</td>
+                    <td>{{ general_info.latest_node_version }}</td>
                 </tr>
                 <tr>
                     <td><strong>CPU utilization:</strong></td>
-                    <td>{{ node_cpu_utilization }}</td>
+                    <td>{{ general_info.node_cpu_usage }}</td>
                 </tr>
                 <tr>
                     <td><strong>Memory utilization:</strong></td>
-                    <td>{{ node_memory_utilization }}</td>
+                    <td>{{ general_info.node_memory_usage }}</td>
                 </tr>
             </table>
         </div>
 
-        {% if networks and networks.items() %}
-            {% for network_name, network in networks.items() %}
+        {% if network_info and network_info.items() %}
+            {% for network_name, network in network_info.items() %}
             <div class="network">
                 <h3>{{ network_name }}</h3>
                 <table>

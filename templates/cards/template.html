@@ -25,18 +25,10 @@
     <div class="container-fluid mt-4">
         <span title="Reset back to default view" id="clearstorage" class="btn-primary floatbutton text-uppercase"><i class="fa-solid fa-xl fa-rotate-left floatbutton-icon"></i></span>
 
-    {% if plugin_update_available %}
+    {% if general_info.plugin_update_available %}
         <div class="row">
             <div class="alert alert-danger" role="alert">
-                New version {{ latest_plugin_version }} available! You are running version {{ current_plugin_version }}.
-            </div>
-        </div>
-    {% endif %}
-
-    {% if website_header_text %}
-        <div class="row">
-            <div class="col-12 text-center">
-                <h1 class="text-uppercase text-color-secondary display-4"><b>{{ website_header_text }}</b></h1>
+                New version {{ general_info.latest_plugin_version }} available! You are running version {{ current_plugin_version }}.
             </div>
         </div>
     {% endif %}
@@ -48,66 +40,65 @@
         </div>
         <div class="row is_sortable">
 
-        {% if hostname %}
+        {% if general_info.hostname %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="hostname">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">hostname</h5><button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary text-body-secondary-color">{{ hostname }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary text-body-secondary-color">{{ general_info.hostname }}</h6>
                     </div>
                         <i class="fa-solid fa-server icon-container"></i>
                 </div>
             </div>
         {% endif %}
-    
-        {% if node_active_threads %}
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="active_threads">
+
+        {% if general_info.external_ip %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="external_ip">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">node active threads</h5>
-                        <button type="button" class="btn-close" aria-label="Close"></button>
+                        <h5 class="card-title text-uppercase">external ip</h5><button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ node_active_threads }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary text-body-secondary-color">{{ general_info.external_ip }}</h6>
                     </div>
-                    <i class="fa-solid fa-gears icon-container"></i>
+                        <i class="fa-solid fa-network-wired icon-container"></i>
                 </div>
             </div>
         {% endif %}
 
-        {% if node_cpu_utilization %}
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_cpu_utilization">
+        {% if general_info.node_cpu_usage %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_cpu_usage">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">node cpu utilization</h5>
+                        <h5 class="card-title text-uppercase">node cpu usage</h5>
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ node_cpu_utilization }}%</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ general_info.node_cpu_usage }}%</h6>
                     </div>
                     <i class="fa-solid fa-microchip icon-container"></i>
                 </div>
             </div>
         {% endif %}
             
-        {% if node_memory_utilization %}
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="memory_utilization">
+        {% if general_info.node_memory_usage %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_memory_usage">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">node memory usage</h5>
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ node_memory_utilization }} MB</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ general_info.node_memory_usage }} MB</h6>
                     </div>
                     <i class="fa-solid fa-memory icon-container"></i>
                 </div>
             </div>
         {% endif %}
             
-        {% if node_uptime %}
+        {% if general_info.node_uptime %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_uptime">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -115,14 +106,14 @@
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ node_uptime }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ general_info.node_uptime }}</h6>
                     </div>
                     <i class="fa-solid fa-clock icon-container"></i>
                 </div>
             </div>
         {% endif %}
 
-        {% if system_uptime %}
+        {% if general_info.system_uptime %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="system_uptime">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -130,14 +121,14 @@
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ system_uptime }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ general_info.system_uptime }}</h6>
                     </div>
                     <i class="fa-solid fa-clock icon-container"></i>
                 </div>
             </div>
         {% endif %}
             
-        {% if node_version %}
+        {% if general_info.node_version %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_version">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -145,14 +136,14 @@
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ node_version }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ general_info.node_version }}</h6>
                     </div>
                     <i class="fa-solid fa-code-compare icon-container"></i>
                 </div>
             </div>
         {% endif %}
             
-        {% if latest_node_version %}
+        {% if general_info.latest_node_version %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="latest_node_version">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -160,7 +151,7 @@
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ latest_node_version }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ general_info.latest_node_version }}</h6>
                     </div>
                     <i class="fa-solid fa-code-compare icon-container"></i>
                 </div>
@@ -168,8 +159,8 @@
         {% endif %}
         </div>
 
-        {% if networks and networks.items() %}
-            {% for network_name, network in networks.items() %}
+        {% if network_info and network_info.items() %}
+        {% for network_name, network in network_info.items() %}
         <div class="modal fade" id="nodeInfoModal_{{ network_name }}" tabindex="-1" aria-labelledby="nodeInfoModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content custom-modal-bg">
@@ -178,7 +169,10 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        <h5>NODE DUMP:</h5>
                         <pre>{{ network.general_node_info }}</pre>
+                        <h5>NODE INFORMATION:</h5>
+                        <pre>PKEY HASH: {{ network.node_data.pkey_hash }}<br>TRANSACTION HASH: {{ network.node_data.tx_hash }}<br>SOVEREIGN ADDRESS: {{ network.node_data.sovereign_addr}}<br>SOVEREIGN TAX: {{ network.node_data.sovereign_tax }}<br>ACTIVE: {{ network.node_data.active }}</pre>
                     </div>
                 </div>
             </div>
@@ -222,6 +216,7 @@
             </div>
             {% endif %}
             
+            {% if network.address is not none %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_address_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -233,6 +228,7 @@
                     <i class="fa-solid fa-id-card icon-container"></i>
                 </div>
             </div>
+            {% endif %}
             
             {% if network.first_signed_blocks is not none %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="first_signed_blocks_{{ network_name }}">
@@ -318,14 +314,42 @@
             </div>
             {% endif %}
 
-            {% if network.node_stake_value is not none %}
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_related_weight_{{ network_name }}">
+            {% if network.node_data.stake_value is not none %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_stake_value_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">Node stake value</h5><button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_stake_value }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.stake_value }}</h6>
+                    </div>
+                    <i class="fa-solid fa-dollar-sign icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.node_data.effective_value is not none %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_effective_value_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">Node effective value</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.effective_value }}</h6>
+                    </div>
+                    <i class="fa-solid fa-dollar-sign icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.node_data.related_weight is not none %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_related_weight_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">Node related weight</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.related_weight }}%</h6>
                     </div>
                     <i class="fa-solid fa-weight-scale icon-container"></i>
                 </div>
@@ -333,7 +357,7 @@
             {% endif %}
 
             {% if network.token_price is not none %}
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="autocollect_rewards_{{ network_name }}">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="token_price_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">current token price</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -347,7 +371,7 @@
             {% endif %}
 
             {% if network.all_rewards is not none %}
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="autocollect_rewards_{{ network_name }}">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="all_rewards_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">Rewards all time</h5><button type="button" class="btn-close" aria-label="Close"></button>
@@ -545,22 +569,14 @@
                 });
             });
         });
-    </script>
-    
-    <script>
-        {% if networks and networks.items() %}
-        {% for network_name, network in networks.items() %}
-        {% if network.all_signed_blocks is not none %}
-        var blocksData = {};
-        blocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
-        var blocksCharts = {};
-        {% endif %}
-        {% if network.rewards is not none %}
-        var rewardsData = {};
-        rewardsData['{{ network_name }}'] = {{ network.rewards | tojson }};
-        var rewardsCharts = {};
-        {% endif %}
-        {% endfor %}
+        
+        function formatDate(dateString) {
+            var date = new Date(dateString);
+            return date.toLocaleDateString(undefined, {
+                month: 'numeric',
+                day: 'numeric'
+            });
+        }
 
         function updateChart(chart, daysToShow, networkName) {
             if (chart === 'blocksChart') {
@@ -585,118 +601,124 @@
                 rewardsCharts[networkName].update();
             }
         }
+    </script>
     
-        function formatDate(dateString) {
-            var date = new Date(dateString);
-            return date.toLocaleDateString(undefined, {
-                month: 'numeric',
-                day: 'numeric'
-            });
-        }
+    <script>
+        {% if network_info and network_info.items() %}
+            var blocksData = {};
+            var blocksCharts = {};
+            var rewardsData = {};
+            var rewardsCharts = {};
     
-        {% for network_name, network in networks.items() %}
-        {% if network.all_signed_blocks is not none %}
-        var blocksCtx{{ network_name }} = document.getElementById('blocksChart_{{ network_name }}').getContext('2d');
-        blocksCharts['{{ network_name }}'] = new Chart(blocksCtx{{ network_name }}, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Blocks',
-                    data: [],
-                    backgroundColor: '#{{ website_accent_color }}',
-                    borderColor: '#{{ website_accent_color }}',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
+            {% for network_name, network in network_info.items() %}
+                {% if network.all_signed_blocks_dict %}
+                    blocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
+                {% endif %}
+                {% if network.rewards %}
+                    rewardsData['{{ network_name }}'] = {{ network.rewards | tojson }};
+                {% endif %}
+            
+                {% if network.all_signed_blocks_dict %}
+                    var blocksCtx{{ network_name }} = document.getElementById('blocksChart_{{ network_name }}').getContext('2d');
+                    blocksCharts['{{ network_name }}'] = new Chart(blocksCtx{{ network_name }}, {
+                        type: 'line',
+                        data: {
+                            labels: [],
+                            datasets: [{
+                                label: 'Blocks',
+                                data: [],
+                                backgroundColor: '#B3A3FF',
+                                borderColor: '#B3A3FF',
+                                borderWidth: 1
+                            }]
                         },
-                        ticks: {
-                            color: '#{{ website_accent_color }}'
-                        }
-                    },
-                    y: {
-                        grid: {
-                            display: false
-                        },
-                        beginAtZero: true,
-                        ticks: {
-                            color: '#{{ website_accent_color }}'
-                        },
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
-        });
-        updateChart('blocksChart', 7, '{{ network_name }}');
-        {% endif %}
-
-        {% if network.rewards is not none %}
-        var rewardsCtx{{ network_name }} = document.getElementById('rewardsChart_{{ network_name }}').getContext('2d');
-        rewardsCharts['{{ network_name }}'] = new Chart(rewardsCtx{{ network_name }}, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Rewards',
-                    data: [],
-                    backgroundColor: '#{{ website_accent_color }}',
-                    borderColor: '#{{ website_accent_color }}',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            color: '#{{ website_accent_color }}'
-                        }
-                    },
-                    y: {
-                        grid: {
-                            display: false
-                        },
-                        beginAtZero: true,
-                        ticks: {
-                            color: '#{{ website_accent_color }}'
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(tooltipItem) {
-                                return tooltipItem.raw;
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        color: '#B3A3FF'
+                                    }
+                                },
+                                y: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    beginAtZero: true,
+                                    ticks: {
+                                        color: '#B3A3FF'
+                                    },
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
                             }
                         }
-                    }
-                }
-            }
-        });
-        updateChart('rewardsChart', 7, '{{ network_name }}');
+                    });
+                    updateChart('blocksChart', 7, '{{ network_name }}');
+                {% endif %}
+            
+                {% if network.rewards %}
+                    var rewardsCtx{{ network_name }} = document.getElementById('rewardsChart_{{ network_name }}').getContext('2d');
+                    rewardsCharts['{{ network_name }}'] = new Chart(rewardsCtx{{ network_name }}, {
+                        type: 'line',
+                        data: {
+                            labels: [],
+                            datasets: [{
+                                label: 'Rewards',
+                                data: [],
+                                backgroundColor: '#B3A3FF',
+                                borderColor: '#B3A3FF',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        color: '#B3A3FF'
+                                    }
+                                },
+                                y: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    beginAtZero: true,
+                                    ticks: {
+                                        color: '#B3A3FF'
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(tooltipItem) {
+                                            return tooltipItem.raw;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    updateChart('rewardsChart', 7, '{{ network_name }}');
+                {% endif %}
+            {% endfor %}
         {% endif %}
-    {% endfor %}
-    {% endif %}
-
-    </script>
+    </script>    
     
 </body>
 

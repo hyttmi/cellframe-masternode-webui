@@ -1,5 +1,25 @@
-
 # Changelog
+
+## [3.00] - 2024-12-06
+
+### Added
+- New cards displaying node related weight, node effective stake value
+- Some more information behind network information button (private key hash, transaction hash, sovereign tax etc.)
+- Oldskool template, beware, it's pretty oldskool.
+
+### Changed
+- Backend changed massively
+  - Scheduler improved massively.
+  - Added much more logging and improved debug logging.
+  - Separate handlers for web and JSON content.
+- Javascript for charts is much better now on web template.
+- Telegram and Email templates are now in the templates directory and, no more copying them between different theme directories.
+
+### Removed
+- `header_text`- It can be edited directly from templates.
+- `accent_color`- It can be edited directly via CSS file.
+- `json_exclude`- Keys can be removed while parsing the data from now on.
+- `rate_limit` - Better to simply disable HTTP auth and use something like Nginx reverse proxy with auth + rate limiting.
 
 ## [2.100] - 2024-11-24
 

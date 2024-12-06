@@ -1,14 +1,14 @@
 <b>Node System Info</b>
 <code>
-CPU utilization:     {{ node_cpu_utilization }}
-Memory utilization:  {{ node_memory_utilization }}
-Uptime:              {{ node_uptime }}
-System uptime:       {{ system_uptime }}
-Node version:        {{ node_version }}
-Latest node version: {{ latest_node_version }}
+CPU utilization:     {{ general_info.node_cpu_utilization }}
+Memory utilization:  {{ general_info.node_memory_utilization }}
+Uptime:              {{ general_info.node_uptime }}
+System uptime:       {{ general_info.system_uptime }}
+Node version:        {{ general_info.node_version }}
+Latest node version: {{ general_info.latest_node_version }}
 </code>
-{% if networks and networks.items() %}
-{% for network_name, network in networks.items() %}
+{% if network_info and network_info.items() %}
+{% for network_name, network in network_info.items() %}
 <b>{{ network_name }} Node Info</b>
 <code>
 Network state:          {{ network.state }}
