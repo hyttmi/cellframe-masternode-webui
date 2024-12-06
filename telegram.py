@@ -1,10 +1,7 @@
-try:
-    from config import Config
-    from utils import log_it
-    import inspect
-    import requests
-except ImportError as e:
-    log_it("e", f"ImportError: {e}")
+from config import Config
+from utils import log_it
+import inspect
+import requests
 
 def send_telegram_message(message):
     missing_configs = []

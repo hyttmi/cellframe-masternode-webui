@@ -1,10 +1,7 @@
-try:
-    from logger import log_it
-    from packaging.version import Version, parse
-    from common import cli_command, get_current_script_directory
-    import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect
-except ImportError as e:
-    log_it("e", f"ImportError: {e}")
+from logger import log_it
+from packaging.version import Version, parse
+from common import cli_command, get_current_script_directory
+import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect
 
 def check_plugin_update():
     try:

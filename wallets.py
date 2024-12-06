@@ -1,9 +1,6 @@
-try:
-    from logger import log_it
-    from common import cli_command
-    import re, inspect
-except ImportError as e:
-    log_it("e", f"ImportError: {e}")
+from logger import log_it
+from common import cli_command
+import re, inspect
 
 def get_reward_wallet_tokens(wallet):
     try:

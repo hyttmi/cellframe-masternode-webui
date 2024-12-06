@@ -1,13 +1,10 @@
-try:
-    from collections import OrderedDict
-    from concurrent.futures import ThreadPoolExecutor
-    from datetime import datetime
-    from logger import log_it
-    from networkutils import get_active_networks, get_network_config
-    from common import cli_command, get_current_script_directory
-    import re, time, json, os, inspect
-except ImportError as e:
-    log_it("e", f"ImportError: {e}")
+from collections import OrderedDict
+from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
+from logger import log_it
+from networkutils import get_active_networks, get_network_config
+from common import cli_command, get_current_script_directory
+import re, time, json, os, inspect
 
 def cache_blocks_data():
     try:

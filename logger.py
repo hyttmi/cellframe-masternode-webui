@@ -1,11 +1,8 @@
-try:
-    import logging
-    import os
-    import threading
-    import inspect
-    from config import Config
-except ImportError as e:
-    print(f"[ERROR] ImportError: {e}")
+import logging
+import os
+import threading
+import inspect
+from config import Config
 
 logLock = threading.Lock()
 

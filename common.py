@@ -1,9 +1,6 @@
-try:
-    from command_runner import command_runner
-    from logger import log_it
-    import inspect, os
-except ImportError as e:
-    log_it("e", f"ImportError: {e}")
+from command_runner import command_runner
+from logger import log_it
+import inspect, os
 
 def cli_command(command, timeout=120):
     try:
