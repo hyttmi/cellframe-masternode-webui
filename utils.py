@@ -1,7 +1,10 @@
-from logger import log_it
-from packaging.version import Version, parse
-from sysutils import cli_command, get_current_script_directory
-import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect
+try:
+    from logger import log_it
+    from packaging.version import Version, parse
+    from common import cli_command, get_current_script_directory
+    import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect
+except ImportError as e:
+    log_it("e", f"ImportError: {e}")
 
 def check_plugin_update():
     try:
@@ -28,7 +31,9 @@ def get_external_ip():
         log_it("e", f"Error fetching IP address from {response.status_code}, status code: {response.reason}")
         return "Unable to fetch IP"
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
+        return None
 
 def get_node_pid():
     try:

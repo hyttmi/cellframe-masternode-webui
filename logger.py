@@ -1,8 +1,12 @@
-import logging
-import os
-import threading
-import inspect
-from config import Config
+try:
+    import logging
+    import os
+    import threading
+    import inspect
+    from config import Config
+    from DAP.Core import logIt # Use as a fallback
+except ImportError as e:
+    logIt.error(f"{Config.PLUGIN_NAME} [ERROR] ImportError: {e}")
 
 logLock = threading.Lock()
 
@@ -25,7 +29,7 @@ def log_it(level, msg):
         levels = {
             "i": logging.info,
             "e": logging.error,
-            "d": logging.info,
+            "d": logging.info, # Use info because debug flag spams so much
         }
         
         log_func = levels.get(level.lower(), None)

@@ -1,30 +1,33 @@
-from utils import (
-    check_plugin_update,
-    format_uptime,
-    get_installed_node_version,
-    get_latest_node_version,
-    get_sys_stats,
-    get_system_hostname,
-    get_external_ip
-)
-    
-from networkutils import (
-    get_active_networks,
-    get_autocollect_rewards,
-    get_autocollect_status,
-    get_blocks,
-    get_network_config,
-    get_network_status,
-    get_node_data,
-    get_node_dump,
-    get_rewards,
-    get_token_price,
-)
-from wallets import get_reward_wallet_tokens    
-from logger import log_it
-from config import Config
-from concurrent.futures import ThreadPoolExecutor
-import inspect, json
+try:
+    from utils import (
+        check_plugin_update,
+        format_uptime,
+        get_installed_node_version,
+        get_latest_node_version,
+        get_sys_stats,
+        get_system_hostname,
+        get_external_ip
+    )
+
+    from networkutils import (
+        get_active_networks,
+        get_autocollect_rewards,
+        get_autocollect_status,
+        get_blocks,
+        get_network_config,
+        get_network_status,
+        get_node_data,
+        get_node_dump,
+        get_rewards,
+        get_token_price,
+    )
+    from wallets import get_reward_wallet_tokens
+    from logger import log_it
+    from config import Config
+    from concurrent.futures import ThreadPoolExecutor
+    import inspect, json
+except ImportError as e:
+    log_it("e", f"ImportError: {e}")
         
 def generate_general_info(format_time=True):
     try:
@@ -44,6 +47,7 @@ def generate_general_info(format_time=True):
                 'node_memory_usage': sys_stats['node_memory_usage_mb'],
                 'external_ip': get_external_ip()
         }
+        log_it("d", json.dumps(info, indent=4))
         return info
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
@@ -97,7 +101,7 @@ def generate_network_info():
                         'general_node_info': futures['general_node_info'].result()
                     }
                     network_data[network] = network_info
-
+        log_it("d", json.dumps(network_data, indent=4))
         return network_data if network_data else None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name

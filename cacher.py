@@ -1,10 +1,13 @@
-from collections import OrderedDict
-from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime
-from logger import log_it
-from networkutils import get_active_networks, get_network_config
-from sysutils import cli_command, get_current_script_directory
-import re, time, json, os
+try:
+    from collections import OrderedDict
+    from concurrent.futures import ThreadPoolExecutor
+    from datetime import datetime
+    from logger import log_it
+    from networkutils import get_active_networks, get_network_config
+    from common import cli_command, get_current_script_directory
+    import re, time, json, os, inspect
+except ImportError as e:
+    log_it("e", f"ImportError: {e}")
 
 def cache_blocks_data():
     try:
@@ -48,7 +51,6 @@ def cache_blocks_data():
                            blocks_signed_per_day[block_day] = blocks_signed_per_day.get(block_day, 0) + 1
                    sorted_blocks = OrderedDict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
                    block_data["all_signed_blocks"] = sorted_blocks
-                   log_it("d", block_data)
                    cache_file_path = os.path.join(get_current_script_directory(), f".{network}_blocks_cache.json")
                    with open(cache_file_path, "w") as f:
                        json.dump(block_data, f, indent=4)
@@ -59,7 +61,9 @@ def cache_blocks_data():
                    log_it("e", f"Network config not found for {network}, skipping caching")
                    return None
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
+        return None
         
 def cache_rewards_data():
     try:
@@ -99,7 +103,6 @@ def cache_rewards_data():
                 if reward and is_receiving_reward:
                     rewards.append(reward)
                 cache_file_path = os.path.join(get_current_script_directory(), f".{network}_rewards_cache.json")
-                log_it("d", rewards)
                 with open(cache_file_path, "w") as f:
                     json.dump(rewards, f, indent=4)
                 end_time = time.time()
@@ -109,4 +112,6 @@ def cache_rewards_data():
                 log_it("e", f"Network config not found for {network}, skipping caching.")
                 return None
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
+        return None

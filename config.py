@@ -1,5 +1,9 @@
-from jinja2 import Environment, PackageLoader, select_autoescape
-import DAP
+try:
+    from jinja2 import Environment, PackageLoader, select_autoescape
+    from logger import log_it
+    import DAP
+except ImportError as e:
+    log_it("e", f"ImportError: {e}")
 
 def get_config_value(section, key, default=None, is_numeric=False):
     try:

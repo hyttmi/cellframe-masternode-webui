@@ -1,6 +1,9 @@
-from logger import log_it
-from sysutils import cli_command
-import re
+try:
+    from logger import log_it
+    from common import cli_command
+    import re, inspect
+except ImportError as e:
+    log_it("e", f"ImportError: {e}")
 
 def get_reward_wallet_tokens(wallet):
     try:
@@ -11,4 +14,6 @@ def get_reward_wallet_tokens(wallet):
         else:
             return None
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
+        return None

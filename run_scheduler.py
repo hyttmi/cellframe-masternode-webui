@@ -1,11 +1,14 @@
-from cacher import cache_blocks_data, cache_rewards_data
-from concurrent.futures import ThreadPoolExecutor
-from config import Config
-from emailer import send_email
-from generators import generate_data
-from logger import log_it
-from telegram import send_telegram_message
-import schedule, inspect, time
+try:
+    from cacher import cache_blocks_data, cache_rewards_data
+    from concurrent.futures import ThreadPoolExecutor
+    from config import Config
+    from emailer import send_email
+    from generators import generate_data
+    from logger import log_it
+    from telegram import send_telegram_message
+    import schedule, inspect, time
+except ImportError as e:
+    log_it("e", f"ImportError: {e}")
 
 def run_scheduler(func, scheduled_time, every_min=False, run_on_startup=False):
     log_it("d", f"Received func {func}, scheduled_time={scheduled_time}, every_min={every_min}")

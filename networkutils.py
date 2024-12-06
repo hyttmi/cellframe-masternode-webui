@@ -1,9 +1,12 @@
-from collections import OrderedDict
-from datetime import datetime
-from logger import log_it
-from pycfhelpers.node.net import CFNet
-from sysutils import cli_command, get_current_script_directory
-import cachetools.func, re, requests, os, json
+try:
+    from collections import OrderedDict
+    from datetime import datetime
+    from logger import log_it
+    from pycfhelpers.node.net import CFNet
+    from common import cli_command, get_current_script_directory
+    import cachetools.func, re, requests, os, json, inspect
+except ImportError as e:
+    log_it("e", f"ImportError: {e}")
 
 def get_active_networks():
     try:
@@ -37,7 +40,8 @@ def get_network_config(network):
         log_it("e", f"Configuration file for {network} not found!")
         return None
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
         return None
 
 def get_autocollect_status(network):
@@ -48,7 +52,8 @@ def get_autocollect_status(network):
         else:
             return "Inactive"
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
         return None
         
 @cachetools.func.ttl_cache(maxsize=10, ttl=3600)
@@ -74,7 +79,8 @@ def get_token_price(network):
             log_it("e", f"Failed to fetch token price from {response.url}")
             return None
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
         return None
         
 @cachetools.func.ttl_cache(maxsize=10)
@@ -123,7 +129,8 @@ def get_node_data(network):
             return node_data
         return None
     except Exception as e:
-        log_it(f"Error: {e}")
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
         return None
 
 def get_network_status(network):

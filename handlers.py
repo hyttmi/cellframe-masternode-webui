@@ -1,8 +1,11 @@
-from config import Config
-from generators import generate_data
-from logger import log_it
-from pycfhelpers.node.http.simple import CFSimpleHTTPResponse
-import base64
+try:
+    from config import Config
+    from generators import generate_data
+    from logger import log_it
+    from pycfhelpers.node.http.simple import CFSimpleHTTPResponse
+    import base64
+except ImportError as e:
+    log_it("e", f"ImportError: {e}")
 
 def request_handler(request):
     headers = request.headers
