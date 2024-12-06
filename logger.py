@@ -4,7 +4,7 @@ try:
     import threading
     import inspect
     from config import Config
-    from DAP import logIt # Use as a fallback
+    from DAP.Common import logIt # Use as a fallback
 except ImportError as e:
     logIt.error(f"{Config.PLUGIN_NAME} [ERROR] ImportError: {e}")
 
