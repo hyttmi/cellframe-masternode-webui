@@ -56,7 +56,7 @@ def get_autocollect_status(network):
 @cachetools.func.ttl_cache(maxsize=10, ttl=3600)
 def get_token_price(network):
     try:
-        log_it("i", "Fetching token price...")
+        log_it("d", "Fetching token price...")
         if network == "Backbone":
             response = requests.get(f"https://coinmarketcap.com/currencies/cellframe/", timeout=5)
             if response.status_code == 200:

@@ -1,9 +1,20 @@
 # Changelog
 
+## [3.01] - 2024-12-07
+
+### Improved
+- Request handlers.
+
+### Fixed
+- Telegram and Email scheduling logic.
+
+### Changed
+- Suppressed logging even more.
+
 ## [3.00] - 2024-12-06
 
 ### Added
-- New cards displaying node related weight, node effective stake value
+- New cards displaying node related weight, node effective stake value.
 - Some more information behind network information button (private key hash, transaction hash, sovereign tax etc.)
 - Oldskool template, beware, it's pretty oldskool.
 

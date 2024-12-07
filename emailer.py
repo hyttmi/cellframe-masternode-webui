@@ -5,6 +5,10 @@ from logger import log_it
 import smtplib, inspect
 
 def send_email(msg):
+    if not Config.EMAIL_STATS_ENABLED:
+        log_it("i", "Sending stats via email is not enabled.")
+        return
+
     email_stats_time = Config.EMAIL_STATS_TIME
     smtp_server = Config.SMTP_SERVER
     smtp_port = Config.SMTP_PORT
@@ -25,6 +29,10 @@ def send_email(msg):
         missing_configs.append("SMTP_PASSWORD")
     if not email_recipients:
         missing_configs.append("EMAIL_RECIPIENTS")
+    if not smtp_server:
+        missing_configs.append("SMTP_SERVER")
+    if not smtp_port:
+        missing_configs.append("SMTP_PORT")
 
     if missing_configs:
         for config in missing_configs:

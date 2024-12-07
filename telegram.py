@@ -4,6 +4,9 @@ import inspect
 import requests
 
 def send_telegram_message(message):
+    if not Config.TELEGRAM_STATS_ENABLED:
+        log_it("i", "Sending stats via Telegram is not enabled.")
+        return
     missing_configs = []
     
     if not Config.TELEGRAM_STATS_TIME:
@@ -30,7 +33,7 @@ def send_telegram_message(message):
         if response.status_code == 200:
             log_it("i", "Telegram message sent!")
         else:
-            log_it("i", f"Sending Telegram message failed! Status code: {response.status_code}, Response: {response.text}")
+            log_it("e", f"Sending Telegram message failed! Status code: {response.status_code}, Response: {response.text}")
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")

@@ -114,7 +114,7 @@ def generate_data(template_name, return_as_json=False, is_top_level_template=Fal
         if return_as_json:
             general_info = generate_general_info(format_time=False)
             network_info = generate_network_info()
-            response = json.dumps({"general_info": general_info, "network_info": network_info})
+            response = json.dumps({"general_info": general_info, "network_info": network_info}, indent=4)
             log_it("d", response)
             return response
         general_info = generate_general_info(format_time=True)

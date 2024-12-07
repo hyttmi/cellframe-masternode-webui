@@ -107,11 +107,11 @@ def get_sys_stats():
 @cachetools.func.ttl_cache(maxsize=10)
 def get_installed_node_version():
     try:
-        log_it("i", "Fetching installed node version...")
+        log_it("d", "Fetching installed node version...")
         version = cli_command("version", timeout=5)
         if version:
             current_version = version.split()[2].replace("-",".")
-            log_it("i", f"Installed node version: {current_version}")
+            log_it("d", f"Installed node version: {current_version}")
             return current_version
         return None
     except Exception as e:
@@ -122,13 +122,14 @@ def get_installed_node_version():
 @cachetools.func.ttl_cache(maxsize=10, ttl=7200)
 def get_latest_node_version():
     try:
-        log_it("i", "Fetching latest node version...")
+        log_it("d", "Fetching latest node version...")
         response = requests.get("https://pub.cellframe.net/linux/cellframe-node/master/?C=M&O=D", timeout=5)
         if response.status_code == 200:
             matches = re.findall(r"(\d\.\d-\d{3})", response.text)
             if matches:
                 versions = [match.replace("-", ".") for match in matches]
                 latest_version = max(versions, key=parse)
+                log_it("d", f"Installed node version: {latest_version}")
                 return latest_version
             return None
         log_it("e", f"Error fetching latest node version from {response.url}, status code: {response.status_code}")

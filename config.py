@@ -18,7 +18,7 @@ class Config:
     API_TOKEN = get_config_value("webui", "api_token", default=False, is_numeric=False)
     AUTH_BYPASS = get_config_value("webui", "auth_bypass", default=False, is_numeric=False)
     CACHE_BLOCKS_INTERVAL = get_config_value("webui", "cache_blocks_interval", default=15, is_numeric=True)
-    CACHE_REWARDS_INTERVAL = get_config_value("webui", "cache_rewards_interval", default=15)
+    CACHE_REWARDS_INTERVAL = get_config_value("webui", "cache_rewards_interval", default=15, is_numeric=True)
     DEBUG = get_config_value("webui", "debug", default=False, is_numeric=False)
     EMAIL_RECIPIENTS = get_config_value("webui", "email_recipients", default=None, is_numeric=False)
     EMAIL_STATS_ENABLED = get_config_value("webui", "email_stats", default=False, is_numeric=False)
