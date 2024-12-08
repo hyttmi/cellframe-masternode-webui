@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.02] - 2024-12-07
+## [3.02] - 2024-12-08
 
 ### Added
 - Send cookie to provide authentication on devices after first successful login
