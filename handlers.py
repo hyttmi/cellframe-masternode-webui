@@ -1,9 +1,9 @@
 from config import Config
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from generators import generate_data
 from logger import log_it
 from pycfhelpers.node.http.simple import CFSimpleHTTPResponse
-import base64, hashlib, pytz
+import base64, hashlib
 
 def generate_cookie(username, password):
     data = f"{username}:{password}"
@@ -30,7 +30,7 @@ def request_handler(request):
 def web_request_handler(headers, bypass_auth=False):
     auth_header = headers.get("Authorization")
     cookie_header = headers.get("Cookie")
-    cookie_expires = (datetime.now(pytz.utc) + timedelta(days=90)).strftime('%a, %d %b %Y %H:%M:%S GMT') # 90 days should be enough
+    cookie_expires = (datetime.now(timezone.utc) + timedelta(days=90)).strftime('%a, %d %b %Y %H:%M:%S GMT') # 90 days should be enough
     expected_username = Config.USERNAME
     expected_password = Config.PASSWORD
     expected_cookie = generate_cookie(expected_username, expected_password)
@@ -52,7 +52,10 @@ def web_request_handler(headers, bypass_auth=False):
                     response_body = generate_data("template.html").encode("utf-8")
                     return CFSimpleHTTPResponse(body=response_body,
                                                 code=200,
-                                                headers = {"Content-Type": "text/html"})
+                                                headers = {
+                                                    "Content-Type": "text/html",
+                                                    "Set-Cookie": f"auth_cookie={expected_cookie}; HttpOnly; Path=/; Expires={cookie_expires}"
+                                                })
                 except Exception as e:
                     log_it("e", f"Error generating response: {e}")
                     return CFSimpleHTTPResponse(body=b"<h1>Internal Server Error</h1>", code=200)
