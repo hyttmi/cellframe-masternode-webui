@@ -314,7 +314,7 @@
             </div>
             {% endif %}
 
-            {% if network.node_data.stake_value is not none %}
+            {% if network.node_data is not none %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_stake_value_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -328,7 +328,7 @@
             </div>
             {% endif %}
 
-            {% if network.node_data.effective_value is not none %}
+            {% if network.node_data is not none %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_effective_value_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -342,7 +342,7 @@
             </div>
             {% endif %}
 
-            {% if network.node_data.related_weight is not none %}
+            {% if network.node_data is not none %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_related_weight_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -406,7 +406,7 @@
             </div>
             {% endif %}
             
-            {% if network.all_signed_blocks_dict is not none %}
+            {% if network.all_signed_blocks_dict | length > 0 %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="signed_blocks_last_n_days_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -445,7 +445,7 @@
             </div>
             {% endif %}
             
-            {% if network.rewards is not none %}
+            {% if network.rewards | length > 0 %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="rewards_last_n_days_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">

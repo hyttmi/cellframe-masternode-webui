@@ -143,8 +143,7 @@ def get_network_status(network):
                 "address": addr_match.group(1)
             }
             return net_status
-        else:
-            return None
+        return None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
@@ -161,8 +160,7 @@ def get_autocollect_rewards(network):
                     return sum(float(amount) for amount in amounts)
                 else:
                     return None
-        else:
-            return None
+        return None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
@@ -173,8 +171,7 @@ def get_node_dump(network):
         cmd_get_node_dump = cli_command(f"node dump -net {network}")
         if cmd_get_node_dump:
             return cmd_get_node_dump
-        else:
-            return None
+        return None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
@@ -186,8 +183,7 @@ def get_is_node_synced(network):
         match = re.search(r"main:\s*status: synced", net_status)
         if match:
             return True
-        else:
-            return False
+        return False
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
@@ -209,11 +205,12 @@ def get_rewards(network, total_sum=False):
                     rewards[formatted_date_str] += amount
                 else:
                     rewards[formatted_date_str] = amount
-        sorted_dict = dict(OrderedDict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))))
-        if not total_sum:
-            return sorted_dict
-        else:
-            return sum(rewards.values())
+            sorted_dict = dict(OrderedDict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))))
+            if not total_sum:
+                return sorted_dict
+            else:
+                return sum(rewards.values())
+        return None
     except FileNotFoundError:
         log_it("e", "Rewards file not found!")
         return None
@@ -248,6 +245,7 @@ def get_blocks(network, block_type="count", today=False):
         if block_type == "first_signed_blocks_count":
             return block_data['first_signed_blocks_count']
 
+        return None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
