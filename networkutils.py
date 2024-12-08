@@ -17,10 +17,10 @@ def get_active_networks():
         return None
 
 def get_network_config(network):
-    config_file = f"/opt/cellframe-node/etc/network/{network}.cfg"
+    network_config_file = f"/opt/cellframe-node/etc/network/{network}.cfg"
     net_config = {}
     try:
-        with open(config_file, "r") as file:
+        with open(network_config_file, "r") as file:
             for line in file:
                 line = line.strip()
                 cert_match = re.search(r"^blocks-sign-cert=(.+)", line)
@@ -31,11 +31,8 @@ def get_network_config(network):
                     net_config["wallet"] = wallet_match.group(1)
                 if "blocks_sign_cert" in net_config and "wallet" in net_config:
                     return net_config
-            log_it("e", f"Necessary information missing in {config_file}, not a masternode?")
+            log_it("e", f"Necessary information missing in {network_config_file}, not a masternode?")
             return None
-    except FileNotFoundError:
-        log_it("e", f"Configuration file for {network} not found!")
-        return None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
