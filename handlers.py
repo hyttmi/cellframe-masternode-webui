@@ -2,7 +2,11 @@ from config import Config
 from generators import generate_data
 from logger import log_it
 from pycfhelpers.node.http.simple import CFSimpleHTTPResponse
-import base64
+import base64, hashlib
+
+def generate_cookie(username, password):
+    data = f"{username}:{password}"
+    return hashlib.sha256(data.encode("utf-8")).hexdigest()
 
 def request_handler(request):
     headers = request.headers
@@ -24,8 +28,10 @@ def request_handler(request):
 
 def web_request_handler(headers, bypass_auth=False):
     auth_header = headers.get("Authorization")
+    cookie_header = headers.get("Cookie")
     expected_username = Config.USERNAME
     expected_password = Config.PASSWORD
+    expected_cookie = generate_cookie(expected_username, expected_password)
 
     if not bypass_auth:
         if not expected_username or not expected_password:
@@ -34,6 +40,20 @@ def web_request_handler(headers, bypass_auth=False):
                 body=b"Missing configuration in cellframe-node.cfg. Username or password is not set, plugin will be unavailable!",
                 code=200
             )
+
+        if cookie_header:
+            cookies = dict(item.split("=") for item in cookie_header.split("; "))
+            auth_cookie = cookies.get("auth_cookie")
+            print(f"Got {auth_cookie}")
+            if auth_cookie and auth_cookie == expected_cookie: # Oooh, a chocolate chip cookie!
+                try:
+                    response_body = generate_data("template.html").encode("utf-8")
+                    return CFSimpleHTTPResponse(body=response_body,
+                                                code=200,
+                                                headers = {"Content-Type": "text/html"})
+                except Exception as e:
+                    log_it("e", f"Error generating response: {e}")
+                    return CFSimpleHTTPResponse(body=b"<h1>Internal Server Error</h1>", code=200)
 
         if not auth_header:
             log_it("e", "Missing Authorization header")
@@ -68,7 +88,11 @@ def web_request_handler(headers, bypass_auth=False):
         response_body = generate_data("template.html").encode("utf-8")
         return CFSimpleHTTPResponse(body=response_body,
                                     code=200,
-                                    headers = {"Content-Type": "text/html"})
+                                    headers = {
+                                        "Content-Type": "text/html",
+                                        "Set-Cookie": f"auth_cookie={expected_cookie}; HttpOnly; Path=/"
+                                        }
+                                    )
     except Exception as e:
         log_it("e", f"Error generating response: {e}")
         return CFSimpleHTTPResponse(body=b"<h1>Internal Server Error</h1>", code=200)
