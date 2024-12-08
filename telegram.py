@@ -4,9 +4,6 @@ import inspect
 import requests
 
 def send_telegram_message(message):
-    if not Config.TELEGRAM_STATS_ENABLED:
-        log_it("i", "Sending stats via Telegram is not enabled.")
-        return
     missing_configs = []
     
     if not Config.TELEGRAM_STATS_TIME:
