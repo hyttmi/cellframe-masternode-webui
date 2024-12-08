@@ -605,20 +605,19 @@
     
     <script>
         {% if network_info and network_info.items() %}
-            var blocksData = {};
-            var blocksCharts = {};
-            var rewardsData = {};
-            var rewardsCharts = {};
     
             {% for network_name, network in network_info.items() %}
-                {% if network.all_signed_blocks_dict %}
+                {% if network.all_signed_blocks_dict | length > 0 %}
+                    var blocksData = {};
                     blocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
                 {% endif %}
-                {% if network.rewards %}
+                {% if network.rewards | length > 0 %}
+                    var rewardsData = {};
                     rewardsData['{{ network_name }}'] = {{ network.rewards | tojson }};
                 {% endif %}
             
-                {% if network.all_signed_blocks_dict %}
+                {% if network.all_signed_blocks_dict | length > 0 %}
+                    var blocksCharts = {};
                     var blocksCtx{{ network_name }} = document.getElementById('blocksChart_{{ network_name }}').getContext('2d');
                     blocksCharts['{{ network_name }}'] = new Chart(blocksCtx{{ network_name }}, {
                         type: 'line',
@@ -664,7 +663,8 @@
                     updateChart('blocksChart', 7, '{{ network_name }}');
                 {% endif %}
             
-                {% if network.rewards %}
+                {% if network.rewards | length > 0 %}
+                    var rewardsCharts = {};
                     var rewardsCtx{{ network_name }} = document.getElementById('rewardsChart_{{ network_name }}').getContext('2d');
                     rewardsCharts['{{ network_name }}'] = new Chart(rewardsCtx{{ network_name }}, {
                         type: 'line',
