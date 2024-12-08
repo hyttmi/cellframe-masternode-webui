@@ -39,9 +39,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/op
 - `email_time=23:59` - Set time when you want to send the statistics. **24h format (HH:MM)**
 - `email_use_ssl=true|false` - Use SSL for mail delivery.
 - `email_use_tls=true|false` - Use TLS for mail delivery.
-- `password=p455w0rd` - Sets password to p455w0rd. **MANDATORY UNLESS `auth_bypass` SET TO TRUE**
-- `rate_limit_interval=n` Sets rate limit interval to `n` seconds. Default value is 15 seconds.
-- `rate_limit=true|false` - If set, rate limit per request will be set to `rate_limit_interval` seconds. Defaults to false.
+- `password=p455w0rd` - Sets password to p455w0rd. Default: `webui`
 - `scheduler_delay_on_startup` - Sets delay for functions which are passed to scheduler and launched directly on startup. Default value is 60 seconds
 - `smtp_password=<your_smtp_password>` - SMTP password for mail delivery.
 - `smtp_port=465` - SMTP port to use for mail delivery.
@@ -53,7 +51,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/op
 - `telegram_stats=true|false` - Enable timed Telegram messages.
 - `template=something` - Change template to something. If not set, default template will be used (cards). Oldskool theme is also available by default.
 - `uri=something` - Change plugin URI. Defaults to `webui`.
-- `username=john` - Sets http authentication as user john. **MANDATORY UNLESS `auth_bypass` SET TO TRUE**
+- `username=john` - Sets http authentication as user john. Default: `webui`
 
 ### Using GMail with email stats
 
