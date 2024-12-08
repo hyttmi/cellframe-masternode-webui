@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.02] - 2024-12-07
+
+### Added
+- Send cookie to provide authentication on devices after first successful login
+
+### Changed
+- If username and password are empty, the are set by default to `webui` and `webui`.
+
+### Improved
+- Scheduler logic again...
+
 ## [3.01] - 2024-12-07
 
 ### Improved
