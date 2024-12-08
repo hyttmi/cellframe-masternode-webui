@@ -1,6 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor
 from config import Config
-from datetime import datetime, timedelta
 from handlers import request_handler
 from logger import log_it
 from pycfhelpers.node.http.simple import CFSimpleHTTPServer, CFSimpleHTTPRequestHandler
