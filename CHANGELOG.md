@@ -6,7 +6,7 @@
 - Send cookie to provide authentication on devices after first successful login
 
 ### Changed
-- If username and password are empty, the are set by default to `webui` and `webui`.
+- If username and password are empty, they are set by default to `webui` and `webui`.
 
 ### Improved
 - Scheduler logic again...
