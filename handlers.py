@@ -30,7 +30,7 @@ def request_handler(request):
 def web_request_handler(headers, bypass_auth=False):
     auth_header = headers.get("Authorization")
     cookie_header = headers.get("Cookie")
-    cookie_expires = (datetime.now(timezone.utc) + timedelta(days=90)).strftime('%a, %d %b %Y %H:%M:%S GMT') # 90 days should be enough
+    cookie_expires = (datetime.now(timezone.utc) + timedelta(days=14)).strftime('%a, %d %b %Y %H:%M:%S GMT') # 2 weeks
     expected_username = Config.USERNAME
     expected_password = Config.PASSWORD
     expected_cookie = generate_cookie(expected_username, expected_password)

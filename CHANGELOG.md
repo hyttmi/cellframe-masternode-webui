@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.03] - XXXX-XX-XX
+
+### Added
+- Fetching active nodes per network
+
+### Changed
+- Always update cookie on login
+
 ## [3.02] - 2024-12-08
 
 ### Added
