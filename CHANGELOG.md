@@ -7,6 +7,8 @@
 
 ### Changed
 - Always update cookie on login
+- Removed handling of FileNotFoundError for missing network configuration, as this scenario is deemed impossible.
+- Improved cards template a lot by adding much better checking for empty dicts.
 
 ## [3.02] - 2024-12-08
 
