@@ -516,20 +516,16 @@
             var clearStorageBtn = document.getElementById("clearstorage");
     
             function toggleLocalStorageBtn() {
-                var hasLocalStorage = localStorage.getItem('cfclosed') || (() => {
-                    for (let i = 0; i < localStorage.length; i++) {
-                        if (localStorage.key(i).startsWith('cfcards-')) {
-                            return true;
-                        }
-                    }
-                    return false;
-                })();
-
-                clearStorageBtn.style.display ? "block" : "none";
+                var hasCardsHidden = localStorage.getItem('cfclosed');
+                if (!hasCardsHidden) {
+                    clearStorageBtn.style.display = 'none';
+                } else {
+                    clearStorageBtn.style.display = 'block';
+                }
             }
     
             clearStorageBtn.addEventListener('click', function() {
-                localStorage.clear();
+                localStorage.removeItem('cfclosed');
                 location.reload();
             });
     
