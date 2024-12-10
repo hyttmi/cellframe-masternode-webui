@@ -314,7 +314,6 @@
             </div>
             {% endif %}
             {% if network.node_data | length > 0 %}
-            {% if network.node_data is not none %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_stake_value_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -326,9 +325,7 @@
                     <i class="fa-solid fa-dollar-sign icon-container"></i>
                 </div>
             </div>
-            {% endif %}
 
-            {% if network.node_data is not none %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_effective_value_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -340,9 +337,7 @@
                     <i class="fa-solid fa-dollar-sign icon-container"></i>
                 </div>
             </div>
-            {% endif %}
 
-            {% if network.node_data is not none %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_related_weight_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -354,9 +349,7 @@
                     <i class="fa-solid fa-weight-scale icon-container"></i>
                 </div>
             </div>
-            {% endif %}
-            {{ network.node_data }}
-            {% if network.node_data is not none %}
+            
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="active_nodes_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -368,7 +361,6 @@
                     <i class="fa-solid fa-circle-nodes icon-container"></i>
                 </div>
             </div>
-            {% endif %}
             {% endif %}
 
             {% if network.token_price is not none %}
