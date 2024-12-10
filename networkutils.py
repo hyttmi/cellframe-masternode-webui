@@ -101,7 +101,7 @@ def get_node_data(network):
             if active_nodes:
                 node_data['active_nodes'] = active_nodes
             if total_weight_in_network:
-                node_data['total_weight_in_network'] = total_weight_in_network.group(1)
+                node_data['total_weight_in_network'] = float(total_weight_in_network.group(1))
 
             for line in lines[idx + 1:]:
                 if "pkey_hash:" in line:
