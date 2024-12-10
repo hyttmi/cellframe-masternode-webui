@@ -11,6 +11,7 @@
 - Removed handling of FileNotFoundError for missing network configuration, as this scenario is deemed impossible.
 - Improved cards template a lot by adding much better checking for empty dicts.
 - Cookie now has expiration date (14 days since login), which allows permanent logins without password if logged in once in every 14 days.
+- Better conditional statements again for template
 
 ## [3.02] - 2024-12-08
 
