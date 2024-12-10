@@ -83,6 +83,7 @@ def get_node_data(network):
             addr = status['address']
             list_keys = cli_command(f"srv_stake list keys -net {network}")
             active_nodes = len(re.findall(r"active: true", list_keys))
+            total_weight_in_network = re.search(r"total_weight_coins:\s+(\d+\.\d+)", list_keys)
             lines = list_keys.splitlines()
             idx = None
             for i, line in enumerate(lines):
@@ -98,7 +99,9 @@ def get_node_data(network):
             node_data = {}
             
             if active_nodes:
-                    node_data['active_nodes'] = active_nodes
+                node_data['active_nodes'] = active_nodes
+            if total_weight_in_network:
+                node_data['total_weight_in_network'] = total_weight_in_network.group(1)
 
             for line in lines[idx + 1:]:
                 if "pkey_hash:" in line:
