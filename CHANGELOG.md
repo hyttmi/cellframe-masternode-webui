@@ -1,12 +1,25 @@
 # Changelog
 
+## [3.03] - 2024-12-10
+
+### Added
+- Fetching active nodes per network
+- Fetching total weight in networks (all nodes)
+
+### Changed
+- Always update cookie on login
+- Removed handling of FileNotFoundError for missing network configuration, as this scenario is deemed impossible.
+- Improved cards template a lot by adding much better checking for empty dicts.
+- Cookie now has expiration date (14 days since login), which allows permanent logins without password if logged in once in every 14 days.
+- Better conditional statements again for template
+
 ## [3.02] - 2024-12-08
 
 ### Added
 - Send cookie to provide authentication on devices after first successful login
 
 ### Changed
-- If username and password are empty, the are set by default to `webui` and `webui`.
+- If username and password are empty, they are set by default to `webui` and `webui`.
 
 ### Improved
 - Scheduler logic again...

@@ -17,10 +17,10 @@ def get_active_networks():
         return None
 
 def get_network_config(network):
-    config_file = f"/opt/cellframe-node/etc/network/{network}.cfg"
+    network_config_file = f"/opt/cellframe-node/etc/network/{network}.cfg"
     net_config = {}
     try:
-        with open(config_file, "r") as file:
+        with open(network_config_file, "r") as file:
             for line in file:
                 line = line.strip()
                 cert_match = re.search(r"^blocks-sign-cert=(.+)", line)
@@ -31,11 +31,8 @@ def get_network_config(network):
                     net_config["wallet"] = wallet_match.group(1)
                 if "blocks_sign_cert" in net_config and "wallet" in net_config:
                     return net_config
-            log_it("e", f"Necessary information missing in {config_file}, not a masternode?")
+            log_it("e", f"Necessary information missing in {network_config_file}, not a masternode?")
             return None
-    except FileNotFoundError:
-        log_it("e", f"Configuration file for {network} not found!")
-        return None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
@@ -52,8 +49,7 @@ def get_autocollect_status(network):
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
         return None
-        
-@cachetools.func.ttl_cache(maxsize=10, ttl=3600)
+
 def get_token_price(network):
     try:
         log_it("d", "Fetching token price...")
@@ -86,6 +82,8 @@ def get_node_data(network):
         if status:
             addr = status['address']
             list_keys = cli_command(f"srv_stake list keys -net {network}")
+            active_nodes = len(re.findall(r"active: true", list_keys))
+            total_weight_in_network = re.search(r"total_weight_coins:\s+(\d+\.\d+)", list_keys)
             lines = list_keys.splitlines()
             idx = None
             for i, line in enumerate(lines):
@@ -99,6 +97,11 @@ def get_node_data(network):
                 idx -= 1
 
             node_data = {}
+            
+            if active_nodes:
+                node_data['active_nodes'] = active_nodes
+            if total_weight_in_network:
+                node_data['total_weight_in_network'] = float(total_weight_in_network.group(1))
 
             for line in lines[idx + 1:]:
                 if "pkey_hash:" in line:
@@ -143,8 +146,7 @@ def get_network_status(network):
                 "address": addr_match.group(1)
             }
             return net_status
-        else:
-            return None
+        return None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
@@ -161,8 +163,7 @@ def get_autocollect_rewards(network):
                     return sum(float(amount) for amount in amounts)
                 else:
                     return None
-        else:
-            return None
+        return None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
@@ -173,8 +174,7 @@ def get_node_dump(network):
         cmd_get_node_dump = cli_command(f"node dump -net {network}")
         if cmd_get_node_dump:
             return cmd_get_node_dump
-        else:
-            return None
+        return None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
@@ -186,8 +186,7 @@ def get_is_node_synced(network):
         match = re.search(r"main:\s*status: synced", net_status)
         if match:
             return True
-        else:
-            return False
+        return False
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
@@ -209,11 +208,12 @@ def get_rewards(network, total_sum=False):
                     rewards[formatted_date_str] += amount
                 else:
                     rewards[formatted_date_str] = amount
-        sorted_dict = dict(OrderedDict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))))
-        if not total_sum:
-            return sorted_dict
-        else:
-            return sum(rewards.values())
+            sorted_dict = dict(OrderedDict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))))
+            if not total_sum:
+                return sorted_dict
+            else:
+                return sum(rewards.values())
+        return None
     except FileNotFoundError:
         log_it("e", "Rewards file not found!")
         return None
@@ -248,6 +248,7 @@ def get_blocks(network, block_type="count", today=False):
         if block_type == "first_signed_blocks_count":
             return block_data['first_signed_blocks_count']
 
+        return None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")

@@ -313,8 +313,7 @@
                 </div>
             </div>
             {% endif %}
-
-            {% if network.node_data.stake_value is not none %}
+            {% if network.node_data | length > 0 %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_stake_value_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -326,9 +325,7 @@
                     <i class="fa-solid fa-dollar-sign icon-container"></i>
                 </div>
             </div>
-            {% endif %}
 
-            {% if network.node_data.effective_value is not none %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_effective_value_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -340,9 +337,7 @@
                     <i class="fa-solid fa-dollar-sign icon-container"></i>
                 </div>
             </div>
-            {% endif %}
 
-            {% if network.node_data.related_weight is not none %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_related_weight_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -352,6 +347,30 @@
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.related_weight }}%</h6>
                     </div>
                     <i class="fa-solid fa-weight-scale icon-container"></i>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="total_network_weight_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">Total network weight</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.total_weight_in_network }}</h6>
+                    </div>
+                    <i class="fa-solid fa-weight-scale icon-container"></i>
+                </div>
+            </div>
+            
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="active_nodes_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">Active nodes</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.active_nodes }}</h6>
+                    </div>
+                    <i class="fa-solid fa-circle-nodes icon-container"></i>
                 </div>
             </div>
             {% endif %}
@@ -406,7 +425,7 @@
             </div>
             {% endif %}
             
-            {% if network.all_signed_blocks_dict is not none %}
+            {% if network.all_signed_blocks_dict | length > 0 %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="signed_blocks_last_n_days_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -445,7 +464,7 @@
             </div>
             {% endif %}
             
-            {% if network.rewards is not none %}
+            {% if network.rewards | length > 0 %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="rewards_last_n_days_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -501,7 +520,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             var clearStorageBtn = document.getElementById("clearstorage");
     
-            function toggleLocalStorageDiv() {
+            function toggleLocalStorageBtn() {
                 var hasCardsHidden = localStorage.getItem('cfclosed');
                 if (!hasCardsHidden) {
                     clearStorageBtn.style.display = 'none';
@@ -510,7 +529,7 @@
                 }
             }
     
-            toggleLocalStorageDiv();
+            toggleLocalStorageBtn();
     
             clearStorageBtn.addEventListener('click', function() {
                 localStorage.removeItem('cfclosed');
@@ -563,7 +582,7 @@
                                 closedCards.push(cardId);
                                 localStorage.setItem('cfclosed', JSON.stringify(closedCards));
                             }
-                            toggleLocalStorageDiv();
+                            toggleLocalStorageBtn();
                         }, { once: true });
                     }
                 });
@@ -605,20 +624,19 @@
     
     <script>
         {% if network_info and network_info.items() %}
-            var blocksData = {};
-            var blocksCharts = {};
-            var rewardsData = {};
-            var rewardsCharts = {};
     
             {% for network_name, network in network_info.items() %}
-                {% if network.all_signed_blocks_dict %}
+                {% if network.all_signed_blocks_dict | length > 0 %}
+                    var blocksData = {};
                     blocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
                 {% endif %}
-                {% if network.rewards %}
+                {% if network.rewards | length > 0 %}
+                    var rewardsData = {};
                     rewardsData['{{ network_name }}'] = {{ network.rewards | tojson }};
                 {% endif %}
             
-                {% if network.all_signed_blocks_dict %}
+                {% if network.all_signed_blocks_dict | length > 0 %}
+                    var blocksCharts = {};
                     var blocksCtx{{ network_name }} = document.getElementById('blocksChart_{{ network_name }}').getContext('2d');
                     blocksCharts['{{ network_name }}'] = new Chart(blocksCtx{{ network_name }}, {
                         type: 'line',
@@ -664,7 +682,8 @@
                     updateChart('blocksChart', 7, '{{ network_name }}');
                 {% endif %}
             
-                {% if network.rewards %}
+                {% if network.rewards | length > 0 %}
+                    var rewardsCharts = {};
                     var rewardsCtx{{ network_name }} = document.getElementById('rewardsChart_{{ network_name }}').getContext('2d');
                     rewardsCharts['{{ network_name }}'] = new Chart(rewardsCtx{{ network_name }}, {
                         type: 'line',
