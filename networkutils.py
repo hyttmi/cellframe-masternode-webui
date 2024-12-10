@@ -49,8 +49,7 @@ def get_autocollect_status(network):
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
         return None
-        
-@cachetools.func.ttl_cache(maxsize=10, ttl=3600)
+
 def get_token_price(network):
     try:
         log_it("d", "Fetching token price...")
