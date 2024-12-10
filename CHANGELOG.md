@@ -4,6 +4,7 @@
 
 ### Added
 - Fetching active nodes per network
+- Fetching total weight in networks (all nodes)
 
 ### Changed
 - Always update cookie on login

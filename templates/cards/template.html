@@ -313,8 +313,8 @@
                 </div>
             </div>
             {% endif %}
-
-            {% if network.node_data is not none %}
+            {% if network.node_data | length > 0 %}
+            {% if network.node_data.stake_value is not none %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_stake_value_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -328,7 +328,7 @@
             </div>
             {% endif %}
 
-            {% if network.node_data is not none %}
+            {% if network.node_data.effective value is not none %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_effective_value_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -342,7 +342,7 @@
             </div>
             {% endif %}
 
-            {% if network.node_data is not none %}
+            {% if network.node_data.related_weight is not none %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_related_weight_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -356,7 +356,21 @@
             </div>
             {% endif %}
 
-            {% if network.node_data is not none %}
+            {% if network.node_data.total_weight_in_network is not none %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_related_weight_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">Network total weight</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.total_weight_in_network }}%</h6>
+                    </div>
+                    <i class="fa-solid fa-weight-scale icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.node_data.active_nodes is not none %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="active_nodes_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -368,6 +382,7 @@
                     <i class="fa-solid fa-circle-nodes icon-container"></i>
                 </div>
             </div>
+            {% endif %}
             {% endif %}
 
             {% if network.token_price is not none %}
