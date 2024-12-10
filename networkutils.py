@@ -83,7 +83,7 @@ def get_node_data(network):
         if status:
             addr = status['address']
             list_keys = cli_command(f"srv_stake list keys -net {network}")
-            active_nodes = re.findall(r"active: true", list_keys)
+            active_nodes = len(re.findall(r"active: true", list_keys))
             lines = list_keys.splitlines()
             idx = None
             for i, line in enumerate(lines):
@@ -99,7 +99,7 @@ def get_node_data(network):
             node_data = {}
             
             if active_nodes:
-                    node_data['active_nodes'] = int(len(active_nodes))
+                    node_data['active_nodes'] = active_nodes
 
             for line in lines[idx + 1:]:
                 if "pkey_hash:" in line:
