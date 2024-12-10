@@ -173,7 +173,8 @@ def get_node_dump(network):
     try:
         cmd_get_node_dump = cli_command(f"node dump -net {network}")
         if cmd_get_node_dump:
-            return cmd_get_node_dump
+            lines = cmd_get_node_dump.splitlines()
+            return "\n".join(lines[:-1])
         return None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name

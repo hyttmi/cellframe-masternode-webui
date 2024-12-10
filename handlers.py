@@ -46,7 +46,6 @@ def web_request_handler(headers, bypass_auth=False):
         if cookie_header:
             cookies = dict(item.split("=") for item in cookie_header.split("; "))
             auth_cookie = cookies.get("auth_cookie")
-            print(f"Got {auth_cookie}")
             if auth_cookie and auth_cookie == expected_cookie: # Oooh, a chocolate chip cookie!
                 try:
                     response_body = generate_data("template.html").encode("utf-8")
