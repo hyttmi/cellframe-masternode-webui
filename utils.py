@@ -48,7 +48,7 @@ def fetch_and_install_plugin_update():
                 response = requests.get("https://api.github.com/repos/hyttmi/cellframe-masternode-webui/releases/latest", timeout=5)
                 if response.status_code == 200:
                     latest_release = response.json()
-                    download_url = latest_release['tarball_url'] if latest_release['tarball_url'] else None
+                    download_url = latest_release['zipball_url'] if latest_release['zipball_url'] else None
                     if download_url:
                         download_path = os.path.join(update_path)
                         os.makedirs(download_path, exist_ok=True)
