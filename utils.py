@@ -62,30 +62,13 @@ def fetch_and_install_plugin_update():
                             log_it("i", f"Downloaded latest release to {save_path}.")
                             log_it("i", f"Extracting the update to the parent directory.")
                             with zipfile.ZipFile(save_path, 'r') as Z:
-                                for member in Z.namelist():
-                                    if not member.endswith('/'): # Somehow there's no "easy" way to extract just the files out from the zip package?
-                                        filename = os.path.basename(member)
-                                        member_path = os.path.join(get_current_script_directory(), filename)
-                                        with open(member_path, 'wb') as output_file:
-                                            output_file.write(Z.read(member))
+                                for files in Z.namelist():
+                                    if not files.endswith('/'): # Somehow there's no "easy" way to extract just the files out from the zip package?
+                                        filename = os.path.basename(files)
+                                        files_path = os.path.join(get_current_script_directory(), filename)
+                                        with open(files_path, 'wb') as output_file:
+                                            output_file.write(Z.read(filename))
                             log_it("i", f"Update extracted successfully.")
-                            requirements_path = os.path.join(get_current_script_directory(), "requirements.txt")
-                            if os.path.exists(requirements_path):
-                                pip = f"/opt/cellframe-node/python/bin/pip3"
-                                if os.path.exists(pip):
-                                    if not os.access(pip, os.X_OK):
-                                        log_it("i", "pip3 not executable, making it executable.")
-                                        st = os.stat(pip)
-                                        os.chmod(pip, st.st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
-                                    log_it("i", f"Installing requirements from {requirements_path}")
-                                    command = f"/opt/cellframe-node/python/bin/pip3 install -r {requirements_path}"
-                                    output = cli_command(command, is_shell_command=True)
-                                    if output:
-                                        log_it("i", "Dependencies succefully installed")
-                                else:
-                                    log_it("e", "pip3 binary not found!")
-                            else:
-                                log_it("e", "Requirements not found in the update package?")
                         else:
                             log_it("e", f"Failed to download the update file. Status code: {download_response.status_code}")
                     else:
@@ -93,7 +76,7 @@ def fetch_and_install_plugin_update():
                 else:
                     log_it("e", f"Error fetching release details. Status code: {response.status_code}")
             else:
-                log_it("i", f"Plugin is up to date. Current version: {update_info['current_version']}")
+                log_it("i", f"Plugin is up to date.")
         else:
             log_it("i", "Automatic updater is disabled.")
     except Exception as e:

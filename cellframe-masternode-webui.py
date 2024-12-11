@@ -7,7 +7,6 @@ from run_scheduler import setup_schedules
 from utils import fetch_and_install_plugin_update
 import threading, inspect
 
-
 def http_server():
     try:
         handler = CFSimpleHTTPRequestHandler(methods=["GET"], handler=request_handler)
