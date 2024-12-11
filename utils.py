@@ -62,12 +62,12 @@ def fetch_and_install_plugin_update():
                             log_it("i", f"Downloaded latest release to {save_path}.")
                             log_it("i", f"Extracting the update to the parent directory.")
                             with zipfile.ZipFile(save_path, 'r') as Z:
-                                for files in Z.namelist():
-                                    if not files.endswith('/'): # Somehow there's no "easy" way to extract just the files out from the zip package?
-                                        filename = os.path.basename(files)
-                                        files_path = os.path.join(get_current_script_directory(), filename)
-                                        with open(files_path, 'wb') as output_file:
-                                            output_file.write(Z.read(filename))
+                                for file in Z.namelist():
+                                    if not file.endswith('/'): # Somehow there's no "easy" way to extract just the files out from the zip package?
+                                        filename = os.path.basename(file)
+                                        member_path = os.path.join(get_current_script_directory(), filename)
+                                        with open(member_path, 'wb') as output_file:
+                                            output_file.write(Z.read(file))
                             log_it("i", f"Update extracted successfully.")
                         else:
                             log_it("e", f"Failed to download the update file. Status code: {download_response.status_code}")
