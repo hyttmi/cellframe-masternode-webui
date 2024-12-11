@@ -3,7 +3,7 @@ from common import cli_command, get_current_script_directory
 from config import Config
 from logger import log_it
 from packaging import version
-import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect, zipfile, shutil
+import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect, zipfile, shutil, stat
 
 def check_plugin_update():
     try:
@@ -69,6 +69,23 @@ def fetch_and_install_plugin_update():
                                         with open(member_path, 'wb') as output_file:
                                             output_file.write(Z.read(file))
                             log_it("d", f"Update extracted successfully.")
+                            requirements_path = os.path.join(get_current_script_directory(), "requirements.txt")
+                            if os.path.exists(requirements_path):
+                                pip = f"/opt/cellframe-node/python/bin/pip3"
+                                if os.path.exists(pip):
+                                    if not os.access(pip, os.X_OK):
+                                        log_it("i", "pip3 not executable, making it executable.")
+                                        st = os.stat(pip)
+                                        os.chmod(pip, st.st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+                                    log_it("i", f"Installing requirements from {requirements_path}")
+                                    command = f"/opt/cellframe-node/python/bin/pip3 install -r {requirements_path}"
+                                    output = cli_command(command, is_shell_command=True)
+                                    if output:
+                                        log_it("i", "Dependencies succefully installed")
+                                else:
+                                    log_it("e", "pip3 binary not found!")
+                            else:
+                                log_it("e", "Requirements not found in the update package?")
                         else:
                             log_it("e", f"Failed to download the update file. Status code: {download_response.status_code}")
                     else:
