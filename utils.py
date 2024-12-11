@@ -77,11 +77,11 @@ def fetch_and_install_plugin_update():
                                         log_it("i", "pip3 not executable, making it executable.")
                                         st = os.stat(pip)
                                         os.chmod(pip, st.st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
-                                    log_it("i", f"Installing requirements from {requirements_path}")
+                                    log_it("d", f"Installing requirements from {requirements_path}")
                                     command = f"/opt/cellframe-node/python/bin/pip3 install -r {requirements_path}"
                                     output = cli_command(command, is_shell_command=True)
                                     if output:
-                                        log_it("i", "Dependencies succefully installed")
+                                        log_it("i", "Dependencies successfully installed")
                                 else:
                                     log_it("e", "pip3 binary not found!")
                             else:
