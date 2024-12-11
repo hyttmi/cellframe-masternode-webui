@@ -181,7 +181,7 @@ def get_latest_node_version():
             matches = re.findall(r"(\d\.\d-\d{3})", response.text)
             if matches:
                 versions = [match.replace("-", ".") for match in matches]
-                latest_version = max(versions, key=parse)
+                latest_version = max(versions, key=version.parse)
                 log_it("d", f"Installed node version: {latest_version}")
                 return latest_version
             return None
