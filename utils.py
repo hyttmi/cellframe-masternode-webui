@@ -4,7 +4,6 @@ from common import cli_command, get_current_script_directory
 import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect, zipfile, shutil
 from config import Config
 
-@cachetools.func.ttl_cache(maxsize=10, ttl=7200)
 def check_plugin_update():
     try:
         manifest_path = os.path.join(get_current_script_directory(), "manifest.json")
@@ -83,6 +82,7 @@ def fetch_plugin_update():
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
 
+@cachetools.func.ttl_cache(maxsize=10)
 def get_external_ip():
     try:
         response = requests.get('https://ifconfig.me/ip', timeout=5)
@@ -95,6 +95,7 @@ def get_external_ip():
         log_it("e", f"Error in {func}: {e}")
         return None
 
+@cachetools.func.ttl_cache(maxsize=10)
 def get_node_pid():
     try:
         for proc in psutil.process_iter(['pid', 'name']):
@@ -108,6 +109,7 @@ def get_node_pid():
         log_it("e", f"Error in {func}: {e}")
         return None
 
+@cachetools.func.ttl_cache(maxsize=10)
 def get_system_hostname():
     try:
         return socket.gethostname()
@@ -172,7 +174,6 @@ def get_installed_node_version():
         log_it("e", f"Error in {func}: {e}")
         return None
 
-@cachetools.func.ttl_cache(maxsize=10, ttl=7200)
 def get_latest_node_version():
     try:
         log_it("d", "Fetching latest node version...")
