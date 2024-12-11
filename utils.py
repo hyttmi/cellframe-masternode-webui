@@ -83,9 +83,6 @@ def fetch_plugin_update():
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
 
-
-
-
 def get_external_ip():
     try:
         response = requests.get('https://ifconfig.me/ip', timeout=5)
