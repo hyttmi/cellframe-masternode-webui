@@ -25,14 +25,6 @@
     <div class="container-fluid mt-4">
         <span title="Reset back to default view" id="clearstorage" class="btn-primary floatbutton text-uppercase"><i class="fa-solid fa-xl fa-rotate-left floatbutton-icon"></i></span>
 
-    {% if general_info.plugin_update_available %}
-        <div class="row">
-            <div class="alert alert-danger" role="alert">
-                New version {{ general_info.latest_plugin_version }} available! You are running version {{ current_plugin_version }}.
-            </div>
-        </div>
-    {% endif %}
-
         <div class="row">
             <div class="col-12">
                 <h1 class="text-uppercase text-color-secondary">System Info</h1>
