@@ -498,7 +498,13 @@
             {% endif %}
         {% endfor %}
         {% endif %}
-            
+
+        <div class="row">
+            <div class="alert alert-danger" role="alert">
+                <span>{{ general_info.current_plugin_version }}.</span>
+            </div>
+        </div>
+    {% endif %}
         </div>
     </div>
     <script>
