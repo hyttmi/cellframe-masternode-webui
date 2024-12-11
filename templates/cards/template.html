@@ -498,14 +498,12 @@
             {% endif %}
         {% endfor %}
         {% endif %}
-
-        <div class="row">
-            <div class="alert alert-danger" role="alert">
-                <span>{{ general_info.current_plugin_version }}.</span>
-            </div>
         </div>
-    {% endif %}
+        {% if general_info.current_plugin_version %}
+        <div class="row text-center">
+            <span class="small">v{{ general_info.current_plugin_version}}</span>
         </div>
+        {% endif %}
     </div>
     <script>
         function setActive(selectedItem) {

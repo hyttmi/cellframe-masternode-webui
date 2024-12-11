@@ -3,7 +3,7 @@ from datetime import datetime
 from logger import log_it
 from pycfhelpers.node.net import CFNet
 from common import cli_command, get_current_script_directory
-import cachetools.func, re, requests, os, json, inspect
+import re, requests, os, json, inspect
 
 def get_active_networks():
     try:

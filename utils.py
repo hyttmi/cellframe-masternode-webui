@@ -10,7 +10,8 @@ def check_plugin_update():
         manifest_path = os.path.join(get_current_script_directory(), "manifest.json")
         with open(manifest_path) as manifest:
             data = json.load(manifest)
-            curr_version = version.parse(data["version"])
+            curr_version = version.parse(data['version'])
+            curr_version_str = data['version']
             log_it("d", f"Current plugin version: {curr_version}")
         url = "https://api.github.com/repos/hyttmi/cellframe-masternode-webui/releases/latest"
         response = requests.get(url, timeout=10)
@@ -18,12 +19,11 @@ def check_plugin_update():
             ver_json = response.json()
             latest_version_str = ver_json['tag_name']
             latest_version = version.parse(ver_json['tag_name'])
-            print(latest_version)
             log_it("d", f"Latest plugin version: {latest_version}")
             plugin_version_data = {
                 'update_available': curr_version < latest_version,
-                'current_version': str(curr_version),
-                'latest_version_str': str(latest_version_str)
+                'current_version': curr_version_str,
+                'latest_version': latest_version_str
             }
             return plugin_version_data
         log_it("e", f"Error fetching version data from {response.url}, status code: {response.status_code}")
@@ -44,7 +44,7 @@ def fetch_plugin_update():
                 log_it("e", "Failed to fetch plugin update information.")
                 return
             if update_info['update_available']:
-                log_it("i", f"New version available: {update_info['latest_version_str']}")
+                log_it("i", f"New version available: {update_info['latest_version']}")
                 response = requests.get("https://api.github.com/repos/hyttmi/cellframe-masternode-webui/releases/latest", timeout=5)
                 if response.status_code == 200:
                     latest_release = response.json()
