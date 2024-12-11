@@ -1,33 +1,89 @@
 from logger import log_it
-from packaging.version import Version, parse
+from packaging import version
 from common import cli_command, get_current_script_directory
-import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect
+import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect, zipfile, shutil
+from config import Config
 
+@cachetools.func.ttl_cache(maxsize=10, ttl=7200)
 def check_plugin_update():
     try:
         manifest_path = os.path.join(get_current_script_directory(), "manifest.json")
         with open(manifest_path) as manifest:
             data = json.load(manifest)
-            curr_version = Version(data["version"])
+            curr_version = version.parse(data["version"])
             log_it("d", f"Current plugin version: {curr_version}")
-        url = "https://raw.githubusercontent.com/hyttmi/cellframe-masternode-webui/refs/heads/master/manifest.json"
-        response = requests.get(url, timeout=5)
+        url = "https://api.github.com/repos/hyttmi/cellframe-masternode-webui/releases/latest"
+        response = requests.get(url, timeout=10)
         if response.status_code == 200:
-            data = response.json()
-            latest_version = Version(data["version"])
+            ver_json = response.json()
+            latest_version_str = ver_json['tag_name']
+            latest_version = version.parse(ver_json['tag_name'])
+            print(latest_version)
             log_it("d", f"Latest plugin version: {latest_version}")
             plugin_version_data = {
                 'update_available': curr_version < latest_version,
                 'current_version': str(curr_version),
-                'latest_version': str(latest_version)
+                'latest_version_str': str(latest_version_str)
             }
             return plugin_version_data
-        log_it("e", f"Error fetching manifest.json from {response.url}, status code: {response.status_code}")
+        log_it("e", f"Error fetching version data from {response.url}, status code: {response.status_code}")
         return None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
         return None
+
+def fetch_plugin_update():
+    try:
+        if Config.AUTO_UPDATE:
+            update_path = os.path.join(get_current_script_directory(), ".autoupdater")
+            if os.path.exists(update_path):
+                shutil.rmtree(update_path)
+            update_info = check_plugin_update()
+            if not update_info:
+                log_it("e", "Failed to fetch plugin update information.")
+                return
+            if update_info['update_available']:
+                log_it("i", f"New version available: {update_info['latest_version_str']}")
+                response = requests.get("https://api.github.com/repos/hyttmi/cellframe-masternode-webui/releases/latest", timeout=5)
+                if response.status_code == 200:
+                    latest_release = response.json()
+                    download_url = latest_release['zipball_url'] if latest_release['zipball_url'] else None
+                    if download_url:
+                        download_path = os.path.join(update_path)
+                        os.makedirs(download_path, exist_ok=True)
+                        save_path = os.path.join(download_path, "latest_release.zip")
+                        log_it("i", f"Downloading latest release from {download_url}")
+                        download_response = requests.get(download_url, stream=True, timeout=10)
+                        if download_response.status_code == 200:
+                            with open(save_path, "wb") as file:
+                                for chunk in download_response.iter_content(chunk_size=8192):
+                                    file.write(chunk)
+                            log_it("i", f"Downloaded latest release to {save_path}.")
+                            log_it("i", f"Extracting the update to the parent directory.")
+                            with zipfile.ZipFile(save_path, 'r') as Z:
+                                for member in Z.namelist():
+                                    if not member.endswith('/'): # Somehow there's no "easy" way to extract just the files out from the zip package?
+                                        filename = os.path.basename(member)
+                                        member_path = os.path.join(get_current_script_directory(), filename)
+                                        with open(member_path, 'wb') as output_file:
+                                            output_file.write(Z.read(member))
+                            log_it("i", f"Update extracted successfully.")
+                        else:
+                            log_it("e", f"Failed to download the update file. Status code: {download_response.status_code}")
+                    else:
+                        log_it("e", "No download URL found for the latest release.")
+                else:
+                    log_it("e", f"Error fetching release details. Status code: {response.status_code}")
+            else:
+                log_it("i", f"Plugin is up to date. Current version: {update_info['current_version']}")
+        else:
+            log_it("i", "Automatic updater is disabled.")
+    except Exception as e:
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
+
+
 
 
 def get_external_ip():
