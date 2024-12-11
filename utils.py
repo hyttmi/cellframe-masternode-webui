@@ -3,7 +3,7 @@ from common import cli_command, get_current_script_directory
 from config import Config
 from logger import log_it
 from packaging import version
-import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect, zipfile, shutil, stat
+import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect, zipfile, shutil
 
 def check_plugin_update():
     try:
@@ -12,14 +12,14 @@ def check_plugin_update():
             data = json.load(manifest)
             curr_version = version.parse(data['version'])
             curr_version_str = data['version']
-            log_it("d", f"Current plugin version: {curr_version}")
+            log_it("d", f"Current plugin version: {curr_version_str}")
         url = "https://api.github.com/repos/hyttmi/cellframe-masternode-webui/releases/latest"
         response = requests.get(url, timeout=10)
         if response.status_code == 200:
             ver_json = response.json()
             latest_version_str = ver_json['tag_name']
             latest_version = version.parse(ver_json['tag_name'])
-            log_it("d", f"Latest plugin version: {latest_version}")
+            log_it("d", f"Latest plugin version: {latest_version_str}")
             plugin_version_data = {
                 'update_available': curr_version < latest_version,
                 'current_version': curr_version_str,
