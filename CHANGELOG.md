@@ -1,9 +1,9 @@
 # Changelog
 
-## [3.04] - XXXX-XX-XX
+## [3.10] - 2024-12-12
 
 ### Added
-- Automatic updater which downloads and extracts the latest version automatically to your node. Manual restart and possible `requirements.txt` install is still required to be done manually after update (for now). For enabling, set `auto_update=true` to webui configuration section. Updater also sends a notification via Telegram and Email (if any of those is enabled) when plugin update has been downloaded end extracted succesfully.
+- Automatic updater which downloads and extracts the latest version automatically to your node. It also automatically restarts your node after successful update.
 - Installation script for easy first install.
 
 ## [3.03] - 2024-12-10
