@@ -9,21 +9,10 @@ This plugin offers an easy and efficient way to monitor your node's autocollect 
 
 You can get the latest release from [releases page](https://github.com/hyttmi/cellframe-masternode-webui/releases) or by cloning this repo.
 
-1. Enable Python plugins in `cellframe-node.cfg` so it looks on the end of the file something like this:
-```
-# Plugins
-[plugins]
-enabled=true
-# Load Python-based plugins
-py_load=true
-py_path=../var/lib/plugins
-
-```
-2. Place the `cellframe-masternode-webui` directory to `/opt/cellframe-node/var/lib/plugins/` (If it doesn't exist, create it).
-3. Go to `/opt/cellframe-node/python/bin` and make sure pip/pip3 is executable `(chmod +x pip pip3)`.
-4. Go back to `/opt/cellframe-node/var/lib/plugins/cellframe-masternode-webui` and install required packages with `/opt/cellframe-node/python/bin/pip3 install -r requirements.txt`. **AS ROOT**
-5. Before restarting your node, please read how to [configure the plugin](#configuration).
-6. Restart your node and access the WebUI with your browser (`http://<your_node_ip>:<your_node_port>/<url>` where `<url>` by default is webui).
+1. Set provided `install.sh` script executable with `chmod +x install.sh`.
+2. Run the script as root with `sudo ./install.sh`.
+3. Before restarting your node, please read **carefully** how to [configure the plugin](#configuration).
+4. Restart your node and access the WebUI with your browser (`http://<your_node_ip>:<your_node_port>/<url>` where `<url>` by default is webui).
 
 ## Configuration
 
@@ -31,6 +20,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/op
 
 - `api_token=your_own_api_token`- Used in accessing plain JSON data (You can generate your own or use a service like https://it-tools.tech/token-generator).
 - `auth_bypass=true|false` Disables HTTP authentication. Useful if you're planning to for example use the plugin behind reverse proxy. Default false.
+- `auto_update=true|false` Updates plugin files and restarts the node after update.
 - `cache_blocks_interval=10` - Time (in minutes) between blocks cache renew.
 - `cache_rewards_interval=10` - Time (in minutes) between rewards cache renew.
 - `debug=true|false` - Print debugging data to `webui.log`, useful when you're having issues with the plugin.
@@ -87,11 +77,11 @@ Here are the variables that are passed to the Jinja templates:
 - `general_info.current_plugin_version`: Shows current version of this plugin
 - `general_info.latest_plugin_version`: Returns the latest version of this plugin
 - `general_info.plugin_title`: Return plugin name
-- `general_info.hostname`: Returns your system hostname
+- `general_info.hostname`: Returns your system hostname, this value is cached and will refresh only after restart of node
 - `general_info.system_uptime`: Returns your system uptime in seconds
 - `general_info.node_uptime`: Returns Cellframe node uptime in seconds
-- `general_info.node_version`: Returns the currently installed version of Cellframe node
-- `general_info.latest_node_version`: Returns the latest version of Cellframe node **NOTE: THIS VALUE IS CACHED FOR 2 HOUR AFTER IT'S FETCHED**
+- `general_info.node_version`: Returns the currently installed version of Cellframe node, this value is cached and will refresh only after restart of node
+- `general_info.latest_node_version`: Returns the latest version of Cellframe node
 - `general_info.node_cpu_usage`: Returns the current CPU utilization of Cellframe node
 - `general_info.node_memory_usage`: Returns the current memory utilization of Cellframe node
 - `general_info.external_ip`: Returns external IP address
@@ -111,7 +101,7 @@ Here are the variables that are passed to the Jinja templates:
   - `network_info.signed_blocks_today`: The number of blocks signed today
   - `network_info.state`: The current state of the node in network
   - `network_info.target_state`: Target state for the network
-  - `network_info.token_price`: Tries to fetch and return the latest token price from CMC **NOTE: THIS VALUE IS CACHED FOR 1 HOUR AFTER IT'S FETCHED**
+  - `network_info.token_price`: Tries to fetch and return the latest token price from CMC
 
 ## Accessing data as JSON
 By default, this plugin has support for fetching all the important data from your node as JSON if you have `api_token` set in settings. Here's a sample code for fetching the data with Python:

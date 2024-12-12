@@ -5,6 +5,7 @@ from emailer import send_email
 from generators import generate_data
 from logger import log_it
 from telegram import send_telegram_message
+from utils import fetch_and_install_plugin_update
 import schedule, inspect, time
 
 def run_scheduler(func, scheduled_time, every_min=False, run_on_startup=False):
@@ -33,44 +34,68 @@ def setup_schedules():
         with ThreadPoolExecutor() as executor:
             futures = {}
             futures['blocks_caching_schedule'] = executor.submit(
-                lambda: run_scheduler(cache_blocks_data, Config.CACHE_BLOCKS_INTERVAL, every_min=True, run_on_startup=True)
+                run_scheduler,
+                cache_blocks_data,
+                Config.CACHE_BLOCKS_INTERVAL,
+                every_min=True,
+                run_on_startup=True
             )
             log_it("d", "blocks_caching_schedule submitted to ThreadPool")
+
             futures['rewards_caching_schedule'] = executor.submit(
-                lambda: run_scheduler(cache_rewards_data, Config.CACHE_REWARDS_INTERVAL, every_min=True, run_on_startup=True)
+                run_scheduler,
+                cache_rewards_data,
+                Config.CACHE_REWARDS_INTERVAL,
+                every_min=True,
+                run_on_startup=True
             )
             log_it("d", "rewards_caching_schedule submitted to ThreadPool")
 
             if Config.TELEGRAM_STATS_ENABLED:
                 futures['send_telegram_message_notification'] = executor.submit(
-                    lambda: send_telegram_message(f"Telegram sending scheduled at {Config.TELEGRAM_STATS_TIME}")
+                    send_telegram_message,
+                    f"Telegram sending scheduled at {Config.TELEGRAM_STATS_TIME}"
                 )
                 log_it("d", "send_telegram_message_notification submitted to ThreadPool")
+
                 futures['send_telegram_message_schedule'] = executor.submit(
-                    lambda: run_scheduler(
-                        lambda: send_telegram_message(generate_data("telegram.html", return_as_json=False, is_top_level_template=True)),
-                        Config.TELEGRAM_STATS_TIME,
-                        every_min=False,
-                        run_on_startup=False
-                    )
+                    run_scheduler,
+                    lambda: send_telegram_message(
+                        generate_data("telegram.html", return_as_json=False, is_top_level_template=True)
+                    ),
+                    Config.TELEGRAM_STATS_TIME,
+                    every_min=False,
+                    run_on_startup=False
                 )
                 log_it("d", "send_telegram_message_schedule submitted to ThreadPool")
 
             if Config.EMAIL_STATS_ENABLED:
                 futures['send_email_message_notification'] = executor.submit(
-                    lambda: send_email(f"Email sending scheduled at {Config.EMAIL_STATS_TIME}")
+                    send_email,
+                    f"Email sending scheduled at {Config.EMAIL_STATS_TIME}"
                 )
                 log_it("d", "send_email_message_notification submitted to ThreadPool")
 
                 futures['send_email_message_schedule'] = executor.submit(
-                    lambda: run_scheduler(
-                        lambda: send_email(generate_data("email.html", return_as_json=False, is_top_level_template=True)),
-                        Config.EMAIL_STATS_TIME,
-                        every_min=False,
-                        run_on_startup=False
-                    )
+                    run_scheduler,
+                    lambda: send_email(
+                        generate_data("email.html", return_as_json=False, is_top_level_template=True)
+                    ),
+                    Config.EMAIL_STATS_TIME,
+                    every_min=False,
+                    run_on_startup=False
                 )
                 log_it("d", "send_email_message_schedule submitted to ThreadPool")
+
+            if Config.AUTO_UPDATE:
+                futures['auto_updater'] = executor.submit(
+                    run_scheduler,
+                    lambda: fetch_and_install_plugin_update(),
+                    1440,  # Daily
+                    every_min=True,
+                    run_on_startup=True
+                )
+                log_it("d", "auto_updater submitted to ThreadPool")
 
             for name in futures:
                 log_it("d", f"{name} submitted to ThreadPool")

@@ -25,14 +25,6 @@
     <div class="container-fluid mt-4">
         <span title="Reset back to default view" id="clearstorage" class="btn-primary floatbutton text-uppercase"><i class="fa-solid fa-xl fa-rotate-left floatbutton-icon"></i></span>
 
-    {% if general_info.plugin_update_available %}
-        <div class="row">
-            <div class="alert alert-danger" role="alert">
-                New version {{ general_info.latest_plugin_version }} available! You are running version {{ current_plugin_version }}.
-            </div>
-        </div>
-    {% endif %}
-
         <div class="row">
             <div class="col-12">
                 <h1 class="text-uppercase text-color-secondary">System Info</h1>
@@ -156,10 +148,10 @@
                     <i class="fa-solid fa-code-compare icon-container"></i>
                 </div>
             </div>
-        {% endif %}
         </div>
+        {% endif %}
 
-        {% if network_info and network_info.items() %}
+        {% if network_info %}
         {% for network_name, network in network_info.items() %}
         <div class="modal fade" id="nodeInfoModal_{{ network_name }}" tabindex="-1" aria-labelledby="nodeInfoModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -171,8 +163,10 @@
                     <div class="modal-body">
                         <h5>NODE DUMP:</h5>
                         <pre>{{ network.general_node_info }}</pre>
+                        {% if network_info.node_data %}
                         <h5>NODE INFORMATION:</h5>
                         <pre>PKEY HASH: {{ network.node_data.pkey_hash }}<br>TRANSACTION HASH: {{ network.node_data.tx_hash }}<br>SOVEREIGN ADDRESS: {{ network.node_data.sovereign_addr}}<br>SOVEREIGN TAX: {{ network.node_data.sovereign_tax }}<br>ACTIVE: {{ network.node_data.active }}</pre>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -188,7 +182,7 @@
               </div>              
         </div>
         <div class="row is_sortable">
-            {% if network.state is not none %}
+            {% if network.state %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="state_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -202,7 +196,7 @@
             </div>
             {% endif %}
 
-            {% if network.target_state is not none %}
+            {% if network.target_state %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="target_state_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -216,7 +210,7 @@
             </div>
             {% endif %}
             
-            {% if network.address is not none %}
+            {% if network.address %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_address_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -230,7 +224,7 @@
             </div>
             {% endif %}
             
-            {% if network.first_signed_blocks is not none %}
+            {% if network.first_signed_blocks %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="first_signed_blocks_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -244,7 +238,7 @@
             </div>
             {% endif %}
             
-            {% if network.all_signed_blocks is not none %}
+            {% if network.all_signed_blocks %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="all_signed_blocks_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -258,7 +252,7 @@
             </div>
             {% endif %}
             
-            {% if network.signed_blocks_today is not none %}
+            {% if network.signed_blocks_today %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="signed_blocks_today_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -272,7 +266,7 @@
             </div>
             {% endif %}
             
-            {% if network.all_blocks is not none %}
+            {% if network.all_blocks %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="amount_of_blocks_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -286,7 +280,7 @@
             </div>
             {% endif %}
             
-            {% if network.autocollect_status is not none %}
+            {% if network.autocollect_status %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="autocollect_status_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -300,7 +294,7 @@
             </div>
             {% endif %}
             
-            {% if network.autocollect_rewards is not none %}
+            {% if network.autocollect_rewards %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="autocollect_rewards_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -313,7 +307,7 @@
                 </div>
             </div>
             {% endif %}
-            {% if network.node_data | length > 0 %}
+            {% if network.node_data %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_stake_value_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -375,7 +369,7 @@
             </div>
             {% endif %}
 
-            {% if network.token_price is not none %}
+            {% if network.token_price %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="token_price_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -389,7 +383,7 @@
             </div>
             {% endif %}
 
-            {% if network.all_rewards is not none %}
+            {% if network.all_rewards %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="all_rewards_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -403,7 +397,7 @@
             </div>
             {% endif %}
 
-            {% if network.fee_wallet_tokens is not none %}
+            {% if network.fee_wallet_tokens %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="reward_wallet_information_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -425,7 +419,7 @@
             </div>
             {% endif %}
             
-            {% if network.all_signed_blocks_dict | length > 0 %}
+            {% if network.all_signed_blocks_dict %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="signed_blocks_last_n_days_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -464,7 +458,7 @@
             </div>
             {% endif %}
             
-            {% if network.rewards | length > 0 %}
+            {% if network.rewards %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="rewards_last_n_days_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -504,8 +498,12 @@
             {% endif %}
         {% endfor %}
         {% endif %}
-            
         </div>
+        {% if general_info.current_plugin_version %}
+        <div class="row text-center">
+            <span class="small">v{{ general_info.current_plugin_version}}</span>
+        </div>
+        {% endif %}
     </div>
     <script>
         function setActive(selectedItem) {
@@ -622,20 +620,12 @@
         }
     </script>
     
+    {% if network_info and network_info.items() %}
     <script>
-        {% if network_info and network_info.items() %}
-    
             {% for network_name, network in network_info.items() %}
-                {% if network.all_signed_blocks_dict | length > 0 %}
+                {% if network.all_signed_blocks_dict %}
                     var blocksData = {};
                     blocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
-                {% endif %}
-                {% if network.rewards | length > 0 %}
-                    var rewardsData = {};
-                    rewardsData['{{ network_name }}'] = {{ network.rewards | tojson }};
-                {% endif %}
-            
-                {% if network.all_signed_blocks_dict | length > 0 %}
                     var blocksCharts = {};
                     var blocksCtx{{ network_name }} = document.getElementById('blocksChart_{{ network_name }}').getContext('2d');
                     blocksCharts['{{ network_name }}'] = new Chart(blocksCtx{{ network_name }}, {
@@ -682,7 +672,9 @@
                     updateChart('blocksChart', 7, '{{ network_name }}');
                 {% endif %}
             
-                {% if network.rewards | length > 0 %}
+                {% if network.rewards %}
+                    var rewardsData = {};
+                    rewardsData['{{ network_name }}'] = {{ network.rewards | tojson }};
                     var rewardsCharts = {};
                     var rewardsCtx{{ network_name }} = document.getElementById('rewardsChart_{{ network_name }}').getContext('2d');
                     rewardsCharts['{{ network_name }}'] = new Chart(rewardsCtx{{ network_name }}, {
@@ -736,8 +728,8 @@
                     updateChart('rewardsChart', 7, '{{ network_name }}');
                 {% endif %}
             {% endfor %}
-        {% endif %}
-    </script>    
+    </script>
+    {% endif %}
     
 </body>
 
