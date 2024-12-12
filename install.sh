@@ -17,7 +17,7 @@ if ! [[ -d $WEBUI_PATH ]]; then
 fi
 
 echo "Writing plugin configuration to $CFG_PATH/plugins.cfg"
-echo -e "[plugins]\nenabled=true\npy_load=true\npy_path=../var/lib/plugins" > "$CFG_PATH/python_plugins.cfg" || {
+echo -e "[server]\nenabled=true\n\n[plugins]\nenabled=true\npy_load=true\npy_path=../var/lib/plugins" > "$CFG_PATH/webui.cfg" || {
     echo "Failed to write configuration file"; exit 1;
 }
 

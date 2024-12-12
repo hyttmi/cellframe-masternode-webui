@@ -4,7 +4,6 @@ from handlers import request_handler
 from logger import log_it
 from pycfhelpers.node.http.simple import CFSimpleHTTPServer, CFSimpleHTTPRequestHandler
 from run_scheduler import setup_schedules
-from utils import fetch_and_install_plugin_update
 import threading, inspect
 
 def http_server():
@@ -35,8 +34,6 @@ def on_init():
             executor.submit(http_server)
             log_it("i", "Submitting scheduled tasks to ThreadPool")
             executor.submit(setup_schedules)
-            log_it("i", "Submitting automatic plugin updater to ThreadPool")
-            executor.submit(fetch_and_install_plugin_update)
     except Exception as e:
         log_it("e", f"Error: {e}")
 

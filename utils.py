@@ -71,12 +71,12 @@ def fetch_and_install_plugin_update():
                         if os.path.exists(requirements_path):
                             log_it("d", f"Installing requirements from {requirements_path}")
                             command = f"/opt/cellframe-node/python/bin/pip3 install -r {requirements_path}"
-                            cmd_run_pip, exit_code = cli_command(command, is_shell_command=True)
+                            cmd_run_pip = cli_command(command, is_shell_command=True)
                             if cmd_run_pip:
                                 log_it("i", "Dependencies successfully installed")
                                 cli_command("exit") # cellframe-node-cli stops with exit command, while this works when node is ran as a service, it won't work when node is started manually.
                             else:
-                                log_it("e", f"Failed to install update! Got exit code {exit_code}")
+                                log_it("e", f"Failed to install update!")
                         else:
                             log_it("e", "Requirements not found in the update package?")
                     else:
