@@ -69,20 +69,14 @@ def fetch_and_install_plugin_update():
                         log_it("d", f"Update extracted successfully.")
                         requirements_path = os.path.join(get_current_script_directory(), "requirements.txt")
                         if os.path.exists(requirements_path):
-                            pip = f"/opt/cellframe-node/python/bin/pip3"
-                            if os.path.exists(pip):
-                                if not os.access(pip, os.X_OK):
-                                    log_it("i", "pip3 not executable, making it executable.")
-                                    st = os.stat(pip)
-                                    os.chmod(pip, st.st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
-                                log_it("d", f"Installing requirements from {requirements_path}")
-                                command = f"/opt/cellframe-node/python/bin/pip3 install -r {requirements_path}"
-                                cmd_run_pip = cli_command(command, is_shell_command=True)
-                                if cmd_run_pip:
-                                    log_it("i", "Dependencies successfully installed")
+                            log_it("d", f"Installing requirements from {requirements_path}")
+                            command = f"/opt/cellframe-node/python/bin/pip3 install -r {requirements_path}"
+                            cmd_run_pip, exit_code = cli_command(command, is_shell_command=True)
+                            if cmd_run_pip:
+                                log_it("i", "Dependencies successfully installed")
                                 cli_command("exit") # cellframe-node-cli stops with exit command, while this works when node is ran as a service, it won't work when node is started manually.
                             else:
-                                log_it("e", "pip3 binary not found!")
+                                log_it("e", f"Failed to install update! Got exit code {exit_code}")
                         else:
                             log_it("e", "Requirements not found in the update package?")
                     else:
@@ -97,7 +91,6 @@ def fetch_and_install_plugin_update():
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
 
-@cachetools.func.ttl_cache(maxsize=10)
 def get_external_ip():
     try:
         response = requests.get('https://ifconfig.me/ip', timeout=5)
