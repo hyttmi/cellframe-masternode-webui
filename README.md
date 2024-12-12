@@ -77,10 +77,10 @@ Here are the variables that are passed to the Jinja templates:
 - `general_info.current_plugin_version`: Shows current version of this plugin
 - `general_info.latest_plugin_version`: Returns the latest version of this plugin
 - `general_info.plugin_title`: Return plugin name
-- `general_info.hostname`: Returns your system hostname
+- `general_info.hostname`: Returns your system hostname, this value is cached and will refresh only after restart of node
 - `general_info.system_uptime`: Returns your system uptime in seconds
 - `general_info.node_uptime`: Returns Cellframe node uptime in seconds
-- `general_info.node_version`: Returns the currently installed version of Cellframe node
+- `general_info.node_version`: Returns the currently installed version of Cellframe node, this value is cached and will refresh only after restart of node
 - `general_info.latest_node_version`: Returns the latest version of Cellframe node
 - `general_info.node_cpu_usage`: Returns the current CPU utilization of Cellframe node
 - `general_info.node_memory_usage`: Returns the current memory utilization of Cellframe node

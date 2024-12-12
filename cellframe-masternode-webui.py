@@ -6,6 +6,7 @@ from pycfhelpers.node.http.simple import CFSimpleHTTPServer, CFSimpleHTTPRequest
 from run_scheduler import setup_schedules
 import threading, inspect
 
+
 def http_server():
     try:
         handler = CFSimpleHTTPRequestHandler(methods=["GET"], handler=request_handler)
