@@ -52,8 +52,9 @@ def get_autocollect_status(network):
 
 def get_token_price(network):
     try:
+        network = str(network).lower()
         log_it("d", "Fetching token price...")
-        if network == "Backbone":
+        if network == "backbone":
             response = requests.get(f"https://coinmarketcap.com/currencies/cellframe/", timeout=5)
             if response.status_code == 200:
                 price_match = re.search(r"price today is \$(\d+.\d+)", response.text)
@@ -62,7 +63,7 @@ def get_token_price(network):
                 return None
             log_it("e", f"Failed to fetch token price from {response.url}")
             return None
-        elif network == "KelVPN":
+        elif network == "kelvpn":
             response = requests.get(f"https://kelvpn.com/about-token", timeout=5)
             if response.status_code == 200:
                 price_match =re.search(r"\$(\d+.\d+)", response.text)

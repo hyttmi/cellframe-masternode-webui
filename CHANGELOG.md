@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.11] - XXXX-XX-XX
+
+### Added
+- Option for enabling automatic updater to download pre-release versions.
+
+### Improved
+- Update checking.
+- Stopping the node is done by `psutil` now.
+
+Some minor changes to other things as well
+
 ## [3.10] - 2024-12-12
 
 ### Added

@@ -24,6 +24,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/op
 - `cache_blocks_interval=10` - Time (in minutes) between blocks cache renew.
 - `cache_rewards_interval=10` - Time (in minutes) between rewards cache renew.
 - `debug=true|false` - Print debugging data to `webui.log`, useful when you're having issues with the plugin.
+- `download_prereleases=true|false` - Automatic updater downloads also pre-release versions of plugin. Default false.
 - `email_recipients=somebody@gmail.com|[somebody@gmail.com, another@aol.com]` - Recipient(s) for the email.
 - `email_stats=true|false` - Allow sending scheduled email statistics.
 - `email_time=23:59` - Set time when you want to send the statistics. **24h format (HH:MM)**
@@ -150,6 +151,14 @@ curl -s "http://<your_node_ext_ip>:8079/webui?as_json" -H "API_TOKEN: <your_api_
 ```
 curl -s "http://<your_node_ext_ip>:8079/webui?as_json" -H "API_TOKEN: <your_api_token>" | jq '.networks.Backbone.rewards | add' -> Calculates all your earned rewards in Backbone network
 ```
+
+## Issues with the plugin
+
+To help me debugging the plugin, the best way to do that is to provide me `webui.log` file which is generated in the plugin directory.
+1. Set `debug=true` on `[webui]` section in `cellframe-node.cfg`.
+2. Remove old `webui.log` from plugin directory.
+3. Restart the node and wait until the plugin starts and creates the `webui.log`file.
+4. Refresh the WebUI from a web browser.
 
 
 
