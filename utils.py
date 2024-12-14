@@ -1,5 +1,4 @@
-from common import cli_command, get_current_script_directory
-from config import Config
+from common import cli_command, get_current_script_directory, is_service_active
 from logger import log_it
 from packaging import version
 import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect, zipfile, shutil, stat
@@ -74,7 +73,10 @@ def fetch_and_install_plugin_update():
                             cmd_run_pip = cli_command(command, is_shell_command=True)
                             if cmd_run_pip:
                                 log_it("i", "Dependencies successfully installed")
-                                cli_command("exit") # cellframe-node-cli stops with exit command, while this works when node is ran as a service, it won't work when node is started manually.
+                                if is_service_active("cellframe-node"):
+                                    cli_command("exit") # cellframe-node stops with cellframe-node-cli exit command, while this works when node is ran as a service, it won't work when node is started manually.
+                                else:
+                                    log_it("i", "Can't restart node because service is not running! Please restart manually!")
                             else:
                                 log_it("e", f"Failed to install update!")
                         else:
