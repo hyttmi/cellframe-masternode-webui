@@ -6,9 +6,10 @@
 - Option for enabling automatic updater to download pre-release versions.
 
 ### Improved
-- Update checking is much better now.
+- Update checking.
+- Stopping the node is done by `psutil` now.
 
-Some minor changes to other functions as well.
+Some minor changes to other things as well
 
 ## [3.10] - 2024-12-12
 

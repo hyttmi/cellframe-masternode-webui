@@ -1,4 +1,4 @@
-from common import cli_command, get_current_script_directory, is_service_active
+from common import cli_command, get_current_script_directory
 from config import Config
 from logger import log_it
 from packaging import version

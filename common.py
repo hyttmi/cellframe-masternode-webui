@@ -25,15 +25,3 @@ def cli_command(command, timeout=120, is_shell_command=False):
     
 def get_current_script_directory():
     return os.path.dirname(os.path.abspath(__file__))
-
-def is_service_active(service_name):
-    try:
-        command = f"systemctl is-active {service_name}"
-        output = cli_command(command, is_shell_command=True, timeout=10)
-        if output and output.strip() == "active":
-            return True
-        return False
-    except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
-        return False
