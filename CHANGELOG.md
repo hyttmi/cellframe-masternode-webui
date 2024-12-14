@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.11] - XXXX-XX-XX
+## [3.11] - 2024-12-14
 
 ### Added
 - Option for enabling automatic updater to download pre-release versions.
