@@ -1,5 +1,7 @@
 # Changelog
 
+## [3.12] - XXXX-XX-XX
+
 ## [3.11] - 2024-12-14
 
 ### Added
