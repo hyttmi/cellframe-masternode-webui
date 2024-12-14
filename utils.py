@@ -195,10 +195,8 @@ def fetch_and_install_plugin_update():
                             node_pid = get_node_pid()
                             if node_pid is not None:
                                 p = psutil.Process(node_pid)
-                                log_it("d", "Stopping node...")
+                                log_it("i", "Restarting node...")
                                 p.terminate()
-                            else:
-                                log_it("i", "Can't restart node because service is not running! Please restart manually!")
                         else:
                             log_it("e", f"Failed to install update!")
                     else:
