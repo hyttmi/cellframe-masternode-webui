@@ -195,8 +195,7 @@ def fetch_and_install_plugin_update():
                             node_pid = get_node_pid()
                             if node_pid is not None:
                                 p = psutil.Process(node_pid)
-                                log_it("d", "Sleeping 60 secs before terminating cellframe-node...")
-                                time.sleep(60) # Sleep 60 secs before sending exit
+                                log_it("d", "Stopping node...")
                                 p.terminate()
                             else:
                                 log_it("i", "Can't restart node because service is not running! Please restart manually!")
