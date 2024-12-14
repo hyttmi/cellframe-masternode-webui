@@ -83,6 +83,7 @@ def fetch_and_install_plugin_update():
                         if cmd_run_pip:
                             log_it("i", "Dependencies successfully installed")
                             if is_service_active("cellframe-node"):
+                                time.sleep(60) # Sleep 60 secs before sending exit
                                 cli_command("exit")
                             else:
                                 log_it("i", "Can't restart node because service is not running! Please restart manually!")
