@@ -36,4 +36,4 @@ def is_service_active(service_name):
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
-        return None
+        return False
