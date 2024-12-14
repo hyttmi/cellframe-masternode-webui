@@ -1,7 +1,8 @@
 from common import cli_command, get_current_script_directory, is_service_active
+from config import Config
 from logger import log_it
 from packaging import version
-import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect, zipfile, shutil, stat
+import socket, requests, re, time, psutil, json, os, time, cachetools.func, inspect, zipfile, shutil
 
 def check_plugin_update():
     try:
@@ -11,19 +12,30 @@ def check_plugin_update():
             curr_version = version.parse(data['version'])
             curr_version_str = data['version']
             log_it("d", f"Current plugin version: {curr_version_str}")
-        url = "https://api.github.com/repos/hyttmi/cellframe-masternode-webui/releases/latest"
+        url = "https://api.github.com/repos/hyttmi/cellframe-masternode-webui/releases"
         response = requests.get(url, timeout=10)
         if response.status_code == 200:
-            ver_json = response.json()
-            latest_version_str = ver_json['tag_name']
-            latest_version = version.parse(ver_json['tag_name'])
-            log_it("d", f"Latest plugin version: {latest_version_str}")
-            plugin_version_data = {
-                'update_available': curr_version < latest_version,
-                'current_version': curr_version_str,
-                'latest_version': latest_version_str
-            }
-            return plugin_version_data
+            releases = response.json()
+            latest_release = None
+            for release in releases:
+                if Config.DOWNLOAD_PRERELEASES or not release.get('prerelease', False):
+                    latest_release = release
+                    break
+            if latest_release:
+                latest_version_str = latest_release['tag_name']
+                latest_version = version.parse(latest_version_str)
+                download_url = latest_release.get('zipball_url', None)  # Fetch the download URL
+                log_it("d", f"Latest plugin version: {latest_version_str}")
+                plugin_version_data = {
+                    'update_available': curr_version < latest_version,
+                    'current_version': curr_version_str,
+                    'latest_version': latest_version_str,
+                    'download_url': download_url
+                }
+                return plugin_version_data
+            else:
+                log_it("d", "New release version was not found.")
+                return None
         log_it("e", f"Error fetching version data from {response.url}, status code: {response.status_code}")
         return None
     except Exception as e:
@@ -42,56 +54,52 @@ def fetch_and_install_plugin_update():
             return
         if update_info['update_available']:
             log_it("i", f"New version available: {update_info['latest_version']}")
-            response = requests.get("https://api.github.com/repos/hyttmi/cellframe-masternode-webui/releases/latest", timeout=15)
-            if response.status_code == 200:
-                latest_release = response.json()
-                download_url = latest_release['zipball_url'] if latest_release['zipball_url'] else None
-                if download_url:
-                    download_path = os.path.join(update_path)
-                    os.makedirs(download_path, exist_ok=True)
-                    save_path = os.path.join(download_path, "latest_release.zip")
-                    log_it("i", f"Downloading latest release from {download_url}")
-                    download_response = requests.get(download_url, stream=True, timeout=10)
-                    if download_response.status_code == 200:
-                        with open(save_path, "wb") as file:
-                            for chunk in download_response.iter_content(chunk_size=8192):
-                                file.write(chunk)
-                        log_it("d", f"Downloaded latest release to {save_path}.")
-                        log_it("d", f"Extracting the update to the parent directory.")
-                        with zipfile.ZipFile(save_path, 'r') as Z:
-                            for file in Z.namelist():
-                                if not file.endswith('/'): # Somehow there's no "easy" way to extract just the files out from the zip package?
-                                    filename = os.path.basename(file)
-                                    member_path = os.path.join(get_current_script_directory(), filename)
-                                    with open(member_path, 'wb') as output_file:
-                                        output_file.write(Z.read(file))
-                        log_it("d", f"Update extracted successfully.")
-                        requirements_path = os.path.join(get_current_script_directory(), "requirements.txt")
-                        if os.path.exists(requirements_path):
-                            log_it("d", f"Installing requirements from {requirements_path}")
-                            command = f"/opt/cellframe-node/python/bin/pip3 install -r {requirements_path}"
-                            cmd_run_pip = cli_command(command, is_shell_command=True)
-                            if cmd_run_pip:
-                                log_it("i", "Dependencies successfully installed")
-                                if is_service_active("cellframe-node"):
-                                    cli_command("exit") # cellframe-node stops with cellframe-node-cli exit command, while this works when node is ran as a service, it won't work when node is started manually.
-                                else:
-                                    log_it("i", "Can't restart node because service is not running! Please restart manually!")
+            download_url = update_info.get('download_url')
+            if download_url:
+                update_path = os.path.join(get_current_script_directory(), ".autoupdater")
+                os.makedirs(update_path, exist_ok=True)
+                save_path = os.path.join(update_path, "latest_release.zip")
+                log_it("i", f"Downloading latest release from {download_url}")
+                download_response = requests.get(download_url, stream=True, timeout=10)
+                if download_response.status_code == 200:
+                    with open(save_path, "wb") as file:
+                        for chunk in download_response.iter_content(chunk_size=8192):
+                            file.write(chunk)
+                    log_it("d", f"Downloaded latest release to {save_path}.")
+                    log_it("d", f"Extracting the update to the parent directory.")
+                    with zipfile.ZipFile(save_path, 'r') as Z:
+                        for file in Z.namelist():
+                            if not file.endswith('/'):  # Somehow there's no "easy" way to extract just the files out from the zip package?
+                                filename = os.path.basename(file)
+                                member_path = os.path.join(get_current_script_directory(), filename)
+                                with open(member_path, 'wb') as output_file:
+                                    output_file.write(Z.read(file))
+                    log_it("d", f"Update extracted successfully.")
+                    requirements_path = os.path.join(get_current_script_directory(), "requirements.txt")
+                    if os.path.exists(requirements_path):
+                        log_it("d", f"Installing requirements from {requirements_path}")
+                        command = f"/opt/cellframe-node/python/bin/pip3 install -r {requirements_path}"
+                        cmd_run_pip = cli_command(command, is_shell_command=True)
+                        if cmd_run_pip:
+                            log_it("i", "Dependencies successfully installed")
+                            if is_service_active("cellframe-node"):
+                                cli_command("exit")
                             else:
-                                log_it("e", f"Failed to install update!")
+                                log_it("i", "Can't restart node because service is not running! Please restart manually!")
                         else:
-                            log_it("e", "Requirements not found in the update package?")
+                            log_it("e", f"Failed to install update!")
                     else:
-                        log_it("e", f"Failed to download the update file. Status code: {download_response.status_code}")
+                        log_it("e", "Requirements not found in the update package?")
                 else:
-                    log_it("e", "No download URL found for the latest release.")
+                    log_it("e", f"Failed to download the update file. Status code: {download_response.status_code}")
             else:
-                log_it("e", f"Error fetching release details. Status code: {response.status_code}")
+                log_it("e", "No download URL found for the latest release.")
         else:
             log_it("i", f"Plugin is up to date.")
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
+
 
 def get_external_ip():
     try:
