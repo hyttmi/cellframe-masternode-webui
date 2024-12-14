@@ -24,6 +24,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/op
 - `cache_blocks_interval=10` - Time (in minutes) between blocks cache renew.
 - `cache_rewards_interval=10` - Time (in minutes) between rewards cache renew.
 - `debug=true|false` - Print debugging data to `webui.log`, useful when you're having issues with the plugin.
+- `download_prereleases=true|false` - Automatic updater downloads also pre-release versions of plugin. Default false.
 - `email_recipients=somebody@gmail.com|[somebody@gmail.com, another@aol.com]` - Recipient(s) for the email.
 - `email_stats=true|false` - Allow sending scheduled email statistics.
 - `email_time=23:59` - Set time when you want to send the statistics. **24h format (HH:MM)**
