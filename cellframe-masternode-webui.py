@@ -6,7 +6,6 @@ from pycfhelpers.node.http.simple import CFSimpleHTTPServer, CFSimpleHTTPRequest
 from run_scheduler import setup_schedules
 import threading, inspect
 
-
 def http_server():
     try:
         handler = CFSimpleHTTPRequestHandler(methods=["GET"], handler=request_handler)
@@ -16,17 +15,17 @@ def http_server():
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
         return None
-    return 0
 
 def init():
     try:
         t = threading.Thread(target=on_init)
         t.start()
+        log_it("i", f"{Config.PLUGIN_NAME} started")
+        return 0
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
-        return None
-    return 0
+        return
 
 def on_init():
     try:
@@ -39,4 +38,5 @@ def on_init():
         log_it("e", f"Error: {e}")
 
 def deinit():
+    log_it("i", f"{Config.PLUGIN_NAME} stopped")
     return 0
