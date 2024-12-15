@@ -14,7 +14,6 @@ def http_server():
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
-        return None
 
 def init():
     try:
@@ -25,7 +24,6 @@ def init():
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
-        return
 
 def on_init():
     try:
