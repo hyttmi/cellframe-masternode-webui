@@ -182,18 +182,6 @@ def get_node_dump(network):
         log_it("e", f"Error in {func}: {e}")
         return None
 
-def get_is_node_synced(network):
-    try:
-        net_status = cli_command(f"net -net {network} get status")
-        match = re.search(r"main:\s*status: synced", net_status)
-        if match:
-            return True
-        return False
-    except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
-        return None
-
 def get_rewards(network, total_sum=False):
     try:
         rewards = {}
