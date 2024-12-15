@@ -1,5 +1,4 @@
 from utils import (
-    check_plugin_update,
     format_uptime,
     get_installed_node_version,
     get_latest_node_version,
@@ -19,6 +18,7 @@ from networkutils import (
     get_rewards,
     get_token_price,
 )
+from updater import check_plugin_update
 from wallets import get_reward_wallet_tokens
 from logger import log_it
 from config import Config
@@ -31,6 +31,7 @@ def generate_general_info(format_time=True):
         plugin_data = check_plugin_update()
         info = {
                 'current_plugin_version': plugin_data['current_version'],
+                'latest_plugin_version': plugin_data['latest_version'],
                 'plugin_name': Config.PLUGIN_NAME,
                 'hostname': get_system_hostname(),
                 'system_uptime': format_uptime(sys_stats['system_uptime']) if format_time else sys_stats['system_uptime'],
@@ -101,11 +102,6 @@ def generate_network_info():
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
         return None
-
-    except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
-        return None
     
 def generate_data(template_name, return_as_json=False, is_top_level_template=False):
     try:
@@ -127,6 +123,6 @@ def generate_data(template_name, return_as_json=False, is_top_level_template=Fal
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
         if return_as_json:
-            return json.dumps({"error": "Error generating data"}).encode("utf-8")
+            return json.dumps({"error": f"Error generating data: {e}"}).encode("utf-8")
         else:
             return f"<h1>Error: {e}</h1>"

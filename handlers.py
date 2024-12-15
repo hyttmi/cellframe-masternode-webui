@@ -57,7 +57,8 @@ def web_request_handler(headers, bypass_auth=False):
                                                 })
                 except Exception as e:
                     log_it("e", f"Error generating response: {e}")
-                    return CFSimpleHTTPResponse(body=b"<h1>Internal Server Error</h1>", code=200)
+                    return CFSimpleHTTPResponse(body=b"<h1>Internal Server Error</h1>",
+                                                code=200)
 
         if not auth_header:
             log_it("e", "Missing Authorization header")
@@ -108,10 +109,14 @@ def json_request_handler(headers):
         log_it("e", "Invalid API token!")
         return CFSimpleHTTPResponse(body=b'{"error": "Unauthorized"}',
                                     code=200,
-                                    headers = {"Content-Type": "application/json"})
+                                    headers = {
+                                        "Content-Type": "application/json"
+                                    })
 
     log_it("i", "Authorized JSON request.")
     response_body = generate_data(None, return_as_json=True).encode("utf-8")
     return CFSimpleHTTPResponse(body=response_body,
                                 code=200,
-                                headers = {"Content-Type": "application/json"})
+                                headers = {
+                                    "Content-Type": "application/json"
+                                })

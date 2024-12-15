@@ -5,7 +5,7 @@ from emailer import send_email
 from generators import generate_data
 from logger import log_it
 from telegram import send_telegram_message
-from utils import fetch_and_install_plugin_update
+from updater import fetch_and_install_plugin_update
 import schedule, inspect, time
 
 def run_scheduler(func, scheduled_time, every_min=False, run_on_startup=False):

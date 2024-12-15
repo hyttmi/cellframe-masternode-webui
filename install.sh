@@ -2,7 +2,7 @@
 PIP="pip3"
 PIP_PATH="/opt/cellframe-node/python/bin/$PIP"
 CFG_PATH="/opt/cellframe-node/etc/cellframe-node.cfg.d"
-PLUGIN_PATH="/opt/cellframe-node/var/lib/plugins/"
+PLUGIN_PATH="/opt/cellframe-node/var/lib/plugins"
 WEBUI_PATH="$PLUGIN_PATH/cellframe-masternode-webui"
 CURR_PATH=$(pwd)
 
@@ -16,7 +16,7 @@ if ! [[ -d $WEBUI_PATH ]]; then
     mkdir -p $WEBUI_PATH || { echo "Failed to create directory $WEBUI_PATH"; exit 1; }
 fi
 
-echo "Writing plugin configuration to $CFG_PATH/plugins.cfg"
+echo "Writing plugin configuration to $CFG_PATH/webui.cfg"
 echo -e "[server]\nenabled=true\n\n[plugins]\nenabled=true\npy_load=true\npy_path=../var/lib/plugins" > "$CFG_PATH/webui.cfg" || {
     echo "Failed to write configuration file"; exit 1;
 }
