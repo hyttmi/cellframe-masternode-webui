@@ -397,6 +397,20 @@
             </div>
             {% endif %}
 
+            {% if network.current_block_reward %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="current_block_reward_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">Current block reward</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.current_block_reward }}</h6>
+                    </div>
+                    <i class="fa-solid fa-dollar-sign icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
             {% if network.fee_wallet_tokens %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="reward_wallet_information_{{ network_name }}">
                 <div class="card">

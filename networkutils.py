@@ -50,6 +50,20 @@ def get_autocollect_status(network):
         log_it("e", f"Error in {func}: {e}")
         return None
 
+def get_current_block_reward(network):
+    try:
+        block_reward_cmd = cli_command(f"block reward show -net {network}")
+        if block_reward_cmd:
+            block_reward_match = re.search(r"(\d+.\d+)", block_reward_cmd)
+            if block_reward_match:
+                return float(block_reward_match.group(1))
+            return None
+        return None
+    except Exception as e:
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
+        return None
+
 def get_token_price(network):
     try:
         network = str(network).lower()
