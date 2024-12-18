@@ -3,8 +3,9 @@ from datetime import datetime
 from logger import log_it
 from pycfhelpers.node.net import CFNet
 from common import cli_command, get_current_script_directory
-import re, requests, os, json, inspect
+import re, requests, os, json, inspect, cachetools.func
 
+@cachetools.func.ttl_cache(maxsize=10)
 def get_active_networks():
     try:
         nets = CFNet.active_nets()
@@ -16,6 +17,7 @@ def get_active_networks():
         log_it("e", f"Error retrieving networks: {e}")
         return None
 
+@cachetools.func.ttl_cache(maxsize=10)
 def get_network_config(network):
     network_config_file = f"/opt/cellframe-node/etc/network/{network}.cfg"
     net_config = {}
@@ -50,6 +52,7 @@ def get_autocollect_status(network):
         log_it("e", f"Error in {func}: {e}")
         return None
 
+@cachetools.func.ttl_cache(maxsize=10)
 def get_current_block_reward(network):
     try:
         block_reward_cmd = cli_command(f"block reward show -net {network}")
