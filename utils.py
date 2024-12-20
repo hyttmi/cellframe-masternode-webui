@@ -5,6 +5,7 @@ import socket, requests, re, time, psutil, time, cachetools.func, inspect, psuti
 
 def get_external_ip():
     try:
+        log_it("d", "Fetching external IP...")
         response = requests.get('https://ifconfig.me/ip', timeout=5)
         if response.status_code == 200:
             return response.text.strip()
@@ -18,6 +19,7 @@ def get_external_ip():
 @cachetools.func.ttl_cache(maxsize=10)
 def get_node_pid():
     try:
+        log_it("d", "Fetching node PID...")
         for proc in psutil.process_iter(['pid', 'name']):
             if proc.info['name'] == "cellframe-node":
                 pid = proc.info['pid']
@@ -32,6 +34,7 @@ def get_node_pid():
 @cachetools.func.ttl_cache(maxsize=10)
 def get_system_hostname():
     try:
+        log_it("d", "Fetching hostname...")
         return socket.gethostname()
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
@@ -40,6 +43,7 @@ def get_system_hostname():
 
 def format_uptime(seconds):
     try:
+        log_it("d", "Formatting uptime...")
         days, remainder = divmod(seconds, 86400)
         hours, remainder = divmod(remainder, 3600)
         minutes, seconds = divmod(remainder, 60)
@@ -55,6 +59,7 @@ def get_sys_stats():
     try:
         PID = get_node_pid()
         if PID:
+            log_it("d", "Fetching system stats...")
             process = psutil.Process(PID)
             sys_stats = {}
             cpu_usage = process.cpu_percent(interval=1) / psutil.cpu_count() # Divide by CPU cores, it's possible that only one core is @ 100%

@@ -46,6 +46,7 @@ def check_plugin_update():
 
 def fetch_and_install_plugin_update():
     try:
+        log_it("i", "Checking for plugin update...")
         update_path = os.path.join(get_current_script_directory(), ".autoupdater")
         if os.path.exists(update_path):
             shutil.rmtree(update_path)
