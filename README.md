@@ -74,7 +74,6 @@ All theme specific `.html` files are located in `templates/<theme_specific_subfo
 Here are the variables that are passed to the Jinja templates:
 
 - `general_info.plugin_name`: The name of the plugin.
-- `general_info.plugin_update_available`: Checks if there's update available for plugin
 - `general_info.current_plugin_version`: Shows current version of this plugin
 - `general_info.latest_plugin_version`: Returns the latest version of this plugin
 - `general_info.plugin_title`: Return plugin name
