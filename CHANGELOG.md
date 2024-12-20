@@ -7,7 +7,7 @@ This is only a small maintenance release.
 ### Added
 - Card for showing current reward per block (cached).
 - Latest plugin version back to template rendering.
-- Some more debug logging
+- Some more debug logging.
 
 ### Fixed
 - Fixed some mistakes in code.
