@@ -1,6 +1,18 @@
 # Changelog
 
-## [3.12] - XXXX-XX-XX
+## [3.12] - 2024-12-20
+
+This is only a small maintenance release.
+
+### Added
+- Card for showing current reward per block (cached).
+- Latest plugin version back to template rendering.
+
+### Fixed
+- Fixed some mistakes in code.
+
+### Removed
+- Removed the oldskool theme, it's useless!
 
 ## [3.11] - 2024-12-14
 
