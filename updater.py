@@ -3,7 +3,7 @@ from config import Config
 from logger import log_it
 from packaging import version
 from utils import get_node_pid
-import os, requests, inspect, shutil, json, zipfile, psutil
+import os, requests, inspect, shutil, json, zipfile, psutil 
 
 def check_plugin_update():
     try:
