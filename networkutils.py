@@ -42,11 +42,15 @@ def get_network_config(network):
 
 def get_autocollect_status(network):
     try:
-        autocollect_cmd = cli_command(f"block autocollect status -net {network} -chain main")
-        if "is active" in autocollect_cmd:
-            return "Active"
+        autocollect_status = {}
+        autocollect_cmd = cli_command(f"block autocollect status -net {network}")
+        amounts = re.findall(r"profit is (\d+.\d+)", autocollect_cmd)
+        if amounts:
+            autocollect_status['rewards'] = sum(float(amount) for amount in amounts)
         else:
-            return "Inactive"
+            autocollect_status['rewards'] = 0
+        autocollect_status['active'] = "Active" if "is active" in autocollect_cmd else "Inactive"
+        return autocollect_status
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
@@ -170,23 +174,6 @@ def get_network_status(network):
         log_it("e", f"Error in {func}: {e}")
         return None
 
-def get_autocollect_rewards(network):
-    try:
-        net_config = get_network_config(network)
-        if net_config:
-            cmd_get_autocollect_rewards = cli_command(f"block -net {network} autocollect status")
-            if cmd_get_autocollect_rewards:
-                amounts = re.findall(r"profit is (\d+.\d+)", cmd_get_autocollect_rewards)
-                if amounts:
-                    return sum(float(amount) for amount in amounts)
-                else:
-                    return None
-        return None
-    except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
-        return None
-        
 def get_node_dump(network):
     try:
         cmd_get_node_dump = cli_command(f"node dump -net {network}")
