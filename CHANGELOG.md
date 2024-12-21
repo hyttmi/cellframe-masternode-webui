@@ -3,7 +3,7 @@
 ## [3.13] - 2024-12-21
 
 ### Fixed
-- Autocollect rewards.
+- Autocollect rewards card.
 
 ### Changed
 - Updater runs now every 2 hours.
