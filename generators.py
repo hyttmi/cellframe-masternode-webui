@@ -8,7 +8,6 @@ from utils import (
 )
 from networkutils import (
     get_active_networks,
-    get_autocollect_rewards,
     get_autocollect_status,
     get_blocks,
     get_network_config,
