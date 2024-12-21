@@ -91,7 +91,7 @@ def setup_schedules():
                 futures['auto_updater'] = executor.submit(
                     run_scheduler,
                     lambda: fetch_and_install_plugin_update(),
-                    1440,  # Daily
+                    120,  # Every 2 hours
                     every_min=True,
                     run_on_startup=True
                 )

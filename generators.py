@@ -8,7 +8,6 @@ from utils import (
 )
 from networkutils import (
     get_active_networks,
-    get_autocollect_rewards,
     get_autocollect_status,
     get_blocks,
     get_network_config,
@@ -68,7 +67,6 @@ def generate_network_info():
                         'all_blocks': executor.submit(get_blocks, network, block_type="count"),
                         'all_signed_blocks_dict': executor.submit(get_blocks, network, block_type="all_signed_blocks"),
                         'all_signed_blocks': executor.submit(get_blocks, network, block_type="all_signed_blocks_count"),
-                        'autocollect_rewards': executor.submit(get_autocollect_rewards, network),
                         'autocollect_status': executor.submit(get_autocollect_status, network),
                         'current_block_reward': executor.submit(get_current_block_reward, network),
                         'first_signed_blocks': executor.submit(get_blocks, network, block_type="first_signed_blocks_count"),
@@ -85,8 +83,8 @@ def generate_network_info():
                         'all_rewards': futures['sum_rewards'].result(),
                         'all_signed_blocks_dict': futures['all_signed_blocks_dict'].result(),
                         'all_signed_blocks': futures['all_signed_blocks'].result(),
-                        'autocollect_rewards': futures['autocollect_rewards'].result(),
-                        'autocollect_status': futures['autocollect_status'].result(),
+                        'autocollect_rewards': futures['autocollect_status'].result()['rewards'],
+                        'autocollect_status': futures['autocollect_status'].result()['active'],
                         'current_block_reward': futures['current_block_reward'].result(),
                         'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
                         'first_signed_blocks': futures['first_signed_blocks'].result(),
