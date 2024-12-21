@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.13] - 2024-12-21
+
+### Fixed
+- Autocollect rewards.
+
+### Changed
+- Updater runs now every 2 hours.
+
 ## [3.12] - 2024-12-20
 
 This is only a small maintenance release.
