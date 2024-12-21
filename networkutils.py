@@ -50,7 +50,9 @@ def get_autocollect_status(network):
         else:
             autocollect_status['rewards'] = 0
         autocollect_status['active'] = "Active" if "is active" in autocollect_cmd else "Inactive"
-        return autocollect_status
+        if autocollect_status:
+            return autocollect_status
+        return None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
