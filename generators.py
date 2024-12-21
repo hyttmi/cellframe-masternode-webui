@@ -83,7 +83,7 @@ def generate_network_info():
                         'all_rewards': futures['sum_rewards'].result(),
                         'all_signed_blocks_dict': futures['all_signed_blocks_dict'].result(),
                         'all_signed_blocks': futures['all_signed_blocks'].result(),
-                        'autocollect_rewards': futures['autocollect_rewards'].result()['rewards'],
+                        'autocollect_rewards': futures['autocollect_status'].result()['rewards'],
                         'autocollect_status': futures['autocollect_status'].result()['active'],
                         'current_block_reward': futures['current_block_reward'].result(),
                         'fee_wallet_tokens': {token[1]: float(token[0]) for token in tokens} if tokens else None,
