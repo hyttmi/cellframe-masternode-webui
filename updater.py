@@ -3,6 +3,8 @@ from config import Config
 from logger import log_it
 from packaging import version
 from utils import get_node_pid
+from telegram import send_telegram_message
+from emailer import send_email
 import os, requests, inspect, shutil, json, zipfile, psutil 
 
 def check_plugin_update():
@@ -85,7 +87,11 @@ def fetch_and_install_plugin_update():
                         if cmd_run_pip:
                             log_it("i", "Dependencies successfully installed")
                             node_pid = get_node_pid()
-                            if node_pid is not None:
+                            if node_pid:
+                                if Config.TELEGRAM_STATS_ENABLED:
+                                    send_telegram_message(f"Plugin version ({update_info['latest_version']}) has been installed and your node will be restarted.")
+                                if Config.EMAIL_STATS_ENABLED:
+                                    send_email(f"Plugin version ({update_info['latest_version']}) has been installed and your node will be restarted.")
                                 p = psutil.Process(node_pid)
                                 log_it("i", "Restarting node...")
                                 p.terminate()
