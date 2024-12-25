@@ -705,18 +705,6 @@
                         ]
                     };
                 
-                    if (myNodeData) {
-                        chartData.labels.push('My Node');
-                        console.log(myNodeData)
-                        chartData.datasets.data.push({
-                            label: 'Test',
-                            data: 80.0,
-                            backgroundColor: '#FF6347',
-                            borderColor: '#FF6347',
-                            borderWidth: 1,
-                        });
-                    }
-                
                     weightChart['{{ network_name }}'] = new Chart(weightCtx_{{ network_name }}, {
                         type: 'bar',
                         data: chartData,
@@ -740,6 +728,18 @@
                         }
                     });
                 });
+                if (myNodeData) {
+                        chartData.labels.push('My Node');
+                        console.log(myNodeData)
+                        chartData.datasets.push({
+                            label: 'Test',
+                            data: [80.0],
+                            backgroundColor: '#FF6347',
+                            borderColor: '#FF6347',
+                            borderWidth: 1,
+                        });
+                    }
+                weightChart['{{ network_name }}'].update();
             {% endif %}
 
                 {% if network.all_signed_blocks_dict %}
