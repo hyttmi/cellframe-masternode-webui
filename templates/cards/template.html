@@ -679,7 +679,7 @@
                     }).slice(0, 10);
                 
                     var nodeAddrs = top10NodeData.map(function(item) {
-                        return item.nodeAddr;
+                        return item.nodeAddr.substring(0, length(item.nodeAddr) - 10) + "...";
                     });
                 
                     var effectiveWeights = top10NodeData.map(function(item) {
