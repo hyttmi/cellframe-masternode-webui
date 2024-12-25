@@ -676,7 +676,10 @@
                         return b.effectiveWeight - a.effectiveWeight;
                     });
                 
-                    var top10NodeData = nodeData.slice(0, 10);
+                    var top10NodeData = nodeData.filter(function(item) {
+                        return !item.isMyNode;
+                    }).slice(0, 10);
+                
                     var nodeAddrs = top10NodeData.map(function(item) {
                         return item.nodeAddr.substring(0, 4);
                     });
@@ -695,7 +698,7 @@
                         labels: nodeAddrs,
                         datasets: [
                             {
-                                label: 'Effective weight',
+                                label: 'Effective weight (Other Nodes)',
                                 data: effectiveWeights,
                                 backgroundColor: '#B3A3FF',
                                 borderColor: '#B3A3FF',
@@ -704,16 +707,17 @@
                         ]
                     };
                 
-                    //if (myNodeData) {
-                    //    chartData.labels.push(myNodeData.nodeAddr.substring(0, 4));
-                    //    chartData.datasets.push({
-                    //        label: 'My Node',
-                    //        data: [myNodeData.effectiveWeight],
-                    //        backgroundColor: '#FF6347',
-                    //        borderColor: '#FF6347',
-                    //        borderWidth: 1
-                    //    });
-                    //}
+                    if (myNodeData) {
+                        chartData.labels.push('My Node');
+                        chartData.datasets.push({
+                            label: 'My Node',
+                            data: [myNodeData.effectiveWeight],
+                            backgroundColor: '#FF6347',
+                            borderColor: '#FF6347',
+                            borderWidth: 1,
+                            barThickness: 10
+                        });
+                    }
                 
                     weightChart['{{ network_name }}'] = new Chart(weightCtx_{{ network_name }}, {
                         type: 'bar',
