@@ -666,7 +666,7 @@
                             {
                                 nodeAddr: "{{ node.node_addr }}",
                                 effectiveWeight: {{ node.effective_value|float }},
-                                isMyNode: {{ node.is_my_node|tojson }}
+                                isMyNode: {{ node.is_my_node }}
                             }
                             {% if not loop.last %},{% endif %}
                         {% endfor %}
