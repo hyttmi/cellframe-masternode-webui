@@ -671,9 +671,8 @@
                             {% endfor %}
                         ];
                             
-                        // Sort the nodeData array by effectiveWeight in descending order
                         nodeData.sort(function(a, b) {
-                            return b.effectiveWeight - a.effectiveWeight; // descending order
+                            return a.effectiveWeight - b.effectiveWeight;
                         });
                     
                         var nodeAddrs = nodeData.map(function(item) {
