@@ -734,6 +734,10 @@
                             dataset.data.push(myNodeData.effectiveWeight);
                             dataset.data.push(myNodeData.backgroundColor('#FFFFFF'))
                         });
+
+                        const lastIndex = chartData.datasets[0].data.length - 1;
+                        chartData.datasets[0].backgroundColor[lastIndex] = '#FF6347'; 
+                        chartData.datasets[0].borderColor[lastIndex] = '#FF6347'; 
                     
                         weightChart['{{ network_name }}'].update();
                     }
