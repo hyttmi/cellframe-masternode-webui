@@ -695,7 +695,7 @@
                         labels: nodeAddrs,
                         datasets: [
                             {
-                                label: 'Effective weight (Other Nodes)',
+                                label: 'Effective weight',
                                 data: effectiveWeights,
                                 backgroundColor: '#B3A3FF',
                                 borderColor: '#B3A3FF',
@@ -704,16 +704,16 @@
                         ]
                     };
                 
-                    if (myNodeData) {
-                        chartData.labels.push(myNodeData.nodeAddr.substring(0, 4));
-                        chartData.datasets.push({
-                            label: 'My Node',
-                            data: [myNodeData.effectiveWeight],
-                            backgroundColor: '#FF6347',
-                            borderColor: '#FF6347',
-                            borderWidth: 1
-                        });
-                    }
+                    //if (myNodeData) {
+                    //    chartData.labels.push(myNodeData.nodeAddr.substring(0, 4));
+                    //    chartData.datasets.push({
+                    //        label: 'My Node',
+                    //        data: [myNodeData.effectiveWeight],
+                    //        backgroundColor: '#FF6347',
+                    //        borderColor: '#FF6347',
+                    //        borderWidth: 1
+                    //    });
+                    //}
                 
                     weightChart['{{ network_name }}'] = new Chart(weightCtx_{{ network_name }}, {
                         type: 'bar',
