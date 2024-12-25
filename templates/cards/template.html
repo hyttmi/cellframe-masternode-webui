@@ -676,7 +676,7 @@
                         });
                     
                         var nodeAddrs = nodeData.map(function(item) {
-                            return item.nodeAddr;
+                            return item.nodeAddr.substring(0,4);
                         });
                     
                         var effectiveWeights = nodeData.map(function(item) {
@@ -702,7 +702,7 @@
                                 scales: {
                                     x: {
                                         grid: { display: false },
-                                        ticks: { display: false }
+                                        ticks: { color: '#B3A3FF' }
                                     },
                                     y: {
                                         grid: { display: false },
