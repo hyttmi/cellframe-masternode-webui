@@ -688,7 +688,7 @@
                         weightChart['{{ network_name }}'] = new Chart(weightCtx_{{ network_name }}, {
                             type: 'bar',
                             data: {
-                                labels: [],
+                                labels: nodeAddrs,
                                 datasets: [{
                                     label: 'Effective weight',
                                     data: effectiveWeights,
