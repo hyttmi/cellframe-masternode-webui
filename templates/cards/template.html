@@ -365,8 +365,6 @@
                     <i class="fa-solid fa-weight-scale icon-container"></i>
                 </div>
             </div>
-            {% endfor %}
-            {% endif %}
 
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="total_network_weight_{{ network_name }}">
                 <div class="card">
@@ -391,6 +389,8 @@
                     <i class="fa-solid fa-circle-nodes icon-container"></i>
                 </div>
             </div>
+            {% endfor %}
+            {% endif %}
             {% endif %}
 
             {% if network.token_price %}
