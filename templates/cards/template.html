@@ -672,12 +672,10 @@
                         {% endfor %}
                     ];
                         
-                    nodeData.sort(function(a, b) {
-                        return b.effectiveWeight - a.effectiveWeight;
-                    });
-                
                     var top10NodeData = nodeData.filter(function(item) {
                         return !item.isMyNode;
+                    }).sort(function(a, b) {
+                        return b.effectiveWeight - a.effectiveWeight;
                     }).slice(0, 10);
                 
                     var nodeAddrs = top10NodeData.map(function(item) {
@@ -743,6 +741,7 @@
                     });
                 });
             {% endif %}
+
                 {% if network.all_signed_blocks_dict %}
                     var blocksData = {};
                     blocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
