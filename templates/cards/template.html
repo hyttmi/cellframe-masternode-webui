@@ -672,14 +672,16 @@
                         ];
                             
                         nodeData.sort(function(a, b) {
-                            return a.effectiveWeight - b.effectiveWeight;
+                            return b.effectiveWeight - a.effectiveWeight;
                         });
-                    
-                        var nodeAddrs = nodeData.map(function(item) {
+                        
+                        var top10NodeData = nodeData.slice(0, 10);
+
+                        var nodeAddrs = top10NodeData.map(function(item) {
                             return item.nodeAddr.substring(0,4);
                         });
                     
-                        var effectiveWeights = nodeData.map(function(item) {
+                        var effectiveWeights = top10NodeData.map(function(item) {
                             return item.effectiveWeight;
                         });
                     
