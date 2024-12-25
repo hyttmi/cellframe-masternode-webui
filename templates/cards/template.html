@@ -656,7 +656,7 @@
     
     {% if network_info and network_info.items() %}
     <script>
-            {% for network_name, network in network_info.items() %}
+        {% for network_name, network in network_info.items() %}
             {% if network.node_data.nodes %}
                 document.addEventListener("DOMContentLoaded", function() {
                     var weightChart = weightChart || {};
