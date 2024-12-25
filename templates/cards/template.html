@@ -679,7 +679,7 @@
                     }).slice(0, 10);
                 
                     var nodeAddrs = top10NodeData.map(function(item) {
-                        return item.nodeAddr.substring(0, 4);
+                        return item.nodeAddr.substring(0, 4) + "...";
                     });
                 
                     var effectiveWeights = top10NodeData.map(function(item) {
@@ -732,7 +732,6 @@
                         chartData.labels.push('MY NODE');
                         chartData.datasets.forEach(function(dataset) {
                             dataset.data.push(myNodeData.effectiveWeight);
-                            console.log(dataset.data)
                         });
                         weightChart['{{ network_name }}'].update();
                     }
