@@ -140,3 +140,13 @@ html {
 .custom-modal-bg {
     background-color: #151515 !important;
 }
+
+.btn-custom:hover {
+    color: #151515;
+    background: #BEB1FF
+}
+
+.btn-custom {
+    color: #151515;
+    background:#B3A3FF
+}
