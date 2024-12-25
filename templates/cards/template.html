@@ -328,7 +328,6 @@
             </div>
             {% endif %}
             {% if network.node_data %}
-            {{ network.node_data }}
             {% for node in network.node_data.nodes %}
             {% if node.is_my_node %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_stake_value_{{ network_name }}">
@@ -375,7 +374,7 @@
                         <h5 class="card-title text-uppercase">Total network weight</h5><button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.total_weight }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ node_data.info.total_weight }}</h6>
                     </div>
                     <i class="fa-solid fa-weight-scale icon-container"></i>
                 </div>
@@ -387,7 +386,7 @@
                         <h5 class="card-title text-uppercase">Active nodes</h5><button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.active_nodes_count }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ node_data.info.active_nodes_count }}</h6>
                     </div>
                     <i class="fa-solid fa-circle-nodes icon-container"></i>
                 </div>
