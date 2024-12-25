@@ -666,6 +666,18 @@
     {% if network_info and network_info.items() %}
     <script>
             {% for network_name, network in network_info.items() %}
+                {% if network.node_data %}
+                    var nodeAddrs = [
+                        {% for node in network.node_data %}
+                        "{{ node.node_addr }}"{% if not loop.last %},{% endif %}
+                        {% endfor %}
+                        ];
+                    var effectiveValues = [
+                        {% for node in network.node_data if node.is_my_node %}
+                        {{ node.effective_value|float }}{% if not loop.last %},{% endif %}
+                        {% endfor %}
+                ];
+                {% endif %}
                 {% if network.all_signed_blocks_dict %}
                     var blocksData = {};
                     blocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
