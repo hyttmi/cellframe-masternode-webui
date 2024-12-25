@@ -694,7 +694,7 @@
                         labels: nodeAddrs,
                         datasets: [
                             {
-                                label: 'Effective weight (Other Nodes)',
+                                label: 'Effective weight',
                                 data: effectiveWeights,
                                 backgroundColor: '#B3A3FF',
                                 borderColor: '#B3A3FF',
@@ -732,6 +732,14 @@
                         chartData.labels.push('My Node');
                         chartData.datasets.forEach(function(dataset) {
                             dataset.data.push(myNodeData.effectiveWeight);
+                        });
+                    
+                        chartData.datasets.push({
+                            label: 'My Node',
+                            data: [myNodeData.effectiveWeight],
+                            backgroundColor: '#FF6347',
+                            borderColor: '#FF6347',
+                            borderWidth: 1
                         });
                     
                         weightChart['{{ network_name }}'].update();
