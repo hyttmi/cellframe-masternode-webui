@@ -657,6 +657,60 @@
     {% if network_info and network_info.items() %}
     <script>
             {% for network_name, network in network_info.items() %}
+            {% if network.node_data.nodes %}
+                    var weightCtx{{ network.name }} = document.getElementById('weightChart_{{ network_name }}').getContext('2d');
+                    var nodeAddrs = [
+                        {% for node in network.node_data.nodes %}
+                        "{{ node.node_addr }}"{% if not loop.last %},{% endif %}
+                        {% endfor %}
+                    ];
+                    var effectiveWeights = [
+                        {% for node in network.node_data.nodes %}
+                        {{ node.effective_value|float }}{% if not loop.last %},{% endif %}
+                        {% endfor %}
+                    ];
+                    weightCharts['{{ network_name }}'] = new Chart(weightCtx{{ network_name }}, {
+                            type: 'line',
+                            data: {
+                                labels: nodeAddrs,
+                                datasets: [{
+                                    label: 'Effective weight',
+                                    data: effectiveWeights,
+                                    backgroundColor: '#B3A3FF',
+                                    borderColor: '#B3A3FF',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    x: {
+                                        grid: {
+                                            display: false
+                                        },
+                                        ticks: {
+                                            color: '#B3A3FF'
+                                        }
+                                    },
+                                    y: {
+                                        grid: {
+                                            display: false
+                                        },
+                                        beginAtZero: true,
+                                        ticks: {
+                                            color: '#B3A3FF'
+                                        },
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    }
+                                }
+                            }
+                        });
+                {% endif %}
                 {% if network.all_signed_blocks_dict %}
                     var blocksData = {};
                     blocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
