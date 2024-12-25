@@ -660,7 +660,7 @@
             {% if network.node_data.nodes %}
                 document.addEventListener("DOMContentLoaded", function() {
                     var weightChart = weightChart || {};
-
+                
                     var nodeData = [
                         {% for node in network.node_data.nodes %}
                             {
@@ -671,10 +671,13 @@
                             {% if not loop.last %},{% endif %}
                         {% endfor %}
                     ]; 
+                        
                     nodeData.sort(function(a, b) {
                         return b.effectiveWeight - a.effectiveWeight;
                     });
+                
                     var top10NodeData = nodeData.slice(0, 10);
+                
                     var nodeAddrs = top10NodeData.map(function(item) {
                         return item.nodeAddr.substring(0, 4);
                     });
@@ -683,13 +686,17 @@
                         return item.effectiveWeight;
                     });
                 
-                    var myNodeData = top10NodeData.filter(function(item) {
+                    var myNodeData = nodeData.filter(function(item) {
                         return item.isMyNode;
                     });
                 
-                    var otherNodeData = top10NodeData.filter(function(item) {
-                        return !item.isMyNode;
-                    });
+                    if (myNodeData.length > 0) {
+                        var myNodeAddr = myNodeData[0].nodeAddr.substring(0, 4);
+                        var myNodeWeight = myNodeData[0].effectiveWeight;
+                    
+                        nodeAddrs.unshift(myNodeAddr);
+                        effectiveWeights.unshift(myNodeWeight);
+                    }
                 
                     var myNodeAddrs = myNodeData.map(function(item) {
                         return item.nodeAddr.substring(0, 4);
@@ -728,19 +735,19 @@
                                 x: {
                                     grid: { display: false },
                                     ticks: { 
-                                        color: '#B3A3FF' // Customize tick color as needed
+                                        color: '#B3A3FF'
                                     }
                                 },
                                 y: {
                                     grid: { display: false },
                                     beginAtZero: true,
                                     ticks: { 
-                                        color: '#B3A3FF' // Customize tick color as needed
+                                        color: '#B3A3FF'
                                     }
                                 }
                             },
                             plugins: {
-                                legend: { display: true }  // Show legend to distinguish 'My Node' from other nodes
+                                legend: { display: true }
                             }
                         }
                     });
