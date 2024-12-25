@@ -328,6 +328,7 @@
             </div>
             {% endif %}
             {% if network.node_data %}
+            {{ network.node_data }}
             {% for node in network.node_data.nodes %}
             {% if node.is_my_node %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_stake_value_{{ network_name }}">
