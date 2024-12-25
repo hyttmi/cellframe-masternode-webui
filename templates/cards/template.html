@@ -183,16 +183,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <h5>NODE DUMP:</h5>
-                        <pre>{{ network.general_node_info }}</pre>
-                        {% if network.node_data %}
-                            {% for node in network.node_data.nodes %}
-                                {% if node.is_my_node %}
-                                    <h5>NODE INFORMATION:</h5>
-                                    <pre>PKEY HASH: {{ node.pkey_hash }}<br>TRANSACTION HASH: {{ node.tx_hash }}<br>SOVEREIGN ADDRESS: {{ node.sovereign_addr}}<br>SOVEREIGN TAX: {{ node.sovereign_tax }}<br>ACTIVE: {{ node.active }}</pre>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
+                        <canvas id="weightChart_{{ network_name }}"></canvas>
                     </div>
                 </div>
             </div>
@@ -667,16 +658,58 @@
     <script>
             {% for network_name, network in network_info.items() %}
                 {% if network.node_data.nodes %}
+                var weightCtx{{ network.name }} = document.getElementById('weightChart_{{ network_name }}').getContext('2d');
                     var nodeAddrs = [
                         {% for node in network.node_data.nodes %}
                         "{{ node.node_addr }}"{% if not loop.last %},{% endif %}
                         {% endfor %}
                         ];
-                    var effectiveValues = [
+                    var effectiveWeights = [
                         {% for node in network.node_data.nodes %}
                         {{ node.effective_value|float }}{% if not loop.last %},{% endif %}
                         {% endfor %}
                 ];
+                weightCharts['{{ network_name }}'] = new Chart(weightCtx{{ network_name }}, {
+                        type: 'line',
+                        data: {
+                            labels: nodeAddrs,
+                            datasets: [{
+                                label: 'Effective weight',
+                                data: effectiveValues,
+                                backgroundColor: '#B3A3FF',
+                                borderColor: '#B3A3FF',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        color: '#B3A3FF'
+                                    }
+                                },
+                                y: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    beginAtZero: true,
+                                    ticks: {
+                                        color: '#B3A3FF'
+                                    },
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            }
+                        }
+                    });
                 {% endif %}
                 {% if network.all_signed_blocks_dict %}
                     var blocksData = {};
