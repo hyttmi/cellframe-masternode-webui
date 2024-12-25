@@ -658,51 +658,65 @@
     <script>
             {% for network_name, network in network_info.items() %}
                 {% if network.node_data.nodes %}
-                document.addEventListener("DOMContentLoaded", function() {
-                    var weightChart = weightChart || {};
-                    var weightCtx_{{ network_name }} = document.getElementById('weightChart_{{ network_name }}').getContext('2d');
-                    var nodeAddrs = [
-                        {% for node in network.node_data.nodes %}
-                        "{{ node.node_addr }}"{% if not loop.last %},{% endif %}
-                        {% endfor %}
-                    ];
-                    var effectiveWeights = [
-                        {% for node in network.node_data.nodes %}
-                        {{ node.effective_value|float }}{% if not loop.last %},{% endif %}
-                        {% endfor %}
-                    ];
-                    weightChart['{{ network_name }}'] = new Chart(weightCtx_{{ network_name }}, {
-                        type: 'bar',
-                        data: {
-                            labels: nodeAddrs,
-                            datasets: [{
-                                label: 'Effective weight',
-                                data: effectiveWeights,
-                                backgroundColor: '#B3A3FF',
-                                borderColor: '#B3A3FF',
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                x: {
-                                    grid: { display: false },
-                                    ticks: { color: '#B3A3FF' }
-                                },
-                                y: {
-                                    grid: { display: false },
-                                    beginAtZero: true,
-                                    ticks: { color: '#B3A3FF' }
+                    document.addEventListener("DOMContentLoaded", function() {
+                        var weightChart = weightChart || {};
+
+                        var nodeData = [
+                            {% for node in network.node_data.nodes %}
+                                {
+                                    nodeAddr: "{{ node.node_addr }}",
+                                    effectiveWeight: {{ node.effective_value|float }}
                                 }
+                                {% if not loop.last %},{% endif %}
+                            {% endfor %}
+                        ];
+                            
+                        // Sort the nodeData array by effectiveWeight in descending order
+                        nodeData.sort(function(a, b) {
+                            return b.effectiveWeight - a.effectiveWeight; // descending order
+                        });
+                    
+                        var nodeAddrs = nodeData.map(function(item) {
+                            return item.nodeAddr;
+                        });
+                    
+                        var effectiveWeights = nodeData.map(function(item) {
+                            return item.effectiveWeight;
+                        });
+                    
+                        var weightCtx_{{ network_name }} = document.getElementById('weightChart_{{ network_name }}').getContext('2d');
+                        weightChart['{{ network_name }}'] = new Chart(weightCtx_{{ network_name }}, {
+                            type: 'bar',
+                            data: {
+                                labels: nodeAddrs,
+                                datasets: [{
+                                    label: 'Effective weight',
+                                    data: effectiveWeights,
+                                    backgroundColor: '#B3A3FF',
+                                    borderColor: '#B3A3FF',
+                                    borderWidth: 1
+                                }]
                             },
-                            plugins: {
-                                legend: { display: false }
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    x: {
+                                        grid: { display: false },
+                                        ticks: { color: '#B3A3FF' }
+                                    },
+                                    y: {
+                                        grid: { display: false },
+                                        beginAtZero: true,
+                                        ticks: { color: '#B3A3FF' }
+                                    }
+                                },
+                                plugins: {
+                                    legend: { display: false }
+                                }
                             }
-                        }
+                        });
                     });
-                });
                 {% endif %}
                 {% if network.all_signed_blocks_dict %}
                     var blocksData = {};
