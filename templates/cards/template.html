@@ -672,9 +672,8 @@
                 {% endfor %}
             ];
 
-            weightChart = weightChart || {};
             weightChart['{{ network_name }}'] = new Chart(weightCtx_{{ network_name }}, {
-                type: 'line',
+                type: 'bar',
                 data: {
                     labels: nodeAddrs,
                     datasets: [{
