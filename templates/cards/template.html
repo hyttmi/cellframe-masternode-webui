@@ -164,9 +164,26 @@
                         <h5>NODE DUMP:</h5>
                         <pre>{{ network.general_node_info }}</pre>
                         {% if network.node_data %}
-                        <h5>NODE INFORMATION:</h5>
-                        <pre>PKEY HASH: {{ network.node_data.pkey_hash }}<br>TRANSACTION HASH: {{ network.node_data.tx_hash }}<br>SOVEREIGN ADDRESS: {{ network.node_data.sovereign_addr}}<br>SOVEREIGN TAX: {{ network.node_data.sovereign_tax }}<br>ACTIVE: {{ network.node_data.active }}</pre>
+                            {% for node in network.node_data.nodes %}
+                                {% if node.is_my_node %}
+                                    <h5>NODE INFORMATION:</h5>
+                                    <pre>PKEY HASH: {{ node.pkey_hash }}<br>TRANSACTION HASH: {{ node.tx_hash }}<br>SOVEREIGN ADDRESS: {{ node.sovereign_addr}}<br>SOVEREIGN TAX: {{ node.sovereign_tax }}<br>ACTIVE: {{ node.active }}</pre>
+                                {% endif %}
+                            {% endfor %}
                         {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="nodeWeightModal_{{ network_name }}" tabindex="-1" aria-labelledby="nodeWeightModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content custom-modal-bg">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-uppercase" id="nodeWeightModalLabel">Weight chart</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <canvas id="weightChart_{{ network_name }}"></canvas>
                     </div>
                 </div>
             </div>
@@ -176,7 +193,10 @@
                 <h1 class="text-uppercase text-color-secondary d-flex align-items-center">
                   {{ network_name }}
                   <button type="button" class="btn btn-link ms-2" data-bs-toggle="modal" data-bs-target="#nodeInfoModal_{{ network_name }}">
-                    <i class="fa-solid fa-circle-info info fa-2xl"></i>
+                    <i class="fa-solid fa-circle-info info fa-xl"></i>
+                  </button>
+                  <button type="button" class="btn btn-link ms-2" data-bs-toggle="modal" data-bs-target="#nodeWeightModal_{{ network_name }}">
+                    <i class="fa-solid fa-weight-scale info fa-xl"></i>
                   </button>
                 </h1>
               </div>              
@@ -308,13 +328,15 @@
             </div>
             {% endif %}
             {% if network.node_data %}
+            {% for node in network.node_data.nodes %}
+            {% if node.is_my_node %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_stake_value_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="card-title text-uppercase">Node stake value</h5><button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.stake_value }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ node.stake_value }}</h6>
                     </div>
                     <i class="fa-solid fa-dollar-sign icon-container"></i>
                 </div>
@@ -326,7 +348,7 @@
                         <h5 class="card-title text-uppercase">Node effective value</h5><button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.effective_value }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ node.effective_value }}</h6>
                     </div>
                     <i class="fa-solid fa-dollar-sign icon-container"></i>
                 </div>
@@ -338,11 +360,13 @@
                         <h5 class="card-title text-uppercase">Node related weight</h5><button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.related_weight }}%</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ node.related_weight }}%</h6>
                     </div>
                     <i class="fa-solid fa-weight-scale icon-container"></i>
                 </div>
             </div>
+            {% endif %}
+            {% endfor %}
 
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="total_network_weight_{{ network_name }}">
                 <div class="card">
@@ -350,7 +374,7 @@
                         <h5 class="card-title text-uppercase">Total network weight</h5><button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.total_weight_in_network }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.info.total_weight }}</h6>
                     </div>
                     <i class="fa-solid fa-weight-scale icon-container"></i>
                 </div>
@@ -362,7 +386,7 @@
                         <h5 class="card-title text-uppercase">Active nodes</h5><button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.active_nodes }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.info.active_nodes_count }}</h6>
                     </div>
                     <i class="fa-solid fa-circle-nodes icon-container"></i>
                 </div>
@@ -636,7 +660,88 @@
     
     {% if network_info and network_info.items() %}
     <script>
-            {% for network_name, network in network_info.items() %}
+        {% for network_name, network in network_info.items() %}
+            {% if network.node_data.nodes %}
+                document.addEventListener("DOMContentLoaded", function() {
+                    var weightChart = weightChart || {};
+                    
+                    var nodeData = [
+                        {% for node in network.node_data.nodes %}
+                            {
+                                nodeAddr: "{{ node.node_addr }}",
+                                effectiveWeight: {{ node.effective_value|float }},
+                                isMyNode: {{ node.is_my_node | tojson }}
+                            }
+                            {% if not loop.last %},{% endif %}
+                        {% endfor %}
+                    ];
+                        
+                    var top10NodeData = nodeData.filter(function(item) {
+                        return !item.isMyNode;
+                    }).sort(function(a, b) {
+                        return b.effectiveWeight - a.effectiveWeight;
+                    }).slice(0, 10);
+                
+                    var nodeAddrs = top10NodeData.map(function(item) {
+                        return item.nodeAddr.substring(0, item.nodeAddr.length - 12) + "...";
+                    });
+                
+                    var effectiveWeights = top10NodeData.map(function(item) {
+                        return item.effectiveWeight;
+                    });
+                
+                    var myNodeData = nodeData.find(function(item) {
+                        return item.isMyNode;
+                    });
+                
+                    var chartData = {
+                        labels: nodeAddrs,
+                        datasets: [
+                            {
+                                label: 'Effective weight',
+                                data: effectiveWeights,
+                                backgroundColor: '#B3A3FF',
+                                borderColor: '#B3A3FF',
+                                borderWidth: 1
+                            }
+                        ]
+                    };
+                
+                    var weightCtx_{{ network_name }} = document.getElementById('weightChart_{{ network_name }}').getContext('2d');
+                    
+                    weightChart['{{ network_name }}'] = new Chart(weightCtx_{{ network_name }}, {
+                        type: 'bar',
+                        data: chartData,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: {
+                                    grid: { display: false },
+                                    ticks: { color: '#B3A3FF' }
+                                },
+                                y: {
+                                    grid: { display: false },
+                                    beginAtZero: true,
+                                    ticks: { color: '#B3A3FF' }
+                                }
+                            },
+                            plugins: {
+                                legend: { display: true }
+                            }
+                        }
+                    });
+                
+                    if (myNodeData) {
+                        chartData.labels.push('MY NODE');
+                        chartData.datasets.forEach(function(dataset) {
+                            dataset.data.push(myNodeData.effectiveWeight);
+                        });
+                        weightChart['{{ network_name }}'].update();
+                    }
+                });
+                {% endif %}
+
                 {% if network.all_signed_blocks_dict %}
                     var blocksData = {};
                     blocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};

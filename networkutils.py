@@ -106,51 +106,35 @@ def get_node_data(network):
         if status:
             addr = status['address']
             list_keys = cli_command(f"srv_stake list keys -net {network}")
-            active_nodes = len(re.findall(r"active: true", list_keys))
             total_weight_in_network = re.search(r"total_weight_coins:\s+(\d+\.\d+)", list_keys)
-            lines = list_keys.splitlines()
-            idx = None
-            for i, line in enumerate(lines):
-                if addr in line:
-                    idx = i
-                    break
-            if idx is None:
-                return None  # Address not found?
-
-            while lines[idx].strip() != "":
-                idx -= 1
-
-            node_data = {}
-            
-            if active_nodes:
-                node_data['active_nodes'] = active_nodes
-            if total_weight_in_network:
-                node_data['total_weight_in_network'] = float(total_weight_in_network.group(1))
-
-            for line in lines[idx + 1:]:
-                if "pkey_hash:" in line:
-                    node_data['pkey_hash'] = line.split(":")[1].strip()
-                elif "stake_value:" in line:
-                    node_data['stake_value'] = float(line.split(":")[1].strip())
-                elif "effective_value:" in line:
-                    node_data['effective_value'] = float(line.split(":")[1].strip())
-                elif "related_weight:" in line:
-                    node_data['related_weight'] = round(float(line.split(":")[1].strip()), 2)
-                elif "tx_hash:" in line:
-                    node_data['tx_hash'] = line.split(":")[1].strip()
-                elif "node_addr:" in line:
-                    node_data['node_addr'] = line.split(":", 1)[1].strip()
-                elif "sovereign_addr:" in line:
-                    value = line.split(":")[1].strip()
-                    node_data['sovereign_addr'] = "N/A" if value.lower() == "null" else value
-                elif "sovereign_tax:" in line:
-                    node_data['sovereign_tax'] = float(line.split(":")[1].strip())
-                elif "active:" in line:
-                    node_data['active'] = line.split(":")[1].strip()
-
-                if not line.strip(): # Empty line? Then break.
-                    break
-            return node_data
+            total_weight = float(total_weight_in_network.group(1))
+            pattern = re.compile(
+                r'pkey_hash:\s+(?P<pkey_hash>0x[0-9A-F]+)\n'
+                r'\s+stake_value:\s+(?P<stake_value>[\d.]+)\n'
+                r'\s+effective_value:\s+(?P<effective_value>[\d.]+)\n'
+                r'\s+related_weight:\s+(?P<related_weight>[\d.]+)\n'
+                r'\s+tx_hash:\s+(?P<tx_hash>0x[0-9A-F]+)\n'
+                r'\s+node_addr:\s+(?P<node_addr>[0-9A-F:]+)\n'
+                r'\s+sovereign_addr:\s+(?P<sovereign_addr>[^\n]+)\n'
+                r'\s+sovereign_tax:\s+(?P<sovereign_tax>[\d.]+)\n'
+                r'\s+active:\s+(?P<active>\w+)\n'
+            ) # Compiling regex makes it much faster for this
+            active_nodes_count = len(re.findall(r"active: true", list_keys))
+            nodes = []
+            for match in pattern.finditer(list_keys):
+                node = match.groupdict()
+                node['is_my_node'] = (node['node_addr'] == addr) # This is our node
+                nodes.append(node)
+            info = {
+                'active_nodes_count': active_nodes_count,
+                'total_weight': total_weight
+            }
+            result = {
+                'info': info,
+                'nodes': nodes
+            }
+            log_it("d", result)
+            return result
         return None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name

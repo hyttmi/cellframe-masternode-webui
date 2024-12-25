@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.14] - 2024-12-25
+
+### Improved
+- Refined `get_node_stats` function to fetch information of all nodes.
+
+### Added
+- Top 10 nodes + your own node comparison chart behind weight scale button.
+- Telegram and / or email message sending on successful plugin update.
+
+Some other changes and improvements.
+
 ## [3.13] - 2024-12-21
 
 ### Fixed
