@@ -141,7 +141,7 @@ html {
     background-color: #151515 !important;
 }
 
-.btn-custom:hover {
+.btn-custom:hover, .btn-custom:active {
     color: #151515;
     background: #BEB1FF
 }
