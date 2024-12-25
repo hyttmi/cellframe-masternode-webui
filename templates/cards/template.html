@@ -164,9 +164,13 @@
                         <h5>NODE DUMP:</h5>
                         <pre>{{ network.general_node_info }}</pre>
                         {% if network.node_data %}
+                        {% for node in network.node_data.nodes %}
+                        {% if node.is_my_node %}
                         {{ network.node_data }}
                         <h5>NODE INFORMATION:</h5>
-                        <pre>PKEY HASH: {{ network.node_data.pkey_hash }}<br>TRANSACTION HASH: {{ network.node_data.tx_hash }}<br>SOVEREIGN ADDRESS: {{ network.node_data.sovereign_addr}}<br>SOVEREIGN TAX: {{ network.node_data.sovereign_tax }}<br>ACTIVE: {{ network.node_data.active }}</pre>
+                        <pre>PKEY HASH: {{ node.pkey_hash }}<br>TRANSACTION HASH: {{ node.tx_hash }}<br>SOVEREIGN ADDRESS: {{ node.sovereign_addr}}<br>SOVEREIGN TAX: {{ node.sovereign_tax }}<br>ACTIVE: {{ node.active }}</pre>
+                        {% endif %}
+                        {% endfor %}
                         {% endif %}
                     </div>
                 </div>
