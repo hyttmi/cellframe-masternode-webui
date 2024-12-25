@@ -656,74 +656,31 @@
     
     {% if network_info and network_info.items() %}
     <script>
-            {% for network_name, network in network_info.items() %}
-                {% if network.node_data.nodes %}
-                    var weightCtx{{ network.name }} = document.getElementById('weightChart_{{ network_name }}').getContext('2d');
-                    var nodeAddrs = [
-                        {% for node in network.node_data.nodes %}
-                        "{{ node.node_addr }}"{% if not loop.last %},{% endif %}
-                        {% endfor %}
-                    ];
-                    var effectiveWeights = [
-                        {% for node in network.node_data.nodes %}
-                        {{ node.effective_value|float }}{% if not loop.last %},{% endif %}
-                        {% endfor %}
-                    ];
-                    weightCharts = weightCharts || {};
-                    weightCharts['{{ network_name }}'] = new Chart(weightCtx{{ network_name }}, {
-                            type: 'line',
-                            data: {
-                                labels: nodeAddrs,
-                                datasets: [{
-                                    label: 'Effective weight',
-                                    data: effectiveWeights,
-                                    backgroundColor: '#B3A3FF',
-                                    borderColor: '#B3A3FF',
-                                    borderWidth: 1
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                scales: {
-                                    x: {
-                                        grid: {
-                                            display: false
-                                        },
-                                        ticks: {
-                                            color: '#B3A3FF'
-                                        }
-                                    },
-                                    y: {
-                                        grid: {
-                                            display: false
-                                        },
-                                        beginAtZero: true,
-                                        ticks: {
-                                            color: '#B3A3FF'
-                                        },
-                                    }
-                                },
-                                plugins: {
-                                    legend: {
-                                        display: false
-                                    }
-                                }
-                            }
-                        });
-                {% endif %}
-                {% if network.all_signed_blocks_dict %}
-                    var blocksData = {};
-                    blocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
-                    var blocksCharts = {};
-                    var blocksCtx{{ network_name }} = document.getElementById('blocksChart_{{ network_name }}').getContext('2d');
-                    blocksCharts['{{ network_name }}'] = new Chart(blocksCtx{{ network_name }}, {
+        var weightCharts = weightCharts || {};
+        var blocksCharts = blocksCharts || {};
+        var rewardsCharts = rewardsCharts || {};
+
+        {% for network_name, network in network_info.items() %}
+            {% if network.node_data.nodes %}
+                var weightCtx{{ network.name }} = document.getElementById('weightChart_{{ network_name }}').getContext('2d');
+                var nodeAddrs = [
+                    {% for node in network.node_data.nodes %}
+                    "{{ node.node_addr }}"{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ];
+                var effectiveWeights = [
+                    {% for node in network.node_data.nodes %}
+                    {{ node.effective_value|float }}{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ];
+                
+                weightCharts['{{ network_name }}'] = new Chart(weightCtx{{ network_name }}, {
                         type: 'line',
                         data: {
-                            labels: [],
+                            labels: nodeAddrs,
                             datasets: [{
-                                label: 'Blocks',
-                                data: [],
+                                label: 'Effective weight',
+                                data: effectiveWeights,
                                 backgroundColor: '#B3A3FF',
                                 borderColor: '#B3A3FF',
                                 borderWidth: 1
@@ -758,68 +715,111 @@
                             }
                         }
                     });
-                    updateChart('blocksChart', 7, '{{ network_name }}');
-                {% endif %}
+            {% endif %}
             
-                {% if network.rewards %}
-                    var rewardsData = {};
-                    rewardsData['{{ network_name }}'] = {{ network.rewards | tojson }};
-                    var rewardsCharts = {};
-                    var rewardsCtx{{ network_name }} = document.getElementById('rewardsChart_{{ network_name }}').getContext('2d');
-                    rewardsCharts['{{ network_name }}'] = new Chart(rewardsCtx{{ network_name }}, {
-                        type: 'line',
-                        data: {
-                            labels: [],
-                            datasets: [{
-                                label: 'Rewards',
-                                data: [],
-                                backgroundColor: '#B3A3FF',
-                                borderColor: '#B3A3FF',
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                x: {
-                                    grid: {
-                                        display: false
-                                    },
-                                    ticks: {
-                                        color: '#B3A3FF'
-                                    }
-                                },
-                                y: {
-                                    grid: {
-                                        display: false
-                                    },
-                                    beginAtZero: true,
-                                    ticks: {
-                                        color: '#B3A3FF'
-                                    }
-                                }
-                            },
-                            plugins: {
-                                legend: {
+            {% if network.all_signed_blocks_dict %}
+                blocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
+                var blocksCtx{{ network_name }} = document.getElementById('blocksChart_{{ network_name }}').getContext('2d');
+                blocksCharts['{{ network_name }}'] = new Chart(blocksCtx{{ network_name }}, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Blocks',
+                            data: [],
+                            backgroundColor: '#B3A3FF',
+                            borderColor: '#B3A3FF',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                grid: {
                                     display: false
                                 },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(tooltipItem) {
-                                            return tooltipItem.raw;
-                                        }
+                                ticks: {
+                                    color: '#B3A3FF'
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    display: false
+                                },
+                                beginAtZero: true,
+                                ticks: {
+                                    color: '#B3A3FF'
+                                },
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+                updateChart('blocksChart', 7, '{{ network_name }}');
+            {% endif %}
+        
+            {% if network.rewards %}
+                rewardsData['{{ network_name }}'] = {{ network.rewards | tojson }};
+                var rewardsCtx{{ network_name }} = document.getElementById('rewardsChart_{{ network_name }}').getContext('2d');
+                rewardsCharts['{{ network_name }}'] = new Chart(rewardsCtx{{ network_name }}, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Rewards',
+                            data: [],
+                            backgroundColor: '#B3A3FF',
+                            borderColor: '#B3A3FF',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    color: '#B3A3FF'
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    display: false
+                                },
+                                beginAtZero: true,
+                                ticks: {
+                                    color: '#B3A3FF'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(tooltipItem) {
+                                        return tooltipItem.raw;
                                     }
                                 }
                             }
                         }
-                    });
-                    updateChart('rewardsChart', 7, '{{ network_name }}');
-                {% endif %}
-            {% endfor %}
+                    }
+                });
+                updateChart('rewardsChart', 7, '{{ network_name }}');
+            {% endif %}
+        {% endfor %}
     </script>
-    {% endif %}
-    
+{% endif %}
 </body>
 
 </html>
