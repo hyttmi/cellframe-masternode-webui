@@ -669,7 +669,7 @@
                         {{ node.effective_value|float }}{% if not loop.last %},{% endif %}
                         {% endfor %}
                     ];
-                    weightCharts['{{ network_name }}'] = new Chart(weightCtx{{ network_name }}, {
+                    weightChart['{{ network_name }}'] = new Chart(weightCtx{{ network_name }}, {
                             type: 'line',
                             data: {
                                 labels: nodeAddrs,
