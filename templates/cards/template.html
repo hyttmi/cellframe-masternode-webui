@@ -670,42 +670,30 @@
                             }
                             {% if not loop.last %},{% endif %}
                         {% endfor %}
-                    ]; 
+                    ];
                         
                     nodeData.sort(function(a, b) {
                         return b.effectiveWeight - a.effectiveWeight;
                     });
                 
                     var top10NodeData = nodeData.slice(0, 10);
-                
                     var nodeAddrs = top10NodeData.map(function(item) {
-                        return item.nodeAddr;
+                        return item.nodeAddr.substring(0, 4);
                     });
                 
                     var effectiveWeights = top10NodeData.map(function(item) {
                         return item.effectiveWeight;
                     });
                 
-                    var myNodeData = nodeData.filter(function(item) {
+                    var myNodeData = top10NodeData.filter(function(item) {
                         return item.isMyNode;
                     });
                 
-                    if (myNodeData.length > 0) {
-                        var myNodeAddr = myNodeData[0].nodeAddr;
-                        var myNodeWeight = myNodeData[0].effectiveWeight;
-                    
-                        nodeAddrs.unshift(myNodeAddr);
-                        effectiveWeights.unshift(myNodeWeight);
-                    }
-                
-                    var myNodeAddrs = myNodeData.map(function(item) {
-                        return item.nodeAddr;
-                    });
-                    var myNodeWeights = myNodeData.map(function(item) {
-                        return item.effectiveWeight;
-                    });
+                    var myNodeAddr = myNodeData.length > 0 ? myNodeData[0].nodeAddr.substring(0, 4) : null;
+                    var myNodeWeight = myNodeData.length > 0 ? myNodeData[0].effectiveWeight : null;
                 
                     var weightCtx_{{ network_name }} = document.getElementById('weightChart_{{ network_name }}').getContext('2d');
+                
                     weightChart['{{ network_name }}'] = new Chart(weightCtx_{{ network_name }}, {
                         type: 'bar',
                         data: {
@@ -717,14 +705,6 @@
                                     backgroundColor: '#B3A3FF',
                                     borderColor: '#B3A3FF',
                                     borderWidth: 1
-                                },
-                                {
-                                    label: 'My Node',
-                                    data: myNodeWeights,
-                                    backgroundColor: '#FF6347',
-                                    borderColor: '#FF6347',
-                                    borderWidth: 1,
-                                    barThickness: 10,
                                 }
                             ]
                         },
@@ -734,16 +714,12 @@
                             scales: {
                                 x: {
                                     grid: { display: false },
-                                    ticks: { 
-                                        color: '#B3A3FF'
-                                    }
+                                    ticks: { color: '#B3A3FF' }
                                 },
                                 y: {
                                     grid: { display: false },
                                     beginAtZero: true,
-                                    ticks: { 
-                                        color: '#B3A3FF'
-                                    }
+                                    ticks: { color: '#B3A3FF' }
                                 }
                             },
                             plugins: {
@@ -751,6 +727,20 @@
                             }
                         }
                     });
+                
+                    if (myNodeAddr && myNodeWeight) {
+                        weightChart['{{ network_name }}'].data.labels.push(myNodeAddr);
+                        weightChart['{{ network_name }}'].data.datasets[0].data.push(myNodeWeight);
+                        weightChart['{{ network_name }}'].data.datasets.push({
+                            label: 'My Node',
+                            data: [myNodeWeight],
+                            backgroundColor: '#FF6347',
+                            borderColor: '#FF6347',
+                            borderWidth: 1,
+                            barThickness: 10
+                        });
+                        weightChart['{{ network_name }}'].update();
+                    }
                 });
             {% endif %}
                 {% if network.all_signed_blocks_dict %}
