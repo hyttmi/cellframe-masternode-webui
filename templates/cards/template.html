@@ -659,20 +659,20 @@
             {% for network_name, network in network_info.items() %}
             {% if network.node_data.nodes %}
             var weightCtx_{{ network_name }} = document.getElementById('weightChart_{{ network_name }}').getContext('2d');
-            
+
             var nodeAddrs = [
                 {% for node in network.node_data.nodes %}
                 "{{ node.node_addr }}"{% if not loop.last %},{% endif %}
                 {% endfor %}
             ];
-            
+
             var effectiveWeights = [
                 {% for node in network.node_data.nodes %}
                 {{ node.effective_value|float }}{% if not loop.last %},{% endif %}
                 {% endfor %}
             ];
-            
-            weightChart = weightChart || {};  // Ensure weightChart is initialized
+
+            weightChart = weightChart || {};
             weightChart['{{ network_name }}'] = new Chart(weightCtx_{{ network_name }}, {
                 type: 'line',
                 data: {
