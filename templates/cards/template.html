@@ -696,7 +696,7 @@
                     };
                 
                     var weightCtx_{{ network_name }} = document.getElementById('weightChart_{{ network_name }}').getContext('2d');
-                    
+                    console.log(weightCtx_{{ network_name }}.raw)
                     weightChart['{{ network_name }}'] = new Chart(weightCtx_{{ network_name }}, {
                         type: 'bar',
                         data: chartData,
