@@ -727,8 +727,13 @@
                 
                     if (myNodeData) {
                         chartData.labels.push('MY NODE');
+                        const myNodeBarColour = '#F5F5F5'
                         chartData.datasets.forEach(function(dataset) {
+                            if (!Array.isArray(dataset.backgroundColor)) {
+                                dataset.backgroundColor = [];
+                            }
                             dataset.data.push(myNodeData.effectiveWeight);
+                            dataset.backgroundColor.push(myNodeBarColour);
                         });
                         weightChart['{{ network_name }}'].update();
                     }
