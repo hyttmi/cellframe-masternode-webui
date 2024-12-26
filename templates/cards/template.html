@@ -171,19 +171,9 @@
                                 {% endif %}
                             {% endfor %}
                         {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade" id="nodeWeightModal_{{ network_name }}" tabindex="-1" aria-labelledby="nodeWeightModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content custom-modal-bg">
-                    <div class="modal-header">
-                        <h5 class="modal-title text-uppercase" id="nodeWeightModalLabel">Weight chart</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <canvas id="weightChart_{{ network_name }}"></canvas>
+                        <div>
+                            <canvas id="weightChart_{{ network_name }}"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -194,9 +184,6 @@
                   {{ network_name }}
                   <button type="button" class="btn btn-link ms-2" data-bs-toggle="modal" data-bs-target="#nodeInfoModal_{{ network_name }}">
                     <i class="fa-solid fa-circle-info info fa-xl"></i>
-                  </button>
-                  <button type="button" class="btn btn-link ms-2" data-bs-toggle="modal" data-bs-target="#nodeWeightModal_{{ network_name }}">
-                    <i class="fa-solid fa-weight-scale info fa-xl"></i>
                   </button>
                 </h1>
               </div>              
