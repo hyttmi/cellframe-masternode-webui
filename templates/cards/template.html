@@ -688,7 +688,9 @@
                             {
                                 label: 'Effective weight',
                                 data: effectiveWeights,
-                                backgroundColor: '#DEE2E6',
+                                backgroundColor: this.data.map((item, index) => {
+                                    return index === this.data.length - 1 ? 'red' : 'blue'
+                                }),
                                 borderColor: '#DEE2E6',
                                 borderWidth: 1
                             }
@@ -696,7 +698,6 @@
                     };
                 
                     var weightCtx_{{ network_name }} = document.getElementById('weightChart_{{ network_name }}').getContext('2d');
-                    console.log(weightCtx_{{ network_name }}.raw())
                     weightChart['{{ network_name }}'] = new Chart(weightCtx_{{ network_name }}, {
                         type: 'bar',
                         data: chartData,
@@ -727,13 +728,8 @@
                 
                     if (myNodeData) {
                         chartData.labels.push('MY NODE');
-                        const myNodeBarColour = '#F5F5F5'
                         chartData.datasets.forEach(function(dataset) {
-                            if (!Array.isArray(dataset.backgroundColor)) {
-                                dataset.backgroundColor = [];
-                            }
                             dataset.data.push(myNodeData.effectiveWeight);
-                            dataset.backgroundColor.push(myNodeBarColour);
                         });
                         weightChart['{{ network_name }}'].update();
                     }
