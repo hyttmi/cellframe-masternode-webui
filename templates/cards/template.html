@@ -171,7 +171,7 @@
                                 {% endif %}
                             {% endfor %}
                         {% endif %}
-                        <h5>TOP 10 WEIGHTS:</h5>
+                        <h5>TOP 10 BIGGEST WEIGHTS:</h5>
                         <div>
                             <canvas id="weightChart_{{ network_name }}"></canvas>
                         </div>
@@ -688,16 +688,15 @@
                             {
                                 label: 'Effective weight',
                                 data: effectiveWeights,
-                                backgroundColor: this.data.map((item, index) => {
-                                    return index === this.data.length - 1 ? 'red' : 'blue'
-                                }),
-                                borderColor: '#DEE2E6',
+                                backgroundColor: '#B3A3FF',
+                                borderColor: '#B3A3FF',
                                 borderWidth: 1
                             }
                         ]
                     };
                 
                     var weightCtx_{{ network_name }} = document.getElementById('weightChart_{{ network_name }}').getContext('2d');
+                    
                     weightChart['{{ network_name }}'] = new Chart(weightCtx_{{ network_name }}, {
                         type: 'bar',
                         data: chartData,
@@ -707,12 +706,12 @@
                             scales: {
                                 x: {
                                     grid: { display: false },
-                                    ticks: { color: '#DEE2E6' }
+                                    ticks: { color: '#B3A3FF' }
                                 },
                                 y: {
                                     grid: { display: false },
                                     beginAtZero: true,
-                                    ticks: { color: '#DEE2E6' }
+                                    ticks: { color: '#B3A3FF' }
                                 }
                             },
                             plugins: {
