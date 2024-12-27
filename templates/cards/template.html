@@ -668,7 +668,7 @@
                         return item.isMyNode ? 'MY NODE' : item.nodeAddr.substring(0,4);
                     }); 
                     var effectiveWeights = nodeData.map(function(item) {
-                        return item.effectiveWeight.raw;
+                        return item.effectiveWeight;
                     });
 
                     var chartData = {
@@ -717,7 +717,14 @@
                             },
                             plugins: {
                                 legend: { display: false },
-                                tooltip: { enabled: true }
+                                tooltip: {
+                                    enabled: true,
+                                    callbacks: {
+                                        label: function(tooltipItem) {
+                                        return tooltipItem.raw;
+                                    }
+                                }
+                            }
                             }
                         }
                     });
