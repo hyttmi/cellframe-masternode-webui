@@ -665,7 +665,7 @@
                     ];
 
                     var nodeLabels = nodeData.map(function(item) {
-                        return item.isMyNode ? 'MY NODE' : item.nodeAddr;
+                        return item.isMyNode ? 'MY NODE' : item.nodeAddr.substring(0,4);
                     }); 
                     var effectiveWeights = nodeData.map(function(item) {
                         return item.effectiveWeight;
@@ -697,13 +697,17 @@
                             scales: {
                                 x: {
                                     beginAtZero: true,
-                                    grid: { display: true }
+                                    grid: { display: false }
                                 },
                                 y: {
-                                    grid: { display: true },
+                                    grid: { display: false },
                                     ticks: {
-                                        display: false
+                                        callback: function(value, index, values) {
+                                            return nodeLabels[index];
+                                        },
+                                        color: '#DEE2E6'
                                     }
+
                                 }
                             },
                             plugins: {
