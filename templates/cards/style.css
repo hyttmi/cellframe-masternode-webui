@@ -142,8 +142,7 @@ html {
 }
 
 #chart-container {
-    min-height: 300px; 
-    max-height: 500px; 
+    min-height: 1200px;
     overflow-y: auto;  
     overflow-x: hidden;
     width: 100%;       
