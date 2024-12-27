@@ -668,7 +668,7 @@
                         return item.isMyNode ? 'MY NODE' : item.nodeAddr.substring(0,4);
                     }); 
                     var effectiveWeights = nodeData.map(function(item) {
-                        return item.effectiveWeight;
+                        return item.effectiveWeight.raw;
                     });
 
                     var chartData = {
@@ -764,13 +764,6 @@
                                 }
                             },
                             plugins: {
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(tooltipItem) {
-                                            return tooltipItem.raw;
-                                        }
-                                    }
-                                },
                                 legend: {
                                     display: false
                                 }
