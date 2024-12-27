@@ -666,13 +666,13 @@
 
                     var nodeLabels = nodeData.map(function(item) {
                         return item.isMyNode ? 'MY NODE' : item.nodeAddr;
-                    });
+                    }); 
                     var effectiveWeights = nodeData.map(function(item) {
                         return item.effectiveWeight;
                     });
 
                     var chartData = {
-                        labels: nodeLabels,
+                        labels: [],
                         datasets: [
                             {
                                 label: 'Effective weight',
