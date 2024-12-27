@@ -677,7 +677,9 @@
                             {
                                 label: 'Effective weight',
                                 data: effectiveWeights,
-                                backgroundColor: '#007BFF',
+                                backgroundColor: nodeData.map(function(item) {
+                                    return item.isMyNode ? '#007BFF' : '#DEE2E6';
+                                }),
                                 borderWidth: 0
                             }
                         ]
