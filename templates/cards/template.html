@@ -664,6 +664,10 @@
                         {% endfor %}
                     ];
 
+                    nodeData.sort(function(a, b) {
+                        return b.effectiveWeight - a.effectiveWeight;
+                    });
+
                     var nodeLabels = nodeData.map(function(item) {
                         return item.isMyNode ? 'MY NODE' : item.nodeAddr.substring(0,4);
                     }); 
