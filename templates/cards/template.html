@@ -172,7 +172,7 @@
                             {% endfor %}
                         {% endif %}
                         <h5>NODE WEIGHTS:</h5>
-                        <div style="height: 800px;">
+                        <div style="height: 800px; overflow-y: auto;">
                             <canvas id="weightChart_{{ network_name }}"></canvas>
                         </div>
                     </div>
@@ -696,17 +696,10 @@
                             scales: {
                                 x: {
                                     beginAtZero: true,
-                                    grid: { display: false },
-                                    ticks: { color: '#DEE2E6' }
+                                    grid: { display: false }
                                 },
                                 y: {
-                                    grid: { display: false },
-                                    ticks: {
-                                        color: '#DEE2E6',
-                                        callback: function(value) {
-                                            return value.length > 15 ? value.substring(0, 15) + '...' : value;
-                                        }
-                                    }
+                                    grid: { display: false }
                                 }
                             },
                             plugins: {
