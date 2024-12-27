@@ -764,6 +764,13 @@
                                 }
                             },
                             plugins: {
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(tooltipItem) {
+                                            return tooltipItem.raw;
+                                        }
+                                    }
+                                },
                                 legend: {
                                     display: false
                                 }
