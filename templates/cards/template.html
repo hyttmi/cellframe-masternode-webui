@@ -675,6 +675,8 @@
                         labels: nodeLabels,
                         datasets: [
                             {
+                                categoryPercentage: 0.9,
+                                barPercentage: 0.9,
                                 label: 'Effective weight',
                                 data: effectiveWeights,
                                 backgroundColor: nodeData.map(function(item) {
@@ -696,8 +698,6 @@
                             maintainAspectRatio: false,
                             scales: {
                                 x: {
-                                    //categoryPercentage: 0.9,
-                                    //barPercentage: 0.9,
                                     beginAtZero: true,
                                     grid: { display: false },
                                     
