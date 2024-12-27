@@ -657,83 +657,55 @@
                         {% for node in network.node_data.nodes %}
                             {
                                 nodeAddr: "{{ node.node_addr }}",
-                                effectiveWeight: {{ node.effective_value|float }},
+                                effectiveWeight: {{ node.effective_value | float }},
                                 isMyNode: {{ node.is_my_node | tojson }}
                             }
                             {% if not loop.last %},{% endif %}
                         {% endfor %}
                     ];
-                        
-                    var top10NodeData = nodeData.filter(function(item) {
-                        return !item.isMyNode;
-                    }).sort(function(a, b) {
-                        return b.effectiveWeight - a.effectiveWeight;
-                    }).slice(0, 10);
-                
-                    var nodeAddrs = top10NodeData.map(function(item) {
-                        return item.nodeAddr.substring(0, item.nodeAddr.length - 12) + "...";
+
+                    var nodeLabels = nodeData.map(function(item) {
+                        return item.isMyNode ? 'MY NODE' : item.nodeAddr;
                     });
-                
-                    var effectiveWeights = top10NodeData.map(function(item) {
+                    var effectiveWeights = nodeData.map(function(item) {
                         return item.effectiveWeight;
                     });
-                
-                    var myNodeData = nodeData.find(function(item) {
-                        return item.isMyNode;
-                    });
-                
+
                     var chartData = {
-                        labels: nodeAddrs,
+                        labels: nodeLabels,
                         datasets: [
                             {
                                 label: 'Effective weight',
                                 data: effectiveWeights,
-                                backgroundColor: '#DEE2E6',
-                                borderColor: '#DEE2E6',
+                                backgroundColor: nodeData.map(function(item) {
+                                    return item.isMyNode ? '#007BFF' : '#DEE2E6';
+                                }),
+                                borderColor: '#FFFFFF',
                                 borderWidth: 1
                             }
                         ]
                     };
-                
+
                     var weightCtx_{{ network_name }} = document.getElementById('weightChart_{{ network_name }}').getContext('2d');
-                    
+
                     weightChart['{{ network_name }}'] = new Chart(weightCtx_{{ network_name }}, {
-                        type: 'bar',
+                        type: 'pie',
                         data: chartData,
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
-                            scales: {
-                                x: {
-                                    grid: { display: false },
-                                    ticks: { color: '#DEE2E6' }
-                                },
-                                y: {
-                                    grid: { display: false },
-                                    beginAtZero: true,
-                                    ticks: { color: '#DEE2E6' }
-                                }
-                            },
-                            plugins: {
-                                legend: { display: true }
-                            },
                             plugins: {
                                 legend: {
-                                    display: false
+                                    display: true,
+                                    labels: {
+                                        color: '#DEE2E6'
+                                    }
                                 }
                             }
                         }
                     });
-                
-                    if (myNodeData) {
-                        chartData.labels.push('MY NODE');
-                        chartData.datasets.forEach(function(dataset) {
-                            dataset.data.push(myNodeData.effectiveWeight);
-                        });
-                        weightChart['{{ network_name }}'].update();
-                    }
                 });
-                {% endif %}
+            {% endif %}
 
                 {% if network.all_signed_blocks_dict %}
                     var blocksData = {};
