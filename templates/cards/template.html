@@ -676,7 +676,10 @@
                         datasets: [
                             {
                                 label: 'Effective weight',
-                                data: effectiveWeights
+                                data: effectiveWeights,
+                                backgroundColor: '#007BFF',
+                                borderColor: '#DEE2E6',
+                                borderWidth: 1
                             }
                         ]
                     };
@@ -684,15 +687,31 @@
                     var weightCtx_{{ network_name }} = document.getElementById('weightChart_{{ network_name }}').getContext('2d');
 
                     weightChart['{{ network_name }}'] = new Chart(weightCtx_{{ network_name }}, {
-                        type: 'pie',
+                        type: 'bar',
                         data: chartData,
                         options: {
+                            indexAxis: 'y',
                             responsive: true,
                             maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    display: false,
+                            scales: {
+                                x: {
+                                    beginAtZero: true,
+                                    grid: { display: false },
+                                    ticks: { color: '#DEE2E6' }
+                                },
+                                y: {
+                                    grid: { display: false },
+                                    ticks: {
+                                        color: '#DEE2E6',
+                                        callback: function(value) {
+                                            return value.length > 15 ? value.substring(0, 15) + '...' : value;
+                                        }
+                                    }
                                 }
+                            },
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: { enabled: true }
                             }
                         }
                     });
