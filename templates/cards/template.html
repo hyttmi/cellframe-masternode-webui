@@ -161,6 +161,10 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        <h5 class="text-color-secondary">NODE WEIGHTS:</h5>
+                        <div id="chart-container">
+                            <canvas id="weightChart_{{ network_name }}"></canvas>
+                        </div>
                         <h5 class="text-color-secondary">NODE DUMP:</h5>
                         <pre>{{ network.general_node_info }}</pre>
                         {% if network.node_data %}
@@ -171,10 +175,6 @@
                                 {% endif %}
                             {% endfor %}
                         {% endif %}
-                        <h5 class="text-color-secondary">NODE WEIGHTS:</h5>
-                        <div id="chart-container">
-                            <canvas id="weightChart_{{ network_name }}"></canvas>
-                        </div>
                     </div>
                 </div>
             </div>
