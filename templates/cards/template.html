@@ -670,52 +670,12 @@
                         {% for node in network.node_data.nodes %}
                             {
                                 nodeAddr: "{{ node.node_addr }}",
-<<<<<<< HEAD
-                                effectiveWeight: {{ node.effective_value|float }},
-=======
                                 effectiveWeight: {{ node.effective_value | float }},
->>>>>>> dev
                                 isMyNode: {{ node.is_my_node | tojson }}
                             }
                             {% if not loop.last %},{% endif %}
                         {% endfor %}
                     ];
-<<<<<<< HEAD
-                        
-                    var top10NodeData = nodeData.filter(function(item) {
-                        return !item.isMyNode;
-                    }).sort(function(a, b) {
-                        return b.effectiveWeight - a.effectiveWeight;
-                    }).slice(0, 10);
-                
-                    var nodeAddrs = top10NodeData.map(function(item) {
-                        return item.nodeAddr.substring(0, item.nodeAddr.length - 12) + "...";
-                    });
-                
-                    var effectiveWeights = top10NodeData.map(function(item) {
-                        return item.effectiveWeight;
-                    });
-                
-                    var myNodeData = nodeData.find(function(item) {
-                        return item.isMyNode;
-                    });
-                
-                    var chartData = {
-                        labels: nodeAddrs,
-                        datasets: [
-                            {
-                                label: 'Effective weight',
-                                data: effectiveWeights,
-                                backgroundColor: '#B3A3FF',
-                                borderColor: '#B3A3FF',
-                                borderWidth: 1
-                            }
-                        ]
-                    };
-                
-                    var weightCtx_{{ network_name }} = document.getElementById('weightChart_{{ network_name }}').getContext('2d');
-                    
-=======
 
                     nodeData.sort(function(a, b) {
                         return b.effectiveWeight - a.effectiveWeight;
@@ -746,45 +706,15 @@
 
                     var weightCtx_{{ network_name }} = document.getElementById('weightChart_{{ network_name }}').getContext('2d');
 
->>>>>>> dev
                     weightChart['{{ network_name }}'] = new Chart(weightCtx_{{ network_name }}, {
                         type: 'bar',
                         data: chartData,
                         options: {
-<<<<<<< HEAD
-=======
                             indexAxis: 'y',
->>>>>>> dev
                             responsive: true,
                             maintainAspectRatio: false,
                             scales: {
                                 x: {
-<<<<<<< HEAD
-                                    grid: { display: false },
-                                    ticks: { color: '#B3A3FF' }
-                                },
-                                y: {
-                                    grid: { display: false },
-                                    beginAtZero: true,
-                                    ticks: { color: '#B3A3FF' }
-                                }
-                            },
-                            plugins: {
-                                legend: { display: true }
-                            }
-                        }
-                    });
-                
-                    if (myNodeData) {
-                        chartData.labels.push('MY NODE');
-                        chartData.datasets.forEach(function(dataset) {
-                            dataset.data.push(myNodeData.effectiveWeight);
-                        });
-                        weightChart['{{ network_name }}'].update();
-                    }
-                });
-                {% endif %}
-=======
                                     beginAtZero: true,
                                     grid: {
                                         display: true,
@@ -823,7 +753,6 @@
                     });
                 });
             {% endif %}
->>>>>>> dev
 
                 {% if network.all_signed_blocks_dict %}
                     var blocksData = {};
