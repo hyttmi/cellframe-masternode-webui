@@ -79,12 +79,14 @@ def fetch_and_install_plugin_update():
                         except Exception as e:
                             log_it("e", f"Failed to remove {template_dir}!")
                     with zipfile.ZipFile(save_path, 'r') as Z:
+                        top_level_dir = os.path.commonpath(Z.namelist())
                         for file in Z.namelist():
-                            if not file.endswith('/'):  # Somehow there's no "easy" way to extract just the files out from the zip package?
-                                filename = os.path.basename(file)
-                                member_path = os.path.join(get_current_script_directory(), filename)
-                                with open(member_path, 'wb') as output_file:
-                                    output_file.write(Z.read(file))
+                            if file.endswith('/'):
+                                continue
+                            relative_path = os.path.relpath(file, top_level_dir)
+                            member_path = os.path.join(get_current_script_directory(), relative_path)
+                            with open(member_path, 'wb') as output_file:
+                                output_file.write(Z.read(file))
                     log_it("d", f"Update extracted successfully.")
                     requirements_path = os.path.join(get_current_script_directory(), "requirements.txt")
                     if os.path.exists(requirements_path):
