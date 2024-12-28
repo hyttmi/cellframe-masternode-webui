@@ -161,13 +161,15 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        {% if network.node_data.nodes %}
                         <h5 class="text-color-secondary">NODE WEIGHTS:</h5>
                         <div id="chart-container">
                             <canvas id="weightChart_{{ network_name }}"></canvas>
                         </div>
+                        {% endif %}
                         <h5 class="text-color-secondary">NODE DUMP:</h5>
                         <pre>{{ network.general_node_info }}</pre>
-                        {% if network.node_data %}
+                        {% if network.node_data.nodes %}
                             {% for node in network.node_data.nodes %}
                                 {% if node.is_my_node %}
                                     <h5 class="text-color-secondary">NODE INFORMATION:</h5>
@@ -315,7 +317,7 @@
                 </div>
             </div>
             {% endif %}
-            {% if network.node_data %}
+            {% if network.node_data.nodes %}
             {% for node in network.node_data.nodes %}
             {% if node.is_my_node %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_stake_value_{{ network_name }}">
@@ -368,6 +370,7 @@
                 </div>
             </div>
             
+            {% if network.node_data.info.active_nodes_count > 0 %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="active_nodes_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -379,6 +382,7 @@
                     <i class="fa-solid fa-circle-nodes icon-container"></i>
                 </div>
             </div>
+            {% endif %}
             {% endif %}
 
             {% if network.token_price %}

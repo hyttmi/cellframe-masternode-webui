@@ -109,15 +109,15 @@ def get_node_data(network):
             total_weight_in_network = re.search(r"total_weight_coins:\s+(\d+\.\d+)", list_keys)
             total_weight = float(total_weight_in_network.group(1))
             pattern = re.compile(
-                r'pkey_hash:\s+(?P<pkey_hash>0x[0-9A-F]+)\n'
-                r'\s+stake_value:\s+(?P<stake_value>[\d.]+)\n'
-                r'\s+effective_value:\s+(?P<effective_value>[\d.]+)\n'
-                r'\s+related_weight:\s+(?P<related_weight>[\d.]+)\n'
-                r'\s+tx_hash:\s+(?P<tx_hash>0x[0-9A-F]+)\n'
-                r'\s+node_addr:\s+(?P<node_addr>[0-9A-F:]+)\n'
-                r'\s+sovereign_addr:\s+(?P<sovereign_addr>[^\n]+)\n'
-                r'\s+sovereign_tax:\s+(?P<sovereign_tax>[\d.]+)\n'
-                r'\s+active:\s+(?P<active>\w+)\n'
+                r'pkey_hash:\s+(?P<pkey_hash>\w+)\s+'
+                r'stake_value:\s+(?P<stake_value>\d+\.\d+)\s+'
+                r'effective_value:\s+(?P<effective_value>\d+\.\d+)\s+'
+                r'related_weight:\s+(?P<related_weight>\d+\.\d+)\s+'
+                r'tx_hash:\s+(?P<tx_hash>\w+)\s+'
+                r'node_addr:\s+(?P<node_addr>[0-9A-F:]+)\s+'
+                r'sovereign_addr:\s+(?P<sovereign_addr>\w+)\s+'
+                r'sovereign_tax:\s+(?P<sovereign_tax>\d+\.\d+)\s+'
+                r'active:\s+(?P<active>true|false)'
             ) # Compiling regex makes it much faster for this
             active_nodes_count = len(re.findall(r"active: true", list_keys))
             nodes = []
@@ -125,6 +125,7 @@ def get_node_data(network):
                 node = match.groupdict()
                 node['is_my_node'] = (node['node_addr'] == addr) # This is our node
                 nodes.append(node)
+
             info = {
                 'active_nodes_count': active_nodes_count,
                 'total_weight': total_weight
