@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.16] - 2024-12-28
+
+### Fixed (hopefully)
+- Template issues when node_data returns nothing.
+
 ## [3.15] - 2024-12-28
 
 ### Improved
