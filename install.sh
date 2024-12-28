@@ -1,6 +1,6 @@
 #!/bin/bash
 LC_ALL=C # Make sure we're using ASCII locale so regex works...
-EXT_IP=$(dig @resolver4.opendns.com myip.opendns.com +short -4 2> /dev/null || echo "dig unavailable, can't get external IP" && EXT_IP="")
+EXT_IP=$(dig @resolver4.opendns.com myip.opendns.com +short -4 2> /dev/null || "")
 EXT_PORT=$(grep -oP '^listen_address=\K.*' /opt/cellframe-node/etc/cellframe-node.cfg | head -1 | tr -d '[]' | cut -d ':' -f 2)
 PIP="pip3"
 PIP_PATH="/opt/cellframe-node/python/bin/$PIP"
@@ -74,4 +74,8 @@ else
     exit 1
 fi
 
-echo -e "\n\nYou may login after node restart with http://$EXT_IP:$EXT_PORT/$URL"
+if [[ ! -z $EXT_IP ]]; then
+    echo -e "\n\nYou may login after node restart with http://$EXT_IP:$EXT_PORT/$URL"
+else
+    echo -e "\n\nYou may login after node restart with http://<external_ip>:$EXT_PORT/$URL"
+fi
