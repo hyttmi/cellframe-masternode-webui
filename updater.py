@@ -49,6 +49,7 @@ def check_plugin_update():
 def fetch_and_install_plugin_update():
     try:
         log_it("i", "Checking for plugin update...")
+        template_dir = os.path.join(get_current_script_directory(), "templates")
         update_path = os.path.join(get_current_script_directory(), ".autoupdater")
         if os.path.exists(update_path):
             shutil.rmtree(update_path)
@@ -71,6 +72,12 @@ def fetch_and_install_plugin_update():
                             file.write(chunk)
                     log_it("d", f"Downloaded latest release to {save_path}.")
                     log_it("d", f"Extracting the update to the parent directory.")
+                    if os.path.exists(template_dir):
+                        try:
+                            log_it("d", "Removing old template directory...")
+                            shutil.rmtree(template_dir)
+                        except Exception as e:
+                            log_it("e", f"Failed to remove {template_dir}!")
                     with zipfile.ZipFile(save_path, 'r') as Z:
                         for file in Z.namelist():
                             if not file.endswith('/'):  # Somehow there's no "easy" way to extract just the files out from the zip package?

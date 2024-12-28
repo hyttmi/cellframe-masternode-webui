@@ -145,7 +145,7 @@ def get_node_data(network):
 def get_network_status(network):
     try:
         net_status = cli_command(f"net -net {network} get status")
-        addr_match = re.search(r"([A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*::[A-Z0-9]*)", net_status)
+        addr_match = re.search(r"([A-Z0-9:]+)", net_status)
         state_match = re.search(r"states:\s+current: (\w+)", net_status)
         target_state_match = re.search(r"target: (\w+)", net_status)
         if state_match and addr_match and target_state_match:
