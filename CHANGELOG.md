@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.15] - 2024-12-28
+
+### Improved
+- Installation script is much better now, handles username, password and URL by default. Thx to @school_of_simple_living.
+
+### Added
+- Node weight horizontal chart in network information, your own node as a comparison with different color.
+
 ## [3.14] - 2024-12-25
 
 ### Improved
