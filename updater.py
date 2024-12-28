@@ -1,4 +1,4 @@
-from common import get_current_script_directory, cli_command
+from common import get_current_script_directory, get_script_parent_directory, cli_command
 from config import Config
 from logger import log_it
 from packaging import version
@@ -62,7 +62,7 @@ def fetch_and_install_plugin_update():
             if download_url:
                 update_path = os.path.join(get_current_script_directory(), ".autoupdater")
                 os.makedirs(update_path, exist_ok=True)
-                save_path = os.path.join(update_path, "latest_release.zip")
+                save_path = os.path.join(update_path, "cellframe-masternode-webui.zip")
                 log_it("i", f"Downloading latest release from {download_url}")
                 download_response = requests.get(download_url, stream=True, timeout=10)
                 if download_response.status_code == 200:
@@ -72,13 +72,7 @@ def fetch_and_install_plugin_update():
                     log_it("d", f"Downloaded latest release to {save_path}.")
                     log_it("d", f"Extracting the update to the parent directory.")
                     with zipfile.ZipFile(save_path, 'r') as Z:
-                        Z.extractall(update_path)
-                        top_level = os.path.commonpath(Z.namelist())
-                        if os.path.isdir(os.path.join(update_path, top_level)):
-                            for file in os.listdir(os.path.join(update_path, top_level)):
-                                src = os.path.join(update_path, top_level, file)
-                                dest = os.path.join(get_current_script_directory, file)
-                                shutil.move(src, dest)
+                        Z.extractall(get_script_parent_directory())
                         log_it("d", f"Update extracted successfully.")
                     requirements_path = os.path.join(get_current_script_directory(), "requirements.txt")
                     if os.path.exists(requirements_path):

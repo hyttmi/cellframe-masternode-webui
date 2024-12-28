@@ -25,3 +25,6 @@ def cli_command(command, timeout=120, is_shell_command=False):
     
 def get_current_script_directory():
     return os.path.dirname(os.path.abspath(__file__))
+
+def get_script_parent_directory():
+    return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
