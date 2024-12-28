@@ -1,4 +1,7 @@
 #!/bin/bash
+LC_ALL=C # Make sure we're using ASCII locale so regex works...
+EXT_IP=$(dig @resolver4.opendns.com myip.opendns.com +short -4 2> /dev/null || echo "dig unavailable, can't get external IP" && EXT_IP="")
+EXT_PORT=$(grep -oP '^listen_address=\K.*' /opt/cellframe-node/etc/cellframe-node.cfg | head -1 | tr -d '[]' | cut -d ':' -f 2)
 PIP="pip3"
 PIP_PATH="/opt/cellframe-node/python/bin/$PIP"
 CFG_PATH="/opt/cellframe-node/etc/cellframe-node.cfg.d"
@@ -17,9 +20,38 @@ if ! [[ -d $WEBUI_PATH ]]; then
 fi
 
 echo "Writing plugin configuration to $CFG_PATH/webui.cfg"
-echo -e "[server]\nenabled=true\n\n[plugins]\nenabled=true\npy_load=true\npy_path=../var/lib/plugins" > "$CFG_PATH/webui.cfg" || {
+echo -e "[server]\nenabled=true\n\n[plugins]\nenabled=true\npy_load=true\npy_path=../var/lib/plugins\n\n[webui]" > "$CFG_PATH/webui.cfg" || {
     echo "Failed to write configuration file"; exit 1;
 }
+
+read -p "Type a username for WebUI user, leave blank to use default ($USERNAME): " INPUT_USERNAME
+read -p "Type a password for WebUI user, leave blank to use default ($PASSWORD): " INPUT_PASSWORD
+read -p "Type URL which you want to register with the plugin, leave blank to use the default ($URL):" INPUT_URL
+
+USERNAME=${INPUT_USERNAME}
+PASSWORD=${INPUT_PASSWORD}
+URL=${INPUT_URL}
+
+if  [[ ! -z $USERNAME ]] && [[ "$USERNAME" =~ ^[a-zA-Z0-9]+$ ]]; then
+    echo -e "username=$USERNAME" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
+else
+    echo "Username $USERNAME is invalid, using default (webui)."
+    USERNAME="webui"
+fi
+
+if [[ ! -z "$PASSWORD" ]] && [[ ! "$PASSWORD" =~ [[:space:]] ]]; then
+    echo -e "password=$PASSWORD" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
+else
+    echo "Password \"$PASSWORD\" is invalid. It must not contain spaces. Using default (webui)."
+    PASSWORD="webui"
+fi
+
+if [[ "$URL" =~ ^[a-zA-Z0-9]+$ ]]; then
+    echo -e "uri=$URL" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
+else
+    echo "URL $URL is invalid. It must not contain spaces or special chars. Using default (webui)."
+    URL="webui"
+fi
 
 if [[ -f $PIP_PATH ]]; then
     echo "$PIP is available..."
@@ -41,3 +73,5 @@ else
     echo "$PIP_PATH not found!"
     exit 1
 fi
+
+echo -e "\n\nYou may login after node restart with http://$EXT_IP:$EXT_PORT/$URL"
