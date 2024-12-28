@@ -125,6 +125,7 @@ def get_node_data(network):
                 node = match.groupdict()
                 node['is_my_node'] = (node['node_addr'] == addr) # This is our node
                 nodes.append(node)
+
             info = {
                 'active_nodes_count': active_nodes_count,
                 'total_weight': total_weight
