@@ -140,3 +140,10 @@ html {
 .custom-modal-bg {
     background-color: #151515 !important;
 }
+
+#chart-container {
+    min-height: 1200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+}

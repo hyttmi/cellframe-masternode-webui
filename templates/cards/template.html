@@ -157,16 +157,20 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content custom-modal-bg">
                     <div class="modal-header">
-                        <h5 class="modal-title text-uppercase" id="nodeInfoModalLabel">General Node Information</h5>
+                        <h5 class="modal-title text-uppercase text-color-secondary  " id="nodeInfoModalLabel">General Node Information</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <h5>NODE DUMP:</h5>
+                        <h5 class="text-color-secondary">NODE WEIGHTS:</h5>
+                        <div id="chart-container">
+                            <canvas id="weightChart_{{ network_name }}"></canvas>
+                        </div>
+                        <h5 class="text-color-secondary">NODE DUMP:</h5>
                         <pre>{{ network.general_node_info }}</pre>
                         {% if network.node_data %}
                             {% for node in network.node_data.nodes %}
                                 {% if node.is_my_node %}
-                                    <h5>NODE INFORMATION:</h5>
+                                    <h5 class="text-color-secondary">NODE INFORMATION:</h5>
                                     <pre>PKEY HASH: {{ node.pkey_hash }}<br>TRANSACTION HASH: {{ node.tx_hash }}<br>SOVEREIGN ADDRESS: {{ node.sovereign_addr}}<br>SOVEREIGN TAX: {{ node.sovereign_tax }}<br>ACTIVE: {{ node.active }}</pre>
                                 {% endif %}
                             {% endfor %}
@@ -194,9 +198,6 @@
                   {{ network_name }}
                   <button type="button" class="btn btn-link ms-2" data-bs-toggle="modal" data-bs-target="#nodeInfoModal_{{ network_name }}">
                     <i class="fa-solid fa-circle-info info fa-xl"></i>
-                  </button>
-                  <button type="button" class="btn btn-link ms-2" data-bs-toggle="modal" data-bs-target="#nodeWeightModal_{{ network_name }}">
-                    <i class="fa-solid fa-weight-scale info fa-xl"></i>
                   </button>
                 </h1>
               </div>              
@@ -669,12 +670,17 @@
                         {% for node in network.node_data.nodes %}
                             {
                                 nodeAddr: "{{ node.node_addr }}",
+<<<<<<< HEAD
                                 effectiveWeight: {{ node.effective_value|float }},
+=======
+                                effectiveWeight: {{ node.effective_value | float }},
+>>>>>>> dev
                                 isMyNode: {{ node.is_my_node | tojson }}
                             }
                             {% if not loop.last %},{% endif %}
                         {% endfor %}
                     ];
+<<<<<<< HEAD
                         
                     var top10NodeData = nodeData.filter(function(item) {
                         return !item.isMyNode;
@@ -709,14 +715,51 @@
                 
                     var weightCtx_{{ network_name }} = document.getElementById('weightChart_{{ network_name }}').getContext('2d');
                     
+=======
+
+                    nodeData.sort(function(a, b) {
+                        return b.effectiveWeight - a.effectiveWeight;
+                    });
+
+                    var nodeLabels = nodeData.map(function(item) {
+                        return item.isMyNode ? 'MY NODE' : item.nodeAddr.substring(0,4);
+                    });
+                    var effectiveWeights = nodeData.map(function(item) {
+                        return item.effectiveWeight;
+                    });
+
+                    var chartData = {
+                        labels: nodeLabels,
+                        datasets: [
+                            {
+                                categoryPercentage: 0.9,
+                                barPercentage: 0.9,
+                                label: 'Effective weight',
+                                data: effectiveWeights,
+                                backgroundColor: nodeData.map(function(item) {
+                                    return item.isMyNode ? '#B3A3FF' : '#DEE2E6';
+                                }),
+                                borderWidth: 0
+                            }
+                        ]
+                    };
+
+                    var weightCtx_{{ network_name }} = document.getElementById('weightChart_{{ network_name }}').getContext('2d');
+
+>>>>>>> dev
                     weightChart['{{ network_name }}'] = new Chart(weightCtx_{{ network_name }}, {
                         type: 'bar',
                         data: chartData,
                         options: {
+<<<<<<< HEAD
+=======
+                            indexAxis: 'y',
+>>>>>>> dev
                             responsive: true,
                             maintainAspectRatio: false,
                             scales: {
                                 x: {
+<<<<<<< HEAD
                                     grid: { display: false },
                                     ticks: { color: '#B3A3FF' }
                                 },
@@ -741,6 +784,46 @@
                     }
                 });
                 {% endif %}
+=======
+                                    beginAtZero: true,
+                                    grid: {
+                                        display: true,
+                                        color: '#2B2B2B'
+                                    },
+                                    ticks: {
+                                        color: '#DEE2E6'
+                                    },
+                                },
+                                y: {
+                                    grid: {
+                                        display: true,
+                                        color: '#2B2B2B'
+                                    },
+                                    ticks: {
+                                        display: true,
+                                        color: '#DEE2E6',
+                                        autoSkip: false,
+                                        maxRotation: 0,
+                                        minRotation: 0
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    enabled: true,
+                                    callbacks: {
+                                        label: function(tooltipItem) {
+                                        return tooltipItem.raw;
+                                    }
+                                }
+                            }
+                            }
+                        }
+                    });
+                });
+            {% endif %}
+>>>>>>> dev
 
                 {% if network.all_signed_blocks_dict %}
                     var blocksData = {};
