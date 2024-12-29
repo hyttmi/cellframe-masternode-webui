@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.17] - 2024-12-29
+
+### Fixed
+- Updater, now uses Linux `cp` to copy the files.
+
 ## [3.16] - 2024-12-28
 
 ### Fixed (hopefully)
