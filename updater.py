@@ -112,7 +112,7 @@ def download_and_extract_update(download_url):
             log_it("d", f"Update dir is {update_dir}")
             Z.extractall(update_path)
         destination_path = os.path.join(get_script_parent_directory(), "cellframe-masternode-webui")
-        copy_process = cli_command(f"cp -rf {update_dir}/* {destination_path}", is_shell_command=True)
+        copy_process = cli_command(f"cp -rf {update_dir}/* {destination_path}/", is_shell_command=True)
         if copy_process:
             log_it("d", "Update extracted and applied successfully.")
             return True
