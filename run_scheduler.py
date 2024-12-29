@@ -5,7 +5,7 @@ from emailer import send_email
 from generators import generate_data
 from logger import log_it
 from telegram import send_telegram_message
-from updater import fetch_and_install_plugin_update
+from updater import install_plugin_update
 import schedule, inspect, time
 
 def run_scheduler(func, scheduled_time, every_min=False, run_on_startup=False):
@@ -90,7 +90,7 @@ def setup_schedules():
             if Config.AUTO_UPDATE:
                 futures['auto_updater'] = executor.submit(
                     run_scheduler,
-                    lambda: fetch_and_install_plugin_update(),
+                    lambda: install_plugin_update(),
                     120,  # Every 2 hours
                     every_min=True,
                     run_on_startup=True

@@ -1,4 +1,4 @@
-from common import get_current_script_directory, cli_command
+from common import get_current_script_directory, get_script_parent_directory, cli_command
 from config import Config
 from logger import log_it
 from packaging import version
@@ -46,12 +46,9 @@ def check_plugin_update():
         log_it("e", f"Error in {func}: {e}")
         return None
 
-def fetch_and_install_plugin_update():
+def install_plugin_update():
     try:
         log_it("i", "Checking for plugin update...")
-        update_path = os.path.join(get_current_script_directory(), ".autoupdater")
-        if os.path.exists(update_path):
-            shutil.rmtree(update_path)
         update_info = check_plugin_update()
         if not update_info:
             log_it("e", "Failed to fetch plugin update information.")
@@ -59,52 +56,70 @@ def fetch_and_install_plugin_update():
         if update_info['update_available']:
             log_it("i", f"New version available: {update_info['latest_version']}")
             download_url = update_info.get('download_url')
-            if download_url:
-                update_path = os.path.join(get_current_script_directory(), ".autoupdater")
-                os.makedirs(update_path, exist_ok=True)
-                save_path = os.path.join(update_path, "latest_release.zip")
-                log_it("i", f"Downloading latest release from {download_url}")
-                download_response = requests.get(download_url, stream=True, timeout=10)
-                if download_response.status_code == 200:
-                    with open(save_path, "wb") as file:
-                        for chunk in download_response.iter_content(chunk_size=8192):
-                            file.write(chunk)
-                    log_it("d", f"Downloaded latest release to {save_path}.")
-                    log_it("d", f"Extracting the update to the parent directory.")
-                    with zipfile.ZipFile(save_path, 'r') as Z:
-                        for file in Z.namelist():
-                            if not file.endswith('/'):  # Somehow there's no "easy" way to extract just the files out from the zip package?
-                                filename = os.path.basename(file)
-                                member_path = os.path.join(get_current_script_directory(), filename)
-                                with open(member_path, 'wb') as output_file:
-                                    output_file.write(Z.read(file))
-                    log_it("d", f"Update extracted successfully.")
-                    requirements_path = os.path.join(get_current_script_directory(), "requirements.txt")
-                    if os.path.exists(requirements_path):
-                        log_it("d", f"Installing requirements from {requirements_path}")
-                        command = f"/opt/cellframe-node/python/bin/pip3 install -r {requirements_path}"
-                        cmd_run_pip = cli_command(command, is_shell_command=True)
-                        if cmd_run_pip:
-                            log_it("i", "Dependencies successfully installed")
-                            node_pid = get_node_pid()
-                            if node_pid:
-                                if Config.TELEGRAM_STATS_ENABLED:
-                                    send_telegram_message(f"Plugin version ({update_info['latest_version']}) has been installed and your node will be restarted.")
-                                if Config.EMAIL_STATS_ENABLED:
-                                    send_email(f"Plugin version ({update_info['latest_version']}) has been installed and your node will be restarted.")
-                                p = psutil.Process(node_pid)
-                                log_it("i", "Restarting node...")
-                                p.terminate()
-                        else:
-                            log_it("e", f"Failed to install update!")
-                    else:
-                        log_it("e", "Requirements not found in the update package?")
-                else:
-                    log_it("e", f"Failed to download the update file. Status code: {download_response.status_code}")
-            else:
+            if not download_url:
                 log_it("e", "No download URL found for the latest release.")
+                return
+            if download_and_extract_update(download_url):
+                requirements_path = os.path.join(get_current_script_directory(), "requirements.txt")
+                if os.path.exists(requirements_path):
+                    log_it("d", f"Installing requirements from {requirements_path}")
+                    command = f"/opt/cellframe-node/python/bin/pip3 install -r {requirements_path}"
+                    if cli_command(command, is_shell_command=True):
+                        log_it("i", "Dependencies successfully installed")
+                        node_pid = get_node_pid()
+                        if node_pid:
+                            if Config.TELEGRAM_STATS_ENABLED:
+                                send_telegram_message(f"Plugin version ({update_info['latest_version']}) has been installed and your node will be restarted.")
+                            if Config.EMAIL_STATS_ENABLED:
+                                send_email(f"Plugin version ({update_info['latest_version']}) has been installed and your node will be restarted.")
+                            log_it("i", "Restarting node...")
+                            psutil.Process(node_pid).terminate()
+                    else:
+                        log_it("e", "Failed to install dependencies!")
+                else:
+                    log_it("e", "Requirements not found in the update package?")
+            else:
+                log_it("e", "Failed to download or extract the update.")
         else:
-            log_it("i", f"Plugin is up to date.")
+            log_it("i", "Plugin is up to date.")
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
+
+
+def download_and_extract_update(download_url):
+    try:
+        update_path = os.path.join(get_current_script_directory(), ".autoupdater")
+        if os.path.exists(update_path):
+            shutil.rmtree(update_path)
+        os.makedirs(update_path, exist_ok=True)
+        save_path = os.path.join(update_path, "cellframe-masternode-webui.zip")
+        log_it("i", f"Downloading latest release from {download_url}")
+        download_response = requests.get(download_url, stream=True, timeout=10)
+        if download_response.status_code != 200:
+            log_it("e", f"Failed to download update. HTTP status code: {download_response.status_code}")
+            return False
+        with open(save_path, "wb") as file:
+            for chunk in download_response.iter_content(chunk_size=8192):
+                file.write(chunk)
+        log_it("d", f"Downloaded latest release to {save_path}.")
+        log_it("d", "Extracting the update...")
+        with zipfile.ZipFile(save_path, 'r') as Z:
+            files = Z.namelist()
+            top_level_dir = files[0].split('/')[0]
+            log_it("d", f"Update top level dir is {top_level_dir}")
+            update_dir = os.path.join(update_path, top_level_dir)
+            log_it("d", f"Update dir is {update_dir}")
+            Z.extractall(update_path)
+        destination_path = os.path.join(get_script_parent_directory(), "cellframe-masternode-webui")
+        copy_process = cli_command(f"cp -rvf {update_dir}/. {destination_path}/", is_shell_command=True)
+        if copy_process:
+            log_it("d", "Update extracted and applied successfully.")
+            return True
+        else:
+            log_it("e", "Failed to apply new version with cp command.")
+            return False
+    except Exception as e:
+        func = inspect.currentframe().f_code.co_name
+        log_it("e", f"Error in {func}: {e}")
+        return False
