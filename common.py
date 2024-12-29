@@ -2,18 +2,16 @@ from command_runner import command_runner
 from logger import log_it
 import inspect, os
 
-def cli_command(command, timeout=120, is_shell_command=False, return_output=False):
+def cli_command(command, timeout=120, is_shell_command=False):
     try:
         if is_shell_command:
             exit_code, output = command_runner(command, timeout=timeout, shell=True)
             if exit_code == 0:
                 log_it("d", f"{command} executed succesfully, return code was {exit_code}")
-                if return_output:
-                    return output
-                return True
+                return output
             else:
                 log_it("e", f"{command} failed to run succesfully, return code was {exit_code}")
-                return False
+                return None
         else:
             exit_code, output = command_runner(f"/opt/cellframe-node/bin/cellframe-node-cli {command}", timeout=timeout)
             if exit_code == 0:
