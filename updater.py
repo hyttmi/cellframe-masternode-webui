@@ -107,21 +107,18 @@ def download_and_extract_update(download_url):
         with zipfile.ZipFile(save_path, 'r') as Z:
             files = Z.namelist()
             top_level_dir = files[0].split('/')[0]
+            log_it("d", f"Update top level dir is {top_level_dir}")
             update_dir = os.path.join(update_path, top_level_dir)
+            log_it("d", f"Update dir is {update_dir}")
             Z.extractall(update_path)
         destination_path = os.path.join(get_script_parent_directory(), "cellframe-masternode-webui")
-        os.makedirs(destination_path, exist_ok=True) # it should be there...
-        for item in os.listdir(update_dir):
-            src_item = os.path.join(update_dir, item)
-            dst_item = os.path.join(destination_path, item)
-            if os.path.isdir(src_item):
-                os.makedirs(dst_item, exist_ok=True)
-                for sub_item in os.listdir(src_item):
-                    shutil.move(os.path.join(src_item, sub_item), os.path.join(dst_item, sub_item))
-            else:
-                shutil.move(src_item, dst_item)
-        log_it("d", "Update extracted and applied successfully.")
-        return True
+        copy_process = cli_command(f"cp -r --force {update_dir}/ {destination_path}", is_shell_command=True)
+        if copy_process:
+            log_it("d", "Update extracted and applied successfully.")
+            return True
+        else:
+            log_it("e", "Failed to apply new version with cp command.")
+            return False
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")

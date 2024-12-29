@@ -14,7 +14,6 @@ def cli_command(command, timeout=120, is_shell_command=False):
         exit_code, output = command_runner(command, timeout=timeout)
         if exit_code == 0:
             log_it("d", f"{command} executed succesfully...")
-            log_it("d", output)
             return output.strip()
         log_it("e", f"{command} failed to run succesfully, return code was {exit_code}")
         return None
