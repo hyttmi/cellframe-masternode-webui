@@ -26,30 +26,30 @@ echo -e "[server]\nenabled=true\n\n[plugins]\nenabled=true\npy_load=true\npy_pat
 
 read -p "Type a username for WebUI user, leave blank to use default ($USERNAME): " INPUT_USERNAME
 
-if  [[ ! -z $USERNAME ]] && [[ "$USERNAME" =~ ^[a-zA-Z0-9]+$ ]] && [[ ! "$PASSWORD" =~ [[:space:]] ]]; then
-    USERNAME=${INPUT_USERNAME}
+if [[ -n "$INPUT_USERNAME" ]] && [[ "$INPUT_USERNAME" =~ ^[a-zA-Z0-9]+$ ]] && [[ ! "$INPUT_USERNAME" =~ [[:space:]] ]]; then
+    USERNAME=$INPUT_USERNAME
     echo -e "username=$USERNAME" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 else
-    echo "Username $USERNAME is invalid, using default (webui)."
+    echo "Username $INPUT_USERNAME is invalid, using default (webui)."
     USERNAME="webui"
     echo -e "\n[webui]\nusername=$USERNAME" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 fi
 
 read -p "Type a password for WebUI user, leave blank to use default ($PASSWORD): " INPUT_PASSWORD
 
-if [[ ! -z "$PASSWORD" ]] && [[ ! "$PASSWORD" =~ [[:space:]] ]]; then
-    PASSWORD=${INPUT_PASSWORD}
+if [[ -n "$INPUT_PASSWORD" ]] && [[ ! "$INPUT_PASSWORD" =~ [[:space:]] ]]; then
+    PASSWORD=$INPUT_PASSWORD
     echo -e "password=$PASSWORD" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 else
-    echo "Password \"$PASSWORD\" is invalid. Using default (webui)."
+    echo "Password $INPUT_PASSWORD is invalid. Using default (webui)."
     PASSWORD="webui"
     echo -e "password=$PASSWORD" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 fi
 
 read -p "Type URL which you want to register with the plugin, leave blank to use the default ($URL):" INPUT_URL
 
-if [[ "$URL" =~ ^[a-zA-Z0-9]+$ ]]; then
-    URL=${INPUT_URL}
+if [[ "$INPUT_URL" =~ ^[a-zA-Z0-9]+$ ]]; then
+    URL=$INPUT_URL
     echo -e "uri=$URL" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 else
     echo "URL $URL is invalid. It must not contain spaces or special chars. Using default (webui)."
