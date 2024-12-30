@@ -173,7 +173,7 @@ def get_node_dump(network):
         log_it("e", f"Error in {func}: {e}")
         return None
 
-def get_rewards(network, total_sum=False):
+def get_rewards(network, total_sum=False, rewards_today=False):
     try:
         rewards = {}
         cache_file_path = os.path.join(get_current_script_directory(), f".{network}_rewards_cache.json")
@@ -184,16 +184,18 @@ def get_rewards(network, total_sum=False):
                 amount = float(reward['recv_coins'])
                 formatted_date = datetime.strptime(date_string, "%a, %d %b %Y %H:%M:%S")
                 formatted_date_str = formatted_date.strftime("%a, %d %b %Y")
-                
                 if formatted_date_str in rewards:
                     rewards[formatted_date_str] += amount
                 else:
                     rewards[formatted_date_str] = amount
             sorted_dict = dict(OrderedDict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))))
-            if not total_sum:
-                return sorted_dict
-            else:
+            if total_sum:
                 return sum(rewards.values())
+            elif rewards_today:
+                today_str = datetime.now().strftime("%a, %d %b %Y")
+                return rewards.get(today_str, 0.0)
+            else:
+                return sorted_dict
         return None
     except FileNotFoundError:
         log_it("e", "Rewards file not found!")
