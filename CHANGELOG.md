@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.18] - XXXX-XX-XX
+
+### Added
+- Card for displaying rewards for current date. Thx once again @school_of_simple_living for the idea.
+
+### Improved
+- `install.sh` is better now on input validation.
+
 ## [3.17] - 2024-12-29
 
 ### Fixed
