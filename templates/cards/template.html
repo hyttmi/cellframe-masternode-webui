@@ -308,7 +308,7 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="autocollect_rewards_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">autocollect rewards</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">current autocollect rewards</h6><button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.autocollect_rewards }}</h6>
@@ -407,6 +407,20 @@
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.all_rewards }}</h6>
+                    </div>
+                    <i class="fa-solid fa-dollar-sign icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.rewards_today %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="rewards_today_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="card-title text-uppercase">Rewards collected today</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.rewards_today }}</h6>
                     </div>
                     <i class="fa-solid fa-dollar-sign icon-container"></i>
                 </div>
