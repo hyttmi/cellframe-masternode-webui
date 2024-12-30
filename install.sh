@@ -20,37 +20,41 @@ if ! [[ -d $WEBUI_PATH ]]; then
 fi
 
 echo "Writing plugin configuration to $CFG_PATH/webui.cfg"
-echo -e "[server]\nenabled=true\n\n[plugins]\nenabled=true\npy_load=true\npy_path=../var/lib/plugins\n\n[webui]" > "$CFG_PATH/webui.cfg" || {
+echo -e "[server]\nenabled=true\n\n[plugins]\nenabled=true\npy_load=true\npy_path=../var/lib/plugins" > "$CFG_PATH/webui.cfg" || {
     echo "Failed to write configuration file"; exit 1;
 }
 
 read -p "Type a username for WebUI user, leave blank to use default ($USERNAME): " INPUT_USERNAME
-read -p "Type a password for WebUI user, leave blank to use default ($PASSWORD): " INPUT_PASSWORD
-read -p "Type URL which you want to register with the plugin, leave blank to use the default ($URL):" INPUT_URL
 
-USERNAME=${INPUT_USERNAME}
-PASSWORD=${INPUT_PASSWORD}
-URL=${INPUT_URL}
-
-if  [[ ! -z $USERNAME ]] && [[ "$USERNAME" =~ ^[a-zA-Z0-9]+$ ]]; then
+if  [[ ! -z $USERNAME ]] && [[ "$USERNAME" =~ ^[a-zA-Z0-9]+$ ]] && [[ ! "$PASSWORD" =~ [[:space:]] ]]; then
+    USERNAME=${INPUT_USERNAME}
     echo -e "username=$USERNAME" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 else
     echo "Username $USERNAME is invalid, using default (webui)."
     USERNAME="webui"
+    echo -e "\n[webui]\nusername=$USERNAME" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 fi
+
+read -p "Type a password for WebUI user, leave blank to use default ($PASSWORD): " INPUT_PASSWORD
 
 if [[ ! -z "$PASSWORD" ]] && [[ ! "$PASSWORD" =~ [[:space:]] ]]; then
+    PASSWORD=${INPUT_PASSWORD}
     echo -e "password=$PASSWORD" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 else
-    echo "Password \"$PASSWORD\" is invalid. It must not contain spaces. Using default (webui)."
+    echo "Password \"$PASSWORD\" is invalid. Using default (webui)."
     PASSWORD="webui"
+    echo -e "password=$PASSWORD" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 fi
 
+read -p "Type URL which you want to register with the plugin, leave blank to use the default ($URL):" INPUT_URL
+
 if [[ "$URL" =~ ^[a-zA-Z0-9]+$ ]]; then
+    URL=${INPUT_URL}
     echo -e "uri=$URL" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 else
     echo "URL $URL is invalid. It must not contain spaces or special chars. Using default (webui)."
     URL="webui"
+    echo -e "uri=$URL" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 fi
 
 if [[ -f $PIP_PATH ]]; then
@@ -72,10 +76,4 @@ if [[ -f $PIP_PATH ]]; then
 else
     echo "$PIP_PATH not found!"
     exit 1
-fi
-
-if [[ ! -z $EXT_IP ]]; then
-    echo -e "\n\nYou may login after node restart with http://$EXT_IP:$EXT_PORT/$URL"
-else
-    echo -e "\n\nYou may login after node restart with http://<external_ip>:$EXT_PORT/$URL"
 fi
