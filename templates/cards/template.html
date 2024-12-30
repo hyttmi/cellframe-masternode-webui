@@ -832,7 +832,8 @@
             
                 {% if network.rewards %}
                     var rewardsData = {};
-                    rewardsData['{{ network_name }}'] = {{ network.rewards[:-1] | tojson }}; // remove the last one, it's already shown on card
+                    rewardsData['{{ network_name }}'] = {{ network.rewards | tojson }};
+                    rewardsData['{{ network_name }}'].pop();// remove the last one, it's already shown on card
                     var rewardsCharts = {};
                     var rewardsCtx{{ network_name }} = document.getElementById('rewardsChart_{{ network_name }}').getContext('2d');
                     rewardsCharts['{{ network_name }}'] = new Chart(rewardsCtx{{ network_name }}, {
