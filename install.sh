@@ -37,7 +37,7 @@ fi
 
 read -p "Type a password for WebUI user, leave blank to use default ($PASSWORD): " INPUT_PASSWORD
 
-if [[ -n "$INPUT_PASSWORD" ]] && [[ ! "$INPUT_PASSWORD" =~ [[:space:]] ]]; then
+if [[ -n "$INPUT_PASSWORD" ]] && [[ "$INPUT_PASSWORD" =~ ^[a-zA-Z0-9_!@#$%^&*()\-+=]+$ ]] && [[ ! "$INPUT_PASSWORD" =~ [[:space:]] ]]; then
     PASSWORD=$INPUT_PASSWORD
     echo -e "password=$PASSWORD" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 else
