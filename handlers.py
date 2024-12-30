@@ -26,8 +26,9 @@ def request_handler(request):
     response = CFSimpleHTTPResponse(body=b"Unsupported method", code=200)
     return response
 
-
+sent_data = 0
 def web_request_handler(headers, bypass_auth=False):
+    global sent_data
     auth_header = headers.get("Authorization")
     cookie_header = headers.get("Cookie")
     cookie_expires = (datetime.now(timezone.utc) + timedelta(days=14)).strftime('%a, %d %b %Y %H:%M:%S GMT') # 2 weeks
@@ -90,8 +91,12 @@ def web_request_handler(headers, bypass_auth=False):
                                             "WWW-Authenticate": 'Basic realm="Cellframe node webui"'
                                         })
     try:
-        response_body = generate_data("template.html").encode("utf-8")
-        return CFSimpleHTTPResponse(body=response_body,
+        #response_body = generate_data("template.html").encode("utf-8")
+        additional_data = b"0123456789"
+        sent_data += len(additional_data)
+        data = additional_data
+        log_it("i", f"Sent data is at {data} bytes")
+        return CFSimpleHTTPResponse(body=data,
                                     code=200,
                                     headers = {
                                         "Content-Type": "text/html",
