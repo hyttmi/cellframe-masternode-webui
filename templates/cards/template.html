@@ -36,7 +36,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="hostname">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">hostname</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">hostname</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary text-body-secondary-color">{{ general_info.hostname }}</h6>
@@ -50,7 +51,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="external_ip">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">external ip</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">external ip</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary text-body-secondary-color">{{ general_info.external_ip }}</h6>
@@ -64,7 +66,7 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_cpu_usage">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">node cpu usage</h5>
+                        <h6 class="card-title text-uppercase">node cpu usage</h6>
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
@@ -79,7 +81,7 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_memory_usage">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">node memory usage</h5>
+                        <h6 class="card-title text-uppercase">node memory usage</h6>
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
@@ -94,7 +96,7 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_uptime">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">node uptime</h5>
+                        <h6 class="card-title text-uppercase">node uptime</h6>
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
@@ -109,7 +111,7 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="system_uptime">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">system uptime</h5>
+                        <h6 class="card-title text-uppercase">system uptime</h6>
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
@@ -124,7 +126,7 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_version">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">node version</h5>
+                        <h6 class="card-title text-uppercase">node version</h6>
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
@@ -139,7 +141,7 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="latest_node_version">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">latest node version</h5>
+                        <h6 class="card-title text-uppercase">latest node version</h6>
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
@@ -157,22 +159,22 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content custom-modal-bg">
                     <div class="modal-header">
-                        <h5 class="modal-title text-uppercase text-color-secondary  " id="nodeInfoModalLabel">General Node Information</h5>
+                        <h6 class="modal-title text-uppercase text-color-secondary" id="nodeInfoModalLabel">General Node Information</h6>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         {% if network.node_data.nodes %}
-                        <h5 class="text-color-secondary">NODE WEIGHTS:</h5>
+                        <h6 class="text-color-secondary">NODE WEIGHTS:</h6>
                         <div id="chart-container">
                             <canvas id="weightChart_{{ network_name }}"></canvas>
                         </div>
                         {% endif %}
-                        <h5 class="text-color-secondary">NODE DUMP:</h5>
+                        <h6 class="text-color-secondary">NODE DUMP:</h6>
                         <pre>{{ network.general_node_info }}</pre>
                         {% if network.node_data.nodes %}
                             {% for node in network.node_data.nodes %}
                                 {% if node.is_my_node %}
-                                    <h5 class="text-color-secondary">NODE INFORMATION:</h5>
+                                    <h6 class="text-color-secondary">NODE INFORMATION:</h6>
                                     <pre>PKEY HASH: {{ node.pkey_hash }}<br>TRANSACTION HASH: {{ node.tx_hash }}<br>SOVEREIGN ADDRESS: {{ node.sovereign_addr}}<br>SOVEREIGN TAX: {{ node.sovereign_tax }}<br>ACTIVE: {{ node.active }}</pre>
                                 {% endif %}
                             {% endfor %}
@@ -196,7 +198,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="state_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">state</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">state</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.state }}</h6>
@@ -210,7 +213,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="target_state_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">target state</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">target state</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.target_state }}</h6>
@@ -224,7 +228,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_address_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">node address</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">node address</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.address }}</h6>
@@ -238,7 +243,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="first_signed_blocks_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">first signed blocks</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">first signed blocks</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.first_signed_blocks }}</h6>
@@ -252,7 +258,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="all_signed_blocks_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">All signed blocks</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">All signed blocks</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.all_signed_blocks }}</h6>
@@ -266,7 +273,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="signed_blocks_today_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">Signed blocks today</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">Signed blocks today</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.signed_blocks_today }}</h6>
@@ -280,7 +288,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="amount_of_blocks_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">Amount of blocks</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">Amount of blocks</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.all_blocks }}</h6>
@@ -294,7 +303,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="autocollect_status_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">autocollect status</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">autocollect status</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.autocollect_status }}</h6>
@@ -308,7 +318,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="autocollect_rewards_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h6 class="card-title text-uppercase">current autocollect rewards</h6><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">current autocollect rewards</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.autocollect_rewards }}</h6>
@@ -323,7 +334,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_stake_value_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">Node stake value</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">Node stake value</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ node.stake_value }}</h6>
@@ -335,7 +347,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_effective_value_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">Node effective value</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">Node effective value</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ node.effective_value }}</h6>
@@ -347,7 +360,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_related_weight_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">Node related weight</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">Node related weight</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ node.related_weight }}%</h6>
@@ -361,7 +375,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="total_network_weight_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">Total network weight</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">Total network weight</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.info.total_weight }}</h6>
@@ -374,7 +389,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="active_nodes_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">Active nodes</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">Active nodes</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.info.active_nodes_count }}</h6>
@@ -389,7 +405,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="token_price_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">current token price</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">current token price</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">${{ network.token_price }}</h6>
@@ -403,7 +420,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="all_rewards_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">Rewards all time</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">Rewards all time</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.all_rewards }}</h6>
@@ -417,7 +435,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="rewards_today_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">Rewards collected today</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">Rewards collected today</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.rewards_today }}</h6>
@@ -431,7 +450,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="current_block_reward_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">Current block reward</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">Current block reward</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.current_block_reward }}</h6>
@@ -445,7 +465,7 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="reward_wallet_information_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">Reward Wallet Information</h5>
+                        <h6 class="card-title text-uppercase">Reward Wallet Information</h6>
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
@@ -467,7 +487,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="signed_blocks_last_n_days_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">Signed blocks history</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">Signed blocks history</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <canvas id="blocksChart_{{ network_name }}"></canvas>
@@ -506,7 +527,8 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="rewards_last_n_days_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5 class="card-title text-uppercase">Rewards history</h5><button type="button" class="btn-close" aria-label="Close"></button>
+                        <h6 class="card-title text-uppercase">Rewards history</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
                         <canvas id="rewardsChart_{{ network_name }}"></canvas>
