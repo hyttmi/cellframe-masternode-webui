@@ -91,7 +91,6 @@ def generate_network_info():
                         'first_signed_blocks': futures['first_signed_blocks'].result(),
                         'general_node_info': futures['general_node_info'].result(),
                         'node_data': futures['node_data'].result(),
-                        'rewards': futures['rewards'].result(),
                         'rewards_today': futures['rewards_today'].result(),
                         'signed_blocks_today': futures['signed_blocks_today'].result(),
                         'state': net_status['state'],
