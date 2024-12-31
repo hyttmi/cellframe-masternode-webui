@@ -74,36 +74,39 @@ def cache_rewards_data():
                 rewards = []
                 reward = {}
                 is_receiving_reward = False
-                lines = cmd_get_tx_history.splitlines()
-                for line in lines:
-                    line = line.strip()
-                    if line.startswith("status: ACCEPTED"):
-                        if reward and is_receiving_reward:
-                            rewards.append(reward)
-                        reward = {}
-                        is_receiving_reward = False
-                        continue
-                    if line.startswith("hash:"):
-                        reward['hash'] = line.split("hash:")[1].strip()
-                        continue
-                    if line.startswith("tx_created:"):
-                        original_date = line.split("tx_created:")[1].strip()[:-6]
-                        reward['tx_created'] = original_date
-                        continue
-                    if line.startswith("recv_coins:"):
-                        reward['recv_coins'] = line.split("recv_coins:")[1].strip()
-                        continue
-                    if line.startswith("source_address: reward collecting"):
-                        is_receiving_reward = True
-                        continue
-                if reward and is_receiving_reward:
-                    rewards.append(reward)
-                cache_file_path = os.path.join(get_current_script_directory(), f".{network}_rewards_cache.json")
-                with open(cache_file_path, "w") as f:
-                    json.dump(rewards, f, indent=4)
-                end_time = time.time()
-                elapsed_time = end_time - start_time
-                log_it("i", f"Rewards cached for {network}! It took {elapsed_time:.2f} seconds!")
+                if cmd_get_tx_history:
+                    lines = cmd_get_tx_history.splitlines()
+                    for line in lines:
+                        line = line.strip()
+                        if line.startswith("status: ACCEPTED"):
+                            if reward and is_receiving_reward:
+                                rewards.append(reward)
+                            reward = {}
+                            is_receiving_reward = False
+                            continue
+                        if line.startswith("hash:"):
+                            reward['hash'] = line.split("hash:")[1].strip()
+                            continue
+                        if line.startswith("tx_created:"):
+                            original_date = line.split("tx_created:")[1].strip()[:-6]
+                            reward['tx_created'] = original_date
+                            continue
+                        if line.startswith("recv_coins:"):
+                            reward['recv_coins'] = line.split("recv_coins:")[1].strip()
+                            continue
+                        if line.startswith("source_address: reward collecting"):
+                            is_receiving_reward = True
+                            continue
+                    if reward and is_receiving_reward:
+                        rewards.append(reward)
+                    cache_file_path = os.path.join(get_current_script_directory(), f".{network}_rewards_cache.json")
+                    with open(cache_file_path, "w") as f:
+                        json.dump(rewards, f, indent=4)
+                    end_time = time.time()
+                    elapsed_time = end_time - start_time
+                    log_it("i", f"Rewards cached for {network}! It took {elapsed_time:.2f} seconds!")
+                else:
+                    log_it("e", f"Failed to fetch transaction history!")
             else:
                 log_it("e", f"Network config not found for {network}, skipping caching.")
                 return None

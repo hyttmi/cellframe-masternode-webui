@@ -1,12 +1,15 @@
 # Changelog
 
-## [3.18] - XXXX-XX-XX
+## [3.18] - 2024-12-31
+
+Happy new year edition!
 
 ### Added
 - Card for displaying rewards for current date. Thx once again @school_of_simple_living for the idea.
+- Support for Email and Telegram custom templates which won't be overwritten on new updates. Got the idea from @John_Doe_Dev.
 
 ### Improved
-- `install.sh` is better now on input validation.
+- `install.sh` is much better again.
 
 ## [3.17] - 2024-12-29
 

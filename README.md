@@ -11,7 +11,7 @@ You can get the latest release from [releases page](https://github.com/hyttmi/ce
 
 1. Set provided `install.sh` script executable with `chmod +x install.sh`.
 2. Run the script as root with `sudo ./install.sh`.
-3. Before restarting your node, please read **carefully** how to [configure the plugin](#configuration).
+3. Before restarting your node, please read **carefully** how to [configure the plugin](#configuration). Please note the configuration file which is reported when running the installer!
 4. Restart your node and access the WebUI with your browser (`http://<your_node_ip>:<your_node_port>/<url>` where `<url>` by default is webui).
 
 ## Configuration
@@ -59,15 +59,19 @@ email_use_tls=true
 ```
 
 ## Updating
-1. Overwrite the old files in `/opt/cellframe-node/var/lib/plugins/webui`
-2. Go to `/opt/cellframe-node/var/lib/plugins/webui` and install required packages with `/opt/cellframe-node/python/bin/pip3 install -r requirements.txt` **AS ROOT**
-3. Restart your node and access the WebUI with your browser (`http://<your_node_ip>:<your_node_port>/<url>` where `<url>` by default is webui).
+
+### Easy way
+Set `auto_update=true` to configuration file, restart node and wait until plugin updates itself and restarts your node.
+
+### Manual way
+Download the latest zip, extract the files and copy the files overwriting the old files in plugin directory.
 
 ## Templating
+Since version 3.18, it's possible to create custom templates for `email.html` and `telegram.html`. The files should be placed in `templates/custom_templates` path.
 
-`email.html` and `telegram.html` are located in the templates directory.
+Default `email.html` and `telegram.html` templates are placed in `templates` directory.
 
-All theme specific `.html` files are located in `templates/<theme_specific_subfolder>`.
+All theme specific files are located in `templates/<theme_specific_subfolder>`.
 
 ### Available Variables
 

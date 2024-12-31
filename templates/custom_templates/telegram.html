@@ -1,0 +1,33 @@
+TESTING
+<b>Node System Info</b>
+<code>
+CPU utilization:     {{ general_info.node_cpu_utilization }}
+Memory utilization:  {{ general_info.node_memory_utilization }}
+Uptime:              {{ general_info.node_uptime }}
+System uptime:       {{ general_info.system_uptime }}
+Node version:        {{ general_info.node_version }}
+Latest node version: {{ general_info.latest_node_version }}
+</code>
+{% if network_info and network_info.items() %}
+{% for network_name, network in network_info.items() %}
+<b>{{ network_name }} Node Info</b>
+<code>
+Network state:          {{ network.state }}
+Target state:           {{ network.target_state }}
+Node address:           {{ network.address }}
+Signed blocks today:    {{ network.signed_blocks_today }}
+Autocollect status:     {{ network.autocollect_status }}
+</code>
+<b>Reward Wallet Info</b>
+{% if network.fee_wallet_tokens is not none %}{% for token, balance in network.fee_wallet_tokens.items() %}
+<code>
+Token:   {{ token }}
+Balance: {{ balance }}
+</code>{% endfor %}
+{% else %}
+<b>No tokens available.</b>
+{% endif %}
+{% endfor %}
+{% else %}
+<b>No network information available.</b>
+{% endif %}

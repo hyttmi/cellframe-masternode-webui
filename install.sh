@@ -8,6 +8,14 @@ CFG_PATH="/opt/cellframe-node/etc/cellframe-node.cfg.d"
 PLUGIN_PATH="/opt/cellframe-node/var/lib/plugins"
 WEBUI_PATH="$PLUGIN_PATH/cellframe-masternode-webui"
 CURR_PATH=$(pwd)
+USERNAME="webui"
+PASSWORD="webui"
+URL="webui"
+
+if [[ -f "$CFG_PATH/webui.cfg" ]]; then
+    echo "Old configuration file found, moving it to $CFG_PATH/webui.cfg.bak"
+    mv $CFG_PATH/webui.cfg $CFG_PATH/webui.cfg.bak || { echo "Failed to move the file!"; exit 1; }
+fi 
 
 if ! [[ -d $CFG_PATH ]]; then
     echo "Creating configuration directory: $CFG_PATH"
@@ -30,19 +38,17 @@ if [[ -n "$INPUT_USERNAME" ]] && [[ "$INPUT_USERNAME" =~ ^[a-zA-Z0-9]+$ ]] && [[
     USERNAME=$INPUT_USERNAME
     echo -e "username=$USERNAME" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 else
-    echo "Username $INPUT_USERNAME is invalid, using default (webui)."
-    USERNAME="webui"
+    echo "Username $INPUT_USERNAME is invalid, using default ($USERNAME)."
     echo -e "\n[webui]\nusername=$USERNAME" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 fi
 
 read -p "Type a password for WebUI user, leave blank to use default ($PASSWORD): " INPUT_PASSWORD
 
-if [[ -n "$INPUT_PASSWORD" ]] && [[ "$INPUT_PASSWORD" =~ ^[a-zA-Z0-9_!@#$%^&*()\-+=]+$ ]] && [[ ! "$INPUT_PASSWORD" =~ [[:space:]] ]]; then
+if [[ -n "$INPUT_PASSWORD" ]] && [[ "$INPUT_PASSWORD" =~ ^[a-zA-Z0-9\_\!\@\#\$\%\^\&\*\(\)\-\+\=]+$ ]] && [[ ! "$INPUT_PASSWORD" =~ [[:space:]] ]]; then
     PASSWORD=$INPUT_PASSWORD
     echo -e "password=$PASSWORD" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 else
     echo "Password $INPUT_PASSWORD is invalid. Using default (webui)."
-    PASSWORD="webui"
     echo -e "password=$PASSWORD" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 fi
 
@@ -53,7 +59,6 @@ if [[ "$INPUT_URL" =~ ^[a-zA-Z0-9]+$ ]]; then
     echo -e "uri=$URL" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 else
     echo "URL $URL is invalid. It must not contain spaces or special chars. Using default (webui)."
-    URL="webui"
     echo -e "uri=$URL" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 fi
 
