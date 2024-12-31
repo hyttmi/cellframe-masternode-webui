@@ -9,7 +9,7 @@ from updater import install_plugin_update
 import schedule, inspect, time
 
 def run_scheduler(func, scheduled_time, every_min=False, run_on_startup=False):
-    log_it("d", f"Received func {func}, scheduled_time={scheduled_time}, every_min={every_min}")
+    log_it("d", f"Received func {func}, scheduled_time={scheduled_time}, every_min={every_min}, run_on_startup={run_on_startup}")
     try:
         scheduler = schedule.Scheduler()
         if run_on_startup:
