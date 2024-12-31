@@ -19,7 +19,7 @@ Signed blocks today:    {{ network.signed_blocks_today }}
 Autocollect status:     {{ network.autocollect_status }}
 </code>
 <b>Reward Wallet Info</b>
-{% if network.fee_wallet_tokens is not none %}{% for token, balance in network.fee_wallet_tokens.items() %}
+{% if network.fee_wallet_tokens %}{% for token, balance in network.fee_wallet_tokens.items() %}
 <code>
 Token:   {{ token }}
 Balance: {{ balance }}

@@ -118,14 +118,11 @@ def generate_data(template_name, return_as_json=False, is_top_level_template=Fal
         general_info = generate_general_info(format_time=True)
         network_info = generate_network_info()
         if general_info:
-            custom_template_path = os.path.join(
-                get_current_script_directory(), "templates", "custom_templates"
-            )
             template_path = template_name if is_top_level_template else f"{Config.TEMPLATE}/{template_name}"
-            if os.path.exists(custom_template_path) and is_top_level_template:
-                custom_template_file = os.path.join(custom_template_path, template_name)
-                if os.path.isfile(custom_template_file):
-                    template_path = custom_template_file
+            custom_template_file = f"custom_templates/{template_name}"
+            if is_top_level_template and os.path.isfile(os.path.join(get_current_script_directory(), "templates", "custom_templates", custom_template_file)):
+                template_path = custom_template_file
+                log_it("d", f"Generating HTML content using template: {template_path}")
             log_it("d", "Generating HTML content...")
             env = Config.jinja_environment()
             template = env.get_template(template_path)
