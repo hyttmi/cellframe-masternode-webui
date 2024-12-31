@@ -7,6 +7,7 @@ Happy new year edition!
 ### Added
 - Card for displaying rewards for current date. Thx once again @school_of_simple_living for the idea.
 - Support for Email and Telegram custom templates which won't be overwritten on new updates. Got the idea from @John_Doe_Dev.
+- Logger finally rotates files on every 5MB.
 
 ### Improved
 - `install.sh` is much better again.

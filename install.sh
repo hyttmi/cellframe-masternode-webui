@@ -15,7 +15,7 @@ URL="webui"
 if [[ -f "$CFG_PATH/webui.cfg" ]]; then
     echo "Old configuration file found, moving it to $CFG_PATH/webui.cfg.bak"
     mv $CFG_PATH/webui.cfg $CFG_PATH/webui.cfg.bak || { echo "Failed to move the file!"; exit 1; }
-fi 
+fi
 
 if ! [[ -d $CFG_PATH ]]; then
     echo "Creating configuration directory: $CFG_PATH"
