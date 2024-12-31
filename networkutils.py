@@ -193,7 +193,7 @@ def get_rewards(network, total_sum=False, rewards_today=False):
                 return sum(rewards.values())
             elif rewards_today:
                 today_str = datetime.now().strftime("%a, %d %b %Y")
-                return rewards.get(today_str, 0.0)
+                return rewards.get(today_str, None)
             else:
                 return sorted_dict
         return None
