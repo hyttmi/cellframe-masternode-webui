@@ -69,7 +69,7 @@ Download the latest zip, extract the files and copy the files overwriting the ol
 ## Templating
 Since version 3.18, it's possible to create custom templates for `email.html` and `telegram.html`. The files should be placed in `templates/custom_templates` path.
 
-Default `email.html` and `telegram.html` templates are placed in `templates` directory.
+Default `email.html` and `telegram.html` templates are placed in `templates` directory and you can use them as the base for your own templates.
 
 All theme specific files are located in `templates/<theme_specific_subfolder>`.
 
@@ -125,17 +125,17 @@ def fetch_node_info(url, api_token):
             json_data = response.json()
             return json_data
         print(f"Error with a status code {response.status_code}")
-        return None
+        return False
     except requests.exceptions.RequestException as e:
         print(f"Request failed: {e}")
-        return None
+        return False
 
 url = "http://<your_node_ip:8079/webui?as_json"
 api_token = "<your_custom_api_token"
 
 data = fetch_node_info(url, api_token)
 
-if data is not None:
+if data:
     print(json.dumps(data, indent=4))
 ```
 
