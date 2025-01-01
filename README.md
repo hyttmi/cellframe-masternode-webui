@@ -163,7 +163,49 @@ To help me debugging the plugin, the best way to do that is to provide me `webui
 3. Restart the node and wait until the plugin starts and creates the `webui.log`file.
 4. Refresh the WebUI from a web browser.
 
+## Reverse proxy with Nginx
+If you have bought a domain name and want to use that for viewing the WebUI stats, you can set up a reverse proxy using Nginx. Below is an example configuration that you can adapt to your setup:
 
+### Prerequisites
+1. Domain name: Ensure your domain name is properly configured to point to your server's IP address.
+2. Nginx installed.
+3. OPTIONAL: SSL certificate, use a service like Let's Encrypt to secure your domain.
 
+### Example Nginx configuration
+The default configuration may conflict with your new configuration, disable it by unlinking it:
+```shell
+sudo unlink /etc/nginx/sites-enabled/default
+```
+Create the Nginx configuration file:
+```shell
+sudo nano /etc/nginx/sites-available/webui.conf
+```
+Add the following configuration:
+```shell
+server {
+    listen 80;
+    server_name <your_domain.com>;
 
+    location / {
+        proxy_pass http://your_node_ip_addr:your_node_port/your_node_url;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        auth_basic off;
+        proxy_set_header Authorization  $http_authorization;
+        proxy_pass_request_headers      on;
 
+        proxy_read_timeout 300;
+        proxy_connect_timeout 300;
+        proxy_send_timeout 300;
+    }
+}
+```
+Enable the configuration:
+```shell
+sudo ln -s /etc/nginx/sites-available/webui.conf /etc/nginx/sites-enabled/
+sudo nginx -t # Check for possible errors here in configuration testing
+sudo systemctl reload nginx
+```
+Now you can verify that HTTP is working by visiting `http|https://your_domain.com`.
