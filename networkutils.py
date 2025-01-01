@@ -212,7 +212,7 @@ def get_blocks(network, block_type="count", today=False):
     try:
         with open(cache_file_path, "r") as f:
             block_data = json.load(f)
-        
+
         if block_type == "count":
             return block_data['block_count']
 
@@ -220,13 +220,13 @@ def get_blocks(network, block_type="count", today=False):
             today_str = datetime.now().strftime("%a, %d %b %Y")
             today_count = block_data["all_signed_blocks"].get(today_str, 0)
             return today_count
-        
+
         if block_type == "all_signed_blocks_count":
             return sum(block_data['all_signed_blocks'].values())
-        
+
         if block_type == "all_signed_blocks":
             return block_data['all_signed_blocks']
-        
+
         if block_type == "first_signed_blocks_count":
             return block_data['first_signed_blocks_count']
 

@@ -76,7 +76,7 @@
                 </div>
             </div>
         {% endif %}
-            
+
         {% if general_info.node_memory_usage %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_memory_usage">
                 <div class="card">
@@ -91,7 +91,7 @@
                 </div>
             </div>
         {% endif %}
-            
+
         {% if general_info.node_uptime %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_uptime">
                 <div class="card">
@@ -121,7 +121,7 @@
                 </div>
             </div>
         {% endif %}
-            
+
         {% if general_info.node_version %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_version">
                 <div class="card">
@@ -136,7 +136,7 @@
                 </div>
             </div>
         {% endif %}
-            
+
         {% if general_info.latest_node_version %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="latest_node_version">
                 <div class="card">
@@ -188,10 +188,10 @@
                 <h1 class="text-uppercase text-color-secondary d-flex align-items-center">
                   {{ network_name }}
                   <button type="button" class="btn btn-link ms-2" data-bs-toggle="modal" data-bs-target="#nodeInfoModal_{{ network_name }}">
-                    <i class="fa-solid fa-circle-info info fa-xl"></i>
+                    <i class="fa-solid fa-circle-info info fa-xl icon-effect"></i>
                   </button>
                 </h1>
-              </div>              
+              </div>
         </div>
         <div class="row is_sortable">
             {% if network.state %}
@@ -223,7 +223,7 @@
                 </div>
             </div>
             {% endif %}
-            
+
             {% if network.address %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_address_{{ network_name }}">
                 <div class="card">
@@ -238,7 +238,7 @@
                 </div>
             </div>
             {% endif %}
-            
+
             {% if network.first_signed_blocks %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="first_signed_blocks_{{ network_name }}">
                 <div class="card">
@@ -253,7 +253,7 @@
                 </div>
             </div>
             {% endif %}
-            
+
             {% if network.all_signed_blocks %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="all_signed_blocks_{{ network_name }}">
                 <div class="card">
@@ -268,7 +268,7 @@
                 </div>
             </div>
             {% endif %}
-            
+
             {% if network.signed_blocks_today %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="signed_blocks_today_{{ network_name }}">
                 <div class="card">
@@ -283,7 +283,7 @@
                 </div>
             </div>
             {% endif %}
-            
+
             {% if network.all_blocks %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="amount_of_blocks_{{ network_name }}">
                 <div class="card">
@@ -298,7 +298,7 @@
                 </div>
             </div>
             {% endif %}
-            
+
             {% if network.autocollect_status %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="autocollect_status_{{ network_name }}">
                 <div class="card">
@@ -313,7 +313,7 @@
                 </div>
             </div>
             {% endif %}
-            
+
             {% if network.autocollect_rewards %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="autocollect_rewards_{{ network_name }}">
                 <div class="card">
@@ -384,7 +384,7 @@
                     <i class="fa-solid fa-weight-scale icon-container"></i>
                 </div>
             </div>
-            
+
             {% if network.node_data.info.active_nodes_count > 0 %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="active_nodes_{{ network_name }}">
                 <div class="card">
@@ -482,7 +482,7 @@
                 </div>
             </div>
             {% endif %}
-            
+
             {% if network.all_signed_blocks_dict %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="signed_blocks_last_n_days_{{ network_name }}">
                 <div class="card">
@@ -522,7 +522,7 @@
                 </div>
             </div>
             {% endif %}
-            
+
             {% if network.rewards %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="rewards_last_n_days_{{ network_name }}">
                 <div class="card">
@@ -567,7 +567,7 @@
         </div>
         {% if general_info.current_plugin_version %}
         <div class="row text-center">
-            <span class="small">Plugin version: {{ general_info.current_plugin_version}}</span>
+            <span class="small">{{ general_info.current_plugin_version}}</span>
         </div>
         {% endif %}
     </div>
@@ -580,10 +580,10 @@
             });
             selectedItem.classList.add('active');
         }
-    
+
         document.addEventListener('DOMContentLoaded', function () {
             var clearStorageBtn = document.getElementById("clearstorage");
-    
+
             function toggleLocalStorageBtn() {
                 var hasCardsHidden = localStorage.getItem('cfclosed');
                 if (!hasCardsHidden) {
@@ -592,14 +592,14 @@
                     clearStorageBtn.style.display = 'block';
                 }
             }
-    
+
             toggleLocalStorageBtn();
-    
+
             clearStorageBtn.addEventListener('click', function() {
                 localStorage.removeItem('cfclosed');
                 location.reload();
             });
-    
+
             var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || [];
             closedCards.forEach(function (closedId) {
                 var closedCard = document.querySelector(`.col-12[data-id="${closedId}"]`);
@@ -607,9 +607,9 @@
                     closedCard.remove();
                 }
             });
-    
+
             var sortableElements = document.querySelectorAll('.is_sortable');
-    
+
             sortableElements.forEach(function (el, index) {
                 Sortable.create(el, {
                     handle: ".card-header",
@@ -631,14 +631,14 @@
                     }
                 });
             });
-    
+
             document.querySelectorAll('.btn-close').forEach(function (button) {
                 button.addEventListener('click', function (event) {
                     var card = event.target.closest('.col-12');
                     if (card) {
                         var cardId = card.getAttribute("data-id");
                         card.classList.add('hidden');
-    
+
                         card.addEventListener('transitionend', function () {
                             card.remove();
                             var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || [];
@@ -652,7 +652,7 @@
                 });
             });
         });
-        
+
         function formatDate(dateString) {
             var date = new Date(dateString);
             return date.toLocaleDateString(undefined, {
@@ -665,34 +665,34 @@
             if (chart === 'blocksChart') {
                 var block_days = Object.keys(blocksData[networkName]).slice(-daysToShow);
                 var blocks = Object.values(blocksData[networkName]).slice(-daysToShow);
-    
+
                 var sortedDays = block_days.map(formatDate);
                 var sortedBlocks = blocks;
-    
+
                 blocksCharts[networkName].data.labels = sortedDays;
                 blocksCharts[networkName].data.datasets[0].data = sortedBlocks;
                 blocksCharts[networkName].update();
             } else if (chart === 'rewardsChart') {
                 var reward_days = Object.keys(rewardsData[networkName]).slice(-daysToShow);
                 var rewards = Object.values(rewardsData[networkName]).slice(-daysToShow);
-    
+
                 var sortedRewardDays = reward_days.map(formatDate);
                 var sortedRewards = rewards.map(reward => reward.toString());
-    
+
                 rewardsCharts[networkName].data.labels = sortedRewardDays;
                 rewardsCharts[networkName].data.datasets[0].data = sortedRewards;
                 rewardsCharts[networkName].update();
             }
         }
     </script>
-    
+
     {% if network_info and network_info.items() %}
     <script>
         {% for network_name, network in network_info.items() %}
             {% if network.node_data.nodes %}
                 document.addEventListener("DOMContentLoaded", function() {
                     var weightChart = weightChart || {};
-                    
+
                     var nodeData = [
                         {% for node in network.node_data.nodes %}
                             {
@@ -829,7 +829,7 @@
                     });
                     updateChart('blocksChart', 7, '{{ network_name }}');
                 {% endif %}
-            
+
                 {% if network.rewards %}
                     var rewardsData = {};
                     rewardsData['{{ network_name }}'] = {{ network.rewards | tojson }};
@@ -888,7 +888,7 @@
             {% endfor %}
     </script>
     {% endif %}
-    
+
 </body>
 
 </html>
