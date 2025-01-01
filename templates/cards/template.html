@@ -698,7 +698,8 @@
                             {
                                 nodeAddr: "{{ node.node_addr }}",
                                 effectiveWeight: {{ node.effective_value | float }},
-                                isMyNode: {{ node.is_my_node | tojson }}
+                                isMyNode: {{ node.is_my_node | tojson }},
+                                isSovereign: {{ node.is_sovereign | to json }}
                             }
                             {% if not loop.last %},{% endif %}
                         {% endfor %}
@@ -724,7 +725,11 @@
                                 label: 'Effective weight',
                                 data: effectiveWeights,
                                 backgroundColor: nodeData.map(function(item) {
-                                    return item.isMyNode ? '#B3A3FF' : '#DEE2E6';
+                                    return item.isMyNode
+                                    ? '#B3A3FF'
+                                    : item.isSovereign
+                                    ? '#C6B8FF'
+                                    : '#DEE2E6';
                                 }),
                                 borderWidth: 0
                             }
