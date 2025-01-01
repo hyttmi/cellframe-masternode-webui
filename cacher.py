@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from logger import log_it
@@ -46,7 +45,7 @@ def cache_blocks_data():
                         block_time = datetime.strptime(timestamp_str, "%a, %d %b %Y %H:%M:%S")
                         block_day = block_time.strftime("%a, %d %b %Y")
                         blocks_signed_per_day[block_day] = blocks_signed_per_day.get(block_day, 0) + 1
-                sorted_blocks = OrderedDict(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
+                sorted_blocks = dict(list(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))[:-1])
                 block_data["all_signed_blocks"] = sorted_blocks
                 cache_file_path = os.path.join(get_current_script_directory(), f".{network}_blocks_cache.json")
                 with open(cache_file_path, "w") as f:

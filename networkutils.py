@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from datetime import datetime
 from logger import log_it
 from pycfhelpers.node.net import CFNet
@@ -188,7 +187,7 @@ def get_rewards(network, total_sum=False, rewards_today=False):
                     rewards[formatted_date_str] += amount
                 else:
                     rewards[formatted_date_str] = amount
-            sorted_dict = dict(OrderedDict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))))
+            sorted_dict = dict(list(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))[:-1])
             if total_sum:
                 return sum(rewards.values())
             elif rewards_today:
