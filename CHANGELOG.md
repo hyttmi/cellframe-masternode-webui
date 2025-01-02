@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.20] - 2024-01-02
+
+### Fixed
+- Cast username and password to `str` to make sure login works for users who use numbers only for login.
+- Missing signed blocks today.
+
 ## [3.19] - 2024-01-02
 
 ### Added

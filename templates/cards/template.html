@@ -824,6 +824,9 @@
                 {% if network.all_signed_blocks_dict %}
                     var blocksData = {};
                     blocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
+                    let blocksKeys = Object.keys(blocksData['{{ network_name }}']);
+                    let blocksLastKey = blocksKeys[blocksKeys.length - 1];
+                    delete blocksData['{{ network_name }}'][blocksLastKey];
                     var blocksCharts = {};
                     var blocksCtx{{ network_name }} = document.getElementById('blocksChart_{{ network_name }}').getContext('2d');
                     blocksCharts['{{ network_name }}'] = new Chart(blocksCtx{{ network_name }}, {
@@ -873,8 +876,15 @@
                 {% if network.rewards %}
                     var rewardsData = {};
                     rewardsData['{{ network_name }}'] = {{ network.rewards | tojson }};
+
+                    let rewardsKeys = Object.keys(rewardsData['{{ network_name }}']);
+                    let rewardsLastKey = rewardsKeys[rewardsKeys.length - 1];
+
+                    delete rewardsData['{{ network_name }}'][rewardsLastKey];
+
                     var rewardsCharts = {};
                     var rewardsCtx{{ network_name }} = document.getElementById('rewardsChart_{{ network_name }}').getContext('2d');
+
                     rewardsCharts['{{ network_name }}'] = new Chart(rewardsCtx{{ network_name }}, {
                         type: 'line',
                         data: {
@@ -923,6 +933,7 @@
                             }
                         }
                     });
+
                     updateChart('rewardsChart', 7, '{{ network_name }}');
                 {% endif %}
             {% endfor %}
