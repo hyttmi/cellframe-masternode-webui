@@ -148,7 +148,7 @@ html {
     width: 100%;
 }
 
-.icon-effect:hover {
+.icon-effect {
     animation: shake 0.5s ease infinite;
   }
 
