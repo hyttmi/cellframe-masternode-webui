@@ -34,7 +34,7 @@ echo -e "[server]\nenabled=true\n\n[plugins]\nenabled=true\npy_load=true\npy_pat
 
 read -p "Type a username for WebUI user, leave blank to use default ($USERNAME): " INPUT_USERNAME
 
-if [[ -n "$INPUT_USERNAME" ]] && [[ "$INPUT_USERNAME" =~ ^[a-zA-Z0-9]+$ ]] && [[ ! "$INPUT_USERNAME" =~ [[:space:]] ]]; then
+if [[ -n "$INPUT_USERNAME" ]] && [[ "$INPUT_USERNAME" =~ ^[a-zA-Z0-9]+$ ]] && ! [[ "$INPUT_USERNAME" =~ [[:space:]] ]]; then
     USERNAME=$INPUT_USERNAME
     echo -e "username=$USERNAME" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 else
@@ -44,7 +44,7 @@ fi
 
 read -p "Type a password for WebUI user, leave blank to use default ($PASSWORD): " INPUT_PASSWORD
 
-if [[ -n "$INPUT_PASSWORD" ]] && [[ "$INPUT_PASSWORD" =~ ^[a-zA-Z0-9\_\!\@\#\$\%\^\&\*\(\)\-\+\=]+$ ]] && [[ ! "$INPUT_PASSWORD" =~ [[:space:]] ]]; then
+if [[ -n "$INPUT_PASSWORD" ]] && [[ "$INPUT_PASSWORD" =~ ^[a-zA-Z0-9\_\!\@\#\$\%\^\&\*\(\)\-\+\=]+$ ]] && ! [[ "$INPUT_PASSWORD" =~ [[:space:]] ]]; then
     PASSWORD=$INPUT_PASSWORD
     echo -e "password=$PASSWORD" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 else
@@ -81,4 +81,10 @@ if [[ -f $PIP_PATH ]]; then
 else
     echo "$PIP_PATH not found!"
     exit 1
+fi
+
+if [[ -n $EXT_IP ]]; then
+    echo -e "You may login after node restart with http://$EXT_IP:$EXT_PORT/$URL"
+else
+    echo -e "\n\nYou may login after node restart with http://<external_ip>:$EXT_PORT/$URL"
 fi
