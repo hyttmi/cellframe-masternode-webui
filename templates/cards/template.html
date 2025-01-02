@@ -876,7 +876,6 @@
                 {% endif %}
 
                 {% if network.rewards %}
-                document.addEventListener('DOMContentLoaded', function() {
                     var rewardsData = {};
                     rewardsData['{{ network_name }}'] = {{ network.rewards | tojson }};
 
@@ -938,7 +937,6 @@
                     });
 
                     updateChart('rewardsChart', 7, '{{ network_name }}');
-                });
                 {% endif %}
             {% endfor %}
     </script>
