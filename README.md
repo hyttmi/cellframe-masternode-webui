@@ -7,6 +7,22 @@ This plugin offers an easy and efficient way to monitor your node's autocollect 
 
 ## Installation
 
+### Easy way
+```shell
+curl -s https://api.github.com/repos/hyttmi/cellframe-masternode-webui/releases/latest | \
+grep "tarball_url" | \
+cut -d ":" -f 2,3 | \
+tr -d '",' | \
+xargs curl -L -o cellframe-masternode-webui.tar.gz \
+&& mkdir -p webui \
+&& tar -xvf cellframe-masternode-webui.tar.gz --strip-components=1 -C webui \
+&& cd webui \
+&& sudo ./install.sh
+```
+And answer the questions
+
+### Manual way
+
 You can get the latest release from [releases page](https://github.com/hyttmi/cellframe-masternode-webui/releases) or by cloning this repo.
 
 1. Set provided `install.sh` script executable with `chmod +x install.sh`.

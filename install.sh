@@ -62,6 +62,11 @@ else
     echo -e "uri=$URL" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 fi
 
+read -p "Do you want to enable automatic updates? (y/n): " INPUT_UPDATE
+if [[ "$INPUT_UPDATE" =~ ^[Yy]$ ]]; then
+    echo -e "auto_update=true" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
+fi
+
 if [[ -f $PIP_PATH ]]; then
     echo "$PIP is available..."
     if ! [[ -x $PIP_PATH ]]; then
