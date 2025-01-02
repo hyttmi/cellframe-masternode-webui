@@ -14,6 +14,14 @@ You can get the latest release from [releases page](https://github.com/hyttmi/ce
 3. Before restarting your node, please read **carefully** how to [configure the plugin](#configuration). Please note the configuration file which is reported when running the installer!
 4. Restart your node and access the WebUI with your browser (`http://<your_node_ip>:<your_node_port>/<url>` where `<url>` by default is webui).
 
+## Updating
+
+### Easy way
+Set `auto_update=true` to configuration file, restart node and wait until plugin updates itself and restarts your node.
+
+### Manual way
+Download the latest zip, extract the files and copy the files overwriting the old files in plugin directory.
+
 ## Configuration
 
 Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/opt/cellframe-node/etc/cellframe-node.cfg`. You just need to add new section `[webui]` to the end of the file and below that, add the settings which you want to change:
@@ -41,7 +49,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/op
 - `telegram_stats_time=23:59` - Time to send the message. **24h format (HH:MM)**
 - `telegram_stats=true|false` - Enable timed Telegram messages.
 - `template=something` - Change template to something. If not set, default template will be used (cards). Oldskool theme is also available by default.
-- `uri=something` - Change plugin URI. Defaults to `webui`.
+- `url=something` - Change plugin URL. Defaults to `webui`.
 - `username=john` - Sets http authentication as user john. Default: `webui`
 
 ### Using GMail with email stats
@@ -57,14 +65,6 @@ smtp_password=<your_app_password>
 smtp_user=<your_gmail_user>
 email_use_tls=true
 ```
-
-## Updating
-
-### Easy way
-Set `auto_update=true` to configuration file, restart node and wait until plugin updates itself and restarts your node.
-
-### Manual way
-Download the latest zip, extract the files and copy the files overwriting the old files in plugin directory.
 
 ## Templating
 Since version 3.18, it's possible to create custom templates for `email.html` and `telegram.html`. The files should be placed in `templates/custom_templates` path.
