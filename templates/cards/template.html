@@ -699,7 +699,7 @@
                                 nodeAddr: "{{ node.node_addr }}",
                                 effectiveWeight: {{ node.effective_value | float }},
                                 isMyNode: {{ node.is_my_node | tojson }},
-                                isSovereign: {{ node.is_sovereign | to json }}
+                                isSovereign: {{ node.is_sovereign | tojson }}
                             }
                             {% if not loop.last %},{% endif %}
                         {% endfor %}
