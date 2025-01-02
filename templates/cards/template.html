@@ -771,7 +771,32 @@
                                 }
                             },
                             plugins: {
-                                legend: { display: true },
+                                legend: {
+                                    display: true,
+                                    labels: {
+                                        generateLabels: (chart) => {
+                                            return [
+                                                {
+                                                    text: 'Effective weight',
+                                                    fillStyle: '#DEE2E6',
+                                                    hidden: false,
+                                                },
+                                                {
+                                                    text: 'My node',
+                                                    fillStyle: '#B3A3FF',
+                                                    hidden: false,
+                                                },
+                                                {
+                                                    text: 'Sovereign node',
+                                                    fillStyle: '#C6B8FF',
+                                                    hidden: false,
+                                                },
+                                            ];
+
+                                        }
+                                    }
+                                },
+
                                 tooltip: {
                                     enabled: true,
                                     callbacks: {
