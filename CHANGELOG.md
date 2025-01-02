@@ -5,6 +5,7 @@
 ### Added
 - My node, sovereign nodes and regular nodes have all different colour on node weight charts.
 - Info button now bounces to visualize that it's actually clickable.
+- `install.sh` now asks if you want to enable automatic updates.
 
 ### Removed
 - Current date is removed from the charts now because there's already a card for displaying that information.
