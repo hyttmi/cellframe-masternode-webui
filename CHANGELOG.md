@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.19] - 2024-01-02
+
+### Added
+- My node, sovereign nodes and regular nodes have all different colour on node weight charts.
+- Info button now bounces to visualize that it's actually clickable.
+
+### Removed
+- Current date is removed from the charts now because there's already a card for displaying that information.
+
+### Improved
+- Generation of json for charts.
+
 ## [3.18] - 2024-12-31
 
 Happy new year edition!
@@ -155,7 +167,7 @@ Some minor changes to other things as well
 - Node connections info from general node info, node dump shows current connections already.
 
 ## [2.98] - 2024-11-10
- 
+
 ### Added
 - Support for excluding root level keys from JSON output.
 - Info button per network to show some information from node.
@@ -189,7 +201,7 @@ smtp_user=<your_gmail_user>
 email_use_tls=true
 ```
 ## [2.95] - 2024-10-28
- 
+
 ### Fixed
 - Cards can be removed from the view again.
 
@@ -206,11 +218,11 @@ email_use_tls=true
 - WebUI layout optimizations (much more responsive layout on all screen sizes).
 
 ## [2.93] - 2024-10-21
- 
+
 ### Added
 - Support for KelVPN token price, which is fetched directly from [KelVPN.com](https://kelvpn.com) for now
 - Card for showing sum of all received rewards
- 
+
 ### Changed
 - All logging is now done also to `webui.log` file in plugin path
 - Change favicon to black & white
@@ -218,6 +230,6 @@ email_use_tls=true
 - New Telegram template (thx @John_Doe_Dev)
 - Bring back `NETWORK_TARGET_STATE`
 - Add more of CPU or I/O intensive functions into `ThreadPool()` for parallel launching
- 
+
 ### Fixed
 - Use `threading.Lock()` method for avoiding possible race conditions when writing to a log file
