@@ -36,7 +36,7 @@ read -p "Type a username for WebUI user, leave blank to use default ($USERNAME):
 
 if [[ -n "$INPUT_USERNAME" ]] && [[ "$INPUT_USERNAME" =~ ^[a-zA-Z0-9]+$ ]] && ! [[ "$INPUT_USERNAME" =~ [[:space:]] ]]; then
     USERNAME=$INPUT_USERNAME
-    echo -e "username=$USERNAME" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
+    echo -e "\n[webui]\nusername=$USERNAME" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 else
     echo "Username $INPUT_USERNAME is invalid, using default ($USERNAME)."
     echo -e "\n[webui]\nusername=$USERNAME" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
