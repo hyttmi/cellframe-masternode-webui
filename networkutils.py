@@ -188,7 +188,7 @@ def get_rewards(network, total_sum=False, rewards_today=False):
                     rewards[formatted_date_str] += amount
                 else:
                     rewards[formatted_date_str] = amount
-            sorted_dict = dict(list(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))[:-1])
+            sorted_dict = dict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
             if total_sum:
                 return sum(rewards.values())
             elif rewards_today:
