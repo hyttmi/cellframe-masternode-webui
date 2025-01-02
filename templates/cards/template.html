@@ -188,7 +188,7 @@
                 <h1 class="text-uppercase text-color-secondary d-flex align-items-center">
                   {{ network_name }}
                   <button type="button" class="btn btn-link ms-2" data-bs-toggle="modal" data-bs-target="#nodeInfoModal_{{ network_name }}">
-                    <i class="fa-solid fa-circle-info info fa-xl icon-effect"></i>
+                    <i class="fa-solid fa-circle-info info fa-xl icon-effect" onclick="removeIconEffect(this)"></i>
                   </button>
                 </h1>
               </div>
@@ -572,6 +572,10 @@
         {% endif %}
     </div>
     <script>
+        function removeIconEffect(element) {
+            element.classList.remove('icon-effect'); // Remove the bouncing effect on click
+        }
+
         function setActive(selectedItem) {
             var parentCard = selectedItem.closest('.card');
             var navItems = parentCard.querySelectorAll('.nav-item');
