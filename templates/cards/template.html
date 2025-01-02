@@ -774,7 +774,6 @@
                                 legend: {
                                     display: true,
                                     labels: {
-                                        color: '#DEE2E6',
                                         generateLabels: (chart) => {
                                             return [
                                                 {
@@ -797,7 +796,10 @@
                                         }
                                     },
                                     position: 'top',
-                                    color: '#'
+                                    title: {
+                                        display: true,
+                                        color: '#DEE2E6', // Legend title text color
+                                    }
                                 },
 
                                 tooltip: {
