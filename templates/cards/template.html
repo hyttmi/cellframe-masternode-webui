@@ -822,7 +822,6 @@
             {% endif %}
 
                 {% if network.all_signed_blocks_dict %}
-                document.addEventListener('DOMContentLoaded', function() {
                     var blocksData = {};
                     blocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
                     let blocksKeys = Object.keys(blocksData['{{ network_name }}']);
@@ -872,7 +871,6 @@
                         }
                     });
                     updateChart('blocksChart', 7, '{{ network_name }}');
-                });
                 {% endif %}
 
                 {% if network.rewards %}
