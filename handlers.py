@@ -30,8 +30,8 @@ def web_request_handler(headers, bypass_auth=False):
     auth_header = headers.get("Authorization")
     cookie_header = headers.get("Cookie")
     cookie_expires = (datetime.now(timezone.utc) + timedelta(days=14)).strftime('%a, %d %b %Y %H:%M:%S GMT') # 2 weeks
-    expected_username = Config.USERNAME
-    expected_password = Config.PASSWORD
+    expected_username = str(Config.USERNAME) # Cast to string...
+    expected_password = str(Config.PASSWORD) # ...because it won't work without if user uses integers
     expected_cookie = generate_cookie(expected_username, expected_password)
 
     if not bypass_auth:

@@ -226,7 +226,7 @@ def get_blocks(network, block_type="count", today=False):
             return sum(block_data['all_signed_blocks'].values())
 
         if block_type == "all_signed_blocks":
-            return block_data['all_signed_blocks']
+            return block_data['all_signed_blocks'].popitem()
 
         if block_type == "first_signed_blocks_count":
             return block_data['first_signed_blocks_count']
