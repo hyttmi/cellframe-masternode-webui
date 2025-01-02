@@ -28,7 +28,7 @@ class Config:
     EMAIL_SUBJECT = get_config_value("webui", "email_subject", default=f"{PLUGIN_NAME}", is_numeric=False)
     EMAIL_USE_SSL = get_config_value("webui", "email_use_ssl", default=False, is_numeric=False)
     EMAIL_USE_TLS = get_config_value("webui", "email_use_tls", default=False, is_numeric=False)
-    PASSWORD = get_config_value("webui", "password", default="webui", is_numeric=False)
+    PASSWORD = str(get_config_value("webui", "password", default="webui", is_numeric=False))
     PLUGIN_URL = get_config_value("webui", "uri", default=None, is_numeric=False)
 
     if not PLUGIN_URL:
@@ -44,7 +44,7 @@ class Config:
     TELEGRAM_STATS_ENABLED = get_config_value("webui", "telegram_stats", default=False, is_numeric=False)
     TELEGRAM_STATS_TIME = get_config_value("webui", "telegram_stats_time", default=False, is_numeric=False)
     TEMPLATE = get_config_value("webui", "template", default="cards", is_numeric=False)
-    USERNAME = get_config_value("webui", "username", default="webui", is_numeric=False)
+    USERNAME = str(get_config_value("webui", "username", default="webui", is_numeric=False))
 
     def jinja_environment():
         env = Environment(
