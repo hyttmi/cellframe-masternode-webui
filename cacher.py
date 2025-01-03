@@ -69,7 +69,7 @@ def cache_rewards_data():
             if net_config:
                 log_it("i", "Caching rewards...")
                 start_time = time.time()
-                cmd_get_tx_history = cli_command(f"tx_history -addr {net_config['wallet']}")
+                cmd_get_tx_history = cli_command(f"tx_history -addr {net_config['wallet']}", timeout=300) # Increase timeout to 5 minutes, some servers are sooooooo slow
                 rewards = []
                 reward = {}
                 is_receiving_reward = False
