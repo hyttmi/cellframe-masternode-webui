@@ -97,20 +97,9 @@ def setup_schedules():
                 )
                 log_it("d", "auto_updater submitted to ThreadPool")
 
-            futures['list_schedules'] = executor.submit(list_schedules)
-            log_it("d", "list_schedules submitted to ThreadPool")
-
             for name in futures:
                 log_it("d", f"{name} submitted to ThreadPool")
 
-    except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
-
-def list_schedules():
-    try:
-        log_it("i", "Listing schedules...")
-        log_it("i", schedule.get_jobs())
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
