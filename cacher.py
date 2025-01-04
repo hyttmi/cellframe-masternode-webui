@@ -77,23 +77,23 @@ def cache_rewards_data():
                     lines = cmd_get_tx_history.splitlines()
                     for line in lines:
                         line = line.strip()
-                        if line.startswith("status: ACCEPTED"):
+                        if "status: ACCEPTED" in line:
                             if reward and is_receiving_reward:
                                 rewards.append(reward)
                             reward = {}
                             is_receiving_reward = False
                             continue
-                        if line.startswith("hash:"):
+                        if "hash:" in line:
                             reward['hash'] = line.split("hash:")[1].strip()
                             continue
-                        if line.startswith("tx_created:"):
+                        if "tx_created:" in line:
                             original_date = line.split("tx_created:")[1].strip()[:-6]
                             reward['tx_created'] = original_date
                             continue
-                        if line.startswith("recv_coins:"):
+                        if "recv_coins:" in line:
                             reward['recv_coins'] = line.split("recv_coins:")[1].strip()
                             continue
-                        if line.startswith("source_address: reward collecting"):
+                        if "source_address: reward collecting" in line:
                             is_receiving_reward = True
                             continue
                     if reward and is_receiving_reward:
