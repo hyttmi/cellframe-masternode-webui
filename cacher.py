@@ -39,7 +39,7 @@ def cache_blocks_data():
                         line = line.strip()
                         if "block number" in line:
                             block_number = line.split("block number:")[1].strip()
-                            block_data['all_first_signed_blocks'][f"Block {block_number}"] = {}
+                            block_data['all_first_signed_blocks'][block_number] = {}
                         elif "hash:" in line:
                             block_data['all_first_signed_blocks'][block_number]['hash'] = line.split("hash:")[1].strip()
                         elif "ts_create:" in line:
