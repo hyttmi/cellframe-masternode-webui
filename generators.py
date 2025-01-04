@@ -25,7 +25,7 @@ from common import get_current_script_directory
 from config import Config
 from concurrent.futures import ThreadPoolExecutor
 import inspect, json, os
-        
+
 def generate_general_info(format_time=True):
     try:
         sys_stats = get_sys_stats()
@@ -67,6 +67,7 @@ def generate_network_info():
                     futures = {
                         'all_blocks': executor.submit(get_blocks, network, block_type="count"),
                         'all_signed_blocks_dict': executor.submit(get_blocks, network, block_type="all_signed_blocks"),
+                        'first_signed_blocks_dict': executor.submit(get_blocks, network, block_type="first_signed_blocks"),
                         'all_signed_blocks': executor.submit(get_blocks, network, block_type="all_signed_blocks_count"),
                         'autocollect_status': executor.submit(get_autocollect_status, network),
                         'current_block_reward': executor.submit(get_current_block_reward, network),
@@ -106,7 +107,7 @@ def generate_network_info():
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
         return None
-    
+
 def generate_data(template_name, return_as_json=False, is_top_level_template=False):
     try:
         if return_as_json:

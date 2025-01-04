@@ -5,6 +5,7 @@
 ### Changed
 - Blocks caching changed to include all first signed blocks and all signed blocks, different calculations for blocks is done when refreshing page.
 - Reward caching timeout increased to 6 minutes (old timeout was 2 minutes), helps with command timeouts on slow VPS's.
+- Increase default time for caching start to 120 seconds (was 60secs) before.
 
 ### Improved
 - Changed `startswith()` method to different type in rewards caching as apparently it's slightly faster.

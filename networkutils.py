@@ -221,25 +221,50 @@ def get_blocks(network, block_type="count", today=False):
         if block_type == "all_signed_blocks" and today:
             today_count = 0
             today_str = datetime.now().strftime("%a, %d %b %Y")
-            for key, value in block_data['all_signed_blocks'].items():
+            for _, value in block_data['all_signed_blocks'].items():
                 if today_str in value['ts_created']:
                     today_count += 1
             log_it("d", f"Today's signed blocks: {today_count}")
             return today_count
 
+        if block_type == "all_signed_blocks":
+            blocks_per_day = {}
+            for _, value in block_data['all_signed_blocks'].items():
+                block_date = datetime.strptime(value['ts_created'], "%a, %d %b %Y %H:%M:%S")
+                day_str = block_date.strftime("%a, %d %b %Y")
+                if day_str in blocks_per_day:
+                    blocks_per_day[day_str] += 1
+                else:
+                    blocks_per_day[day_str] = 1
+            return blocks_per_day
+
+        if block_type == "first_signed_blocks" and today:
+            today_count = 0
+            today_str = datetime.now().strftime("%a, %d %b %Y")
+            for _, value in block_data['first_signed_blocks'].items():
+                if today_str in value['ts_created']:
+                    today_count += 1
+            return today_count
+
+        if block_type == "all_first_signed_blocks":
+            first_signed_blocks_per_day = {}
+            for _, value in block_data['all_first_signed_blocks'].items():
+                first_signed_block_date = datetime.strptime(value['ts_created'], "%a, %d %b %Y %H:%M:%S")
+                day_str = first_signed_block_date.strftime("%a, %d %b %Y")
+                if day_str in first_signed_blocks_per_day:
+                    first_signed_blocks_per_day[day_str] += 1
+                else:
+                    first_signed_blocks_per_day[day_str] = 1
+            return blocks_per_day
+
         if block_type == "all_signed_blocks_count":
-            log_it("d", f"Total signed blocks: {len(block_data['all_signed_blocks'])}")
             return len(block_data['all_signed_blocks'])
 
         if block_type == "first_signed_blocks_count":
-            log_it("d", f"Total first signed blocks: {len(block_data['all_first_signed_blocks'])}")
             return len(block_data['all_first_signed_blocks'])
 
         if block_type == "all_signed_blocks":
             return block_data['all_signed_blocks']
-
-        if block_type == "all_first_signed_blocks":
-            return block_data['all_first_signed_blocks']
 
         return None
     except Exception as e:
