@@ -224,7 +224,6 @@ def get_blocks(network, block_type="count", today=False):
             for _, value in block_data['all_signed_blocks'].items():
                 if today_str in value['ts_created']:
                     today_count += 1
-            log_it("d", f"Today's signed blocks: {today_count}")
             return today_count
 
         if block_type == "all_signed_blocks":
@@ -255,7 +254,7 @@ def get_blocks(network, block_type="count", today=False):
                     first_signed_blocks_per_day[day_str] += 1
                 else:
                     first_signed_blocks_per_day[day_str] = 1
-            return blocks_per_day
+            return first_signed_blocks_per_day
 
         if block_type == "all_signed_blocks_count":
             return len(block_data['all_signed_blocks'])
