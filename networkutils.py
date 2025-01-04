@@ -1,7 +1,8 @@
+from common import cli_command, get_current_script_directory
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from logger import log_it
 from pycfhelpers.node.net import CFNet
-from common import cli_command, get_current_script_directory
 import re, requests, os, json, inspect, cachetools.func
 
 @cachetools.func.ttl_cache(maxsize=10)
@@ -219,17 +220,23 @@ def get_blocks(network, block_type="count", today=False):
 
         if block_type == "all_signed_blocks" and today:
             today_str = datetime.now().strftime("%a, %d %b %Y")
-            today_count = block_data["all_signed_blocks"].get(today_str, 0)
-            return today_count
+            today_blocks = {
+                k: v for k, v in block_data['all_signed_blocks'].items()
+                if v['ts_created'].split('T')[0] == today_str
+            }
+            return today_blocks
 
         if block_type == "all_signed_blocks_count":
-            return sum(block_data['all_signed_blocks'].values())
+            return len(block_data['all_signed_blocks'])
+
+        if block_type == "first_signed_blocks_count":
+            return len(block_data['all_first_signed_blocks'])
 
         if block_type == "all_signed_blocks":
             return block_data['all_signed_blocks']
 
-        if block_type == "first_signed_blocks_count":
-            return block_data['first_signed_blocks_count']
+        if block_type == "all_first_signed_blocks":
+            return block_data['all_first_signed_blocks']
 
         return None
     except Exception as e:
