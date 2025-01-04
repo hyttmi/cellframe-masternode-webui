@@ -284,6 +284,21 @@
             </div>
             {% endif %}
 
+            {% if network.first_signed_blocks_today %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="first_signed_blocks_today_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">First signed blocks today</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.first_signed_blocks_today }}</h6>
+                    </div>
+                    <i class="fa-solid fa-file-signature icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
             {% if network.all_blocks %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="amount_of_blocks_{{ network_name }}">
                 <div class="card">

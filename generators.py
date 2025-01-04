@@ -72,6 +72,7 @@ def generate_network_info():
                         'autocollect_status': executor.submit(get_autocollect_status, network),
                         'current_block_reward': executor.submit(get_current_block_reward, network),
                         'first_signed_blocks': executor.submit(get_blocks, network, block_type="first_signed_blocks_count"),
+                        'first_signed_blocks_today': executor.submit(get_blocks, network, block_type="first_signed_blocks", today=True),
                         'general_node_info': executor.submit(get_node_dump, network),
                         'node_data': executor.submit(get_node_data, network),
                         'rewards': executor.submit(get_rewards, network, total_sum=False),
@@ -97,6 +98,7 @@ def generate_network_info():
                         'rewards': futures['rewards'].result(),
                         'rewards_today': futures['rewards_today'].result(),
                         'signed_blocks_today': futures['signed_blocks_today'].result(),
+                        'first_signed_blocks_today': futures['first_signed_blocks_today'].result(),
                         'state': net_status['state'],
                         'target_state': net_status['target_state'],
                         'token_price': futures['token_price'].result()
