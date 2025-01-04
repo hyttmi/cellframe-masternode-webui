@@ -16,27 +16,48 @@ def cache_blocks_data():
                 start_time = time.time()
                 block_data = {
                     'block_count': 0,
-                    'signed_blocks_count': 0,
-                    'first_signed_blocks_count': 0,
+                    'all_first_signed_blocks': {},
                     'all_signed_blocks': {}
                 }
                 with ThreadPoolExecutor() as executor:
                     futures = {
                         'block_count': executor.submit(cli_command, f"block count -net {network}"),
-                        'first_signed_blocks': executor.submit(cli_command, f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']} -limit 1"),
+                        'first_signed_blocks': executor.submit(cli_command, f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']}"),
                         'signed_blocks': executor.submit(cli_command, f"block list -net {network} signed -cert {net_config['blocks_sign_cert']}")
                     }
+
                 block_count_result = futures['block_count'].result()
                 block_count_match = re.search(r":\s+(\d+)", block_count_result)
-                if block_count_match:
+
+                if block_count_result and block_count_match:
                     block_data['block_count'] = int(block_count_match.group(1))
+
+                first_signed_blocks_result = futures['first_signed_blocks'].result()
+                lines = first_signed_blocks_result.splitlines()
+                all_first_signed_blocks = []
+                first_signed_block = {}
+                is_new_first_signed_block = False
+                for line in lines:
+                    line = line.strip()
+                    if "block number" in line: # we don't need this in the cache
+                        if first_signed_block and is_new_first_signed_block:
+                            all_first_signed_blocks.append(block)
+                        first_signed_block = {}
+                        is_new_first_signed_block = False
+                        continue
+                    if "hash:" in line:
+                        block['hash'] = line.split("hash:")[1].strip()
+                        continue
+                    if "ts_create:" in line:
+                        original_date = line.split("ts_create:")[1].strip()[:-6]
+                        block['ts_created'] = original_date
+                        is_new_first_signed_block = True
+                        continue
+                if first_signed_block and is_new_first_signed_block:
+                    all_first_signed_blocks.append(first_signed_block)
+                block_data['all_first_signed_blocks'] = all_blocks
+
                 signed_blocks_result = futures["signed_blocks"].result()
-                signed_blocks_match = re.search(r"have blocks: (\d+)", signed_blocks_result)
-                if signed_blocks_match:
-                    block_data['signed_blocks_count'] = int(signed_blocks_match.group(1))
-                first_signed_match = re.search(r"have blocks: (\d+)", futures["first_signed_blocks"].result())
-                if first_signed_match:
-                    block_data['first_signed_blocks_count'] = int(first_signed_match.group(1))
                 lines = signed_blocks_result.splitlines()
                 all_blocks = []
                 block = {}
