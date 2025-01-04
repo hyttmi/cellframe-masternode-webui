@@ -34,7 +34,7 @@ class Config:
     if not PLUGIN_URL:
         PLUGIN_URL = get_config_value("webui", "url", default="webui", is_numeric=False)
 
-    SCHEDULER_DELAY_ON_STARTUP = get_config_value("webui", "scheduler_delay_on_startup", default=60, is_numeric=True)
+    SCHEDULER_DELAY_ON_STARTUP = get_config_value("webui", "scheduler_delay_on_startup", default=120, is_numeric=True)
     SMTP_PASSWORD = get_config_value("webui", "smtp_password", default=None, is_numeric=False)
     SMTP_PORT = int(get_config_value("webui", "smtp_port", default="465", is_numeric=True))
     SMTP_SERVER = get_config_value("webui", "smtp_server", default="smtp.gmail.com", is_numeric=False)
