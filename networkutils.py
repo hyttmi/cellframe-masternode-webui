@@ -238,7 +238,7 @@ def get_blocks(network, block_type="count", today=False):
             return blocks_per_day
 
         if block_type == "first_signed_blocks" and today:
-            today_count = 0
+            today_count = 1
             today_str = datetime.now().strftime("%a, %d %b %Y")
             for _, value in block_data['first_signed_blocks'].items():
                 if today_str in value['ts_created']:
