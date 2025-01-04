@@ -246,7 +246,7 @@ def get_blocks(network, block_type="count", today=False):
                     today_count += 1
             return today_count
 
-        if block_type == "all_first_signed_blocks":
+        if block_type == "first_signed_blocks":
             first_signed_blocks_per_day = {}
             for _, value in block_data['all_first_signed_blocks'].items():
                 first_signed_block_date = datetime.strptime(value['ts_created'], "%a, %d %b %Y %H:%M:%S")
