@@ -33,54 +33,56 @@ def cache_blocks_data():
                     block_data['block_count'] = int(block_count_match.group(1))
 
                 first_signed_blocks_result = futures['first_signed_blocks'].result()
-                lines = first_signed_blocks_result.splitlines()
-                all_first_signed_blocks = []
-                first_signed_block = {}
-                is_new_first_signed_block = False
-                for line in lines:
-                    line = line.strip()
-                    if "block number" in line: # we don't need this in the cache
-                        if first_signed_block and is_new_first_signed_block:
-                            all_first_signed_blocks.append(block)
-                        first_signed_block = {}
-                        is_new_first_signed_block = False
-                        continue
-                    if "hash:" in line:
-                        block['hash'] = line.split("hash:")[1].strip()
-                        continue
-                    if "ts_create:" in line:
-                        original_date = line.split("ts_create:")[1].strip()[:-6]
-                        block['ts_created'] = original_date
-                        is_new_first_signed_block = True
-                        continue
-                if first_signed_block and is_new_first_signed_block:
-                    all_first_signed_blocks.append(first_signed_block)
-                block_data['all_first_signed_blocks'] = all_blocks
+                if first_signed_blocks_result:
+                    lines = first_signed_blocks_result.splitlines()
+                    all_first_signed_blocks = []
+                    first_signed_block = {}
+                    is_new_first_signed_block = False
+                    for line in lines:
+                        line = line.strip()
+                        if "block number" in line: # we don't need this in the cache
+                            if first_signed_block and is_new_first_signed_block:
+                                all_first_signed_blocks.append(block)
+                            first_signed_block = {}
+                            is_new_first_signed_block = False
+                            continue
+                        if "hash:" in line:
+                            block['hash'] = line.split("hash:")[1].strip()
+                            continue
+                        if "ts_create:" in line:
+                            original_date = line.split("ts_create:")[1].strip()[:-6]
+                            block['ts_created'] = original_date
+                            is_new_first_signed_block = True
+                            continue
+                    if first_signed_block and is_new_first_signed_block:
+                        all_first_signed_blocks.append(first_signed_block)
+                    block_data['all_first_signed_blocks'] = all_first_signed_blocks
 
                 signed_blocks_result = futures["signed_blocks"].result()
-                lines = signed_blocks_result.splitlines()
-                all_blocks = []
-                block = {}
-                is_new_block = False
-                for line in lines:
-                    line = line.strip()
-                    if "block number" in line: # we don't need this in the cache
-                        if block and is_new_block:
-                            all_blocks.append(block)
-                        block = {}
-                        is_new_block = False
-                        continue
-                    if "hash:" in line:
-                        block['hash'] = line.split("hash:")[1].strip()
-                        continue
-                    if "ts_create:" in line:
-                        original_date = line.split("ts_create:")[1].strip()[:-6]
-                        block['ts_created'] = original_date
-                        is_new_block = True
-                        continue
-                if block and is_new_block:
-                    all_blocks.append(block)
-                block_data["all_signed_blocks"] = all_blocks
+                if signed_blocks_result:
+                    lines = signed_blocks_result.splitlines()
+                    all_blocks = []
+                    block = {}
+                    is_new_block = False
+                    for line in lines:
+                        line = line.strip()
+                        if "block number" in line: # we don't need this in the cache
+                            if block and is_new_block:
+                                all_blocks.append(block)
+                            block = {}
+                            is_new_block = False
+                            continue
+                        if "hash:" in line:
+                            block['hash'] = line.split("hash:")[1].strip()
+                            continue
+                        if "ts_create:" in line:
+                            original_date = line.split("ts_create:")[1].strip()[:-6]
+                            block['ts_created'] = original_date
+                            is_new_block = True
+                            continue
+                    if block and is_new_block:
+                        all_blocks.append(block)
+                    block_data["all_signed_blocks"] = all_blocks
                 cache_file_path = os.path.join(get_current_script_directory(), f".{network}_blocks_cache.json")
                 with open(cache_file_path, "w") as f:
                     json.dump(block_data, f, indent=4)
