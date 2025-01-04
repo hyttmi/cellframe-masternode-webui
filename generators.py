@@ -67,7 +67,6 @@ def generate_network_info():
                     futures = {
                         'all_blocks': executor.submit(get_blocks, network, block_type="count"),
                         'all_signed_blocks_dict': executor.submit(get_blocks, network, block_type="all_signed_blocks"),
-                        'first_signed_blocks_dict': executor.submit(get_blocks, network, block_type="first_signed_blocks"),
                         'all_signed_blocks': executor.submit(get_blocks, network, block_type="all_signed_blocks_count"),
                         'autocollect_status': executor.submit(get_autocollect_status, network),
                         'current_block_reward': executor.submit(get_current_block_reward, network),
@@ -77,7 +76,6 @@ def generate_network_info():
                         'rewards': executor.submit(get_rewards, network, total_sum=False),
                         'rewards_today': executor.submit(get_rewards, network, rewards_today=True),
                         'signed_blocks_today': executor.submit(get_blocks, network, block_type="all_signed_blocks", today=True),
-                        'first_signed_blocks_today': executor.submit(get_blocks, network, block_type="first_signed_blocks", today=True),
                         'sum_rewards': executor.submit(get_rewards, network, total_sum=True),
                         'token_price': executor.submit(get_token_price, network)
                     }
@@ -86,7 +84,6 @@ def generate_network_info():
                         'all_blocks': futures['all_blocks'].result(),
                         'all_rewards': futures['sum_rewards'].result(),
                         'all_signed_blocks_dict': futures['all_signed_blocks_dict'].result(),
-                        'first_signed_blocks_dict': futures['first_signed_blocks_dict'].result(),
                         'all_signed_blocks': futures['all_signed_blocks'].result(),
                         'autocollect_rewards': futures['autocollect_status'].result()['rewards'],
                         'autocollect_status': futures['autocollect_status'].result()['active'],
@@ -98,15 +95,13 @@ def generate_network_info():
                         'rewards': futures['rewards'].result(),
                         'rewards_today': futures['rewards_today'].result(),
                         'signed_blocks_today': futures['signed_blocks_today'].result(),
-                        'first_signed_blocks_today': futures['first_signed_blocks_today'].result(),
                         'state': net_status['state'],
                         'target_state': net_status['target_state'],
                         'token_price': futures['token_price'].result()
                     }
                     network_data[network] = network_info
-            log_it("d", json.dumps(network_data, indent=4))
-            return network_data
-        return None
+        log_it("d", json.dumps(network_data, indent=4))
+        return network_data if network_data else None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
