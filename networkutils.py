@@ -219,12 +219,12 @@ def get_blocks(network, block_type="count", today=False):
             return block_data['block_count']
 
         if block_type == "all_signed_blocks" and today:
+            today_count = 0
             today_str = datetime.now().strftime("%a, %d %b %Y")
-            today_blocks = {
-                k: v for k, v in block_data['all_signed_blocks'].items()
-                if v['ts_created'].split('T')[0] == today_str
-            }
-            return today_blocks
+            for key, value in block_data['all_signed_blocks'].items():
+                if today_str in value['ts_created']:
+                    today_count += 1
+            return today_count
 
         if block_type == "all_signed_blocks_count":
             return len(block_data['all_signed_blocks'])
