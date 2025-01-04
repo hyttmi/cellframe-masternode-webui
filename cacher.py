@@ -40,6 +40,7 @@ def cache_blocks_data():
                 lines = signed_blocks_result.splitlines()
                 all_blocks = []
                 block = {}
+                is_new_block = False
                 for line in lines:
                     line = line.strip()
                     if "block number" in line: # we don't need this in the cache
