@@ -67,6 +67,7 @@ def generate_network_info():
                     futures = {
                         'all_blocks': executor.submit(get_blocks, network, block_type="count"),
                         'all_signed_blocks_dict': executor.submit(get_blocks, network, block_type="all_signed_blocks"),
+                        'first_signed_blocks_dict': executor.submit(get_blocks, network, block_type="first_signed_blocks"),
                         'all_signed_blocks': executor.submit(get_blocks, network, block_type="all_signed_blocks_count"),
                         'autocollect_status': executor.submit(get_autocollect_status, network),
                         'current_block_reward': executor.submit(get_current_block_reward, network),
@@ -84,6 +85,7 @@ def generate_network_info():
                         'all_blocks': futures['all_blocks'].result(),
                         'all_rewards': futures['sum_rewards'].result(),
                         'all_signed_blocks_dict': futures['all_signed_blocks_dict'].result(),
+                        'first_signed_blocks_dict': futures['first_signed_blocks_dict'].result(),
                         'all_signed_blocks': futures['all_signed_blocks'].result(),
                         'autocollect_rewards': futures['autocollect_status'].result()['rewards'],
                         'autocollect_status': futures['autocollect_status'].result()['active'],
