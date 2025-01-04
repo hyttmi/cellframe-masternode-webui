@@ -37,16 +37,28 @@ def cache_blocks_data():
                 first_signed_match = re.search(r"have blocks: (\d+)", futures["first_signed_blocks"].result())
                 if first_signed_match:
                     block_data['first_signed_blocks_count'] = int(first_signed_match.group(1))
-                blocks_signed_per_day = {}
                 lines = signed_blocks_result.splitlines()
+                all_blocks = []
+                block = {}
                 for line in lines:
+                    line = line.strip()
+                    if "block number" in line: # we don't need this in the cache
+                        if block and is_new_block:
+                            all_blocks.append(block)
+                        block = {}
+                        is_new_block = False
+                        continue
+                    if "hash:" in line:
+                        block['hash'] = line.split("hash:")[1].strip()
+                        continue
                     if "ts_create:" in line:
-                        timestamp_str = line.split("ts_create:")[1].strip()[:-6]
-                        block_time = datetime.strptime(timestamp_str, "%a, %d %b %Y %H:%M:%S")
-                        block_day = block_time.strftime("%a, %d %b %Y")
-                        blocks_signed_per_day[block_day] = blocks_signed_per_day.get(block_day, 0) + 1
-                sorted_blocks = dict(list(sorted(blocks_signed_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))))
-                block_data["all_signed_blocks"] = sorted_blocks
+                        original_date = line.split("tx_created:")[1].strip()[:-6]
+                        block['ts_created'] = original_date
+                        is_new_block = True
+                        continue
+                if block and is_new_block:
+                    all_blocks.append(block)
+                block_data["all_signed_blocks"] = all_blocks
                 cache_file_path = os.path.join(get_current_script_directory(), f".{network}_blocks_cache.json")
                 with open(cache_file_path, "w") as f:
                     json.dump(block_data, f, indent=4)
