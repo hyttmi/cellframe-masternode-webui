@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.21] - 2024-01-04
+
+### Changed
+- Blocks caching changed to include all blocks and calculations for blocks is done on refreshing page.
+- Reward caching timeout increased to 6 minutes, helps with command timeouts on slow VPS's.
+
+### Improved
+- Changed `startswith()` method to different type in rewards caching as apparently it's slightly faster.
+
 ## [3.20] - 2024-01-02
 
 ### Fixed

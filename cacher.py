@@ -53,7 +53,7 @@ def cache_blocks_data():
                         block['hash'] = line.split("hash:")[1].strip()
                         continue
                     if "ts_create:" in line:
-                        original_date = line.split("tx_created:")[1].strip()[:-6]
+                        original_date = line.split("ts_create:")[1].strip()[:-6]
                         block['ts_created'] = original_date
                         is_new_block = True
                         continue
