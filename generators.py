@@ -104,8 +104,9 @@ def generate_network_info():
                         'token_price': futures['token_price'].result()
                     }
                     network_data[network] = network_info
-        log_it("d", json.dumps(network_data, indent=4))
-        return network_data if network_data else None
+            log_it("d", json.dumps(network_data, indent=4))
+            return network_data
+        return None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
