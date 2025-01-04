@@ -16,8 +16,8 @@ def cache_blocks_data():
                 start_time = time.time()
                 block_data = {
                     'block_count': 0,
-                    'all_first_signed_blocks': [],
-                    'all_signed_blocks': []
+                    'all_first_signed_blocks': {},
+                    'all_signed_blocks': {}
                 }
                 with ThreadPoolExecutor() as executor:
                     futures = {
@@ -35,48 +35,30 @@ def cache_blocks_data():
                 first_signed_blocks_result = futures['first_signed_blocks'].result()
                 if first_signed_blocks_result:
                     lines = first_signed_blocks_result.splitlines()
-                    first_signed_blocks = []
-                    block = {}
                     for line in lines:
                         line = line.strip()
                         if "block number" in line:
-                            if block:
-                                first_signed_blocks.append(block)
-                            block = {}
-                            continue
-                        if "hash:" in line:
-                            block['hash'] = line.split("hash:")[1].strip()
-                            continue
-                        if "ts_create:" in line:
+                            block_number = line.split("block number:")[1].strip()
+                            block_data['all_first_signed_blocks'][block_number] = {}
+                        elif "hash:" in line:
+                            block_data['all_first_signed_blocks'][block_number]['hash'] = line.split("hash:")[1].strip()
+                        elif "ts_create:" in line:
                             original_date = line.split("ts_create:")[1].strip()[:-6]
-                            block['ts_created'] = original_date
-                            continue
-                    if block:
-                        first_signed_blocks.append(block)
-                    block_data['all_first_signed_blocks'] = first_signed_blocks
+                            block_data['all_first_signed_blocks'][block_number]['ts_created'] = original_date
 
                 signed_blocks_result = futures["signed_blocks"].result()
                 if signed_blocks_result:
                     lines = signed_blocks_result.splitlines()
-                    all_blocks = []
-                    block = {}
                     for line in lines:
                         line = line.strip()
                         if "block number" in line:
-                            if block:
-                                all_blocks.append(block)
-                            block = {}
-                            continue
-                        if "hash:" in line:
-                            block['hash'] = line.split("hash:")[1].strip()
-                            continue
-                        if "ts_create:" in line:
+                            block_number = line.split("block number:")[1].strip()
+                            block_data['all_signed_blocks'][block_number] = {}
+                        elif "hash:" in line:
+                            block_data['all_signed_blocks'][block_number]['hash'] = line.split("hash:")[1].strip()
+                        elif "ts_create:" in line:
                             original_date = line.split("ts_create:")[1].strip()[:-6]
-                            block['ts_created'] = original_date
-                            continue
-                    if block:
-                        all_blocks.append(block)
-                    block_data["all_signed_blocks"] = all_blocks
+                            block_data['all_signed_blocks'][block_number]['ts_created'] = original_date
 
                 cache_file_path = os.path.join(get_current_script_directory(), f".{network}_blocks_cache.json")
                 with open(cache_file_path, "w") as f:
@@ -90,7 +72,6 @@ def cache_blocks_data():
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
         return None
-
 
 def cache_rewards_data():
     try:
