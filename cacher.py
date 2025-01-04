@@ -16,8 +16,8 @@ def cache_blocks_data():
                 start_time = time.time()
                 block_data = {
                     'block_count': 0,
-                    'all_first_signed_blocks': {},
-                    'all_signed_blocks': {}
+                    'all_first_signed_blocks': [],
+                    'all_signed_blocks': []
                 }
                 with ThreadPoolExecutor() as executor:
                     futures = {
@@ -35,16 +35,14 @@ def cache_blocks_data():
                 first_signed_blocks_result = futures['first_signed_blocks'].result()
                 if first_signed_blocks_result:
                     lines = first_signed_blocks_result.splitlines()
-                    all_first_signed_blocks = []
-                    first_signed_block = {}
-                    is_new_first_signed_block = False
+                    first_signed_blocks = []
+                    block = {}
                     for line in lines:
                         line = line.strip()
-                        if "block number" in line: # we don't need this in the cache
-                            if first_signed_block and is_new_first_signed_block:
-                                all_first_signed_blocks.append(block)
-                            first_signed_block = {}
-                            is_new_first_signed_block = False
+                        if "block number" in line:
+                            if block:
+                                first_signed_blocks.append(block)
+                            block = {}
                             continue
                         if "hash:" in line:
                             block['hash'] = line.split("hash:")[1].strip()
@@ -52,25 +50,22 @@ def cache_blocks_data():
                         if "ts_create:" in line:
                             original_date = line.split("ts_create:")[1].strip()[:-6]
                             block['ts_created'] = original_date
-                            is_new_first_signed_block = True
                             continue
-                    if first_signed_block and is_new_first_signed_block:
-                        all_first_signed_blocks.append(first_signed_block)
-                    block_data['all_first_signed_blocks'] = all_first_signed_blocks
+                    if block:
+                        first_signed_blocks.append(block)
+                    block_data['all_first_signed_blocks'] = first_signed_blocks
 
                 signed_blocks_result = futures["signed_blocks"].result()
                 if signed_blocks_result:
                     lines = signed_blocks_result.splitlines()
                     all_blocks = []
                     block = {}
-                    is_new_block = False
                     for line in lines:
                         line = line.strip()
-                        if "block number" in line: # we don't need this in the cache
-                            if block and is_new_block:
+                        if "block number" in line:
+                            if block:
                                 all_blocks.append(block)
                             block = {}
-                            is_new_block = False
                             continue
                         if "hash:" in line:
                             block['hash'] = line.split("hash:")[1].strip()
@@ -78,16 +73,16 @@ def cache_blocks_data():
                         if "ts_create:" in line:
                             original_date = line.split("ts_create:")[1].strip()[:-6]
                             block['ts_created'] = original_date
-                            is_new_block = True
                             continue
-                    if block and is_new_block:
+                    if block:
                         all_blocks.append(block)
                     block_data["all_signed_blocks"] = all_blocks
+
                 cache_file_path = os.path.join(get_current_script_directory(), f".{network}_blocks_cache.json")
                 with open(cache_file_path, "w") as f:
                     json.dump(block_data, f, indent=4)
                 elapsed_time = time.time() - start_time
-                log_it("i",f"Blocks cached for {network}! It took {elapsed_time:.2f} seconds!")
+                log_it("i", f"Blocks cached for {network}! It took {elapsed_time:.2f} seconds!")
             else:
                 log_it("e", f"Network config not found for {network}, skipping caching")
                 return None
@@ -95,6 +90,7 @@ def cache_blocks_data():
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")
         return None
+
 
 def cache_rewards_data():
     try:
