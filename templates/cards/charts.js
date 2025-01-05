@@ -182,7 +182,7 @@
 
         {% if network.first_signed_blocks_dict %}
                 var firstSignedBlocksData = {};
-                firstSignedBlocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
+                firstSignedBlocksData['{{ network_name }}'] = {{ network.first_signed_blocks_dict | tojson }};
                 let firstSignedBlocksKeys = Object.keys(firstSignedBlocksData['{{ network_name }}']);
                 let firstSignedBlocksLastKey = firstSignedBlocksKeys[firstSignedBlocksKeys.length - 1];
                 delete firstSignedBlocksData['{{ network_name }}'][firstSignedBlocksLastKey];
