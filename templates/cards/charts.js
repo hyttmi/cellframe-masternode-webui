@@ -1,5 +1,5 @@
-{% if network_info and network_info.items() %}
 <script>
+{% if network_info and network_info.items() %}
     {% for network_name, network in network_info.items() %}
         {% if network.node_data.nodes %}
             document.addEventListener("DOMContentLoaded", function() {
@@ -129,7 +129,6 @@
         {% endif %}
 
         {% if network.all_signed_blocks_dict %}
-            <script>
                 var signedBlocksData = {};
                 signedBlocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
                 let signedBlocksKeys = Object.keys(signedBlocksData['{{ network_name }}']);
@@ -179,11 +178,9 @@
                     }
                 });
                 updateChart('signedBlocksChart', 7, '{{ network_name }}');
-            </script>
         {% endif %}
 
         {% if network.first_signed_blocks_dict %}
-            <script>
                 var firstSignedBlocksData = {};
                 firstSignedBlocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
                 let firstSignedBlocksKeys = Object.keys(firstSignedBlocksData['{{ network_name }}']);
@@ -233,11 +230,9 @@
                     }
                 });
                 updateChart('firstSignedBlocksChart', 7, '{{ network_name }}');
-            </script>
         {% endif %}
 
         {% if network.rewards %}
-            <script>
                 var rewardsData = {};
                 rewardsData['{{ network_name }}'] = {{ network.rewards | tojson }};
                 let rewardsKeys = Object.keys(rewardsData['{{ network_name }}']);
@@ -297,8 +292,7 @@
                 });
 
                 updateChart('rewardsChart', 7, '{{ network_name }}');
-            </script>
         {% endif %}
     {% endfor %}
-</script>
 {% endif %}
+</script>
