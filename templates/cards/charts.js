@@ -126,8 +126,6 @@
             }
         });
     });
-    {% endif %}
-    {% endfor %}
 </script>
 {% endif %}
 
