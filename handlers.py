@@ -1,9 +1,10 @@
 from config import Config
 from datetime import datetime, timedelta, timezone
 from generators import generate_data
+from io import BytesIO
 from logger import log_it
 from pycfhelpers.node.http.simple import CFSimpleHTTPResponse
-import base64, hashlib
+import base64, hashlib, gzip
 
 def generate_cookie(username, password):
     data = f"{username}:{password}"
@@ -48,10 +49,12 @@ def web_request_handler(headers, bypass_auth=False):
             if auth_cookie and auth_cookie == expected_cookie: # Oooh, a chocolate chip cookie!
                 try:
                     response_body = generate_data("template.html").encode("utf-8")
-                    return CFSimpleHTTPResponse(body=response_body,
+                    compressed_body = compress_content(response_body)
+                    return CFSimpleHTTPResponse(body=compressed_body,
                                                 code=200,
                                                 headers = {
                                                     "Content-Type": "text/html",
+                                                    "Content-Encoding": "gzip",
                                                     "Set-Cookie": f"auth_cookie={expected_cookie}; HttpOnly; Path=/; Expires={cookie_expires}"
                                                 })
                 except Exception as e:
@@ -90,10 +93,12 @@ def web_request_handler(headers, bypass_auth=False):
                                         })
     try:
         response_body = generate_data("template.html").encode("utf-8")
-        return CFSimpleHTTPResponse(body=response_body,
+        compressed_body = compress_content(response_body)
+        return CFSimpleHTTPResponse(body=compressed_body,
                                     code=200,
                                     headers = {
                                         "Content-Type": "text/html",
+                                        "Content-Encoding": "gzip",
                                         "Set-Cookie": f"auth_cookie={expected_cookie}; HttpOnly; Path=/; Expires={cookie_expires}"
                                         }
                                     )
@@ -119,3 +124,9 @@ def json_request_handler(headers):
                                 headers = {
                                     "Content-Type": "application/json"
                                 })
+
+def compress_content(content):
+    buf = BytesIO()
+    with gzip.GzipFile(fileobj=buf, mode='wb') as f:
+        f.write(content)
+    return buf.getvalue()
