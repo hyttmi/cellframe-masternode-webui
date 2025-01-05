@@ -10,6 +10,7 @@
 - Blocks caching rewritten.
 - Reward caching timeout increased to 6 minutes (old timeout was 2 minutes), helps with command timeouts on slow VPS's.
 - Increase default time for caching start to 120 seconds (was 60 secs) before.
+- HTML content is now `gzip` compressed to avoid current issues with node HTTP server.
 
 ### Improved
 - Changed `startswith()` method to different type in rewards caching as apparently it's slightly faster.
