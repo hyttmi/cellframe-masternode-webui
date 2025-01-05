@@ -44,7 +44,7 @@ fi
 
 read -p "Type a password for WebUI user, leave blank to use default ($PASSWORD): " INPUT_PASSWORD
 
-if [[ -n "$INPUT_PASSWORD" ]] && [[ "$INPUT_PASSWORD" =~ ^[a-zA-Z0-9\_\!\@\#\$\%\^\&\*\(\)\-\+\=]+$ ]] && ! [[ "$INPUT_PASSWORD" =~ [[:space:]] ]]; then
+if [[ -n "$INPUT_PASSWORD" ]] && [[ "$INPUT_PASSWORD" =~ ^[a-zA-Z0-9\_\!\@\$\%\^\&\*\(\)\-\+\=]+$ ]] && ! [[ "$INPUT_PASSWORD" =~ [[:space:]] ]]; then
     PASSWORD=$INPUT_PASSWORD
     echo -e "password=$PASSWORD" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 else
@@ -58,7 +58,7 @@ if [[ "$INPUT_URL" =~ ^[a-zA-Z0-9]+$ ]]; then
     URL=$INPUT_URL
     echo -e "uri=$URL" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 else
-    echo "URL $URL is invalid. It must not contain spaces or special chars. Using default (webui)."
+    echo "URL $INPUT_URL is invalid. It must not contain spaces or special chars. Using default (webui)."
     echo -e "uri=$URL" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 fi
 
