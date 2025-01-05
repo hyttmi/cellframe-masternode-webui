@@ -498,6 +498,46 @@
             </div>
             {% endif %}
 
+            {% if network.first_signed_blocks_dict %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="first_signed_blocks_last_n_days_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">First signed blocks history</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="firstSignedBlocksChart_{{ network_name }}"></canvas>
+                    </div>
+                    <ul class="nav justify-content-center">
+                        {% if network.first_signed_blocks_dict | length < 7 %}
+                        <li class="nav-item active" onclick="updateChart('firstSignedBlocksChart', {{ network.first_signed_blocks_dict | length }}, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">{{ network.first_signed_blocks_dict | length }} days</span>
+                        </li>
+                        {% else %}
+                        <li class="nav-item active" onclick="updateChart('firstSignedBlocksChart', 7, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">7 days</span>
+                        </li>
+                        {% endif %}
+                        {% if network.first_signed_blocks_dict | length >= 14 %}
+                        <li class="nav-item" onclick="updateChart('firstSignedBlocksChart', 14, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">14 days</span>
+                        </li>
+                        {% endif %}
+                        {% if network.first_signed_blocks_dict | length >= 30 %}
+                        <li class="nav-item" onclick="updateChart('firstSignedBlocksChart', 30, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">30 days</span>
+                        </li>
+                        {% endif %}
+                        {% if network.first_signed_blocks_dict | length >= 60 %}
+                        <li class="nav-item" onclick="updateChart('firstSignedBlocksChart', 60, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">60 days</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
             {% if network.all_signed_blocks_dict %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="signed_blocks_last_n_days_{{ network_name }}">
                 <div class="card">
@@ -701,7 +741,16 @@
                 rewardsCharts[networkName].data.labels = sortedRewardDays;
                 rewardsCharts[networkName].data.datasets[0].data = sortedRewards;
                 rewardsCharts[networkName].update();
-            }
+            } else if (chart === 'firstSignedBlocksChart') {
+                var block_days = Object.keys(firstSignedBlocksData[networkName]).slice(-daysToShow);
+                var blocks = Object.values(firstSignedBlocksData[networkName]).slice(-daysToShow);
+
+                var sortedDays = block_days.map(formatDate);
+                var sortedBlocks = blocks;
+
+                firstSignedBlocksCharts[networkName].data.labels = sortedDays;
+                firstSignedBlocksCharts[networkName].data.datasets[0].data = sortedBlocks;
+                firstSignedBlocksCharts[networkName].update();
         }
     </script>
 
@@ -886,6 +935,58 @@
                         }
                     });
                     updateChart('signedBlocksChart', 7, '{{ network_name }}');
+                {% endif %}
+
+                {% if network.first_signed_blocks_dict %}
+                    var firstSignedBlocksData = {};
+                    firstSignedBlocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
+                    let firstSignedBlocksKeys = Object.keys(firstSignedBlocksData['{{ network_name }}']);
+                    let firstSignedBlocksLastKey = firstSignedBlocksKeys[firstSignedBlocksKeys.length - 1];
+                    delete firstSignedBlocksData['{{ network_name }}'][firstSignedBlocksLastKey];
+                    var firstSignedBlocksCharts = {};
+                    var firstSignedBlocksCtx{{ network_name }} = document.getElementById('firstSignedBlocksChart_{{ network_name }}').getContext('2d');
+                    firstSignedBlocksCharts['{{ network_name }}'] = new Chart(firstSignedBlocksCtx{{ network_name }}, {
+                        type: 'line',
+                        data: {
+                            labels: [],
+                            datasets: [{
+                                label: 'Blocks',
+                                data: [],
+                                backgroundColor: '#B3A3FF',
+                                borderColor: '#B3A3FF',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        color: '#B3A3FF'
+                                    }
+                                },
+                                y: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    beginAtZero: true,
+                                    ticks: {
+                                        color: '#B3A3FF'
+                                    },
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            }
+                        }
+                    });
+                    updateChart('firstSignedBlocksChart', 7, '{{ network_name }}');
                 {% endif %}
 
                 {% if network.rewards %}
