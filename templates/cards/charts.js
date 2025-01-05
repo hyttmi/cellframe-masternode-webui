@@ -232,67 +232,7 @@
                 updateChart('firstSignedBlocksChart', 7, '{{ network_name }}');
         {% endif %}
 
-        {% if network.rewards %}
-                var rewardsData = {};
-                rewardsData['{{ network_name }}'] = {{ network.rewards | tojson }};
-                let rewardsKeys = Object.keys(rewardsData['{{ network_name }}']);
-                let rewardsLastKey = rewardsKeys[rewardsKeys.length - 1];
-                delete rewardsData['{{ network_name }}'][rewardsLastKey];
 
-                var rewardsCharts = {};
-                var rewardsCtx{{ network_name }} = document.getElementById('rewardsChart_{{ network_name }}').getContext('2d');
-
-                rewardsCharts['{{ network_name }}'] = new Chart(rewardsCtx{{ network_name }}, {
-                    type: 'line',
-                    data: {
-                        labels: [],
-                        datasets: [{
-                            label: 'Rewards',
-                            data: [],
-                            backgroundColor: '#B3A3FF',
-                            borderColor: '#B3A3FF',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: {
-                                grid: {
-                                    display: false
-                                },
-                                ticks: {
-                                    color: '#B3A3FF'
-                                }
-                            },
-                            y: {
-                                grid: {
-                                    display: false
-                                },
-                                beginAtZero: true,
-                                ticks: {
-                                    color: '#B3A3FF'
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(tooltipItem) {
-                                        return tooltipItem.raw;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-
-                updateChart('rewardsChart', 7, '{{ network_name }}');
-        {% endif %}
     {% endfor %}
 {% endif %}
 </script>
