@@ -51,7 +51,7 @@ def web_request_handler(headers, bypass_auth=False):
                     return CFSimpleHTTPResponse(body=response_body,
                                                 code=200,
                                                 headers = {
-                                                    "Content-Type": "text/plain",
+                                                    "Content-Type": "text/html",
                                                     "Set-Cookie": f"auth_cookie={expected_cookie}; HttpOnly; Path=/; Expires={cookie_expires}"
                                                 })
                 except Exception as e:
@@ -93,7 +93,7 @@ def web_request_handler(headers, bypass_auth=False):
         return CFSimpleHTTPResponse(body=response_body,
                                     code=200,
                                     headers = {
-                                        "Content-Type": "text/plain",
+                                        "Content-Type": "text/html",
                                         "Set-Cookie": f"auth_cookie={expected_cookie}; HttpOnly; Path=/; Expires={cookie_expires}"
                                         }
                                     )
