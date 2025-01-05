@@ -682,8 +682,8 @@
 
         function updateChart(chart, daysToShow, networkName) {
             if (chart === 'signedBlocksChart') {
-                var block_days = Object.keys(blocksData[networkName]).slice(-daysToShow);
-                var blocks = Object.values(blocksData[networkName]).slice(-daysToShow);
+                var block_days = Object.keys(signedBlocksData[networkName]).slice(-daysToShow);
+                var blocks = Object.values(signedBlocksData[networkName]).slice(-daysToShow);
 
                 var sortedDays = block_days.map(formatDate);
                 var sortedBlocks = blocks;
