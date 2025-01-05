@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.21] - 2024-01-04
+## [3.21] - 2024-01-05
 
 ### Added
 - Card for displaying first signed blocks for today.
