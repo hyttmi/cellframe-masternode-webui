@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.22] - 2024-01-05
+
+### Fixed
+- Chart buttons.
+
 ## [3.21] - 2024-01-05
 
 ### Added
