@@ -631,16 +631,16 @@
                 element.classList.remove('icon-effect'); // Remove the bouncing effect on click
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            function setActive(selectedItem) {
+        function setActive(selectedItem) {
                 var parentCard = selectedItem.closest('.card');
                 var navItems = parentCard.querySelectorAll('.nav-item');
                 navItems.forEach(function(item) {
                     item.classList.remove('active');
                 });
                 selectedItem.classList.add('active');
-            }
+        }
 
+        document.addEventListener('DOMContentLoaded', function () {
             var clearStorageBtn = document.getElementById("clearstorage");
 
             function toggleLocalStorageBtn() {

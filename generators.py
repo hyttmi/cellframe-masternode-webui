@@ -31,8 +31,8 @@ def generate_general_info(format_time=True):
         sys_stats = get_sys_stats()
         plugin_data = check_plugin_update()
         info = {
-                'current_plugin_version': plugin_data['current_version'] if plugin_data['current_version'] else "Unavailable",
-                'latest_plugin_version': plugin_data['latest_version'] if plugin_data['latest_version'] else "Unavailable",
+                'current_plugin_version': plugin_data['current_version'] if plugin_data else "Unavailable",
+                'latest_plugin_version': plugin_data['latest_version'] if plugin_data else "Unavailable",
                 'plugin_name': Config.PLUGIN_NAME,
                 'hostname': get_system_hostname(),
                 'system_uptime': format_uptime(sys_stats['system_uptime']) if format_time else sys_stats['system_uptime'],
