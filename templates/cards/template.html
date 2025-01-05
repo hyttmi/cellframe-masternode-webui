@@ -627,11 +627,11 @@
         {% endif %}
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            function removeIconEffect(element) {
+        function removeIconEffect(element) {
                 element.classList.remove('icon-effect'); // Remove the bouncing effect on click
-            }
+        }
 
+        document.addEventListener('DOMContentLoaded', function () {
             function setActive(selectedItem) {
                 var parentCard = selectedItem.closest('.card');
                 var navItems = parentCard.querySelectorAll('.nav-item');
