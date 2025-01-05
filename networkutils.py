@@ -235,7 +235,7 @@ def get_blocks(network, block_type="count", today=False):
                     blocks_per_day[day_str] += 1
                 else:
                     blocks_per_day[day_str] = 1
-            return blocks_per_day
+            return dict(sorted(blocks_per_day, key=lambda x: datetime.strptime(x, "%a, %d %b %Y")))
 
         if block_type == "first_signed_blocks" and today:
             today_count = 0
@@ -254,7 +254,7 @@ def get_blocks(network, block_type="count", today=False):
                     first_signed_blocks_per_day[day_str] += 1
                 else:
                     first_signed_blocks_per_day[day_str] = 1
-            return first_signed_blocks_per_day
+            return dict(sorted(first_signed_blocks_per_day, key=lambda x: datetime.strptime(x, "%a, %d %b %Y")))
 
         if block_type == "all_signed_blocks_count":
             return len(block_data['all_signed_blocks'])
