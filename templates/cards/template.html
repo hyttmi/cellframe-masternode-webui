@@ -506,30 +506,30 @@
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <canvas id="blocksChart_{{ network_name }}"></canvas>
+                        <canvas id="signedBlocksChart_{{ network_name }}"></canvas>
                     </div>
                     <ul class="nav justify-content-center">
                         {% if network.all_signed_blocks_dict | length < 7 %}
-                        <li class="nav-item active" onclick="updateChart('blocksChart', {{ network.all_signed_blocks_dict | length }}, '{{ network_name }}'); setActive(this);">
+                        <li class="nav-item active" onclick="updateChart('signedBlocksChart', {{ network.all_signed_blocks_dict | length }}, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">{{ network.all_signed_blocks_dict | length }} days</span>
                         </li>
                         {% else %}
-                        <li class="nav-item active" onclick="updateChart('blocksChart', 7, '{{ network_name }}'); setActive(this);">
+                        <li class="nav-item active" onclick="updateChart('signedBlocksChart', 7, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">7 days</span>
                         </li>
                         {% endif %}
                         {% if network.all_signed_blocks_dict | length >= 14 %}
-                        <li class="nav-item" onclick="updateChart('blocksChart', 14, '{{ network_name }}'); setActive(this);">
+                        <li class="nav-item" onclick="updateChart('signedBlocksChart', 14, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">14 days</span>
                         </li>
                         {% endif %}
                         {% if network.all_signed_blocks_dict | length >= 30 %}
-                        <li class="nav-item" onclick="updateChart('blocksChart', 30, '{{ network_name }}'); setActive(this);">
+                        <li class="nav-item" onclick="updateChart('signedBlocksChart', 30, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">30 days</span>
                         </li>
                         {% endif %}
                         {% if network.all_signed_blocks_dict | length >= 60 %}
-                        <li class="nav-item" onclick="updateChart('blocksChart', 60, '{{ network_name }}'); setActive(this);">
+                        <li class="nav-item" onclick="updateChart('signedBlocksChart', 60, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">60 days</span>
                         </li>
                         {% endif %}
@@ -681,16 +681,16 @@
         }
 
         function updateChart(chart, daysToShow, networkName) {
-            if (chart === 'blocksChart') {
+            if (chart === 'signedBlocksChart') {
                 var block_days = Object.keys(blocksData[networkName]).slice(-daysToShow);
                 var blocks = Object.values(blocksData[networkName]).slice(-daysToShow);
 
                 var sortedDays = block_days.map(formatDate);
                 var sortedBlocks = blocks;
 
-                blocksCharts[networkName].data.labels = sortedDays;
-                blocksCharts[networkName].data.datasets[0].data = sortedBlocks;
-                blocksCharts[networkName].update();
+                signedBlocksCharts[networkName].data.labels = sortedDays;
+                signedBlocksCharts[networkName].data.datasets[0].data = sortedBlocks;
+                signedBlocksCharts[networkName].update();
             } else if (chart === 'rewardsChart') {
                 var reward_days = Object.keys(rewardsData[networkName]).slice(-daysToShow);
                 var rewards = Object.values(rewardsData[networkName]).slice(-daysToShow);
@@ -837,14 +837,14 @@
             {% endif %}
 
                 {% if network.all_signed_blocks_dict %}
-                    var blocksData = {};
-                    blocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
-                    let blocksKeys = Object.keys(blocksData['{{ network_name }}']);
-                    let blocksLastKey = blocksKeys[blocksKeys.length - 1];
-                    delete blocksData['{{ network_name }}'][blocksLastKey];
-                    var blocksCharts = {};
-                    var blocksCtx{{ network_name }} = document.getElementById('blocksChart_{{ network_name }}').getContext('2d');
-                    blocksCharts['{{ network_name }}'] = new Chart(blocksCtx{{ network_name }}, {
+                    var signedBlocksData = {};
+                    signedBlocksData['{{ network_name }}'] = {{ network.all_signed_blocks_dict | tojson }};
+                    let signedBlocksKeys = Object.keys(signedBlocksData['{{ network_name }}']);
+                    let signedBlocksLastKey = signedBlocksKeys[signedBlocksKeys.length - 1];
+                    delete signedBlocksData['{{ network_name }}'][signedBlocksLastKey];
+                    var signedBlocksCharts = {};
+                    var signedBlocksCtx{{ network_name }} = document.getElementById('signedBlocksChart_{{ network_name }}').getContext('2d');
+                    signedBlocksCharts['{{ network_name }}'] = new Chart(signedBlocksCtx{{ network_name }}, {
                         type: 'line',
                         data: {
                             labels: [],
@@ -885,7 +885,7 @@
                             }
                         }
                     });
-                    updateChart('blocksChart', 7, '{{ network_name }}');
+                    updateChart('signedBlocksChart', 7, '{{ network_name }}');
                 {% endif %}
 
                 {% if network.rewards %}
