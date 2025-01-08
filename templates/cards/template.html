@@ -461,6 +461,21 @@
             </div>
             {% endif %}
 
+            {% if network.sovereign_rewards_today %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="sovereign_rewards_today_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Sovereign Rewards collected today</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.sovereign_rewards_today }}</h6>
+                    </div>
+                    <i class="fa-solid fa-dollar-sign icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
             {% if network.current_block_reward %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="current_block_reward_{{ network_name }}">
                 <div class="card">
@@ -478,7 +493,7 @@
 
             {% if network.node_data.nodes %}
             {% for node in network.node_data.nodes %}
-            {% if node.is_my_node and node.is_sovereign_node %}
+            {% if node.is_my_node and node.is_sovereign %}
             {% if node.sovereign_wallet_tokens %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="sovereign_wallet_information_{{ network_name }}">
                 <div class="card">
@@ -488,7 +503,7 @@
                     </div>
                     <div class="card-body">
                         <table class="tokens">
-                            {% for token, balance in node.sovereign_wallet_tokens %}
+                            {% for token, balance in node.sovereign_wallet_tokens.items() %}
                             <tr>
                                 <td><h6 class="text-body-secondary card-subtitle">{{ token }}</h6></td>
                                 <td><h6 class="text-body-secondary card-subtitle">{{ balance }}</h6></td>
@@ -696,7 +711,7 @@
         </div>
         {% endif %}
     </div>
-    <script>
+    <script defer>
         function removeIconEffect(element) {
                 element.classList.remove('icon-effect'); // Remove the bouncing effect on click
         }
@@ -808,6 +823,7 @@
 
             let sovereignRewardsData = {};
             if (sovereignRewardsData && Object.keys(sovereignRewardsData).length > 0) {
+                console.log(sovereignRewardsData);
                 chartMapping.sovereignRewardsChart = {
                     data: sovereignRewardsData,
                     chart: sovereignRewardsCharts
@@ -829,7 +845,7 @@
             }
         }
     </script>
-    <script>
+    <script defer>
         {% include 'cards/charts.js' %}
     </script>
 </body>

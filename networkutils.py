@@ -144,7 +144,6 @@ def get_node_data(network):
                 'info': info,
                 'nodes': nodes
             }
-            log_it("d", result)
             return result
         return None
     except Exception as e:

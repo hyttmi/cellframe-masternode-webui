@@ -82,7 +82,8 @@ def cache_rewards_data():
             sovereign_wallet_addr = None
             for node in node_data['nodes']:
                 if node['is_my_node'] and node['is_sovereign']:
-                    sovereign_wallet_addr = node['wallet']
+                    sovereign_wallet_addr = node['sovereign_addr']
+                    log_it("d", f"Sovereign wallet address found: {sovereign_wallet_addr}")
             if net_config: # net_config has to return something always
                 log_it("i", "Caching rewards...")
                 start_time = time.time()

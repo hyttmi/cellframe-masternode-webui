@@ -6,6 +6,9 @@
 - Some extra debug logging.
 - Wallet information for sovereign address.
 - Rewards caching for sovereign address.
+- Cards for sovereign addresses:
+  - Rewards today.
+  - Chart for 7,14,30,60 days.
 
 ### Improved
 - Charts are now generated on the fly with Jinja.
