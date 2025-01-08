@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.23] - XXXX-XX-XX
+
+### Added
+- Some extra debug logging.
+- Wallet information for sovereign address.
+- Rewards caching for sovereign address.
+
+### Improved
+- Charts are now generated on the fly with Jinja.
+
 ## [3.22] - 2024-01-05
 
 ### Fixed

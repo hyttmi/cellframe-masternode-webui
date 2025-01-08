@@ -476,6 +476,34 @@
             </div>
             {% endif %}
 
+            {% if network.node_data.nodes %}
+            {% for node in network.node_data.nodes %}
+            {% if node.is_my_node and node.is_sovereign_node %}
+            {% if node.sovereign_wallet_tokens %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="sovereign_wallet_information_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Sovereign Wallet Information</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <table class="tokens">
+                            {% for token, balance in node.sovereign_wallet_tokens.items() %}
+                            <tr>
+                                <td><h6 class="text-body-secondary card-subtitle">{{ token }}</h6></td>
+                                <td><h6 class="text-body-secondary card-subtitle">{{ balance }}</h6></td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    <i class="fa-solid fa-wallet icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+
             {% if network.fee_wallet_tokens %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="reward_wallet_information_{{ network_name }}">
                 <div class="card">
@@ -579,6 +607,7 @@
             {% endif %}
 
             {% if network.rewards %}
+            {% set total_rewards_length = network.rewards | length %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="rewards_last_n_days_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -589,27 +618,68 @@
                         <canvas id="rewardsChart_{{ network_name }}"></canvas>
                     </div>
                     <ul class="nav justify-content-center">
-                        {% if network.rewards | length < 7 %}
-                        <li class="nav-item active" onclick="updateChart('rewardsChart', {{ network.rewards | length }}, '{{ network_name }}'); setActive(this);">
-                            <span class="days_amount">{{ network.rewards | length }} days</span>
+                        {% if total_rewards_length < 7 %}
+                        <li class="nav-item active" onclick="updateChart('rewardsChart', {{ total_rewards_length }}, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">{{ total_rewards_length }} days</span>
                         </li>
                         {% else %}
                         <li class="nav-item active" onclick="updateChart('rewardsChart', 7, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">7 days</span>
                         </li>
                         {% endif %}
-                        {% if network.rewards | length >= 14 %}
+                        {% if total_rewards_length >= 14 %}
                         <li class="nav-item" onclick="updateChart('rewardsChart', 14, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">14 days</span>
                         </li>
                         {% endif %}
-                        {% if network.rewards | length >= 30 %}
+                        {% if total_rewards_length >= 30 %}
                         <li class="nav-item" onclick="updateChart('rewardsChart', 30, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">30 days</span>
                         </li>
                         {% endif %}
-                        {% if network.rewards | length >= 60 %}
+                        {% if total_rewards_length >= 60 %}
                         <li class="nav-item" onclick="updateChart('rewardsChart', 60, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">60 days</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.sovereign_rewards %}
+            {% set total_sovereign_rewards_length = network.sovereign_rewards | length %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="sovereign_rewards_last_n_days_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Sovereign rewards history</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="sovereignRewardsChart_{{ network_name }}"></canvas>
+                    </div>
+                    <ul class="nav justify-content-center">
+                        {% if total_sovereign_rewards_length < 7 %}
+                        <li class="nav-item active" onclick="updateChart('sovereignRewardsChart', {{ total_sovereign_rewards_length }}, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">{{ total_sovereign_rewards_length }} days</span>
+                        </li>
+                        {% else %}
+                        <li class="nav-item active" onclick="updateChart('sovereignRewardsChart', 7, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">7 days</span>
+                        </li>
+                        {% endif %}
+                        {% if total_sovereign_rewards_length >= 14 %}
+                        <li class="nav-item" onclick="updateChart('sovereignRewardsChart', 14, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">14 days</span>
+                        </li>
+                        {% endif %}
+                        {% if total_sovereign_rewards_length >= 30 %}
+                        <li class="nav-item" onclick="updateChart('sovereignRewardsChart', 30, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">30 days</span>
+                        </li>
+                        {% endif %}
+                        {% if total_sovereign_rewards_length >= 60 %}
+                        <li class="nav-item" onclick="updateChart('sovereignRewardsChart', 60, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">60 days</span>
                         </li>
                         {% endif %}
@@ -721,40 +791,47 @@
         }
 
         function updateChart(chart, daysToShow, networkName) {
-            if (chart === 'signedBlocksChart') {
-                var block_days = Object.keys(signedBlocksData[networkName]).slice(-daysToShow);
-                var blocks = Object.values(signedBlocksData[networkName]).slice(-daysToShow);
+            const chartMapping = {
+                signedBlocksChart: {
+                    data: signedBlocksData,
+                    chart: signedBlocksCharts
+                },
+                rewardsChart: {
+                    data: rewardsData,
+                    chart: rewardsCharts
+                },
+                firstSignedBlocksChart: {
+                    data: firstSignedBlocksData,
+                    chart: firstSignedBlocksCharts
+                }
+            };
 
-                var sortedDays = block_days.map(formatDate);
-                var sortedBlocks = blocks;
+            let sovereignRewardsData = {};
+            if (sovereignRewardsData && Object.keys(sovereignRewardsData).length > 0) {
+                chartMapping.sovereignRewardsChart = {
+                    data: sovereignRewardsData,
+                    chart: sovereignRewardsCharts
 
-                signedBlocksCharts[networkName].data.labels = sortedDays;
-                signedBlocksCharts[networkName].data.datasets[0].data = sortedBlocks;
-                signedBlocksCharts[networkName].update();
-            } else if (chart === 'rewardsChart') {
-                var reward_days = Object.keys(rewardsData[networkName]).slice(-daysToShow);
-                var rewards = Object.values(rewardsData[networkName]).slice(-daysToShow);
+                };
+            }
 
-                var sortedRewardDays = reward_days.map(formatDate);
-                var sortedRewards = rewards.map(reward => reward.toString());
+            if (chart in chartMapping) {
+                const { data, chart: chartObject, mapValues } = chartMapping[chart];
+                const days = Object.keys(data[networkName]).slice(-daysToShow);
+                const values = Object.values(data[networkName]).slice(-daysToShow);
 
-                rewardsCharts[networkName].data.labels = sortedRewardDays;
-                rewardsCharts[networkName].data.datasets[0].data = sortedRewards;
-                rewardsCharts[networkName].update();
-            } else if (chart === 'firstSignedBlocksChart') {
-                var block_days = Object.keys(firstSignedBlocksData[networkName]).slice(-daysToShow);
-                var blocks = Object.values(firstSignedBlocksData[networkName]).slice(-daysToShow);
+                const sortedDays = days.map(formatDate);
+                const sortedValues = mapValues ? values.map(mapValues) : values;
 
-                var sortedDays = block_days.map(formatDate);
-                var sortedBlocks = blocks;
-
-                firstSignedBlocksCharts[networkName].data.labels = sortedDays;
-                firstSignedBlocksCharts[networkName].data.datasets[0].data = sortedBlocks;
-                firstSignedBlocksCharts[networkName].update();
+                chartObject[networkName].data.labels = sortedDays;
+                chartObject[networkName].data.datasets[0].data = sortedValues;
+                chartObject[networkName].update();
             }
         }
     </script>
-    {% include 'cards/charts.js' %}
+    <script>
+        {% include 'cards/charts.js' %}
+    </script>
 </body>
 
 </html>

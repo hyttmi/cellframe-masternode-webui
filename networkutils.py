@@ -1,5 +1,5 @@
 from common import cli_command, get_current_script_directory
-from concurrent.futures import ThreadPoolExecutor
+from wallets import get_reward_wallet_tokens
 from datetime import datetime
 from logger import log_it
 from pycfhelpers.node.net import CFNet
@@ -107,6 +107,7 @@ def get_node_data(network):
             addr = status['address']
             list_keys = cli_command(f"srv_stake list keys -net {network}")
             total_weight_in_network = re.search(r"total_weight_coins:\s+(\d+\.\d+)", list_keys)
+            active_nodes_count = len(re.findall(r"active: true", list_keys))
             total_weight = float(total_weight_in_network.group(1))
             pattern = re.compile(
                 r'pkey_hash:\s+(?P<pkey_hash>\w+)\s+'
@@ -119,13 +120,21 @@ def get_node_data(network):
                 r'sovereign_tax:\s+(?P<sovereign_tax>\d+\.\d+)\s+'
                 r'active:\s+(?P<active>true|false)'
             ) # Compiling regex makes it much faster for this
-            active_nodes_count = len(re.findall(r"active: true", list_keys))
             nodes = []
             for match in pattern.finditer(list_keys):
                 node = match.groupdict()
                 node['is_my_node'] = (node['node_addr'] == addr) # This is our node
                 node['is_sovereign'] = float(node['sovereign_tax']) > 0.0 # If bigger than 0.0, it's a sovereign node
                 nodes.append(node)
+
+                if node['is_sovereign'] and node['is_my_node']:
+                    sovereign_wallet_info = get_reward_wallet_tokens(node['sovereign_addr'])
+                    if sovereign_wallet_info:
+                        node['sovereign_wallet_tokens'] = sovereign_wallet_info
+                    else:
+                        node['sovereign_wallet_tokens'] = None
+                else:
+                    node['sovereign_wallet_tokens'] = None
 
             info = {
                 'active_nodes_count': active_nodes_count,
@@ -174,13 +183,20 @@ def get_node_dump(network):
         log_it("e", f"Error in {func}: {e}")
         return None
 
-def get_rewards(network, total_sum=False, rewards_today=False):
+def get_rewards(network, total_sum=False, rewards_today=False, is_sovereign=False):
     try:
         rewards = {}
         cache_file_path = os.path.join(get_current_script_directory(), f".{network}_rewards_cache.json")
         with open(cache_file_path) as f:
             data = json.load(f)
-            for reward in data:
+            if is_sovereign:
+                if 'sovereign_rewards' not in data:
+                    log_it("e", f"No sovereign rewards data found for network {network}!")
+                    return None
+                rewards_data = data['sovereign_rewards']
+            else:
+                rewards_data = data['own_rewards']
+            for reward in rewards_data:
                 date_string = reward['tx_created']
                 amount = float(reward['recv_coins'])
                 formatted_date = datetime.strptime(date_string, "%a, %d %b %Y %H:%M:%S")

@@ -1,7 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime
 from logger import log_it
-from networkutils import get_active_networks, get_network_config
+from networkutils import get_active_networks, get_network_config, get_node_data
 from common import cli_command, get_current_script_directory
 import re, time, json, os, inspect
 
@@ -79,20 +78,37 @@ def cache_rewards_data():
         log_it("d", f"Found the following networks: {networks}")
         for network in networks:
             net_config = get_network_config(network)
-            if net_config:
+            node_data = get_node_data(network)
+            sovereign_wallet_addr = None
+            for node in node_data['nodes']:
+                if node['is_my_node'] and node['is_sovereign']:
+                    sovereign_wallet_addr = node['wallet']
+            if net_config: # net_config has to return something always
                 log_it("i", "Caching rewards...")
                 start_time = time.time()
-                cmd_get_tx_history = cli_command(f"tx_history -addr {net_config['wallet']}", timeout=360) # Increase timeout to 6 minutes
-                rewards = []
-                reward = {}
-                is_receiving_reward = False
-                if cmd_get_tx_history:
-                    lines = cmd_get_tx_history.splitlines()
+
+                with ThreadPoolExecutor() as executor:
+                    futures = {
+                        'cmd_get_config_wallet_tx_history': executor.submit(cli_command, f"tx_history -addr {net_config['wallet']}"),
+                    }
+
+                    if sovereign_wallet_addr:
+                        futures['cmd_get_sovereign_wallet_tx_history'] = executor.submit(cli_command, f"tx_history -addr {sovereign_wallet_addr}")
+
+                rewards = {}
+
+                own_wallet_history = futures['cmd_get_config_wallet_tx_history'].result()
+                if own_wallet_history:
+                    rewards['own_rewards'] = []
+                    log_it("d", f"Caching wallet history for address {net_config['wallet']}")
+                    reward = {}
+                    is_receiving_reward = False
+                    lines = own_wallet_history.splitlines()
                     for line in lines:
                         line = line.strip()
                         if "status: ACCEPTED" in line:
                             if reward and is_receiving_reward:
-                                rewards.append(reward)
+                                rewards['own_rewards'].append(reward)
                             reward = {}
                             is_receiving_reward = False
                             continue
@@ -110,17 +126,47 @@ def cache_rewards_data():
                             is_receiving_reward = True
                             continue
                     if reward and is_receiving_reward:
-                        rewards.append(reward)
+                        rewards['own_rewards'].append(reward)
+
+                if 'cmd_get_sovereign_wallet_tx_history' in futures:
+                    sovereign_wallet_history = futures['cmd_get_sovereign_wallet_tx_history'].result()
+                    rewards['sovereign_rewards'] = []
+                    log_it("d", f"Caching wallet history for address {sovereign_wallet_addr}")
+                    reward = {}
+                    is_receiving_reward = False
+                    lines = sovereign_wallet_history.splitlines()
+                    for line in lines:
+                        line = line.strip()
+                        if "status: ACCEPTED" in line:
+                            if reward and is_receiving_reward:
+                                rewards['sovereign_rewards'].append(reward)
+                            reward = {}
+                            is_receiving_reward = False
+                            continue
+                        if "hash:" in line:
+                            reward['hash'] = line.split("hash:")[1].strip()
+                            continue
+                        if "tx_created:" in line:
+                            original_date = line.split("tx_created:")[1].strip()[:-6]
+                            reward['tx_created'] = original_date
+                            continue
+                        if "recv_coins:" in line:
+                            reward['recv_coins'] = line.split("recv_coins:")[1].strip()
+                            continue
+                        if "source_address: reward collecting" in line:
+                            is_receiving_reward = True
+                            continue
+                    if reward and is_receiving_reward:
+                        rewards['sovereign_rewards'].append(reward)
+                if rewards:
                     cache_file_path = os.path.join(get_current_script_directory(), f".{network}_rewards_cache.json")
                     with open(cache_file_path, "w") as f:
                         json.dump(rewards, f, indent=4)
-                    end_time = time.time()
-                    elapsed_time = end_time - start_time
-                    log_it("i", f"Rewards cached for {network}! It took {elapsed_time:.2f} seconds!")
-                else:
-                    log_it("e", f"Failed to fetch transaction history!")
+                end_time = time.time()
+                elapsed_time = end_time - start_time
+                log_it("i", f"Reward caching took {elapsed_time:.2f} seconds!")
             else:
-                log_it("e", f"Network config not found for {network}, skipping caching.")
+                log_it("e", f"No valid address found for {network}, skipping caching.")
                 return None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name

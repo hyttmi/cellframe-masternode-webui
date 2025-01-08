@@ -5,7 +5,7 @@ from packaging import version
 from utils import get_node_pid
 from telegram import send_telegram_message
 from emailer import send_email
-import os, requests, inspect, shutil, json, zipfile, psutil 
+import os, requests, inspect, shutil, json, zipfile, psutil
 
 def check_plugin_update():
     try:
@@ -39,8 +39,9 @@ def check_plugin_update():
             else:
                 log_it("d", "New release version was not found.")
                 return None
-        log_it("e", f"Error fetching version data from {response.url}, status code: {response.status_code}")
-        return None
+        else:
+            log_it("e", f"Error fetching version data from {response.url}, status code: {response.status_code}")
+            return None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
         log_it("e", f"Error in {func}: {e}")

@@ -77,14 +77,18 @@ def generate_network_info():
                         'node_data': executor.submit(get_node_data, network),
                         'rewards': executor.submit(get_rewards, network, total_sum=False),
                         'rewards_today': executor.submit(get_rewards, network, rewards_today=True),
+                        'sovereign_rewards': executor.submit(get_rewards, network, is_sovereign=True),
+                        'sovereign_rewards_today': executor.submit(get_rewards, network, rewards_today=True, is_sovereign=True),
                         'signed_blocks_today': executor.submit(get_blocks, network, block_type="all_signed_blocks", today=True),
                         'sum_rewards': executor.submit(get_rewards, network, total_sum=True),
+                        'sum_sovereign_rewards': executor.submit(get_rewards, network, total_sum=True, is_sovereign=True),
                         'token_price': executor.submit(get_token_price, network)
                     }
                     network_info = {
                         'address': net_status['address'],
                         'all_blocks': futures['all_blocks'].result(),
                         'all_rewards': futures['sum_rewards'].result(),
+                        'all_sovereign_rewards': futures['sum_sovereign_rewards'].result(),
                         'all_signed_blocks_dict': futures['all_signed_blocks_dict'].result(),
                         'first_signed_blocks_dict': futures['first_signed_blocks_dict'].result(),
                         'all_signed_blocks': futures['all_signed_blocks'].result(),
@@ -97,6 +101,8 @@ def generate_network_info():
                         'node_data': futures['node_data'].result(),
                         'rewards': futures['rewards'].result(),
                         'rewards_today': futures['rewards_today'].result(),
+                        'sovereign_rewards': futures['sovereign_rewards'].result(),
+                        'sovereign_rewards_today': futures['sovereign_rewards_today'].result(),
                         'signed_blocks_today': futures['signed_blocks_today'].result(),
                         'first_signed_blocks_today': futures['first_signed_blocks_today'].result(),
                         'state': net_status['state'],

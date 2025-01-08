@@ -126,7 +126,9 @@ def json_request_handler(headers):
                                 })
 
 def compress_content(content):
-    buf = BytesIO()
-    with gzip.GzipFile(fileobj=buf, mode='wb') as f:
+    log_it("d", f"Content original size: {len(content)} bytes")
+    buffer = BytesIO()
+    with gzip.GzipFile(fileobj=buffer, mode='wb') as f:
         f.write(content)
-    return buf.getvalue()
+    log_it("d", f"Content compressed size: {len(buffer.getvalue())} bytes")
+    return buffer.getvalue()
