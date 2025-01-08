@@ -10,7 +10,7 @@ def get_reward_wallet_tokens(wallet):
             tokens = re.findall(r"coins:\s+([\d.]+)[\s\S]+?ticker:\s+(\w+)", cmd_get_wallet_info)
             if tokens:
                 for token in tokens:
-                    reward_wallet[token[1]] = token[0]
+                    reward_wallet[token[1]] = float(token[0])
             return reward_wallet
         else:
             return None
