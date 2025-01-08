@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.23] - XXXX-XX-XX
+## [3.23] - 2025-01-08
 
 ### Added
 - Some extra debug logging.
