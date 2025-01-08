@@ -513,10 +513,10 @@
                     </div>
                     <div class="card-body">
                         <table class="tokens">
-                            {% for token, balance in network.fee_wallet_tokens %}
+                            {% for token, balance in network.fee_wallet_tokens.items() %}
                             <tr>
                                 <td><h6 class="text-body-secondary card-subtitle">{{ token }}</h6></td>
-                                <td><h6 class="text-body-secondary card-subtitle">{{ balance | float }}</h6></td>
+                                <td><h6 class="text-body-secondary card-subtitle">{{ balance }}</h6></td>
                             </tr>
                             {% endfor %}
                         </table>
