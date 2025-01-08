@@ -488,7 +488,7 @@
                     </div>
                     <div class="card-body">
                         <table class="tokens">
-                            {% for token, balance in node.sovereign_wallet_tokens.items() %}
+                            {% for token, balance in node.sovereign_wallet_tokens %}
                             <tr>
                                 <td><h6 class="text-body-secondary card-subtitle">{{ token }}</h6></td>
                                 <td><h6 class="text-body-secondary card-subtitle">{{ balance }}</h6></td>
