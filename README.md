@@ -19,7 +19,7 @@ xargs curl -L -o cellframe-masternode-webui.tar.gz \
 && cd webui \
 && sudo ./install.sh
 ```
-And answer the questions
+And answer the questions.
 
 ### Manual way
 
@@ -32,11 +32,18 @@ You can get the latest release from [releases page](https://github.com/hyttmi/ce
 
 ## Updating
 
+1. Download latest version from [releases page](https://github.com/hyttmi/cellframe-masternode-webui/releases) or by cloning this repo.
+   - Extract the file if you have downloaded an archive.
+2. Open the dir and run `install.sh` as root.
+
+## Removing
+Run `install.sh -u` or `install.sh --uninstall` as root.
+
 ### Easy way
 Set `auto_update=true` to configuration file, restart node and wait until plugin updates itself and restarts your node.
 
 ### Manual way
-Download the latest zip, extract the files and copy the files overwriting the old files in plugin directory.
+Download the latest zip, execute `install.sh` as root and restart node.
 
 ## Configuration
 
@@ -54,6 +61,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/op
 - `email_time=23:59` - Set time when you want to send the statistics. **24h format (HH:MM)**
 - `email_use_ssl=true|false` - Use SSL for mail delivery.
 - `email_use_tls=true|false` - Use TLS for mail delivery.
+- `node_alias="Name` - Name of the node as alias. Default is CFNode. **NO SPACES**
 - `password=p455w0rd` - Sets password to p455w0rd. Default: `webui`
 - `scheduler_delay_on_startup` - Sets delay for functions which are passed to scheduler and launched directly on startup. Default value is 60 seconds
 - `smtp_password=<your_smtp_password>` - SMTP password for mail delivery.

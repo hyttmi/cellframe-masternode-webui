@@ -28,6 +28,7 @@ class Config:
     EMAIL_SUBJECT = get_config_value("webui", "email_subject", default=f"{PLUGIN_NAME}", is_numeric=False)
     EMAIL_USE_SSL = get_config_value("webui", "email_use_ssl", default=False, is_numeric=False)
     EMAIL_USE_TLS = get_config_value("webui", "email_use_tls", default=False, is_numeric=False)
+    NODE_ALIAS = get_config_value("webui", "node_alias", default="CFNode", is_numeric=False)
     PASSWORD = str(get_config_value("webui", "password", default="webui", is_numeric=False))
     PLUGIN_URL = get_config_value("webui", "uri", default=None, is_numeric=False)
 

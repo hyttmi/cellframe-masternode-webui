@@ -36,6 +36,7 @@ def generate_general_info(format_time=True):
                 'plugin_name': Config.PLUGIN_NAME,
                 'hostname': get_system_hostname(),
                 'system_uptime': format_uptime(sys_stats['system_uptime']) if format_time else sys_stats['system_uptime'],
+                'node_alias': Config.NODE_ALIAS,
                 'node_uptime': format_uptime(sys_stats['node_uptime']) if format_time else sys_stats['node_uptime'],
                 'node_version': get_installed_node_version(),
                 'latest_node_version': get_latest_node_version(),

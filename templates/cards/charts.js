@@ -162,9 +162,6 @@
             {% if chart.data %}
                 var {{ chart.chart_id }}Data = {};
                 {{ chart.chart_id }}Data['{{ network_name }}'] = {{ chart.data | tojson }};
-                let {{ chart.chart_id }}Keys = Object.keys({{ chart.chart_id }}Data['{{ network_name }}']);
-                let {{ chart.chart_id }}LastKey = {{ chart.chart_id }}Keys[{{ chart.chart_id }}Keys.length - 1];
-                delete {{ chart.chart_id }}Data['{{ network_name }}'][{{ chart.chart_id }}LastKey];
                 var {{ chart.chart_id }}Charts = {};
                 var {{ chart.chart_id }}Ctx{{ network_name }} = document.getElementById('{{ chart.chart_id }}Chart_{{ network_name }}').getContext('2d');
                 {{ chart.chart_id }}Charts['{{ network_name }}'] = new Chart({{ chart.chart_id }}Ctx{{ network_name }}, {

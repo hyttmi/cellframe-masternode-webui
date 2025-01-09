@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.25] - XXXX-XX-XX
+
+### Added
+- Node alias support. Add also alias field to templates. Thanks @BuhalexI3 for the idea!
+
+### Changed
+- Rearranged JS again.
+- Hide charts (rewards, blocks) if data length is not greater than 1.
+
 ## [3.24] - 2025-01-09
 
 ### Fixed

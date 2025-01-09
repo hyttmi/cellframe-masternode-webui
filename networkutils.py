@@ -204,14 +204,16 @@ def get_rewards(network, total_sum=False, rewards_today=False, is_sovereign=Fals
                     rewards[formatted_date_str] += amount
                 else:
                     rewards[formatted_date_str] = amount
-            sorted_dict = dict(sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
+            sorted_dict = sorted(rewards.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))
+            if sorted_dict:
+                sorted_dict.pop()
             if total_sum:
                 return sum(rewards.values())
             elif rewards_today:
                 today_str = datetime.now().strftime("%a, %d %b %Y")
                 return rewards.get(today_str, None)
             else:
-                return sorted_dict
+                return dict(sorted_dict)
         return None
     except FileNotFoundError:
         log_it("e", "Rewards file not found!")
@@ -222,11 +224,8 @@ def get_rewards(network, total_sum=False, rewards_today=False, is_sovereign=Fals
         return None
 
 def get_blocks(network, block_type="count", today=False):
-    cache_file_path = os.path.join(get_current_script_directory(), f".{network}_blocks_cache.json")
-    if not os.path.exists(cache_file_path):
-        log_it("e", f"Cache file for network {network} does not exist.")
-        return None
     try:
+        cache_file_path = os.path.join(get_current_script_directory(), f".{network}_blocks_cache.json")
         with open(cache_file_path, "r") as f:
             block_data = json.load(f)
 
@@ -250,7 +249,10 @@ def get_blocks(network, block_type="count", today=False):
                     blocks_per_day[day_str] += 1
                 else:
                     blocks_per_day[day_str] = 1
-            return dict(sorted(blocks_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
+            sorted_blocks = sorted(blocks_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))
+            if sorted_blocks:
+                sorted_blocks.pop()
+            return dict(sorted_blocks)
 
         if block_type == "first_signed_blocks" and today:
             today_count = 0
@@ -269,7 +271,10 @@ def get_blocks(network, block_type="count", today=False):
                     first_signed_blocks_per_day[day_str] += 1
                 else:
                     first_signed_blocks_per_day[day_str] = 1
-            return dict(sorted(first_signed_blocks_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y")))
+            sorted_blocks = sorted(first_signed_blocks_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))
+            if sorted_blocks:
+                sorted_blocks.pop()
+            return dict(sorted_blocks)
 
         if block_type == "all_signed_blocks_count":
             return len(block_data['all_signed_blocks'])
@@ -280,6 +285,9 @@ def get_blocks(network, block_type="count", today=False):
         if block_type == "all_signed_blocks":
             return block_data['all_signed_blocks']
 
+        return None
+    except FileNotFoundError:
+        log_it("e", "Blocks cache file not found!")
         return None
     except Exception as e:
         func = inspect.currentframe().f_code.co_name
