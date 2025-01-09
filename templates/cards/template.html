@@ -821,8 +821,7 @@
                 }
             };
 
-            let sovereignRewardsData = {};
-            if (sovereignRewardsData && Object.keys(sovereignRewardsData).length > 0) {
+            if (typeof sovereignRewardsData !== "undefined" && Object.keys(sovereignRewardsData).length > 0) {
                 console.log(sovereignRewardsData);
                 chartMapping.sovereignRewardsChart = {
                     data: sovereignRewardsData,

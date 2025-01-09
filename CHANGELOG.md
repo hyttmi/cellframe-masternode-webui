@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.24] - 2025-01-09
+
+### Fixed
+- Chart generation.
+
 ## [3.23] - 2025-01-08
 
 ### Added
