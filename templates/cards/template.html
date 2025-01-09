@@ -804,45 +804,6 @@
                 day: 'numeric'
             });
         }
-
-        function updateChart(chart, daysToShow, networkName) {
-            const chartMapping = {
-                signedBlocksChart: {
-                    data: signedBlocksData,
-                    chart: signedBlocksCharts
-                },
-                rewardsChart: {
-                    data: rewardsData,
-                    chart: rewardsCharts
-                },
-                firstSignedBlocksChart: {
-                    data: firstSignedBlocksData,
-                    chart: firstSignedBlocksCharts
-                }
-            };
-
-            if (typeof sovereignRewardsData !== "undefined" && Object.keys(sovereignRewardsData).length > 0) {
-                console.log(sovereignRewardsData);
-                chartMapping.sovereignRewardsChart = {
-                    data: sovereignRewardsData,
-                    chart: sovereignRewardsCharts
-
-                };
-            }
-
-            if (chart in chartMapping) {
-                const { data, chart: chartObject, mapValues } = chartMapping[chart];
-                const days = Object.keys(data[networkName]).slice(-daysToShow);
-                const values = Object.values(data[networkName]).slice(-daysToShow);
-
-                const sortedDays = days.map(formatDate);
-                const sortedValues = mapValues ? values.map(mapValues) : values;
-
-                chartObject[networkName].data.labels = sortedDays;
-                chartObject[networkName].data.datasets[0].data = sortedValues;
-                chartObject[networkName].update();
-            }
-        }
     </script>
     <script defer>
         {% include 'cards/charts.js' %}

@@ -132,6 +132,32 @@
             {'data': network.sovereign_rewards, 'chart_id': 'sovereignRewards', 'label': 'Sovereign Rewards'}
         ] %}
 
+        function updateChart(chart, daysToShow, networkName) {
+            const chartMapping = {
+                {% for chart in chartTypes %}
+                    {% if chart.data %}
+                        {{ chart.chart_id }}Chart: {
+                            data: {{ chart.chart_id }}Data,
+                            chart: {{ chart.chart_id }}Charts
+                        },
+                    {% endif %}
+                {% endfor %}
+            };
+
+            if (chart in chartMapping) {
+                const { data, chart: chartObject, mapValues } = chartMapping[chart];
+                const days = Object.keys(data[networkName]).slice(-daysToShow);
+                const values = Object.values(data[networkName]).slice(-daysToShow);
+
+                const sortedDays = days.map(formatDate);
+                const sortedValues = mapValues ? values.map(mapValues) : values;
+
+                chartObject[networkName].data.labels = sortedDays;
+                chartObject[networkName].data.datasets[0].data = sortedValues;
+                chartObject[networkName].update();
+            }
+        }
+
         {% for chart in chartTypes %}
             {% if chart.data %}
                 var {{ chart.chart_id }}Data = {};
