@@ -131,34 +131,35 @@ def cache_rewards_data():
 
                 if 'cmd_get_sovereign_wallet_tx_history' in futures:
                     sovereign_wallet_history = futures['cmd_get_sovereign_wallet_tx_history'].result()
-                    rewards['sovereign_rewards'] = []
-                    log_it("d", f"Caching wallet history for address {sovereign_wallet_addr}")
-                    reward = {}
-                    is_receiving_reward = False
-                    lines = sovereign_wallet_history.splitlines()
-                    for line in lines:
-                        line = line.strip()
-                        if "status: ACCEPTED" in line:
-                            if reward and is_receiving_reward:
-                                rewards['sovereign_rewards'].append(reward)
-                            reward = {}
-                            is_receiving_reward = False
-                            continue
-                        if "hash:" in line:
-                            reward['hash'] = line.split("hash:")[1].strip()
-                            continue
-                        if "tx_created:" in line:
-                            original_date = line.split("tx_created:")[1].strip()[:-6]
-                            reward['tx_created'] = original_date
-                            continue
-                        if "recv_coins:" in line:
-                            reward['recv_coins'] = line.split("recv_coins:")[1].strip()
-                            continue
-                        if "source_address: reward collecting" in line:
-                            is_receiving_reward = True
-                            continue
-                    if reward and is_receiving_reward:
-                        rewards['sovereign_rewards'].append(reward)
+                    if sovereign_wallet_history:
+                        rewards['sovereign_rewards'] = []
+                        log_it("d", f"Caching wallet history for address {sovereign_wallet_addr}")
+                        reward = {}
+                        is_receiving_reward = False
+                        lines = sovereign_wallet_history.splitlines()
+                        for line in lines:
+                            line = line.strip()
+                            if "status: ACCEPTED" in line:
+                                if reward and is_receiving_reward:
+                                    rewards['sovereign_rewards'].append(reward)
+                                reward = {}
+                                is_receiving_reward = False
+                                continue
+                            if "hash:" in line:
+                                reward['hash'] = line.split("hash:")[1].strip()
+                                continue
+                            if "tx_created:" in line:
+                                original_date = line.split("tx_created:")[1].strip()[:-6]
+                                reward['tx_created'] = original_date
+                                continue
+                            if "recv_coins:" in line:
+                                reward['recv_coins'] = line.split("recv_coins:")[1].strip()
+                                continue
+                            if "source_address: reward collecting" in line:
+                                is_receiving_reward = True
+                                continue
+                        if reward and is_receiving_reward:
+                            rewards['sovereign_rewards'].append(reward)
                 if rewards:
                     cache_file_path = os.path.join(get_current_script_directory(), f".{network}_rewards_cache.json")
                     with open(cache_file_path, "w") as f:
