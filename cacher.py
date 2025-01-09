@@ -90,11 +90,11 @@ def cache_rewards_data():
 
                 with ThreadPoolExecutor() as executor:
                     futures = {
-                        'cmd_get_config_wallet_tx_history': executor.submit(cli_command, f"tx_history -addr {net_config['wallet']}"),
+                        'cmd_get_config_wallet_tx_history': executor.submit(cli_command, f"tx_history -addr {net_config['wallet']}", timeout=360),
                     }
 
                     if sovereign_wallet_addr:
-                        futures['cmd_get_sovereign_wallet_tx_history'] = executor.submit(cli_command, f"tx_history -addr {sovereign_wallet_addr}")
+                        futures['cmd_get_sovereign_wallet_tx_history'] = executor.submit(cli_command, f"tx_history -addr {sovereign_wallet_addr}", timeout=360)
 
                 rewards = {}
 
