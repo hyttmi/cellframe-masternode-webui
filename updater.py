@@ -113,12 +113,12 @@ def download_and_extract_update(download_url):
             log_it("d", f"Update dir is {update_dir}")
             Z.extractall(update_path)
         destination_path = os.path.join(get_script_parent_directory(), "cellframe-masternode-webui")
-        copy_process = cli_command(f"cp -rvf {update_dir}/. {destination_path}/", is_shell_command=True)
+        copy_process = cli_command(f"cp -r {update_dir}/. {destination_path}/", is_shell_command=True)
         if copy_process:
-            log_it("d", "Update extracted and applied successfully.")
+            log_it("d", "Update extracted and installed successfully.")
             return True
         else:
-            log_it("e", "Failed to apply new version with cp command.")
+            log_it("e", "Failed to install new version with cp command.")
             return False
     except Exception as e:
         func = inspect.currentframe().f_code.co_name

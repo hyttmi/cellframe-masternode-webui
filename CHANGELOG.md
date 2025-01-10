@@ -1,15 +1,18 @@
 # Changelog
 
-## [3.25] - XXXX-XX-XX
+## [3.25] - 2025-01-10
 
 ### Added
 - Node alias support. Add also alias field to config and email / Telegram templates. Thanks @BuhalexI3 for the idea!
 - Even more debug logging.
 
 ### Changed
-- Rearranged JS again.
-- Hide charts (rewards, blocks) if data length >= 1.
-- Use `curl` to fetch external IPv4 address on `install.sh`, Arch doesnẗ have dig installed by default but curl seems to be there.
+- Rearranged JS again, now chartmapping is generated also with Jinja.
+- Don't show charts (rewards, blocks) if data length >= 1.
+- Use `curl` to fetch external IPv4 address on `install.sh`, Arch doesn't have dig installed by default but curl seems to be there.
+- Removing current day from rewards/blocks is now done on the backend (for charts).
+
+Some other "not-so-significant" changes.
 
 ## [3.24] - 2025-01-09
 
