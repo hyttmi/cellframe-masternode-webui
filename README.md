@@ -184,7 +184,7 @@ curl -s "http://<your_node_ext_ip>:8079/webui?as_json" -H "API_TOKEN: <your_api_
 ## Issues with the plugin
 
 To help me debugging the plugin, the best way to do that is to provide me `webui.log` file which is generated in the plugin directory.
-1. Set `debug=true` on `[webui]` section in `cellframe-node.cfg`.
+1. Set `debug=true` on `[webui]` section in configuration file.
 2. Remove old `webui.log` from plugin directory.
 3. Restart the node and wait until the plugin starts and creates the `webui.log`file.
 4. Refresh the WebUI from a web browser.

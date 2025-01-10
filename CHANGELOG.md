@@ -4,6 +4,7 @@
 
 ### Added
 - Node alias support. Add also alias field to config and email / Telegram templates. Thanks @BuhalexI3 for the idea!
+- Even more debug logging.
 
 ### Changed
 - Rearranged JS again.

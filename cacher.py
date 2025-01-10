@@ -33,6 +33,7 @@ def cache_blocks_data():
 
                 first_signed_blocks_result = futures['first_signed_blocks'].result()
                 if first_signed_blocks_result:
+                    log_it("d", f"First signed blocks for {network} found!")
                     lines = first_signed_blocks_result.splitlines()
                     for line in lines:
                         line = line.strip()
@@ -47,6 +48,7 @@ def cache_blocks_data():
 
                 signed_blocks_result = futures["signed_blocks"].result()
                 if signed_blocks_result:
+                    log_it("d", f"Signed blocks for {network} found!")
                     lines = signed_blocks_result.splitlines()
                     for line in lines:
                         line = line.strip()
@@ -82,6 +84,7 @@ def cache_rewards_data():
             sovereign_wallet_addr = None
             for node in node_data['nodes']:
                 if node['is_my_node'] and node['is_sovereign']:
+                    log_it("d", f"This node is sovereign!")
                     sovereign_wallet_addr = node['sovereign_addr']
                     log_it("d", f"Sovereign wallet address found: {sovereign_wallet_addr}")
             if net_config: # net_config has to return something always
