@@ -47,7 +47,7 @@ Download the latest zip, execute `install.sh` as root and restart node.
 
 ## Configuration
 
-**If installation is done with `install.sh` script. The configuration file will be set to `/opt/cellframe-node/etc/cellframe-node.cfg.d/webui.cfg`**
+**If installation is done with `install.sh` script. The configuration file will be set to `/opt/cellframe-node/etc/cellframe-node.cfg.d/webui.cfg`, which overrides the configuratio in `cellframe-node.cfg`**
 
 Configuration of the plugin is done by editing `cellframe-node.cfg` or file in `/opt/cellframe-node/etc/cellframe-node.cfg`. You just need to add new section `[webui]` to the end of the file and below that, add the settings which you want to change:
 
