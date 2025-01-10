@@ -1,6 +1,6 @@
 #!/bin/bash
 LC_ALL=C # Make sure we're using ASCII locale so regex works...
-EXT_IP=$(dig @resolver4.opendns.com myip.opendns.com +short -4 2> /dev/null || "")
+EXT_IP=$(command -v curl > /dev/null && curl -4 -s ifconfig.me || echo "")
 EXT_PORT=$(grep -oP '^listen_address=\K.*' /opt/cellframe-node/etc/cellframe-node.cfg | head -1 | tr -d '[]' | cut -d ':' -f 2)
 PIP="pip3"
 PIP_PATH="/opt/cellframe-node/python/bin/$PIP"
