@@ -47,7 +47,9 @@ Download the latest zip, execute `install.sh` as root and restart node.
 
 ## Configuration
 
-Configuration of the plugin is done by editing `cellframe-node.cfg` file in `/opt/cellframe-node/etc/cellframe-node.cfg`. You just need to add new section `[webui]` to the end of the file and below that, add the settings which you want to change:
+**If installation is done with `install.sh` script. The configuration file will be set to `/opt/cellframe-node/etc/cellframe-node.cfg.d/webui.cfg`**
+
+Configuration of the plugin is done by editing `cellframe-node.cfg` or file in `/opt/cellframe-node/etc/cellframe-node.cfg`. You just need to add new section `[webui]` to the end of the file and below that, add the settings which you want to change:
 
 - `api_token=your_own_api_token`- Used in accessing plain JSON data (You can generate your own or use a service like https://it-tools.tech/token-generator).
 - `auth_bypass=true|false` Disables HTTP authentication. Useful if you're planning to for example use the plugin behind reverse proxy. Default false.
