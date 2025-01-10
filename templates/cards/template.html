@@ -557,7 +557,7 @@
             {% endif %}
 
             {% if network.first_signed_blocks_dict %}
-            {% if network.first_signed_blocks_dict | length > 1 %}
+            {% if network.first_signed_blocks_dict | length >= 1 %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="first_signed_blocks_last_n_days_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -599,7 +599,7 @@
             {% endif %}
 
             {% if network.all_signed_blocks_dict %}
-            {% if network.all_signed_blocks_dict | length > 1 %}
+            {% if network.all_signed_blocks_dict | length >= 1 %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="signed_blocks_last_n_days_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -642,7 +642,7 @@
 
             {% if network.rewards %}
             {% set total_rewards_length = network.rewards | length %}
-            {% if total_rewards_length > 1 %}
+            {% if total_rewards_length >= 1 %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="rewards_last_n_days_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -685,7 +685,7 @@
 
             {% if network.sovereign_rewards %}
             {% set total_sovereign_rewards_length = network.sovereign_rewards | length %}
-            {% if total_sovereign_rewards_length > 1 %}
+            {% if total_sovereign_rewards_length >= 1 %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="sovereign_rewards_last_n_days_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
