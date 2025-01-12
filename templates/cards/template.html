@@ -854,16 +854,28 @@
             button.addEventListener('click', function (event) {
                 var card = event.target.closest('.col-12');
                 if (card) {
+                    var sortableRow = card.parentElement;
                     var cardId = card.getAttribute("data-id");
+
                     card.classList.add('hidden');
                     card.addEventListener('transitionend', function () {
                         card.remove();
+
                         var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || [];
                         if (!closedCards.includes(cardId)) {
                             closedCards.push(cardId);
                             localStorage.setItem('cfclosed', JSON.stringify(closedCards));
                         }
                         toggleLocalStorageBtn();
+
+                        if (sortableRow && sortableRow.children.length === 0) {
+                            var headerRow = sortableRow.previousElementSibling;
+                            sortableRow.remove();
+
+                            if (headerRow && headerRow.querySelector('h3')) {
+                                headerRow.remove();
+                            }
+                        }
                     }, { once: true });
                 }
             });
