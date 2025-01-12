@@ -3,7 +3,7 @@ from wallets import get_reward_wallet_tokens
 from datetime import datetime
 from logger import log_it
 from pycfhelpers.node.net import CFNet
-import re, requests, os, json, inspect, cachetools.func
+import re, requests, os, json, cachetools.func
 
 @cachetools.func.ttl_cache(maxsize=10)
 def get_active_networks():
@@ -15,7 +15,7 @@ def get_active_networks():
         log_it("e", "Can't get list of networks!")
         return None
     except Exception as e:
-        log_it("e", f"Error retrieving networks: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None
 
 @cachetools.func.ttl_cache(maxsize=10)
@@ -38,8 +38,7 @@ def get_network_config(network):
             log_it("e", f"Necessary information missing in {network_config_file}, not a masternode?")
             return None
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None
 
 def get_autocollect_status(network):
@@ -56,8 +55,7 @@ def get_autocollect_status(network):
             return autocollect_status
         return None
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None
 
 @cachetools.func.ttl_cache(maxsize=10)
@@ -71,8 +69,7 @@ def get_current_block_reward(network):
             return None
         return None
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None
 
 def get_token_price(network):
@@ -98,8 +95,7 @@ def get_token_price(network):
             log_it("e", f"Failed to fetch token price from {response.url}")
             return None
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None
 
 def get_node_data(network):
@@ -149,8 +145,7 @@ def get_node_data(network):
             return result
         return None
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None
 
 def get_network_status(network):
@@ -168,8 +163,7 @@ def get_network_status(network):
             return net_status
         return None
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None
 
 def get_node_dump(network):
@@ -180,8 +174,7 @@ def get_node_dump(network):
             return "\n".join(lines[:-1])
         return None
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None
 
 def get_rewards(network, total_sum=False, rewards_today=False, is_sovereign=False):
@@ -221,8 +214,7 @@ def get_rewards(network, total_sum=False, rewards_today=False, is_sovereign=Fals
         log_it("e", "Rewards file not found!")
         return None
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None
 
 def get_blocks(network, block_type="count", today=False):
@@ -288,6 +280,5 @@ def get_blocks(network, block_type="count", today=False):
         log_it("e", "Blocks cache file not found!")
         return None
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None

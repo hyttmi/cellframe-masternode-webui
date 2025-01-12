@@ -27,7 +27,7 @@
 
         <div class="row">
             <div class="col-12">
-                <h1 class="text-uppercase text-color-secondary">System Info</h1>
+                <h1 class="text-uppercase text-color-secondary">System Information</h1>
             </div>
         </div>
         <div class="row is_sortable">
@@ -193,6 +193,13 @@
                 </h1>
               </div>
         </div>
+        <div class="row">
+            <div class="col-12">
+                <h3 class="text-uppercase text-color-secondary d-flex align-items-center">
+                  network information
+                </h3>
+              </div>
+        </div>
         <div class="row is_sortable">
             {% if network.state %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="state_{{ network_name }}">
@@ -239,71 +246,11 @@
             </div>
             {% endif %}
 
-            {% if network.first_signed_blocks %}
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="first_signed_blocks_{{ network_name }}">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between">
-                        <h6 class="card-title text-uppercase">first signed blocks</h6>
-                        <button type="button" class="btn-close" aria-label="Close"></button>
-                    </div>
-                    <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.first_signed_blocks }}</h6>
-                    </div>
-                    <i class="fa-solid fa-file-signature icon-container"></i>
-                </div>
-            </div>
-            {% endif %}
-
-            {% if network.all_signed_blocks %}
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="all_signed_blocks_{{ network_name }}">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between">
-                        <h6 class="card-title text-uppercase">All signed blocks</h6>
-                        <button type="button" class="btn-close" aria-label="Close"></button>
-                    </div>
-                    <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.all_signed_blocks }}</h6>
-                    </div>
-                    <i class="fa-solid fa-file-signature icon-container"></i>
-                </div>
-            </div>
-            {% endif %}
-
-            {% if network.signed_blocks_today %}
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="signed_blocks_today_{{ network_name }}">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between">
-                        <h6 class="card-title text-uppercase">Signed blocks today</h6>
-                        <button type="button" class="btn-close" aria-label="Close"></button>
-                    </div>
-                    <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.signed_blocks_today }}</h6>
-                    </div>
-                    <i class="fa-solid fa-file-signature icon-container"></i>
-                </div>
-            </div>
-            {% endif %}
-
-            {% if network.first_signed_blocks_today %}
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="first_signed_blocks_today_{{ network_name }}">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between">
-                        <h6 class="card-title text-uppercase">First signed blocks today</h6>
-                        <button type="button" class="btn-close" aria-label="Close"></button>
-                    </div>
-                    <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.first_signed_blocks_today }}</h6>
-                    </div>
-                    <i class="fa-solid fa-file-signature icon-container"></i>
-                </div>
-            </div>
-            {% endif %}
-
             {% if network.all_blocks %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="amount_of_blocks_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h6 class="card-title text-uppercase">BLocks in network</h6>
+                        <h6 class="card-title text-uppercase">Blocks in network</h6>
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
@@ -313,7 +260,17 @@
                 </div>
             </div>
             {% endif %}
+        </div>
 
+        <div class="row">
+            <div class="col-12">
+                <h3 class="text-uppercase text-color-secondary d-flex align-items-center">
+                  node information
+                </h3>
+              </div>
+        </div>
+
+        <div class="row is_sortable">
             {% if network.autocollect_status %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="autocollect_status_{{ network_name }}">
                 <div class="card">
@@ -329,20 +286,51 @@
             </div>
             {% endif %}
 
-            {% if network.autocollect_rewards %}
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="autocollect_rewards_{{ network_name }}">
+            {% if network.token_price %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="token_price_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h6 class="card-title text-uppercase">current autocollect rewards</h6>
+                        <h6 class="card-title text-uppercase">current token price</h6>
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.autocollect_rewards }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">${{ network.token_price }}</h6>
                     </div>
-                    <i class="fa-solid fa-coins icon-container"></i>
+                    <i class="fa-solid fa-dollar-sign icon-container"></i>
                 </div>
             </div>
             {% endif %}
+
+            {% if network.node_data.info %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="total_network_weight_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Total network weight</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.info.total_weight }}</h6>
+                    </div>
+                    <i class="fa-solid fa-weight-scale icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.current_block_reward %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="current_block_reward_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Current block reward</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.current_block_reward }}</h6>
+                    </div>
+                    <i class="fa-solid fa-dollar-sign icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
             {% if network.node_data.nodes %}
             {% for node in network.node_data.nodes %}
             {% if node.is_my_node %}
@@ -387,19 +375,6 @@
             {% endif %}
             {% endfor %}
 
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="total_network_weight_{{ network_name }}">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between">
-                        <h6 class="card-title text-uppercase">Total network weight</h6>
-                        <button type="button" class="btn-close" aria-label="Close"></button>
-                    </div>
-                    <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.info.total_weight }}</h6>
-                    </div>
-                    <i class="fa-solid fa-weight-scale icon-container"></i>
-                </div>
-            </div>
-
             {% if network.node_data.info.active_nodes_count > 0 %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="active_nodes_{{ network_name }}">
                 <div class="card">
@@ -415,18 +390,96 @@
             </div>
             {% endif %}
             {% endif %}
-
-            {% if network.token_price %}
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="token_price_{{ network_name }}">
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <h3 class="text-uppercase text-color-secondary d-flex align-items-center">
+                  signed blocks
+                </h3>
+              </div>
+        </div>
+        <div class="row is_sortable">
+            {% if network.first_signed_blocks %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="first_signed_blocks_{{ network_name }}">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h6 class="card-title text-uppercase">current token price</h6>
+                        <h6 class="card-title text-uppercase">first signed blocks</h6>
                         <button type="button" class="btn-close" aria-label="Close"></button>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">${{ network.token_price }}</h6>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.first_signed_blocks }}</h6>
                     </div>
-                    <i class="fa-solid fa-dollar-sign icon-container"></i>
+                    <i class="fa-solid fa-file-signature icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.first_signed_blocks_today %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="first_signed_blocks_today_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">First signed blocks today</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.first_signed_blocks_today }}</h6>
+                    </div>
+                    <i class="fa-solid fa-file-signature icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.signed_blocks_today %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="signed_blocks_today_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Signed blocks today</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.signed_blocks_today }}</h6>
+                    </div>
+                    <i class="fa-solid fa-file-signature icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.all_signed_blocks %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="all_signed_blocks_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">All signed blocks</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.all_signed_blocks }}</h6>
+                    </div>
+                    <i class="fa-solid fa-file-signature icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <h3 class="text-uppercase text-color-secondary d-flex align-items-center">
+                  rewards
+                </h3>
+              </div>
+        </div>
+
+        <div class="row is_sortable">
+            {% if network.autocollect_rewards %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="autocollect_rewards_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">current autocollect rewards</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.autocollect_rewards }}</h6>
+                    </div>
+                    <i class="fa-solid fa-coins icon-container"></i>
                 </div>
             </div>
             {% endif %}
@@ -490,22 +543,15 @@
                 </div>
             </div>
             {% endif %}
-
-            {% if network.current_block_reward %}
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="current_block_reward_{{ network_name }}">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between">
-                        <h6 class="card-title text-uppercase">Current block reward</h6>
-                        <button type="button" class="btn-close" aria-label="Close"></button>
-                    </div>
-                    <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.current_block_reward }}</h6>
-                    </div>
-                    <i class="fa-solid fa-dollar-sign icon-container"></i>
-                </div>
-            </div>
-            {% endif %}
-
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <h3 class="text-uppercase text-color-secondary d-flex align-items-center">
+                  wallets
+                </h3>
+              </div>
+        </div>
+        <div class="row is_sortable">
             {% if network.node_data.nodes %}
             {% for node in network.node_data.nodes %}
             {% if node.is_my_node and node.is_sovereign %}
@@ -555,7 +601,15 @@
                 </div>
             </div>
             {% endif %}
-
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <h3 class="text-uppercase text-color-secondary d-flex align-items-center">
+                  rewards & blocks history
+                </h3>
+              </div>
+        </div>
+        <div class="row is_sortable">
             {% if network.first_signed_blocks_dict %}
             {% if network.first_signed_blocks_dict | length >= 1 %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="first_signed_blocks_last_n_days_{{ network_name }}">

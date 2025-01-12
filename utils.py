@@ -1,7 +1,7 @@
 from common import cli_command
 from logger import log_it
 from packaging import version
-import socket, requests, re, time, psutil, time, cachetools.func, inspect, psutil
+import socket, requests, re, time, psutil, time, cachetools.func
 
 def get_external_ip():
     try:
@@ -12,8 +12,7 @@ def get_external_ip():
         log_it("e", f"Error fetching IP address from {response.url}, status code: {response.status_code}")
         return "Unable to fetch IP"
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None
 
 @cachetools.func.ttl_cache(maxsize=10)
@@ -27,8 +26,7 @@ def get_node_pid():
                 return pid
         return None
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None
 
 @cachetools.func.ttl_cache(maxsize=10)
@@ -37,8 +35,7 @@ def get_system_hostname():
         log_it("d", "Fetching hostname...")
         return socket.gethostname()
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None
 
 def format_uptime(seconds):
@@ -51,8 +48,7 @@ def format_uptime(seconds):
             return f"{int(days)}d {int(hours)}h {int(minutes)}m {int(seconds)}s"
         return f"{int(hours)}h {int(minutes)}m {int(seconds)}s"
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None
 
 def get_sys_stats():
@@ -68,20 +64,19 @@ def get_sys_stats():
             memory_info = process.memory_info()
             memory_usage_mb = memory_info.rss / 1024 / 1024
             sys_stats['node_memory_usage_mb'] = round(memory_usage_mb, 2)
-        
+
             create_time = process.create_time()
             uptime_seconds = time.time() - create_time
-            sys_stats['node_uptime'] = uptime_seconds 
+            sys_stats['node_uptime'] = uptime_seconds
 
             boot_time = psutil.boot_time()
             system_uptime_seconds = time.time() - boot_time
             sys_stats['system_uptime'] = system_uptime_seconds
-            
+
             return sys_stats
         return None
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None
 
 @cachetools.func.ttl_cache(maxsize=10)
@@ -95,8 +90,7 @@ def get_installed_node_version():
             return current_version
         return None
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None
 
 def get_latest_node_version():
@@ -114,6 +108,5 @@ def get_latest_node_version():
         log_it("e", f"Error fetching latest node version from {response.url}, status code: {response.status_code}")
         return None
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None

@@ -5,7 +5,7 @@ from packaging import version
 from utils import get_node_pid
 from telegram import send_telegram_message
 from emailer import send_email
-import os, requests, inspect, shutil, json, zipfile, psutil
+import os, requests, shutil, json, zipfile, psutil
 
 def check_plugin_update():
     try:
@@ -43,8 +43,7 @@ def check_plugin_update():
             log_it("e", f"Error fetching version data from {response.url}, status code: {response.status_code}")
             return None
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None
 
 def install_plugin_update():
@@ -84,9 +83,7 @@ def install_plugin_update():
         else:
             log_it("i", "Plugin is up to date.")
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
-
+        log_it("e", "An error occurred", exc=e)
 
 def download_and_extract_update(download_url):
     try:
@@ -121,6 +118,5 @@ def download_and_extract_update(download_url):
             log_it("e", "Failed to install new version with cp command.")
             return False
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return False

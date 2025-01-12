@@ -6,7 +6,7 @@ from generators import generate_data
 from logger import log_it
 from telegram import send_telegram_message
 from updater import install_plugin_update
-import schedule, inspect, time
+import schedule, time
 
 def run_scheduler(func, scheduled_time, every_min=False, run_on_startup=False):
     log_it("d", f"Received func {func}, scheduled_time={scheduled_time}, every_min={every_min}, run_on_startup={run_on_startup}")
@@ -26,8 +26,7 @@ def run_scheduler(func, scheduled_time, every_min=False, run_on_startup=False):
             scheduler.run_pending()
             time.sleep(1)
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
 
 def setup_schedules():
     try:
@@ -101,5 +100,4 @@ def setup_schedules():
                 log_it("d", f"{name} submitted to ThreadPool")
 
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)

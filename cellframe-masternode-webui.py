@@ -4,7 +4,7 @@ from handlers import request_handler
 from logger import log_it
 from pycfhelpers.node.http.simple import CFSimpleHTTPServer, CFSimpleHTTPRequestHandler
 from run_scheduler import setup_schedules
-import threading, inspect
+import threading
 
 def http_server():
     try:
@@ -12,8 +12,7 @@ def http_server():
         CFSimpleHTTPServer().register_uri_handler(uri=f"/{Config.PLUGIN_URL}", handler=handler)
         log_it("i", "HTTP server started")
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
 
 def init():
     try:
@@ -22,8 +21,7 @@ def init():
         log_it("i", f"{Config.PLUGIN_NAME} started")
         return 0
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
 
 def on_init():
     try:
@@ -33,7 +31,7 @@ def on_init():
             log_it("i", "Submitting scheduled tasks to ThreadPool")
             executor.submit(setup_schedules)
     except Exception as e:
-        log_it("e", f"Error: {e}")
+        log_it("e", "An error occurred", exc=e)
 
 def deinit():
     log_it("i", f"{Config.PLUGIN_NAME} stopped")

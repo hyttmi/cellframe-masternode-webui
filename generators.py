@@ -24,7 +24,7 @@ from logger import log_it
 from common import get_current_script_directory
 from config import Config
 from concurrent.futures import ThreadPoolExecutor
-import inspect, json, os
+import json, os
 
 def generate_general_info(format_time=True):
     try:
@@ -47,8 +47,7 @@ def generate_general_info(format_time=True):
         log_it("d", json.dumps(info, indent=4))
         return info
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None
 
 def generate_network_info():
@@ -114,8 +113,7 @@ def generate_network_info():
         log_it("d", json.dumps(network_data, indent=4))
         return network_data if network_data else None
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None
 
 def generate_data(template_name, return_as_json=False, is_top_level_template=False):
@@ -139,8 +137,7 @@ def generate_data(template_name, return_as_json=False, is_top_level_template=Fal
             template = env.get_template(template_path)
             return template.render(general_info=general_info, network_info=network_info)
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         if return_as_json:
             return json.dumps({"error": f"Error generating data: {e}"}).encode("utf-8")
         else:

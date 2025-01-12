@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.26] - 2024-01-12
+
+### Added
+- Better exception logging.
+
+### Changed
+- Layout changed to separate blocks.
+
 ## [3.25] - 2025-01-10
 
 ### Added

@@ -1,11 +1,10 @@
 from config import Config
-from utils import log_it
-import inspect
+from logger import log_it
 import requests
 
 def send_telegram_message(message):
     missing_configs = []
-    
+
     if not Config.TELEGRAM_STATS_TIME:
         missing_configs.append("telegram_stats_time")
     if not Config.TELEGRAM_API_TOKEN:
@@ -17,7 +16,7 @@ def send_telegram_message(message):
         for config in missing_configs:
             log_it("e", f"{config} is not set!")
         return
-            
+
     try:
         url = f"https://api.telegram.org/bot{Config.TELEGRAM_API_TOKEN}/sendMessage"
         payload = {
@@ -32,5 +31,4 @@ def send_telegram_message(message):
         else:
             log_it("e", f"Sending Telegram message failed! Status code: {response.status_code}, Response: {response.text}")
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)

@@ -1,6 +1,6 @@
 from command_runner import command_runner
 from logger import log_it
-import inspect, os
+import os
 
 def cli_command(command, timeout=120, is_shell_command=False):
     try:
@@ -21,8 +21,7 @@ def cli_command(command, timeout=120, is_shell_command=False):
                 log_it("e", f"{command} failed to run succesfully, return code was {exit_code}")
                 return None
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None
 
 def get_current_script_directory():

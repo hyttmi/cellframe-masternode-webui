@@ -103,7 +103,7 @@ def web_request_handler(headers, bypass_auth=False):
                                         }
                                     )
     except Exception as e:
-        log_it("e", f"Error generating response: {e}")
+        log_it("e", "An error occurred", exc=e)
         return CFSimpleHTTPResponse(body=b"<h1>Internal Server Error</h1>", code=200)
 
 def json_request_handler(headers):
@@ -126,9 +126,12 @@ def json_request_handler(headers):
                                 })
 
 def compress_content(content):
-    log_it("d", f"Content original size: {len(content)} bytes")
-    buffer = BytesIO()
-    with gzip.GzipFile(fileobj=buffer, mode='wb') as f:
-        f.write(content)
-    log_it("d", f"Content compressed size: {len(buffer.getvalue())} bytes")
-    return buffer.getvalue()
+    try:
+        log_it("d", f"Content original size: {len(content)} bytes")
+        buffer = BytesIO()
+        with gzip.GzipFile(fileobj=buffer, mode='wb') as f:
+            f.write(content)
+        log_it("d", f"Content compressed size: {len(buffer.getvalue())} bytes")
+        return buffer.getvalue()
+    except Exception as e:
+        log_it("e", "An error occurred", exc=e)

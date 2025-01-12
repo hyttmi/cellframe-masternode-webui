@@ -1,6 +1,6 @@
 from logger import log_it
 from common import cli_command
-import re, inspect
+import re
 
 def get_reward_wallet_tokens(wallet):
     try:
@@ -10,11 +10,11 @@ def get_reward_wallet_tokens(wallet):
             tokens = re.findall(r"coins:\s+([\d.]+)[\s\S]+?ticker:\s+(\w+)", cmd_get_wallet_info)
             if tokens:
                 for token in tokens:
+                    log_it("d", f"Found {token} token in wallet {wallet}")
                     reward_wallet[token[1]] = float(token[0])
             return reward_wallet
         else:
             return None
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None

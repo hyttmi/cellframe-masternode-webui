@@ -2,14 +2,16 @@ from concurrent.futures import ThreadPoolExecutor
 from logger import log_it
 from networkutils import get_active_networks, get_network_config, get_node_data
 from common import cli_command, get_current_script_directory
-import re, time, json, os, inspect
+import re, time, json, os
 
 def cache_blocks_data():
     try:
         networks = get_active_networks()
         log_it("d", f"Found the following networks: {networks}")
         for network in networks:
+            log_it("d", f"Caching blocks for {network}...")
             net_config = get_network_config(network)
+            log_it("d", f"Network config for {network} returned {net_config}")
             if net_config:
                 log_it("i", "Caching blocks...")
                 start_time = time.time()
@@ -70,8 +72,7 @@ def cache_blocks_data():
                 log_it("e", f"Network config not found for {network}, skipping caching")
                 return None
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None
 
 def cache_rewards_data():
@@ -79,7 +80,9 @@ def cache_rewards_data():
         networks = get_active_networks()
         log_it("d", f"Found the following networks: {networks}")
         for network in networks:
+            log_it("d", f"Caching rewards for {network}...")
             net_config = get_network_config(network)
+            log_it("d", f"Network config for {network} returned: {net_config}")
             node_data = get_node_data(network)
             sovereign_wallet_addr = None
             for node in node_data['nodes']:
@@ -174,6 +177,5 @@ def cache_rewards_data():
                 log_it("e", f"No valid address found for {network}, skipping caching.")
                 return None
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         return None

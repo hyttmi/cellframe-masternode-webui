@@ -2,7 +2,7 @@ from config import Config
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from logger import log_it
-import smtplib, inspect
+import smtplib
 
 def send_email(msg):
     email_stats_time = Config.EMAIL_STATS_TIME
@@ -61,6 +61,5 @@ def send_email(msg):
         server.close()
         log_it("i", "Email sent!")
     except Exception as e:
-        func = inspect.currentframe().f_code.co_name
-        log_it("e", f"Error in {func}: {e}")
+        log_it("e", "An error occurred", exc=e)
         log_it("e", f"Error sending email: {e}")
