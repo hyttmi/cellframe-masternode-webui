@@ -1,11 +1,11 @@
 # Changelog
 
-## [3.30] - 2024-01-15
+## [3.30] - 2025-01-15
 
 ### Changed
 - Layout changed completely. Now it allows you to add the cards your want, move them around and the order is saved on browsers localStorage.
 
-## [3.26] - 2024-01-12
+## [3.26] - 2025-01-12
 
 ### Added
 - Better exception logging.
