@@ -1,11 +1,5 @@
 {% if network_info and network_info.items() %}
     {% for network_name, network in network_info.items() %}
-    {% if "backbone" in network_name | lower %}
-        {% set network_name = "BB" %}
-    {% elif "kelvpn" in network_name | lower %}
-        {% set network_name = "KV" %}
-    {% endif %}
-
         {% if network.node_data.nodes %}
             var weightChart = weightChart || {};
 
@@ -21,25 +15,15 @@
                 {% endfor %}
             ];
 
-            var myNode = nodeData.filter(function(item) {
-                return item.isMyNode;
-            });
-
-            var otherNodes = nodeData.filter(function(item) {
-                return !item.isMyNode;
-            });
-
-            otherNodes.sort(function(a, b) {
+            nodeData.sort(function(a, b) {
                 return b.effectiveWeight - a.effectiveWeight;
             });
 
-            var topNodes = otherNodes.slice(0, 14).concat(myNode);
-
-            var nodeLabels = topNodes.map(function(item) {
+            var nodeLabels = nodeData.map(function(item) {
                 return item.isMyNode ? 'MY NODE' : item.nodeAddr.substring(0, 4);
             });
 
-            var effectiveWeights = topNodes.map(function(item) {
+            var effectiveWeights = nodeData.map(function(item) {
                 return item.effectiveWeight;
             });
 
@@ -51,7 +35,13 @@
                         barPercentage: 0.9,
                         label: 'Effective weight',
                         data: effectiveWeights,
-                        backgroundColor: '#B3A3FF',
+                        backgroundColor: nodeData.map(function(item) {
+                            return item.isMyNode
+                                ? '#B3A3FF'
+                                : item.isSovereign
+                                    ? '#4751D3'
+                                    : '#DEE2E6';
+                        }),
                         borderWidth: 0
                     }
                 ]
@@ -63,55 +53,63 @@
                 type: 'bar',
                 data: chartData,
                 options: {
-                    indexAxis: 'x',
+                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
                         x: {
                             beginAtZero: true,
                             grid: {
-                                display: false
+                                display: true,
+                                color: '#2B2B2B'
                             },
                             ticks: {
-                                color: '#B3A3FF',
-                                font: {
-                                    size: 13,
-                                    family: 'Rubik'
-                                  }
+                                color: '#DEE2E6'
                             }
                         },
                         y: {
                             grid: {
-                                display: false
+                                display: true,
+                                color: '#2B2B2B'
                             },
                             ticks: {
                                 display: true,
-                                color: '#B3A3FF',
+                                color: '#DEE2E6',
                                 autoSkip: false,
                                 maxRotation: 0,
-                                minRotation: 0,
-                                font: {
-                                    size: 13,
-                                    family: 'Rubik'
-                                }
+                                minRotation: 0
                             }
                         }
                     },
                     plugins: {
                         legend: {
-                            display: false,
+                            display: true,
                             labels: {
-                                color: '#B3A3FF',
-                                fillStyle: '#B3A3FF',
-                                font: {
-                                  size: 13,
-                                  family: 'Rubik'
+                                generateLabels: (chart) => {
+                                    return [
+                                        {
+                                            text: 'Effective weight'.toUpperCase(),
+                                            fillStyle: '#DEE2E6',
+                                            hidden: false
+                                        },
+                                        {
+                                            text: 'My node'.toUpperCase(),
+                                            fillStyle: '#B3A3FF',
+                                            hidden: false
+                                        },
+                                        {
+                                            text: 'Sovereign node'.toUpperCase(),
+                                            fillStyle: '#4751D3',
+                                            hidden: false
+                                        }
+                                    ];
                                 }
                             },
-                            position: 'bottom',
+                            position: 'top',
                             title: {
                                 display: true,
-                                color: '#B3A3FF'
+                                color: '#DEE2E6',
+                                padding: 10
                             }
                         },
                         tooltip: {
@@ -130,7 +128,8 @@
         {% set chartTypes = [
             {'data': network.all_signed_blocks_dict, 'chart_id': 'signedBlocks', 'label': 'Blocks'},
             {'data': network.first_signed_blocks_dict, 'chart_id': 'firstSignedBlocks', 'label': 'First Signed Blocks'},
-            {'data': network.rewards, 'chart_id': 'rewards', 'label': 'Rewards'}
+            {'data': network.rewards, 'chart_id': 'rewards', 'label': 'Rewards'},
+            {'data': network.sovereign_rewards, 'chart_id': 'sovereignRewards', 'label': 'Sovereign Rewards'}
         ] %}
 
         function updateChart(chart, daysToShow, networkName) {
@@ -186,11 +185,7 @@
                                     display: false
                                 },
                                 ticks: {
-                                    color: '#B3A3FF',
-                                    font: {
-                                        size: 13,
-                                        family: 'Rubik'
-                                    },
+                                    color: '#B3A3FF'
                                 }
                             },
                             y: {
@@ -199,12 +194,7 @@
                                 },
                                 beginAtZero: true,
                                 ticks: {
-                                    color: '#B3A3FF',
-                                    precision: 0,
-                                    font: {
-                                        size: 13,
-                                        family: 'Rubik'
-                                    }
+                                    color: '#B3A3FF'
                                 }
                             }
                         },

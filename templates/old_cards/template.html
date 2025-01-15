@@ -1,0 +1,889 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <title>{{ plugin_name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/ed38ca7e1a.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/Sortable.min.js"></script>
+    <link rel="icon" href="data:image/svg+xml;base64,{% include 'cards/favicon.base64' %}" type="image/svg+xml">
+</head>
+<style>
+    {% include 'cards/style.css' %}
+</style>
+
+<body>
+    <div class="container-fluid mt-4">
+        <span title="Reset back to default view" id="clearstorage" class="btn-primary floatbutton text-uppercase"><i class="fa-solid fa-xl fa-rotate-left floatbutton-icon"></i></span>
+
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-uppercase text-color-secondary">System Information</h1>
+            </div>
+        </div>
+        <div class="row is_sortable">
+
+        {% if general_info.hostname %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="hostname">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">hostname</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary text-body-secondary-color">{{ general_info.hostname }}</h6>
+                    </div>
+                        <i class="fa-solid fa-server icon-container"></i>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if general_info.external_ip %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="external_ip">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">external ip</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary text-body-secondary-color">{{ general_info.external_ip }}</h6>
+                    </div>
+                        <i class="fa-solid fa-network-wired icon-container"></i>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if general_info.node_cpu_usage %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_cpu_usage">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">node cpu usage</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ general_info.node_cpu_usage }}%</h6>
+                    </div>
+                    <i class="fa-solid fa-microchip icon-container"></i>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if general_info.node_memory_usage %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_memory_usage">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">node memory usage</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ general_info.node_memory_usage }} MB</h6>
+                    </div>
+                    <i class="fa-solid fa-memory icon-container"></i>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if general_info.node_uptime %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_uptime">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">node uptime</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ general_info.node_uptime }}</h6>
+                    </div>
+                    <i class="fa-solid fa-clock icon-container"></i>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if general_info.system_uptime %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="system_uptime">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">system uptime</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ general_info.system_uptime }}</h6>
+                    </div>
+                    <i class="fa-solid fa-clock icon-container"></i>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if general_info.node_version %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_version">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">node version</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ general_info.node_version }}</h6>
+                    </div>
+                    <i class="fa-solid fa-code-compare icon-container"></i>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if general_info.latest_node_version %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="latest_node_version">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">latest node version</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ general_info.latest_node_version }}</h6>
+                    </div>
+                    <i class="fa-solid fa-code-compare icon-container"></i>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if network_info %}
+        {% for network_name, network in network_info.items() %}
+        <div class="modal fade" id="nodeInfoModal_{{ network_name }}" tabindex="-1" aria-labelledby="nodeInfoModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content custom-modal-bg">
+                    <div class="modal-header">
+                        <h6 class="modal-title text-uppercase text-color-secondary" id="nodeInfoModalLabel">General Node Information</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        {% if network.node_data.nodes %}
+                        <h6 class="text-color-secondary">NODE WEIGHTS:</h6>
+                        <div id="chart-container">
+                            <canvas id="weightChart_{{ network_name }}"></canvas>
+                        </div>
+                        {% endif %}
+                        <h6 class="text-color-secondary">NODE DUMP:</h6>
+                        <pre>{{ network.general_node_info }}</pre>
+                        {% if network.node_data.nodes %}
+                            {% for node in network.node_data.nodes %}
+                                {% if node.is_my_node %}
+                                    <h6 class="text-color-secondary">NODE INFORMATION:</h6>
+                                    <pre>PKEY HASH: {{ node.pkey_hash }}<br>TRANSACTION HASH: {{ node.tx_hash }}<br>SOVEREIGN ADDRESS: {{ node.sovereign_addr}}<br>SOVEREIGN TAX: {{ node.sovereign_tax }}<br>ACTIVE: {{ node.active }}</pre>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-uppercase text-color-secondary d-flex align-items-center">
+                  {{ network_name }}
+                  <button type="button" class="btn btn-link ms-2" data-bs-toggle="modal" data-bs-target="#nodeInfoModal_{{ network_name }}">
+                    <i class="fa-solid fa-circle-info info fa-xl icon-effect" onclick="removeIconEffect(this)"></i>
+                  </button>
+                </h1>
+              </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <h3 class="text-uppercase text-color-secondary d-flex align-items-center">
+                  network & node information
+                </h3>
+              </div>
+        </div>
+        <div class="row is_sortable">
+            {% if network.state %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="state_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">state</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.state }}</h6>
+                    </div>
+                    <i class="fa-solid fa-network-wired icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.target_state %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="target_state_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">target state</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.target_state }}</h6>
+                    </div>
+                    <i class="fa-solid fa-network-wired icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.address %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_address_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">node address</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.address }}</h6>
+                    </div>
+                    <i class="fa-solid fa-id-card icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.all_blocks %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="amount_of_blocks_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Blocks in network</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.all_blocks }}</h6>
+                    </div>
+                    <i class="fa-solid fa-cube icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.autocollect_status %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="autocollect_status_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">autocollect status</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.autocollect_status }}</h6>
+                    </div>
+                    <i class="fa-solid fa-coins icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.token_price %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="token_price_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">current token price</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">${{ network.token_price }}</h6>
+                    </div>
+                    <i class="fa-solid fa-dollar-sign icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.node_data.info %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="total_network_weight_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Total network weight</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.info.total_weight }}</h6>
+                    </div>
+                    <i class="fa-solid fa-weight-scale icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.current_block_reward %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="current_block_reward_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Current block reward</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.current_block_reward }}</h6>
+                    </div>
+                    <i class="fa-solid fa-dollar-sign icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.node_data.nodes %}
+            {% for node in network.node_data.nodes %}
+            {% if node.is_my_node %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_stake_value_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Node stake value</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ node.stake_value }}</h6>
+                    </div>
+                    <i class="fa-solid fa-dollar-sign icon-container"></i>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_effective_value_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Node effective value</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ node.effective_value }}</h6>
+                    </div>
+                    <i class="fa-solid fa-dollar-sign icon-container"></i>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="node_related_weight_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Node related weight</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ node.related_weight }}%</h6>
+                    </div>
+                    <i class="fa-solid fa-weight-scale icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+
+            {% if network.node_data.info.active_nodes_count > 0 %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="active_nodes_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Active nodes</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.node_data.info.active_nodes_count }}</h6>
+                    </div>
+                    <i class="fa-solid fa-circle-nodes icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <h3 class="text-uppercase text-color-secondary d-flex align-items-center">
+                  signed blocks
+                </h3>
+              </div>
+        </div>
+        <div class="row is_sortable">
+            {% if network.first_signed_blocks %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="first_signed_blocks_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">first signed blocks</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.first_signed_blocks }}</h6>
+                    </div>
+                    <i class="fa-solid fa-file-signature icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.first_signed_blocks_today %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="first_signed_blocks_today_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">First signed blocks today</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.first_signed_blocks_today }}</h6>
+                    </div>
+                    <i class="fa-solid fa-file-signature icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.signed_blocks_today %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="signed_blocks_today_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Signed blocks today</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.signed_blocks_today }}</h6>
+                    </div>
+                    <i class="fa-solid fa-file-signature icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.all_signed_blocks %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="all_signed_blocks_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">All signed blocks</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.all_signed_blocks }}</h6>
+                    </div>
+                    <i class="fa-solid fa-file-signature icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <h3 class="text-uppercase text-color-secondary d-flex align-items-center">
+                  rewards
+                </h3>
+              </div>
+        </div>
+
+        <div class="row is_sortable">
+            {% if network.autocollect_rewards %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="autocollect_rewards_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">current autocollect rewards</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.autocollect_rewards }}</h6>
+                    </div>
+                    <i class="fa-solid fa-coins icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.all_rewards %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="all_rewards_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Rewards all time</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.all_rewards }}</h6>
+                    </div>
+                    <i class="fa-solid fa-dollar-sign icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.rewards_today %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="rewards_today_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Rewards collected today</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.rewards_today }}</h6>
+                    </div>
+                    <i class="fa-solid fa-dollar-sign icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.all_sovereign_rewards %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="all_sovereign_rewards_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Sovereign rewards all time</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.all_sovereign_rewards }}</h6>
+                    </div>
+                    <i class="fa-solid fa-dollar-sign icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if network.sovereign_rewards_today %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="sovereign_rewards_today_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Sovereign Rewards collected today</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ network.sovereign_rewards_today }}</h6>
+                    </div>
+                    <i class="fa-solid fa-dollar-sign icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <h3 class="text-uppercase text-color-secondary d-flex align-items-center">
+                  wallets
+                </h3>
+              </div>
+        </div>
+        <div class="row is_sortable">
+            {% if network.node_data.nodes %}
+            {% for node in network.node_data.nodes %}
+            {% if node.is_my_node and node.is_sovereign %}
+            {% if node.sovereign_wallet_tokens %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="sovereign_wallet_information_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Sovereign Wallet Information</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <table class="tokens">
+                            {% for token, balance in node.sovereign_wallet_tokens.items() %}
+                            <tr>
+                                <td><h6 class="text-body-secondary card-subtitle">{{ token }}</h6></td>
+                                <td><h6 class="text-body-secondary card-subtitle">{{ balance }}</h6></td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    <i class="fa-solid fa-wallet icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+
+            {% if network.fee_wallet_tokens %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="reward_wallet_information_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Reward Wallet Information</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <table class="tokens">
+                            {% for token, balance in network.fee_wallet_tokens.items() %}
+                            <tr>
+                                <td><h6 class="text-body-secondary card-subtitle">{{ token }}</h6></td>
+                                <td><h6 class="text-body-secondary card-subtitle">{{ balance }}</h6></td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    <i class="fa-solid fa-wallet icon-container"></i>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <h3 class="text-uppercase text-color-secondary d-flex align-items-center">
+                  rewards & blocks history
+                </h3>
+              </div>
+        </div>
+        <div class="row is_sortable">
+            {% if network.first_signed_blocks_dict %}
+            {% if network.first_signed_blocks_dict | length >= 1 %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="first_signed_blocks_last_n_days_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">First signed blocks history</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="firstSignedBlocksChart_{{ network_name }}"></canvas>
+                    </div>
+                    <ul class="nav justify-content-center">
+                        {% if network.first_signed_blocks_dict | length < 7 %}
+                        <li class="nav-item active" onclick="updateChart('firstSignedBlocksChart', {{ network.first_signed_blocks_dict | length }}, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">{{ network.first_signed_blocks_dict | length }} days</span>
+                        </li>
+                        {% else %}
+                        <li class="nav-item active" onclick="updateChart('firstSignedBlocksChart', 7, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">7 days</span>
+                        </li>
+                        {% endif %}
+                        {% if network.first_signed_blocks_dict | length >= 14 %}
+                        <li class="nav-item" onclick="updateChart('firstSignedBlocksChart', 14, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">14 days</span>
+                        </li>
+                        {% endif %}
+                        {% if network.first_signed_blocks_dict | length >= 30 %}
+                        <li class="nav-item" onclick="updateChart('firstSignedBlocksChart', 30, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">30 days</span>
+                        </li>
+                        {% endif %}
+                        {% if network.first_signed_blocks_dict | length >= 60 %}
+                        <li class="nav-item" onclick="updateChart('firstSignedBlocksChart', 60, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">60 days</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+
+            {% if network.all_signed_blocks_dict %}
+            {% if network.all_signed_blocks_dict | length >= 1 %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="signed_blocks_last_n_days_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Signed blocks history</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="signedBlocksChart_{{ network_name }}"></canvas>
+                    </div>
+                    <ul class="nav justify-content-center">
+                        {% if network.all_signed_blocks_dict | length < 7 %}
+                        <li class="nav-item active" onclick="updateChart('signedBlocksChart', {{ network.all_signed_blocks_dict | length }}, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">{{ network.all_signed_blocks_dict | length }} days</span>
+                        </li>
+                        {% else %}
+                        <li class="nav-item active" onclick="updateChart('signedBlocksChart', 7, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">7 days</span>
+                        </li>
+                        {% endif %}
+                        {% if network.all_signed_blocks_dict | length >= 14 %}
+                        <li class="nav-item" onclick="updateChart('signedBlocksChart', 14, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">14 days</span>
+                        </li>
+                        {% endif %}
+                        {% if network.all_signed_blocks_dict | length >= 30 %}
+                        <li class="nav-item" onclick="updateChart('signedBlocksChart', 30, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">30 days</span>
+                        </li>
+                        {% endif %}
+                        {% if network.all_signed_blocks_dict | length >= 60 %}
+                        <li class="nav-item" onclick="updateChart('signedBlocksChart', 60, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">60 days</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+
+            {% if network.rewards %}
+            {% set total_rewards_length = network.rewards | length %}
+            {% if total_rewards_length >= 1 %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="rewards_last_n_days_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Rewards history</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="rewardsChart_{{ network_name }}"></canvas>
+                    </div>
+                    <ul class="nav justify-content-center">
+                        {% if total_rewards_length < 7 %}
+                        <li class="nav-item active" onclick="updateChart('rewardsChart', {{ total_rewards_length }}, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">{{ total_rewards_length }} days</span>
+                        </li>
+                        {% else %}
+                        <li class="nav-item active" onclick="updateChart('rewardsChart', 7, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">7 days</span>
+                        </li>
+                        {% endif %}
+                        {% if total_rewards_length >= 14 %}
+                        <li class="nav-item" onclick="updateChart('rewardsChart', 14, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">14 days</span>
+                        </li>
+                        {% endif %}
+                        {% if total_rewards_length >= 30 %}
+                        <li class="nav-item" onclick="updateChart('rewardsChart', 30, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">30 days</span>
+                        </li>
+                        {% endif %}
+                        {% if total_rewards_length >= 60 %}
+                        <li class="nav-item" onclick="updateChart('rewardsChart', 60, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">60 days</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+
+            {% if network.sovereign_rewards %}
+            {% set total_sovereign_rewards_length = network.sovereign_rewards | length %}
+            {% if total_sovereign_rewards_length >= 1 %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="sovereign_rewards_last_n_days_{{ network_name }}">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h6 class="card-title text-uppercase">Sovereign rewards history</h6>
+                        <button type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="sovereignRewardsChart_{{ network_name }}"></canvas>
+                    </div>
+                    <ul class="nav justify-content-center">
+                        {% if total_sovereign_rewards_length < 7 %}
+                        <li class="nav-item active" onclick="updateChart('sovereignRewardsChart', {{ total_sovereign_rewards_length }}, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">{{ total_sovereign_rewards_length }} days</span>
+                        </li>
+                        {% else %}
+                        <li class="nav-item active" onclick="updateChart('sovereignRewardsChart', 7, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">7 days</span>
+                        </li>
+                        {% endif %}
+                        {% if total_sovereign_rewards_length >= 14 %}
+                        <li class="nav-item" onclick="updateChart('sovereignRewardsChart', 14, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">14 days</span>
+                        </li>
+                        {% endif %}
+                        {% if total_sovereign_rewards_length >= 30 %}
+                        <li class="nav-item" onclick="updateChart('sovereignRewardsChart', 30, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">30 days</span>
+                        </li>
+                        {% endif %}
+                        {% if total_sovereign_rewards_length >= 60 %}
+                        <li class="nav-item" onclick="updateChart('sovereignRewardsChart', 60, '{{ network_name }}'); setActive(this);">
+                            <span class="days_amount">60 days</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+        {% endfor %}
+        {% endif %}
+        </div>
+        {% if general_info.current_plugin_version %}
+        <div class="row text-center">
+            <span class="small">{{ general_info.current_plugin_version}}</span>
+        </div>
+        {% endif %}
+    </div>
+    <script defer>
+        function removeIconEffect(element) {
+                element.classList.remove('icon-effect'); // Remove the bouncing effect on click
+        }
+
+        function setActive(selectedItem) {
+                var parentCard = selectedItem.closest('.card');
+                var navItems = parentCard.querySelectorAll('.nav-item');
+                navItems.forEach(function(item) {
+                    item.classList.remove('active');
+                });
+                selectedItem.classList.add('active');
+        }
+
+        function formatDate(dateString) {
+            var date = new Date(dateString);
+            return date.toLocaleDateString(undefined, {
+                month: 'numeric',
+                day: 'numeric'
+            });
+        }
+
+        var clearStorageBtn = document.getElementById("clearstorage");
+
+        function toggleLocalStorageBtn() {
+            var hasCardsHidden = localStorage.getItem('cfclosed');
+            if (!hasCardsHidden) {
+                clearStorageBtn.style.display = 'none';
+            } else {
+                clearStorageBtn.style.display = 'block';
+            }
+        }
+
+        toggleLocalStorageBtn();
+
+        clearStorageBtn.addEventListener('click', function() {
+            localStorage.removeItem('cfclosed');
+            location.reload();
+        });
+
+        var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || [];
+        closedCards.forEach(function (closedId) {
+            var closedCard = document.querySelector(`.col-12[data-id="${closedId}"]`);
+            if (closedCard) {
+                closedCard.remove();
+            }
+        });
+
+        var sortableElements = document.querySelectorAll('.is_sortable');
+
+        sortableElements.forEach(function (el, index) {
+            Sortable.create(el, {
+                handle: ".card-header",
+                animation: 250,
+                easing: "cubic-bezier(1, 0, 0, 1)",
+                ghostClass: "ghost",
+                group: "cfcards-" + index,
+                dataIdAttr: "data-id",
+                delay: 100,
+                store: {
+                    get: function (sortable) {
+                        var order = localStorage.getItem(sortable.options.group.name);
+                        return order ? order.split('|') : [];
+                    },
+                    set: function (sortable) {
+                        var order = sortable.toArray();
+                        localStorage.setItem(sortable.options.group.name, order.join('|'));
+                    }
+                }
+            });
+        });
+
+        document.querySelectorAll('.btn-close').forEach(function (button) {
+            button.addEventListener('click', function (event) {
+                var card = event.target.closest('.col-12');
+                if (card) {
+                    var sortableRow = card.parentElement;
+                    var cardId = card.getAttribute("data-id");
+
+                    card.classList.add('hidden');
+                    card.addEventListener('transitionend', function () {
+                        card.remove();
+
+                        var closedCards = JSON.parse(localStorage.getItem('cfclosed')) || [];
+                        if (!closedCards.includes(cardId)) {
+                            closedCards.push(cardId);
+                            localStorage.setItem('cfclosed', JSON.stringify(closedCards));
+                        }
+                        toggleLocalStorageBtn();
+
+                        if (sortableRow && sortableRow.children.length === 0) {
+                            var headerRow = sortableRow.previousElementSibling;
+                            sortableRow.remove();
+
+                            if (headerRow && headerRow.querySelector('h3')) {
+                                headerRow.remove();
+                            }
+                        }
+                    }, { once: true });
+                }
+            });
+        });
+    </script>
+    <script defer>
+        {% include 'cards/charts.js' %}
+    </script>
+</body>
+
+</html>
