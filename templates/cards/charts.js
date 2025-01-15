@@ -73,6 +73,7 @@
                                 display: false
                             },
                             ticks: {
+                                display: false,
                                 color: '#B3A3FF',
                                 font: {
                                     size: 13,
