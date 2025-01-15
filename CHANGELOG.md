@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.31] - XXXX-XX-XX
+
+### Fixed
+- Chart fonts.
+- Incorrect amount shown in sovereign rewards today.
+
 ## [3.30] - 2025-01-15
 
 ### Changed

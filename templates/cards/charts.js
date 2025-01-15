@@ -117,6 +117,14 @@
                         },
                         tooltip: {
                             enabled: true,
+                            titleFont: {
+                                size: 13,
+                                family: 'Rubik'
+                            },
+                            bodyFont: {
+                                size: 13,
+                                family: 'Rubik'
+                            },
                             callbacks: {
                                 label: function(tooltipItem) {
                                     return tooltipItem.raw;
@@ -218,6 +226,14 @@
                                     label: function(tooltipItem) {
                                         return tooltipItem.raw;
                                     }
+                                },
+                                titleFont: {
+                                    size: 13,
+                                    family: 'Rubik'
+                                },
+                                bodyFont: {
+                                    size: 13,
+                                    family: 'Rubik'
                                 }
                             }
                         }
