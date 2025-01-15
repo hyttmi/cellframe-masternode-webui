@@ -1,7 +1,5 @@
 # Cellframe masternode WebUI
-![image](https://github.com/user-attachments/assets/f0520e69-a6ae-4efc-8ec1-56a1a967031c)
-
-![image](https://github.com/user-attachments/assets/ae551135-1037-4f43-9104-9bb300332463)
+![image](https://github.com/user-attachments/assets/df07a2fd-fb9c-4dda-be3a-a7711e419867)
 
 This plugin offers an easy and efficient way to monitor your node's autocollect statistics and manage other important features. Whether you're tracking performance or keeping an eye on your node's signing activity, this tool provides a user-friendly interface to help you stay informed. Plus, it's fully customizable and 100% themeable, allowing you to tailor the look and feel to match your preferences.
 
