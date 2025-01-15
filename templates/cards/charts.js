@@ -33,7 +33,7 @@
                 return b.effectiveWeight - a.effectiveWeight;
             });
 
-            var topNodes = otherNodes.slice(0, 14).concat(myNode);
+            var topNodes = otherNodes.slice(0, 15).concat(myNode);
 
             var nodeLabels = topNodes.map(function(item) {
                 return item.isMyNode ? 'MY NODE' : item.nodeAddr.substring(0, 4);
