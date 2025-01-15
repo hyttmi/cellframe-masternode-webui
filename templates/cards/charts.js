@@ -36,7 +36,7 @@
             var topNodes = otherNodes.slice(0, 15).concat(myNode);
 
             var nodeLabels = topNodes.map(function(item) {
-                return item.isMyNode ? 'MY NODE' : item.nodeAddr.substring(0, 4);
+                return item.nodeAddr
             });
 
             var effectiveWeights = topNodes.map(function(item) {
