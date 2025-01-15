@@ -1,5 +1,5 @@
 # Cellframe masternode WebUI
-![image](https://github.com/user-attachments/assets/58c69152-7f50-4122-972e-8904b510ea66)
+![image](https://github.com/user-attachments/assets/df07a2fd-fb9c-4dda-be3a-a7711e419867)
 
 ![image](https://github.com/user-attachments/assets/ae551135-1037-4f43-9104-9bb300332463)
 
