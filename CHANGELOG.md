@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.31] - XXXX-XX-XX
+## [3.31] - 2025-01-15
 
 ### Fixed
 - Chart fonts.
