@@ -192,7 +192,7 @@
                                         label: 'Sovereign Rewards',
                                         data: {{ network.sovereign_rewards | tojson }},
                                         backgroundColor: '#C9BFFC',
-                                        borderColor: 'C9BFFC',
+                                        borderColor: '#C9BFFC',
                                         borderWidth: 1
                                     }
                                 {% endif %}
