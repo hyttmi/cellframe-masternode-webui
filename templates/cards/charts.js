@@ -178,13 +178,26 @@
                     type: 'line',
                     data: {
                         labels: [],
-                        datasets: [{
-                            label: '{{ chart.label }}',
-                            data: [],
-                            backgroundColor: '#B3A3FF',
-                            borderColor: '#B3A3FF',
-                            borderWidth: 1
-                        }]
+                        datasets: [
+                            {
+                                label: '{{ chart.label }}',
+                                data: [],
+                                backgroundColor: '#B3A3FF',
+                                borderColor: '#B3A3FF',
+                                borderWidth: 1
+                            },
+                            {% if chart.chart_id == 'rewards' %}
+                                {% if network.sovereign_rewards %}
+                                    {
+                                        label: 'Sovereign Rewards',
+                                        data: {{ network.sovereign_rewards | tojson }},
+                                        backgroundColor: '#C9BFFC',
+                                        borderColor: 'C9BFFC',
+                                        borderWidth: 1
+                                    }
+                                {% endif %}
+                            {% endif %}
+                        ]
                     },
                     options: {
                         responsive: true,
