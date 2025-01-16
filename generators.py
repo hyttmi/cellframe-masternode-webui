@@ -95,7 +95,6 @@ def generate_network_info():
                         'current_block_reward': futures['current_block_reward'].result(),
                         'fee_wallet_tokens': tokens,
                         'first_signed_blocks': futures['first_signed_blocks'].result(),
-                        'general_node_info': futures['general_node_info'].result(),
                         'node_data': futures['node_data'].result(),
                         'rewards': futures['rewards'].result(),
                         'rewards_today': futures['rewards_today'].result(),

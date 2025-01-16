@@ -1,10 +1,10 @@
 {% if network_info and network_info.items() %}
     {% for network_name, network in network_info.items() %}
-        {% if "backbone" in network_name | lower %}
-            {% set network_name = "BB" %}
-        {% elif "kelvpn" in network_name | lower %}
-            {% set network_name = "KV" %}
-        {% endif %}
+    {% if "backbone" in network_name | lower %}
+        {% set network_name = "BB" %}
+    {% elif "kelvpn" in network_name | lower %}
+        {% set network_name = "KV" %}
+    {% endif %}
 
         {% if network.node_data.nodes %}
             var weightChart = weightChart || {};
@@ -36,7 +36,7 @@
             var topNodes = otherNodes.slice(0, 15).concat(myNode);
 
             var nodeLabels = topNodes.map(function(item) {
-                return item.isMyNode ? 'MY NODE' : item.nodeAddr;
+                return item.isMyNode ? 'MY NODE' : item.nodeAddr
             });
 
             var effectiveWeights = topNodes.map(function(item) {
@@ -78,7 +78,7 @@
                                 font: {
                                     size: 13,
                                     family: 'Rubik'
-                                }
+                                  }
                             }
                         },
                         y: {
@@ -105,8 +105,8 @@
                                 color: '#B3A3FF',
                                 fillStyle: '#B3A3FF',
                                 font: {
-                                    size: 13,
-                                    family: 'Rubik'
+                                  size: 13,
+                                  family: 'Rubik'
                                 }
                             },
                             position: 'bottom',
@@ -142,90 +142,31 @@
             {'data': network.rewards, 'chart_id': 'rewards', 'label': 'Rewards'}
         ] %}
 
-        {% if network.rewards %}
-            var rewardsData = {};
-            rewardsData['{{ network_name }}'] = {{ network.rewards | tojson }};
-            var sovereignRewardsData = {};
-            sovereignRewardsData['{{ network_name }}'] = {{ network.rewards | tojson }};
-            var rewardsCharts = {};
-            var rewardsCtx{{ network_name }} = document.getElementById('rewardsChart_{{ network_name }}').getContext('2d');
-            rewardsCharts['{{ network_name }}'] = new Chart(rewardsCtx{{ network_name }}, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [
-                        {
-                            label: 'Rewards',
-                            data: [],
-                            backgroundColor: '#B3A3FF',
-                            borderColor: '#B3A3FF',
-                            borderWidth: 1
+        function updateChart(chart, daysToShow, networkName) {
+            const chartMapping = {
+                {% for chart in chartTypes %}
+                    {% if chart.data %}
+                        {{ chart.chart_id }}Chart: {
+                            data: {{ chart.chart_id }}Data,
+                            chart: {{ chart.chart_id }}Charts
                         },
-                        {
-                            label: 'Sovereign Rewards',
-                            data: [],
-                            backgroundColor: '#A3B3FF',
-                            borderColor: '#A3B3FF',
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: '#B3A3FF',
-                                font: {
-                                    size: 13,
-                                    family: 'Rubik'
-                                }
-                            }
-                        },
-                        y: {
-                            grid: {
-                                display: false
-                            },
-                            beginAtZero: true,
-                            ticks: {
-                                color: '#B3A3FF',
-                                precision: 0,
-                                font: {
-                                    size: 13,
-                                    family: 'Rubik'
-                                }
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(tooltipItem) {
-                                    return tooltipItem.raw;
-                                }
-                            },
-                            titleFont: {
-                                size: 13,
-                                family: 'Rubik'
-                            },
-                            bodyFont: {
-                                size: 13,
-                                family: 'Rubik'
-                            }
-                        }
-                    }
-                }
-            });
+                    {% endif %}
+                {% endfor %}
+            };
 
-            updateChart('rewardsChart', 7, '{{ network_name }}');
-        {% endif %}
+            if (chart in chartMapping) {
+                const { data, chart: chartObject, mapValues } = chartMapping[chart];
+                const days = Object.keys(data[networkName]).slice(-daysToShow);
+                const values = Object.values(data[networkName]).slice(-daysToShow);
+
+                const sortedDays = days.map(formatDate);
+                const sortedValues = mapValues ? values.map(mapValues) : values;
+
+                chartObject[networkName].data.labels = sortedDays;
+                chartObject[networkName].data.datasets[0].data = sortedValues;
+                chartObject[networkName].update();
+            }
+        }
 
         {% for chart in chartTypes %}
             {% if chart.data %}
@@ -258,7 +199,7 @@
                                     font: {
                                         size: 13,
                                         family: 'Rubik'
-                                    }
+                                    },
                                 }
                             },
                             y: {
