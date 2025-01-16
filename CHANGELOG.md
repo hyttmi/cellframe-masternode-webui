@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.33] - 2025-01-16
+
+### Fixed
+- Remove a call for function which was already removed.
+
+### Added
+- Missing sovereign rewards history card.
+
 ## [3.32] - 2025-01-16
 
 ### Added
