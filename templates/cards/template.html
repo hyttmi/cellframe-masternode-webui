@@ -795,6 +795,47 @@
                             </div>
                         </div>
                     {% endif %}
+                    {% if network.sovereign_rewards and network.sovereign_rewards | length >= 1 %}
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="sovereign_rewards_last_n_days_{{ network_name }}">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="card-title text-uppercase"><span class="highlight">{{ network_name }}</span> sovereign rewards history</h6>
+                                    <button type="button" class="btn" onclick="toggleCard('rewards_last_n_days_{{ network_name }}')">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+                                <div class="card-body d-flex">
+                                        <canvas id="sovereignRewardsChart_{{ network_name }}"></canvas>
+                                </div>
+                                    <ul class="nav justify-content-center">
+                                        {% if network.sovereign_rewards | length < 7 %}
+                                        <li class="nav-item active" onclick="updateChart('sovereignRewardsChart', {{ network.sovereign_rewards | length }}, '{{ network_name }}'); setActive(this);">
+                                            <span class="fw-medium days_amount">{{ network.rewards | length }} days</span>
+                                        </li>
+                                        {% else %}
+                                        <li class="nav-item active" onclick="updateChart('sovereignRewardsChart', 7, '{{ network_name }}'); setActive(this);">
+                                            <span class="fw-medium days_amount">7 days</span>
+                                        </li>
+                                        {% endif %}
+                                        {% if network.sovereign_rewards | length >= 14 %}
+                                        <li class="nav-item" onclick="updateChart('sovereignRewardsChart', 14, '{{ network_name }}'); setActive(this);">
+                                            <span class="fw-medium days_amount">14 days</span>
+                                        </li>
+                                        {% endif %}
+                                        {% if network.sovereign_rewards | length >= 30 %}
+                                        <li class="nav-item" onclick="updateChart('sovereignRewardsChart', 30, '{{ network_name }}'); setActive(this);">
+                                            <span class="fw-medium days_amount">30 days</span>
+                                        </li>
+                                        {% endif %}
+                                        {% if network.sovereign_rewards | length >= 60 %}
+                                        <li class="nav-item" onclick="updateChart('rewardsChart', 60, '{{ network_name }}'); setActive(this);">
+                                            <span class="fw-medium days_amount">60 days</span>
+                                        </li>
+                                        {% endif %}
+                                    </ul>
+                            </div>
+                        </div>
+                    {% endif %}
                 {% endfor %}
             {% endif %}
         </div>

@@ -139,7 +139,8 @@
         {% set chartTypes = [
             {'data': network.all_signed_blocks_dict, 'chart_id': 'signedBlocks', 'label': 'Blocks'},
             {'data': network.first_signed_blocks_dict, 'chart_id': 'firstSignedBlocks', 'label': 'First Signed Blocks'},
-            {'data': network.rewards, 'chart_id': 'rewards', 'label': 'Rewards'}
+            {'data': network.rewards, 'chart_id': 'rewards', 'label': 'Rewards'},
+            {'data': network.sovereign_rewards, 'chart_id': 'sovereignRewards', 'label': 'Sovereign Rewards'},
         ] %}
 
         function updateChart(chart, daysToShow, networkName) {
@@ -178,26 +179,13 @@
                     type: 'line',
                     data: {
                         labels: [],
-                        datasets: [
-                            {
-                                label: '{{ chart.label }}',
-                                data: [],
-                                backgroundColor: '#B3A3FF',
-                                borderColor: '#B3A3FF',
-                                borderWidth: 1
-                            },
-                            {% if chart.chart_id == 'rewards' %}
-                                {% if network.sovereign_rewards %}
-                                    {
-                                        label: 'Sovereign Rewards',
-                                        data: {{ network.sovereign_rewards | tojson }},
-                                        backgroundColor: '#C9BFFC',
-                                        borderColor: '#C9BFFC',
-                                        borderWidth: 1
-                                    }
-                                {% endif %}
-                            {% endif %}
-                        ]
+                        datasets: [{
+                            label: '{{ chart.label }}',
+                            data: [],
+                            backgroundColor: '#B3A3FF',
+                            borderColor: '#B3A3FF',
+                            borderWidth: 1
+                        }]
                     },
                     options: {
                         responsive: true,
