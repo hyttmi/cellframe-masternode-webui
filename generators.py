@@ -13,7 +13,6 @@ from networkutils import (
     get_network_config,
     get_network_status,
     get_node_data,
-    get_node_dump,
     get_rewards,
     get_token_price,
     get_current_block_reward
@@ -73,7 +72,6 @@ def generate_network_info():
                         'current_block_reward': executor.submit(get_current_block_reward, network),
                         'first_signed_blocks': executor.submit(get_blocks, network, block_type="first_signed_blocks_count"),
                         'first_signed_blocks_today': executor.submit(get_blocks, network, block_type="first_signed_blocks", today=True),
-                        'general_node_info': executor.submit(get_node_dump, network),
                         'node_data': executor.submit(get_node_data, network),
                         'rewards': executor.submit(get_rewards, network, total_sum=False),
                         'rewards_today': executor.submit(get_rewards, network, rewards_today=True),

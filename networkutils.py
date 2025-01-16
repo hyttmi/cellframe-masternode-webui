@@ -166,17 +166,6 @@ def get_network_status(network):
         log_it("e", "An error occurred", exc=e)
         return None
 
-def get_node_dump(network):
-    try:
-        cmd_get_node_dump = cli_command(f"node dump -net {network}")
-        if cmd_get_node_dump:
-            lines = cmd_get_node_dump.splitlines()
-            return "\n".join(lines[:-1])
-        return None
-    except Exception as e:
-        log_it("e", "An error occurred", exc=e)
-        return None
-
 def get_rewards(network, total_sum=False, rewards_today=False, is_sovereign=False):
     try:
         rewards = {}
@@ -222,60 +211,83 @@ def get_blocks(network, block_type="count", today=False):
         cache_file_path = os.path.join(get_current_script_directory(), f".{network}_blocks_cache.json")
         with open(cache_file_path, "r") as f:
             block_data = json.load(f)
+            all_signed_blocks = block_data.get('all_signed_blocks')
+            all_first_signed_blocks = block_data.get('all_first_signed_blocks')
+            block_count = block_data.get('block_count')
 
         if block_type == "count":
-            return block_data['block_count']
+            if block_count:
+                return block_count
+            return None
 
         if block_type == "all_signed_blocks" and today:
             today_count = 0
             today_str = datetime.now().strftime("%a, %d %b %Y")
-            for _, value in block_data['all_signed_blocks'].items():
-                if today_str in value['ts_created']:
-                    today_count += 1
-            return today_count
+            if all_signed_blocks:
+                for _, value in all_signed_blocks.items():
+                    if today_str in value['ts_created']:
+                        today_count += 1
+                return today_count
+            log_it("d", "all_signed_blocks is None or missing")
+            return None
 
         if block_type == "all_signed_blocks":
             blocks_per_day = {}
-            for _, value in block_data['all_signed_blocks'].items():
-                block_date = datetime.strptime(value['ts_created'], "%a, %d %b %Y %H:%M:%S")
-                day_str = block_date.strftime("%a, %d %b %Y")
-                if day_str in blocks_per_day:
-                    blocks_per_day[day_str] += 1
-                else:
-                    blocks_per_day[day_str] = 1
-            sorted_blocks = sorted(blocks_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))
-            if sorted_blocks:
-                sorted_blocks.pop()
-            return dict(sorted_blocks)
+            if all_signed_blocks:
+                for _, value in all_signed_blocks.items():
+                    block_date = datetime.strptime(value['ts_created'], "%a, %d %b %Y %H:%M:%S")
+                    day_str = block_date.strftime("%a, %d %b %Y")
+                    if day_str in blocks_per_day:
+                        blocks_per_day[day_str] += 1
+                    else:
+                        blocks_per_day[day_str] = 1
+                sorted_blocks = sorted(blocks_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))
+                if sorted_blocks:
+                    sorted_blocks.pop()
+                return dict(sorted_blocks)
+            log_it("d", "all_signed_blocks is None or missing")
+            return None
 
         if block_type == "first_signed_blocks" and today:
             today_count = 0
             today_str = datetime.now().strftime("%a, %d %b %Y")
-            for _, value in block_data['all_first_signed_blocks'].items():
-                if today_str in value['ts_created']:
-                    today_count += 1
-            return today_count
+            if all_first_signed_blocks:
+                for _, value in all_first_signed_blocks.items():
+                    if today_str in value['ts_created']:
+                        today_count += 1
+                return today_count
+            log_it("d", "all_first_signed_blocks is None or missing")
+            return None
 
         if block_type == "first_signed_blocks":
             first_signed_blocks_per_day = {}
-            for _, value in block_data['all_first_signed_blocks'].items():
-                first_signed_block_date = datetime.strptime(value['ts_created'], "%a, %d %b %Y %H:%M:%S")
-                day_str = first_signed_block_date.strftime("%a, %d %b %Y")
-                if day_str in first_signed_blocks_per_day:
-                    first_signed_blocks_per_day[day_str] += 1
-                else:
-                    first_signed_blocks_per_day[day_str] = 1
-            sorted_blocks = sorted(first_signed_blocks_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))
-            if sorted_blocks:
-                sorted_blocks.pop()
-            return dict(sorted_blocks)
+            if all_first_signed_blocks:
+                for _, value in all_first_signed_blocks.items():
+                    first_signed_block_date = datetime.strptime(value['ts_created'], "%a, %d %b %Y %H:%M:%S")
+                    day_str = first_signed_block_date.strftime("%a, %d %b %Y")
+                    if day_str in first_signed_blocks_per_day:
+                        first_signed_blocks_per_day[day_str] += 1
+                    else:
+                        first_signed_blocks_per_day[day_str] = 1
+                sorted_blocks = sorted(first_signed_blocks_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))
+                if sorted_blocks:
+                    sorted_blocks.pop()
+                return dict(sorted_blocks)
+            log_it("d", "all_first_signed_blocks is None or missing")
+            return None
 
         if block_type == "all_signed_blocks_count":
-            return len(block_data['all_signed_blocks'])
+            if all_signed_blocks:
+                return len(all_signed_blocks)
+            log_it("d", "all_signed_blocks is None or missing")
+            return None
 
         if block_type == "first_signed_blocks_count":
-            return len(block_data['all_first_signed_blocks'])
-        return None
+            if all_first_signed_blocks:
+                return len(all_first_signed_blocks)
+            log_it("d", "all_first_signed_blocks is None or missing")
+            return None
+
     except FileNotFoundError:
         log_it("e", "Blocks cache file not found!")
         return None

@@ -70,10 +70,8 @@ def cache_blocks_data():
                 log_it("i", f"Blocks cached for {network}! It took {elapsed_time:.2f} seconds!")
             else:
                 log_it("e", f"Network config not found for {network}, skipping caching")
-                return None
     except Exception as e:
         log_it("e", "An error occurred", exc=e)
-        return None
 
 def cache_rewards_data():
     try:
@@ -175,7 +173,5 @@ def cache_rewards_data():
                 log_it("i", f"Reward caching took {elapsed_time:.2f} seconds!")
             else:
                 log_it("e", f"No valid address found for {network}, skipping caching.")
-                return None
     except Exception as e:
         log_it("e", "An error occurred", exc=e)
-        return None

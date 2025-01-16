@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.32] - 2025-01-16
+
+### Added
+- Missing network total weight card.
+- Missing network target state card.
+- Missing token price card.
+
+### Fixed
+- Template was checking wrong dict for signed blocks/first signed blocks.
+- Stupid mistake in cacher where it would exit the loop if network is not found. (Thanks @school_of_simple_living for debug log)
+
+### Improved
+- Blocks fetching from json file.
+
 ## [3.31] - 2025-01-15
 
 ### Fixed
