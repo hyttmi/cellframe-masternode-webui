@@ -6,6 +6,9 @@ from pycfhelpers.node.http.simple import CFSimpleHTTPServer, CFSimpleHTTPRequest
 from run_scheduler import setup_schedules
 import threading
 
+t_init = None
+stop_event = threading.Event()
+
 def http_server():
     try:
         handler = CFSimpleHTTPRequestHandler(methods=["GET"], handler=request_handler)
@@ -16,8 +19,9 @@ def http_server():
 
 def init():
     try:
-        t = threading.Thread(target=on_init)
-        t.start()
+        global t_init
+        t_init = threading.Thread(target=on_init)
+        t_init.start()
         log_it("i", f"{Config.PLUGIN_NAME} started")
         return 0
     except Exception as e:
@@ -34,5 +38,14 @@ def on_init():
         log_it("e", "An error occurred", exc=e)
 
 def deinit():
-    log_it("i", f"{Config.PLUGIN_NAME} stopped")
-    return 0
+    global t_init
+    try:
+        log_it("i", f"stopping {Config.PLUGIN_NAME}...")
+        stop_event.set()
+        if t_init and t_init.is_alive():
+            t_init.join()
+            log_it("i", f"{Config.PLUGIN_NAME} thread stopped...")
+        log_it("i", f"{Config.PLUGIN_NAME} stopped")
+        return 0
+    except:
+        log_it("e", "An error occurred", exc=e)
