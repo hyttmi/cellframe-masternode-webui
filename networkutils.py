@@ -172,13 +172,10 @@ def get_rewards(network, total_sum=False, rewards_today=False, is_sovereign=Fals
         cache_file_path = os.path.join(get_current_script_directory(), f".{network}_rewards_cache.json")
         with open(cache_file_path) as f:
             data = json.load(f)
-            if is_sovereign:
-                if 'sovereign_rewards' not in data:
-                    log_it("e", f"No sovereign rewards data found for network {network}!")
-                    return None
-                rewards_data = data['sovereign_rewards']
-            else:
-                rewards_data = data['own_rewards']
+            rewards_data = data.get('sovereign_rewards' if is_sovereign else 'own_rewards', None)
+            if not rewards_data:
+                log_it("e", f"No rewards data found for {'sovereign' if is_sovereign else 'own'} rewards in network {network}!")
+                return None
             for reward in rewards_data:
                 date_string = reward['tx_created']
                 amount = float(reward['recv_coins'])
@@ -198,7 +195,6 @@ def get_rewards(network, total_sum=False, rewards_today=False, is_sovereign=Fals
                 return rewards.get(today_str, None)
             else:
                 return dict(sorted_dict)
-        return None
     except FileNotFoundError:
         log_it("e", "Rewards file not found!")
         return None

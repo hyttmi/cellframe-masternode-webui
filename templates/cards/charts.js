@@ -140,7 +140,7 @@
             {'data': network.all_signed_blocks_dict, 'chart_id': 'signedBlocks', 'label': 'Blocks'},
             {'data': network.first_signed_blocks_dict, 'chart_id': 'firstSignedBlocks', 'label': 'First Signed Blocks'},
             {'data': network.rewards, 'chart_id': 'rewards', 'label': 'Rewards'},
-            {'data': network.sovereign_rewards, 'chart_id': 'sovereignRewards', 'label': 'Sovereign Rewards'},
+            {'data': network.sovereign_rewards, 'chart_id': 'sovereignRewards', 'label': 'Sovereign Rewards'}
         ] %}
 
         function updateChart(chart, daysToShow, networkName) {

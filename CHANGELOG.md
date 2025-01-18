@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.34] - 2025-01-18
+
+### Fixed
+- Sovereign rewards chart.
+- Rewards fetching from cache file.
+- Added missing autocollect status card.
+
+### Improved
+- Rewards caching.
+
 ## [3.33] - 2025-01-16
 
 ### Fixed

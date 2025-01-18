@@ -104,7 +104,7 @@ def cache_rewards_data():
 
                 own_wallet_history = futures['cmd_get_config_wallet_tx_history'].result()
                 if own_wallet_history:
-                    rewards['own_rewards'] = []
+                    own_rewards = []
                     log_it("d", f"Caching wallet history for address {net_config['wallet']}")
                     reward = {}
                     is_receiving_reward = False
@@ -113,7 +113,7 @@ def cache_rewards_data():
                         line = line.strip()
                         if "status: ACCEPTED" in line:
                             if reward and is_receiving_reward:
-                                rewards['own_rewards'].append(reward)
+                                own_rewards.append(reward)
                             reward = {}
                             is_receiving_reward = False
                             continue
@@ -131,12 +131,14 @@ def cache_rewards_data():
                             is_receiving_reward = True
                             continue
                     if reward and is_receiving_reward:
-                        rewards['own_rewards'].append(reward)
+                        own_rewards.append(reward)
+                    if own_rewards:
+                        rewards['own_rewards'] = own_rewards
 
                 if 'cmd_get_sovereign_wallet_tx_history' in futures:
                     sovereign_wallet_history = futures['cmd_get_sovereign_wallet_tx_history'].result()
                     if sovereign_wallet_history:
-                        rewards['sovereign_rewards'] = []
+                        sovereign_rewards = []
                         log_it("d", f"Caching wallet history for address {sovereign_wallet_addr}")
                         reward = {}
                         is_receiving_reward = False
@@ -145,7 +147,7 @@ def cache_rewards_data():
                             line = line.strip()
                             if "status: ACCEPTED" in line:
                                 if reward and is_receiving_reward:
-                                    rewards['sovereign_rewards'].append(reward)
+                                    sovereign_rewards.append(reward)
                                 reward = {}
                                 is_receiving_reward = False
                                 continue
@@ -163,11 +165,15 @@ def cache_rewards_data():
                                 is_receiving_reward = True
                                 continue
                         if reward and is_receiving_reward:
-                            rewards['sovereign_rewards'].append(reward)
+                            sovereign_rewards.append(reward)
+                        if sovereign_rewards:
+                            rewards['sovereign_rewards'] = sovereign_rewards
+
                 if rewards:
                     cache_file_path = os.path.join(get_current_script_directory(), f".{network}_rewards_cache.json")
                     with open(cache_file_path, "w") as f:
                         json.dump(rewards, f, indent=4)
+
                 end_time = time.time()
                 elapsed_time = end_time - start_time
                 log_it("i", f"Reward caching took {elapsed_time:.2f} seconds!")
