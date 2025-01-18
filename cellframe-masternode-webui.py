@@ -4,10 +4,9 @@ from handlers import request_handler
 from logger import log_it
 from pycfhelpers.node.http.simple import CFSimpleHTTPServer, CFSimpleHTTPRequestHandler
 from run_scheduler import setup_schedules
-import threading
+import multiprocessing
 
-t_init = None
-stop_event = threading.Event()
+process_init = None
 
 def http_server():
     try:
@@ -19,9 +18,9 @@ def http_server():
 
 def init():
     try:
-        global t_init
-        t_init = threading.Thread(target=on_init)
-        t_init.start()
+        global p_init
+        p_init = multiprocessing.Process(target=on_init)
+        p_init.start()
         log_it("i", f"{Config.PLUGIN_NAME} started")
         return 0
     except Exception as e:
@@ -38,14 +37,10 @@ def on_init():
         log_it("e", "An error occurred", exc=e)
 
 def deinit():
-    global t_init
-    try:
-        log_it("i", f"stopping {Config.PLUGIN_NAME}...")
-        stop_event.set()
-        if t_init and t_init.is_alive():
-            t_init.join()
-            log_it("i", f"{Config.PLUGIN_NAME} thread stopped...")
-        log_it("i", f"{Config.PLUGIN_NAME} stopped")
-        return 0
-    except:
-        log_it("e", "An error occurred", exc=e)
+    global p_init
+    log_it("i" f"Stopping {Config.PLUGIN_NAME}...")
+    if p_init and p_init.is_alive():
+        p_init.terminate()
+        p_init.join()
+    log_it("i", f"{Config.PLUGIN_NAME} stopped")
+    return 0
