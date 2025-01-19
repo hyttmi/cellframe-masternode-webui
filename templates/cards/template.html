@@ -526,6 +526,24 @@
                             </div>
                         </div>
                     {% endif %}
+                    {% if network.current_block_reward %}
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="current_block_reward_{{ network_name }}">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h6 class="card-title text-uppercase"><span class="highlight">{{ network_name }}</span> current block reward</h6>
+                                <button type="button" class="btn" onclick="toggleCard('current_block_reward_{{ network_name }}')">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
+                            <div class="card-body d-flex align-items-center">
+                                <div class="card-inner">
+                                    <span class="fw-medium card-subtitle mb-2 text-body-secondary">{{ network.current_block_reward }}</span>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-dollar-sign icon-container"></i>
+                        </div>
+                    </div>
+                    {% endif %}
                     {% if network.autocollect_rewards %}
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="autocollect_rewards_{{ network_name }}">
                             <div class="card">

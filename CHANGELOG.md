@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.35] - 2025-XX-XX
+
+### Added
+- Missing current block reward card.
+
 ## [3.34] - 2025-01-18
 
 ### Fixed
