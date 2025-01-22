@@ -5,6 +5,9 @@
 ### Added
 - Missing current block reward card.
 
+### Changed
+- Change the way how rewards/blocks history is shown for the first 13 days.
+
 ## [3.34] - 2025-01-18
 
 ### Fixed

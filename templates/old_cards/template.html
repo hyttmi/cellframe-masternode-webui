@@ -612,7 +612,7 @@
                         <canvas id="firstSignedBlocksChart_{{ network_name }}"></canvas>
                     </div>
                     <ul class="nav justify-content-center">
-                        {% if network.first_signed_blocks_dict | length < 7 %}
+                        {% if network.first_signed_blocks_dict | length <= 13 %}
                         <li class="nav-item active" onclick="updateChart('firstSignedBlocksChart', {{ network.first_signed_blocks_dict | length }}, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">{{ network.first_signed_blocks_dict | length }} days</span>
                         </li>
@@ -654,7 +654,7 @@
                         <canvas id="signedBlocksChart_{{ network_name }}"></canvas>
                     </div>
                     <ul class="nav justify-content-center">
-                        {% if network.all_signed_blocks_dict | length < 7 %}
+                        {% if network.all_signed_blocks_dict | length <= 13 %}
                         <li class="nav-item active" onclick="updateChart('signedBlocksChart', {{ network.all_signed_blocks_dict | length }}, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">{{ network.all_signed_blocks_dict | length }} days</span>
                         </li>
@@ -697,7 +697,7 @@
                         <canvas id="rewardsChart_{{ network_name }}"></canvas>
                     </div>
                     <ul class="nav justify-content-center">
-                        {% if total_rewards_length < 7 %}
+                        {% if total_rewards_length <= 13 %}
                         <li class="nav-item active" onclick="updateChart('rewardsChart', {{ total_rewards_length }}, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">{{ total_rewards_length }} days</span>
                         </li>
@@ -740,7 +740,7 @@
                         <canvas id="sovereignRewardsChart_{{ network_name }}"></canvas>
                     </div>
                     <ul class="nav justify-content-center">
-                        {% if total_sovereign_rewards_length < 7 %}
+                        {% if total_sovereign_rewards_length <= 13 %}
                         <li class="nav-item active" onclick="updateChart('sovereignRewardsChart', {{ total_sovereign_rewards_length }}, '{{ network_name }}'); setActive(this);">
                             <span class="days_amount">{{ total_sovereign_rewards_length }} days</span>
                         </li>
