@@ -290,3 +290,16 @@ def get_blocks(network, block_type="count", today=False):
     except Exception as e:
         log_it("e", "An error occurred", exc=e)
         return None
+
+def get_blocks_today(network):
+    today = datetime.now().strftime("%y%m%d")
+    try:
+        get_blocks_today_command = cli_command(f"block list -from_date {today} -to_date {today} -net {network}")
+        if get_blocks_today_command:
+            blocks_match = re.search(r"have blocks: (\d+)", get_blocks_today_command)
+            if blocks_match:
+                return int(blocks_match.group(1))
+        return 0
+    except Exception as e:
+        log_it("e", "An error occurred", exc=e)
+        return None

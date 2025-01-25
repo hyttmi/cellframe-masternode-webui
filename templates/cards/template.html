@@ -526,6 +526,24 @@
                             </div>
                         </div>
                     {% endif %}
+                    {% if network.blocks_today %}
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="blocks_today_{{ network_name }}">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h6 class="card-title text-uppercase"><span class="highlight">{{ network_name }}</span> blocks today in network</h6>
+                                <button type="button" class="btn" onclick="toggleCard('blocks_today_{{ network_name }}')">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
+                            <div class="card-body d-flex align-items-center">
+                                <div class="card-inner">
+                                    <span class="fw-medium card-subtitle mb-2 text-body-secondary">{{ network.blocks_today }}</span>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-cubes icon-container"></i>
+                        </div>
+                    </div>
+                    {% endif %}
                     {% if network.current_block_reward %}
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="current_block_reward_{{ network_name }}">
                         <div class="card">

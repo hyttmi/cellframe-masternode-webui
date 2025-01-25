@@ -15,7 +15,8 @@ from networkutils import (
     get_node_data,
     get_rewards,
     get_token_price,
-    get_current_block_reward
+    get_current_block_reward,
+    get_blocks_today
 )
 from updater import check_plugin_update
 from wallets import get_reward_wallet_tokens
@@ -69,6 +70,7 @@ def generate_network_info():
                         'first_signed_blocks_dict': executor.submit(get_blocks, network, block_type="first_signed_blocks"),
                         'all_signed_blocks': executor.submit(get_blocks, network, block_type="all_signed_blocks_count"),
                         'autocollect_status': executor.submit(get_autocollect_status, network),
+                        'blocks_today': executor.submit(get_blocks_today, network),
                         'current_block_reward': executor.submit(get_current_block_reward, network),
                         'first_signed_blocks': executor.submit(get_blocks, network, block_type="first_signed_blocks_count"),
                         'first_signed_blocks_today': executor.submit(get_blocks, network, block_type="first_signed_blocks", today=True),
@@ -92,6 +94,7 @@ def generate_network_info():
                         'all_signed_blocks': futures['all_signed_blocks'].result(),
                         'autocollect_rewards': futures['autocollect_status'].result()['rewards'],
                         'autocollect_status': futures['autocollect_status'].result()['active'],
+                        'blocks_today': futures['blocks_today'].result(),
                         'current_block_reward': futures['current_block_reward'].result(),
                         'fee_wallet_tokens': tokens,
                         'first_signed_blocks': futures['first_signed_blocks'].result(),

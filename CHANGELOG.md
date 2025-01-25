@@ -4,6 +4,7 @@
 
 ### Added
 - Missing current block reward card.
+- Card for displaying how many blocks are generated on the network for current date.
 
 ### Changed
 - Change the way how rewards/blocks history is shown for the first 13 days.
