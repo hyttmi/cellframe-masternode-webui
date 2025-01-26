@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.36] - 2025-XX-XX
+
+### Added
+- Support for retrying cli commands if timeout exceeds or some other type of error happens.
+
 ## [3.35] - 2025-01-25
 
 ### Added
