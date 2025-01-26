@@ -1,34 +1,20 @@
+from command_runner import command_runner
 from logger import log_it
-import os, subprocess
+import os
 
-def cli_command(command, timeout=30, is_shell_command=False, retries=3):
+def cli_command(command, timeout=120, is_shell_command=False, retries=3):
     while retries > 0:
         try:
             if is_shell_command:
-                result = subprocess.run(
-                    command,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    shell=True,
-                    text=True,
-                    timeout=timeout
-                )
+                exit_code, output = command_runner(command, timeout=timeout, shell=True)
             else:
-                full_command = f"/opt/cellframe-node/bin/cellframe-node-cli {command}".split()
-                result = subprocess.run(
-                    full_command,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    text=True,
-                    timeout=timeout
-                )
-            if result.returncode == 0:
-                log_it("d", f"{command} executed successfully, return code was {result.returncode}")
-                return result.stdout.strip() if result.stdout else True
-            log_it("e", f"{command} failed to run successfully, return code was {result.returncode}")
-            return None
-        except subprocess.TimeoutExpired:
-            log_it("e", f"Timeout expired for command: {command}")
+                exit_code, output = command_runner(f"/opt/cellframe-node/bin/cellframe-node-cli {command}", timeout=timeout)
+            if exit_code == 0:
+                log_it("d", f"{command} executed successfully, return code was {exit_code}")
+                return output if output else True
+            else:
+                log_it("e", f"{command} failed to run successfully, return code was {exit_code}")
+                return False
         except Exception as e:
             log_it("e", f"An error occurred while running the command: {command}", exc=e)
         retries -= 1
