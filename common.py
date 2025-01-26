@@ -6,9 +6,9 @@ def cli_command(command, timeout=120, is_shell_command=False, retries=3):
     while retries > 0:
         try:
             if is_shell_command:
-                exit_code, output = command_runner(command, timeout=timeout, shell=True, method='monitor')
+                exit_code, output = command_runner(command, timeout=timeout, shell=True, method='poller')
             else:
-                exit_code, output = command_runner(f"/opt/cellframe-node/bin/cellframe-node-cli {command}", timeout=timeout, method='monitor')
+                exit_code, output = command_runner(f"/opt/cellframe-node/bin/cellframe-node-cli {command}", timeout=timeout, method='poller')
             if exit_code == 0:
                 log_it("d", f"{command} executed successfully, return code was {exit_code}")
                 return output if output else True
