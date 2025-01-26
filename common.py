@@ -1,28 +1,39 @@
-from command_runner import command_runner
 from logger import log_it
-import os
+import os, subprocess
 
-def cli_command(command, timeout=120, is_shell_command=False):
-    try:
-        if is_shell_command:
-            exit_code, output = command_runner(command, timeout=timeout, shell=True)
-            if exit_code == 0:
-                log_it("d", f"{command} executed succesfully, return code was {exit_code}")
-                return output if output else True
+def cli_command(command, timeout=10, is_shell_command=False, retries=3):
+    while retries > 0:
+        try:
+            if is_shell_command:
+                result = subprocess.run(
+                    command,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    shell=True,
+                    text=True,
+                    timeout=timeout
+                )
             else:
-                log_it("e", f"{command} failed to run succesfully, return code was {exit_code}")
-                return False
-        else:
-            exit_code, output = command_runner(f"/opt/cellframe-node/bin/cellframe-node-cli {command}", timeout=timeout)
-            if exit_code == 0:
-                log_it("d", f"{command} executed succesfully...")
-                return output.strip()
-            else:
-                log_it("e", f"{command} failed to run succesfully, return code was {exit_code}")
-                return None
-    except Exception as e:
-        log_it("e", "An error occurred", exc=e)
-        return None
+                full_command = f"/opt/cellframe-node/bin/cellframe-node-cli {command}".split()
+                result = subprocess.run(
+                    full_command,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    timeout=timeout
+                )
+            if result.returncode == 0:
+                log_it("d", f"{command} executed successfully, return code was {result.returncode}")
+                return result.stdout.strip() if result.stdout else True
+            log_it("e", f"{command} failed to run successfully, return code was {result.returncode}")
+            return None
+        except subprocess.TimeoutExpired:
+            log_it("e", f"Timeout expired for command: {command}")
+        except Exception as e:
+            log_it("e", f"An error occurred while running the command: {command}", exc=e)
+        retries -= 1
+        log_it("w", f"Retrying command: {command} ({retries} attempts left)")
+    return None
 
 def get_current_script_directory():
     return os.path.dirname(os.path.abspath(__file__))
