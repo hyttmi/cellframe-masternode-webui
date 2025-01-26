@@ -1,7 +1,7 @@
 from logger import log_it
 import os, subprocess
 
-def cli_command(command, timeout=10, is_shell_command=False, retries=3):
+def cli_command(command, timeout=30, is_shell_command=False, retries=3):
     while retries > 0:
         try:
             if is_shell_command:
