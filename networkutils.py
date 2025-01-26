@@ -299,7 +299,7 @@ def get_blocks_today(network):
             blocks_match = re.search(r"have blocks: (\d+)", get_blocks_today_command)
             if blocks_match:
                 return int(blocks_match.group(1))
-        return 0
+        return None
     except Exception as e:
         log_it("e", "An error occurred", exc=e)
         return None
