@@ -12,6 +12,8 @@ def cli_command(command, timeout=120, is_shell_command=False, retries=3):
             if exit_code == 0:
                 log_it("d", f"{command} executed successfully, return code was {exit_code}")
                 return output if output else True
+            elif exit_code == -254:
+                log_it("e", f"{command} timed out, retrying...")
             else:
                 log_it("e", f"{command} failed to run successfully, return code was {exit_code}")
                 return False
