@@ -32,7 +32,7 @@ def cli_command(command, timeout=30, is_shell_command=False, retries=3):
         except Exception as e:
             log_it("e", f"An error occurred while running the command: {command}", exc=e)
         retries -= 1
-        log_it("w", f"Retrying command: {command} ({retries} attempts left)")
+        log_it("e", f"Retrying command: {command} ({retries} attempts left)")
     return None
 
 def get_current_script_directory():

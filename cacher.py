@@ -22,9 +22,9 @@ def cache_blocks_data():
                 }
                 with ThreadPoolExecutor() as executor:
                     futures = {
-                        'block_count': executor.submit(cli_command, f"block count -net {network}"),
-                        'first_signed_blocks': executor.submit(cli_command, f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']}"),
-                        'signed_blocks': executor.submit(cli_command, f"block list -net {network} signed -cert {net_config['blocks_sign_cert']}")
+                        'block_count': executor.submit(cli_command, f"block count -net {network}", timeout=120),
+                        'first_signed_blocks': executor.submit(cli_command, f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']}", timeout=120),
+                        'signed_blocks': executor.submit(cli_command, f"block list -net {network} signed -cert {net_config['blocks_sign_cert']}", timeout=120)
                     }
 
                 block_count_result = futures['block_count'].result()
