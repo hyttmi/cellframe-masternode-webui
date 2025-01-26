@@ -9,6 +9,9 @@
 ### Changed
 - `command_runner` method changed to `poller` which apparently is better for bursting commands.
 
+### Fixed
+- Properly get network name from CFNet.active_nets() objects.
+
 ## [3.35] - 2025-01-25
 
 ### Added
