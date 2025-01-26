@@ -1,9 +1,13 @@
 # Changelog
 
-## [3.36] - 2025-XX-XX
+## [3.36] - 2025-01-26
 
 ### Added
 - Support for retrying cli commands if timeout exceeds or some other type of error happens.
+- Short timeouts for some cli commands (earlier it was 120 seconds... :/) to make sure the website opens faster.
+
+### Changed
+- `command_runner` method changed to `poller` which apparently is better for bursting commands.
 
 ## [3.35] - 2025-01-25
 
