@@ -44,7 +44,7 @@ def get_network_config(network):
 def get_autocollect_status(network):
     try:
         autocollect_status = {}
-        autocollect_cmd = cli_command(f"block autocollect status -net {network}")
+        autocollect_cmd = cli_command(f"block autocollect status -net {network}", timeout=3)
         amounts = re.findall(r"profit is (\d+.\d+)", autocollect_cmd)
         if amounts:
             autocollect_status['rewards'] = sum(float(amount) for amount in amounts)
@@ -61,7 +61,7 @@ def get_autocollect_status(network):
 @cachetools.func.ttl_cache(maxsize=10)
 def get_current_block_reward(network):
     try:
-        block_reward_cmd = cli_command(f"block reward show -net {network}")
+        block_reward_cmd = cli_command(f"block reward show -net {network}", timeout=3)
         if block_reward_cmd:
             block_reward_match = re.search(r"(\d+.\d+)", block_reward_cmd)
             if block_reward_match:
@@ -103,7 +103,7 @@ def get_node_data(network):
         status = get_network_status(network)
         if status:
             addr = status['address']
-            list_keys = cli_command(f"srv_stake list keys -net {network}")
+            list_keys = cli_command(f"srv_stake list keys -net {network}", timeout=3)
             total_weight_in_network = re.search(r"total_weight_coins:\s+(\d+\.\d+)", list_keys)
             active_nodes_count = len(re.findall(r"active: true", list_keys))
             total_weight = float(total_weight_in_network.group(1))
@@ -150,7 +150,7 @@ def get_node_data(network):
 
 def get_network_status(network):
     try:
-        net_status = cli_command(f"net -net {network} get status")
+        net_status = cli_command(f"net -net {network} get status", timeout=3)
         addr_match = re.search(r"([A-Z0-9]+::[A-Z0-9]+::[A-Z0-9]+::[A-Z0-9]+)", net_status)
         state_match = re.search(r"states:\s+current: (\w+)", net_status)
         target_state_match = re.search(r"target: (\w+)", net_status)
