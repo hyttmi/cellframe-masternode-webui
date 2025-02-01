@@ -15,8 +15,7 @@ from networkutils import (
     get_node_data,
     get_rewards,
     get_token_price,
-    get_current_block_reward,
-    get_blocks_today
+    get_current_block_reward
 )
 from updater import check_plugin_update
 from wallets import get_reward_wallet_tokens
@@ -58,7 +57,6 @@ def generate_network_info():
         for network in networks:
             net_config = get_network_config(network)
             if net_config:
-                network = str(network)
                 log_it("d", f"Fetching data for {network} network...")
                 wallet = net_config['wallet']
                 tokens = get_reward_wallet_tokens(wallet)
@@ -70,7 +68,7 @@ def generate_network_info():
                         'first_signed_blocks_dict': executor.submit(get_blocks, network, block_type="first_signed_blocks"),
                         'all_signed_blocks': executor.submit(get_blocks, network, block_type="all_signed_blocks_count"),
                         'autocollect_status': executor.submit(get_autocollect_status, network),
-                        'blocks_today': executor.submit(get_blocks_today, network),
+                        'blocks_today': executor.submit(get_blocks, network, block_type="blocks_today_in_network"),
                         'current_block_reward': executor.submit(get_current_block_reward, network),
                         'first_signed_blocks': executor.submit(get_blocks, network, block_type="first_signed_blocks_count"),
                         'first_signed_blocks_today': executor.submit(get_blocks, network, block_type="first_signed_blocks", today=True),

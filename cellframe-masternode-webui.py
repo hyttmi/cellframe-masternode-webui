@@ -1,4 +1,3 @@
-from concurrent.futures import ThreadPoolExecutor
 from config import Config
 from handlers import request_handler
 from logger import log_it
@@ -16,20 +15,14 @@ def http_server():
 
 def init():
     try:
-        t = threading.Thread(target=on_init)
-        t.start()
+        t_http_server = threading.Thread(target=http_server)
+        t_scheduled_tasks = threading.Thread(target=setup_schedules)
+        t_http_server.start()
+        log_it("i", "HTTP server started!")
+        t_scheduled_tasks.start()
+        log_it("i", "Scheduled tasks started!")
         log_it("i", f"{Config.PLUGIN_NAME} started")
         return 0
-    except Exception as e:
-        log_it("e", "An error occurred", exc=e)
-
-def on_init():
-    try:
-        with ThreadPoolExecutor() as executor:
-            log_it("i", "Submitting HTTP server to ThreadPool")
-            executor.submit(http_server)
-            log_it("i", "Submitting scheduled tasks to ThreadPool")
-            executor.submit(setup_schedules)
     except Exception as e:
         log_it("e", "An error occurred", exc=e)
 

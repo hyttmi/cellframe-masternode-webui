@@ -74,26 +74,28 @@ def get_current_block_reward(network):
 
 def get_token_price(network):
     try:
-        network = str(network).lower()
         log_it("d", "Fetching token price...")
-        if network == "backbone":
-            response = requests.get(f"https://coinmarketcap.com/currencies/cellframe/", timeout=5)
-            if response.status_code == 200:
-                price_match = re.search(r"price today is \$(\d+.\d+)", response.text)
-                if price_match:
-                    return float(price_match.group(1))
-                return None
-            log_it("e", f"Failed to fetch token price from {response.url}")
+        network_urls = {
+            "backbone": "https://coinmarketcap.com/currencies/cellframe/",
+            "kelvpn": "https://kelvpn.com/about-token"
+        }
+        url = network_urls.get(network.lower())
+        if not url:
+            log_it("e", f"Unsupported network {network}")
             return None
-        elif network == "kelvpn":
-            response = requests.get(f"https://kelvpn.com/about-token", timeout=5)
-            if response.status_code == 200:
-                price_match =re.search(r"\$(\d+.\d+)", response.text)
-                if price_match:
-                    return float(price_match.group(1))
-                return None
-            log_it("e", f"Failed to fetch token price from {response.url}")
+        response = requests.get(url, timeout=5)
+        if response.status_code == 200:
+            regex_patterns = {
+                "backbone": r"price today is \$(\d+\.\d+)",
+                "kelvpn": r"\$(\d+\.\d+)"
+            }
+            regex_match = re.search(regex_patterns[network.lower()], response.text)
+            if regex_match:
+                return float(regex_match.group(1))
+            log_it("e", f"Price not found in {url}")
             return None
+        log_it("e", f"Failed to fetch token price from {url}. Status code was {response.status_code}")
+        return None
     except Exception as e:
         log_it("e", "An error occurred", exc=e)
         return None
@@ -210,6 +212,12 @@ def get_blocks(network, block_type="count", today=False):
             all_signed_blocks = block_data.get('all_signed_blocks')
             all_first_signed_blocks = block_data.get('all_first_signed_blocks')
             block_count = block_data.get('block_count')
+            blocks_today_in_network = block_data.get('blocks_today_in_network')
+
+        if block_type == "blocks_today_in_network":
+            if blocks_today_in_network:
+                return blocks_today_in_network
+            return None
 
         if block_type == "count":
             if block_count:
@@ -286,19 +294,6 @@ def get_blocks(network, block_type="count", today=False):
 
     except FileNotFoundError:
         log_it("e", "Blocks cache file not found!")
-        return None
-    except Exception as e:
-        log_it("e", "An error occurred", exc=e)
-        return None
-
-def get_blocks_today(network):
-    today = datetime.now().strftime("%y%m%d")
-    try:
-        get_blocks_today_command = cli_command(f"block list -from_date {today} -to_date {today} -net {network}", timeout=5)
-        if get_blocks_today_command:
-            blocks_match = re.search(r"have blocks: (\d+)", get_blocks_today_command)
-            if blocks_match:
-                return int(blocks_match.group(1))
         return None
     except Exception as e:
         log_it("e", "An error occurred", exc=e)

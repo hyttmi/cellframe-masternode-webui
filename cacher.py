@@ -1,4 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
 from logger import log_it
 from networkutils import get_active_networks, get_network_config, get_node_data
 from common import cli_command, get_current_script_directory
@@ -6,6 +7,7 @@ import re, time, json, os
 
 def cache_blocks_data():
     try:
+        today = datetime.now().strftime("%y%m%d")
         networks = get_active_networks()
         log_it("d", f"Found the following networks: {networks}")
         for network in networks:
@@ -16,16 +18,24 @@ def cache_blocks_data():
                 log_it("i", "Caching blocks...")
                 start_time = time.time()
                 block_data = {
+                    'blocks_today_in_network': 0,
                     'block_count': 0,
                     'all_first_signed_blocks': {},
                     'all_signed_blocks': {}
                 }
                 with ThreadPoolExecutor() as executor:
                     futures = {
-                        'block_count': executor.submit(cli_command, f"block count -net {network}", timeout=120),
-                        'first_signed_blocks': executor.submit(cli_command, f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']}", timeout=120),
-                        'signed_blocks': executor.submit(cli_command, f"block list -net {network} signed -cert {net_config['blocks_sign_cert']}", timeout=120)
+                        'blocks_today_in_network': executor.submit(cli_command, f"block list -from_date {today} -to_date {today} -net {network}", timeout=360),
+                        'block_count': executor.submit(cli_command, f"block count -net {network}", timeout=360),
+                        'first_signed_blocks': executor.submit(cli_command, f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']}", timeout=360),
+                        'signed_blocks': executor.submit(cli_command, f"block list -net {network} signed -cert {net_config['blocks_sign_cert']}", timeout=360)
                     }
+
+                blocks_today_in_network = futures['blocks_today_in_network'].result()
+                blocks_today_in_network_match = re.search(r"have blocks: (\d+)", blocks_today_in_network)
+
+                if blocks_today_in_network and blocks_today_in_network_match:
+                    block_data['blocks_today_in_network'] = int(blocks_today_in_network_match.group(1))
 
                 block_count_result = futures['block_count'].result()
                 block_count_match = re.search(r":\s+(\d+)", block_count_result)

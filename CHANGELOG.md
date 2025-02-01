@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.37] - 2025-02-01
+
+### Changed
+- Move blocks amount for current date to cacher, it's sometimes fast and sometimes slow so can't process it on every page refresh.
+- Blocks are now cached every 5 minutes because of the above change.
+
+### Improved
+- Price fetching for tokens.
+
 ## [3.36] - 2025-01-26
 
 ### Added
