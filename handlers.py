@@ -110,7 +110,7 @@ def json_request_handler(headers):
     api_token = headers.get("API_TOKEN")
     log_it("i", "Processing JSON request...")
     if not api_token or api_token != Config.API_TOKEN:
-        log_it("e", "Invalid API token!")
+        log_it("e", f"Invalid API token ({api_token})!")
         return CFSimpleHTTPResponse(body=b'{"error": "Unauthorized"}',
                                     code=200,
                                     headers = {
