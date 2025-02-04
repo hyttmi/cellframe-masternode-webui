@@ -2,6 +2,9 @@
 
 ## [3.38] - 2025-XX-XX
 
+## Fixed
+- CLI version parsing.
+
 ## [3.37] - 2025-02-01
 
 ### Changed

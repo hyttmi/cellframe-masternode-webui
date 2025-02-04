@@ -83,11 +83,14 @@ def get_sys_stats():
 def get_installed_node_version():
     try:
         log_it("d", "Fetching installed node version...")
-        version = cli_command("version", timeout=5)
-        if version:
-            current_version = version.split()[2].replace("-",".")
-            log_it("d", f"Installed node version: {current_version}")
-            return current_version
+        version_cmd = cli_command("version", timeout=5)
+        if version_cmd:
+            version_match = re.search(r"(\d.+)", version_cmd)
+            if version_match:
+                current_version = version_match.group(1).replace("-",".")
+                log_it("d", f"Installed node version: {current_version}")
+                return current_version
+            return None
         return None
     except Exception as e:
         log_it("e", "An error occurred", exc=e)
