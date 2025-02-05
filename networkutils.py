@@ -117,12 +117,12 @@ def get_node_data(network):
                 r'sovereign_addr:\s+(?P<sovereign_addr>\w+)\s+'
                 r'sovereign_tax:\s+(?P<sovereign_tax>\d+\.\d+)\s+'
                 r'active:\s+(?P<active>true|false)'
-            ) # Compiling regex makes it much faster for this
+            )
             nodes = []
             for match in pattern.finditer(list_keys):
                 node = match.groupdict()
-                node['is_my_node'] = (node['node_addr'] == addr) # This is our node
-                node['is_sovereign'] = float(node['sovereign_tax']) > 0.0 # If bigger than 0.0, it's a sovereign node
+                node['is_my_node'] = (node['node_addr'] == addr)
+                node['is_sovereign'] = float(node['sovereign_tax']) > 0.0
                 nodes.append(node)
 
                 if node['is_sovereign'] and node['is_my_node']:
