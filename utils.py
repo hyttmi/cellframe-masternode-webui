@@ -1,7 +1,7 @@
 from common import cli_command
 from logger import log_it
 from packaging import version
-import socket, requests, re, time, psutil, time, cachetools.func
+import socket, requests, re, time, psutil, time, functools
 
 def get_external_ip():
     try:
@@ -15,7 +15,6 @@ def get_external_ip():
         log_it("e", "An error occurred", exc=e)
         return None
 
-@cachetools.func.ttl_cache(maxsize=10)
 def get_node_pid():
     try:
         log_it("d", "Fetching node PID...")
@@ -29,7 +28,6 @@ def get_node_pid():
         log_it("e", "An error occurred", exc=e)
         return None
 
-@cachetools.func.ttl_cache(maxsize=10)
 def get_system_hostname():
     try:
         log_it("d", "Fetching hostname...")
@@ -79,7 +77,7 @@ def get_sys_stats():
         log_it("e", "An error occurred", exc=e)
         return None
 
-@cachetools.func.ttl_cache(maxsize=10)
+@functools.lru_cache(maxsize=1)
 def get_installed_node_version():
     try:
         log_it("d", "Fetching installed node version...")

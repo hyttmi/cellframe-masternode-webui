@@ -3,9 +3,8 @@ from wallets import get_reward_wallet_tokens
 from datetime import datetime
 from logger import log_it
 from pycfhelpers.node.net import CFNet
-import re, requests, os, json, cachetools.func
+import re, requests, os, json, functools
 
-@cachetools.func.ttl_cache(maxsize=10)
 def get_active_networks():
     try:
         nets = CFNet.active_nets()
@@ -18,7 +17,6 @@ def get_active_networks():
         log_it("e", "An error occurred", exc=e)
         return None
 
-@cachetools.func.ttl_cache(maxsize=10)
 def get_network_config(network):
     network_config_file = f"/opt/cellframe-node/etc/network/{network}.cfg"
     net_config = {}
@@ -58,7 +56,7 @@ def get_autocollect_status(network):
         log_it("e", "An error occurred", exc=e)
         return None
 
-@cachetools.func.ttl_cache(maxsize=10)
+functools.lru_cache(maxsize=1)
 def get_current_block_reward(network):
     try:
         block_reward_cmd = cli_command(f"block reward show -net {network}", timeout=3)
