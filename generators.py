@@ -133,7 +133,7 @@ def generate_data(template_name, return_as_json=False, is_top_level_template=Fal
             log_it("d", "Generating HTML content...")
             env = Config.jinja_environment()
             template = env.get_template(template_path)
-            return template.render(general_info=general_info, network_info=network_info)
+            return template.render(general_info=general_info, network_info=network_info, plugin_url=Config.PLUGIN_URL)
     except Exception as e:
         log_it("e", "An error occurred", exc=e)
         if return_as_json:
