@@ -1,12 +1,12 @@
 # Changelog
 
-## [3.38] - 2025-XX-XX
+## [3.38] - 2025-02-08
 
 ## Fixed
 - CLI version parsing.
 
 ### Changed
-- Change cacher values again. 10 minutes to blocks, 30 minutes to rewards.
+- Changed default cacher values again. 10 minutes to blocks, 30 minutes to rewards.
 
 ## [3.37] - 2025-02-01
 
