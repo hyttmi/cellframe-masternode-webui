@@ -1,7 +1,7 @@
 from common import cli_command
 from logger import log_it
 from packaging import version
-import socket, requests, re, time, psutil, time, functools, base64
+import socket, requests, re, time, psutil, time, functools, base64, mimetypes
 
 def get_external_ip():
     try:
@@ -113,5 +113,9 @@ def get_latest_node_version():
         return None
 
 def img_to_base64(filepath):
-    with open(filepath, "rb") as image_file:
-        return base64.b64encode(image_file.read()).decode('utf-8')
+        mime_type, _ = mimetypes.guess_type(filepath)
+        if mime_type is None:
+            raise ValueError(f"Can't determine filetype for {filepath}")
+        with open(filepath, "rb") as image_file:
+            encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+        return f"data:{mime_type};base64,{encoded_string}"
