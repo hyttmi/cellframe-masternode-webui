@@ -48,11 +48,9 @@ class Config:
     USERNAME = str(get_config_value("webui", "username", default="webui", is_numeric=False))
 
     def jinja_environment():
-        from utils import img_to_base64
         env = Environment(
             loader=PackageLoader("cellframe-masternode-webui"),
             autoescape=select_autoescape()
         )
         env.policies['json.dumps_kwargs'] = {'sort_keys': False}
-        env.filters['img_to_base64'] = img_to_base64
         return env
