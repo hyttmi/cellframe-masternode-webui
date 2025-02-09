@@ -1,4 +1,5 @@
 from jinja2 import Environment, PackageLoader, select_autoescape
+from common import img_to_base64
 import DAP
 
 def get_config_value(section, key, default=None, is_numeric=False):
@@ -53,4 +54,5 @@ class Config:
             autoescape=select_autoescape()
         )
         env.policies['json.dumps_kwargs'] = {'sort_keys': False}
+        env.filters['img_to_base64'] = img_to_base64
         return env
