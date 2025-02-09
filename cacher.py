@@ -121,24 +121,19 @@ def cache_rewards_data():
                     cli_command(f"tx_history -addr {sovereign_wallet_addr}", timeout=360)
                     if sovereign_wallet_addr else None
                 )
-
                 if cmd_get_config_wallet_tx_history:
                     log_it("d", f"Caching wallet history for address {net_config['wallet']}")
                     rewards['own_rewards'] = parse_tx_history(cmd_get_config_wallet_tx_history)
-
                 if cmd_get_sovereign_wallet_tx_history:
                     log_it("d", f"Caching wallet history for address {sovereign_wallet_addr}")
                     rewards['sovereign_rewards'] = parse_tx_history(cmd_get_sovereign_wallet_tx_history)
-
                 if rewards:
                     cache_file_path = os.path.join(get_current_script_directory(), f".{network}_rewards_cache.json")
                     with open(cache_file_path, "w") as f:
                         json.dump(rewards, f, indent=4)
-
                 elapsed_time = time.time() - start_time
                 log_it("i", f"Reward caching took {elapsed_time:.2f} seconds!")
             else:
                 log_it("e", f"No valid address found for {network}, skipping caching.")
-
     except Exception as e:
         log_it("e", "An error occurred", exc=e)
