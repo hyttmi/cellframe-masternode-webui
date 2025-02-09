@@ -9,7 +9,6 @@ def get_active_networks():
     try:
         nets = CFNet.active_nets()
         if nets:
-            log_it("d", f"Found the following networks: {nets}")
             return [str(net.name) for net in nets]
         log_it("e", "Can't get list of networks!")
         return None

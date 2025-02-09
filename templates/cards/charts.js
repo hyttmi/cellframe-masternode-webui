@@ -51,7 +51,9 @@
                         barPercentage: 0.9,
                         label: 'Effective weight',
                         data: effectiveWeights,
-                        backgroundColor: '#B3A3FF',
+                        backgroundColor: function(item) {
+                            return item.isMyNode ? '#9079ff' : '#B3A3FF';
+                        },
                         borderWidth: 0
                     }
                 ]
