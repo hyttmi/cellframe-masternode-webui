@@ -1,7 +1,7 @@
 from common import cli_command
 from logger import log_it
 from packaging import version
-import socket, requests, re, time, psutil, time, functools
+import socket, requests, re, time, psutil, time, functools, base64
 
 def get_external_ip():
     try:
@@ -111,3 +111,7 @@ def get_latest_node_version():
     except Exception as e:
         log_it("e", "An error occurred", exc=e)
         return None
+
+def img_to_base64(filepath):
+    with open(filepath, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode('utf-8')

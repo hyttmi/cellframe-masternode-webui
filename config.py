@@ -1,5 +1,5 @@
 from jinja2 import Environment, PackageLoader, select_autoescape
-from common import img_to_base64
+from utils import img_to_base64
 import DAP
 
 def get_config_value(section, key, default=None, is_numeric=False):

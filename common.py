@@ -1,6 +1,6 @@
 from command_runner import command_runner
 from logger import log_it
-import os, base64
+import os
 
 def cli_command(command, timeout=120, is_shell_command=False, retries=3):
     while retries > 0:
@@ -28,7 +28,3 @@ def get_current_script_directory():
 
 def get_script_parent_directory():
     return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-def img_to_base64(filepath):
-    with open(filepath, "rb") as image_file:
-        return base64.b64encode(image_file.read()).decode('utf-8')
