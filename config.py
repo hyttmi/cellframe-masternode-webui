@@ -1,5 +1,4 @@
 from jinja2 import Environment, PackageLoader, select_autoescape
-from utils import img_to_base64
 import DAP
 
 def get_config_value(section, key, default=None, is_numeric=False):
@@ -49,6 +48,7 @@ class Config:
     USERNAME = str(get_config_value("webui", "username", default="webui", is_numeric=False))
 
     def jinja_environment():
+        from utils import img_to_base64
         env = Environment(
             loader=PackageLoader("cellframe-masternode-webui"),
             autoescape=select_autoescape()
