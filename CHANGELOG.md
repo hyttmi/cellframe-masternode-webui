@@ -2,6 +2,10 @@
 
 ## [4.00] - 2025-XX-XX
 
+### Changed
+- Cacher is not using ThreadPool anymore so commands will not run in parallel which helps especially on low end systems.
+- Cacher uses locking mechanism now so blocks caching and rewards caching will not run in parallel. This one also helps on lower end systems.
+
 ## [3.38] - 2025-02-08
 
 ### Fixed
