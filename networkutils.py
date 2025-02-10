@@ -295,3 +295,23 @@ def get_blocks(network, block_type="count", today=False):
     except Exception as e:
         log_it("e", "An error occurred", exc=e)
         return None
+
+def get_chain_size(network):
+    try:
+        chain_path = f"/opt/cellframe-node/var/lib/network/{str(network.lower())}/main/0.dchaincell"
+        if os.path.exists(chain_path):
+            size = os.path.getsize(chain_path)
+            if size < 1024:
+                return f"{size} bytes"
+            elif size < pow(1024,2):
+                return f"{round(size/1024, 2)} KB"
+            elif size < pow(1024,3):
+                return f"{round(size/(pow(1024,2)), 2)} MB"
+            elif size < pow(1024,4):
+                return f"{round(size/(pow(1024,3)), 2)} GB"
+    except FileNotFoundError:
+        log_it("e", f"Chaincell file not found for {network}")
+        return None
+    except Exception as e:
+        log_it("e", "An error occurred", exc=e)
+        return None
