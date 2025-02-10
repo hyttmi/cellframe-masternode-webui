@@ -298,7 +298,15 @@ def get_blocks(network, block_type="count", today=False):
 
 def get_chain_size(network):
     try:
-        chain_path = f"/opt/cellframe-node/var/lib/network/{network.lower()}/main/0.dchaincell"
+        network_mapping = {
+            'Backbone': 'scorpion',
+            'KelVPN': 'kelvpn'
+        }
+        if network not in network_mapping:
+            log_it("d" f"Unknown network: {network}")
+            return None
+        dir = network_mapping[network]
+        chain_path = f"/opt/cellframe-node/var/lib/network/{dir}/main/0.dchaincell"
         log_it("d", f"Checking chain size for {chain_path}...")
         if not os.path.exists(chain_path):
             log_it("e", f"Chaincell file not found for {network}")
