@@ -106,7 +106,7 @@ def get_node_data(network):
             total_weight_in_network = re.search(r"total_weight_coins:\s+(\d+\.\d+)", list_keys)
             active_nodes_count = len(re.findall(r"active: true", list_keys))
             total_weight = float(total_weight_in_network.group(1))
-            pattern = re.compile(
+            node_pattern = re.compile(
                 r'pkey_hash:\s+(?P<pkey_hash>\w+)\s+'
                 r'stake_value:\s+(?P<stake_value>\d+\.\d+)\s+'
                 r'effective_value:\s+(?P<effective_value>\d+\.\d+)\s+'
@@ -118,7 +118,7 @@ def get_node_data(network):
                 r'active:\s+(?P<active>true|false)'
             )
             nodes = []
-            for match in pattern.finditer(list_keys):
+            for match in node_pattern.finditer(list_keys):
                 node = match.groupdict()
                 node['is_my_node'] = (node['node_addr'] == addr)
                 node['is_sovereign'] = float(node['sovereign_tax']) > 0.0
@@ -298,20 +298,21 @@ def get_blocks(network, block_type="count", today=False):
 
 def get_chain_size(network):
     try:
-        chain_path = f"/opt/cellframe-node/var/lib/network/{str(network.lower())}/main/0.dchaincell"
-        if os.path.exists(chain_path):
-            size = os.path.getsize(chain_path)
-            if size < 1024:
-                return f"{size} bytes"
-            elif size < pow(1024,2):
-                return f"{round(size/1024, 2)} KB"
-            elif size < pow(1024,3):
-                return f"{round(size/(pow(1024,2)), 2)} MB"
-            elif size < pow(1024,4):
-                return f"{round(size/(pow(1024,3)), 2)} GB"
-    except FileNotFoundError:
-        log_it("e", f"Chaincell file not found for {network}")
-        return None
+        chain_path = f"/opt/cellframe-node/var/lib/network/{network.lower()}/main/0.dchaincell"
+        log_it("d", f"Checking chain size for {chain_path}...")
+        if not os.path.exists(chain_path):
+            log_it("e", f"Chaincell file not found for {network}")
+            return None
+        log_it("d", f"Chain path for {network} exists!")
+        size = os.path.getsize(chain_path)
+        if size < 1024:
+            return f"{size} bytes"
+        elif size < pow(1024,2):
+            return f"{round(size/1024, 2)} KB"
+        elif size < pow(1024,3):
+            return f"{round(size/(pow(1024,2)), 2)} MB"
+        elif size < pow(1024,4):
+            return f"{round(size/(pow(1024,3)), 2)} GB"
     except Exception as e:
         log_it("e", "An error occurred", exc=e)
         return None

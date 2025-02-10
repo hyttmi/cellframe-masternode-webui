@@ -123,7 +123,7 @@ Here are the variables that are passed to the Jinja templates:
   - `network_info.autocollect_status`: The status of reward autocollection
   - `network_info.fee_wallet_tokens`: A dict of token balances in the network's fee wallet
   - `network_info.first_signed_blocks`: The number of first signed blocks
-  - `network_info.general_node_info`: Returns the output from `cellframe-node-cli node dump -<network>`
+  - `network_info.chain_size`: Chain size of main chain per network
   - `network_info.node_data`: Returns a dict containing information about all network nodes
   - `network_info.rewards`: A dictionary of all rewards
   - `network_info.signed_blocks_today`: The number of blocks signed today
