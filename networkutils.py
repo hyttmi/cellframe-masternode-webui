@@ -303,7 +303,7 @@ def get_chain_size(network):
             'KelVPN': 'kelvpn'
         }
         if network not in network_mapping:
-            log_it("d" f"Unknown network: {network}")
+            log_it("d" f"Unknown network: {network}. Can't fetch chain size...")
             return None
         dir = network_mapping[network]
         chain_path = f"/opt/cellframe-node/var/lib/network/{dir}/main/0.dchaincell"
