@@ -112,7 +112,7 @@ def get_node_data(network):
 
             total_weight = float(total_weight_in_network.group(1))
             max_weight = float(max_related_weight.group(1))
-            calculated_weight = (max_weight / total_weight) * 100
+            calculated_weight = total_weight * (max_weight / 100)
 
             node_pattern = re.compile(
                 r'pkey_hash:\s+(?P<pkey_hash>\w+)\s+'
