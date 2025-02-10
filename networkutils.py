@@ -103,9 +103,17 @@ def get_node_data(network):
         if status:
             addr = status['address']
             list_keys = cli_command(f"srv_stake list keys -net {network}", timeout=3)
+            if not list_keys:
+                log_it("e", f"Failed to run srv_stake list keys for {network}")
+                return None
             total_weight_in_network = re.search(r"total_weight_coins:\s+(\d+\.\d+)", list_keys)
             active_nodes_count = len(re.findall(r"active: true", list_keys))
+            max_related_weight = re.search(r"each_validator_max_related_weight:\s+(\d+\.\d+)", list_keys)
+
             total_weight = float(total_weight_in_network.group(1))
+            max_weight = float(max_related_weight.group(1))
+            calculated_weight = (max_weight / total_weight) * 100
+
             node_pattern = re.compile(
                 r'pkey_hash:\s+(?P<pkey_hash>\w+)\s+'
                 r'stake_value:\s+(?P<stake_value>\d+\.\d+)\s+'
@@ -135,7 +143,8 @@ def get_node_data(network):
 
             info = {
                 'active_nodes_count': active_nodes_count,
-                'total_weight': total_weight
+                'total_weight': total_weight,
+                'max_weight': calculated_weight
             }
             result = {
                 'info': info,
