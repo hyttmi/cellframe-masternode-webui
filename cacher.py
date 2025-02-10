@@ -46,6 +46,24 @@ def parse_tx_history(tx_history):
         rewards.append(reward)
     return rewards
 
+def parse_blocks(data, block_type):
+    parsed_blocks = {}
+    block_number = None
+    if data:
+        log_it("d", f"Parsing {block_type.replace('_', ' ').capitalize()}...")
+        lines = data.splitlines()
+        for line in lines:
+            line = line.strip()
+            if "block number" in line:
+                block_number = line.split("block number:")[1].strip()
+                parsed_blocks[block_number] = {}
+            elif "hash:" in line and block_number:
+                parsed_blocks[block_number]['hash'] = line.split("hash:")[1].strip()
+            elif "ts_create:" in line and block_number:
+                original_date = line.split("ts_create:")[1].strip()[:-6]
+                parsed_blocks[block_number]['ts_created'] = original_date
+    return parsed_blocks
+
 def cache_blocks_data():
     try:
         while is_locked():
@@ -86,20 +104,8 @@ def cache_blocks_data():
                 if block_count and block_count_match:
                     block_data['block_count'] = int(block_count_match.group(1))
 
-                for block_type, data in [("first_signed_blocks", first_signed_blocks), ("signed_blocks", signed_blocks)]:
-                    if data:
-                        log_it("d", f"{block_type.replace('_', ' ').capitalize()} for {network} found!")
-                        lines = data.splitlines()
-                        for line in lines:
-                            line = line.strip()
-                            if "block number" in line:
-                                block_number = line.split("block number:")[1].strip()
-                                block_data[f"all_{block_type}"][block_number] = {}
-                            elif "hash:" in line:
-                                block_data[f"all_{block_type}"][block_number]['hash'] = line.split("hash:")[1].strip()
-                            elif "ts_create:" in line:
-                                original_date = line.split("ts_create:")[1].strip()[:-6]
-                                block_data[f"all_{block_type}"][block_number]['ts_created'] = original_date
+                block_data['all_first_signed_blocks'] = parse_blocks(first_signed_blocks, "first_signed_blocks")
+                block_data['all_signed_blocks'] = parse_blocks(signed_blocks, "signed_blocks")
 
                 cache_file_path = os.path.join(get_current_script_directory(), f".{network}_blocks_cache.json")
                 with open(cache_file_path, "w") as f:
