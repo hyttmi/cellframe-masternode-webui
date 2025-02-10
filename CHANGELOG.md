@@ -7,6 +7,9 @@
 - Cacher uses locking mechanism now so blocks caching and rewards caching will not run in parallel. This one also helps on lower end systems.
 - Own node in top 15 nodes chart has a different color.
 
+### Added
+- Card for displaying main chain size.
+
 ## [3.38] - 2025-02-08
 
 ### Fixed
