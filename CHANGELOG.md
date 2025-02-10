@@ -9,6 +9,7 @@
 
 ### Added
 - Card for displaying main chain size.
+- Card for displaying maximum weight for node on network.
 
 ## [3.38] - 2025-02-08
 
