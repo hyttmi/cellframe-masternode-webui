@@ -24,7 +24,7 @@
             <h1 class="text-uppercase text-center text-color-secondary">My cards</h1>
             <div class="d-flex justify-content-center mb-3">
                 <button id="edit_view_button" class="btn">
-                    <i class="fa-regular fa-2xl fa-circle-xmark add_icon" title="Button for adding cards"></i><i class="fa-solid fa-ban fa-2xl settings_icon" title="Button for clearing back to default settings"></i>
+                    <i class="fa-regular fa-2xl fa-circle-xmark add_icon" title="Button for adding cards"></i><i id="clear_storage" class="fa-solid fa-ban fa-2xl defaults_icon" title="Button for clearing back to default settings"></i>
                 </button>
             </div>
         </div>
@@ -939,6 +939,7 @@
         const customView = document.getElementById('custom_view');
         const availableCards = document.getElementById('available_cards');
         const editViewBtn = document.getElementById('edit_view_button');
+        const clearStorageBtn = document.getElementById'''
 
         const updateLocalStorage = () => {
             const customViewCards = Array.from(customView.children).map(card => card.dataset.id);
@@ -1038,6 +1039,11 @@
                 });
                 selectedItem.classList.add('active');
         }
+        document.getElementById("clear_storage").addEventListener("click", function(event) {
+        event.stopPropagation();
+        localStorage.clear();
+        alert("Local storage cleared!");
+        });
     </script>
     <script defer>
         {% include 'cards/charts.js' %}
