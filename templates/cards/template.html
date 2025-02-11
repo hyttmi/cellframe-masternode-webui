@@ -939,7 +939,7 @@
         const customView = document.getElementById('custom_view');
         const availableCards = document.getElementById('available_cards');
         const editViewBtn = document.getElementById('edit_view_button');
-        const clearStorageBtn = document.getElementById'''
+        const clearStorageBtn = document.getElementById('clear_storage')
 
         const updateLocalStorage = () => {
             const customViewCards = Array.from(customView.children).map(card => card.dataset.id);
@@ -1039,7 +1039,8 @@
                 });
                 selectedItem.classList.add('active');
         }
-        document.getElementById("clear_storage").addEventListener("click", function(event) {
+
+        clearStorageButton.addEventListener("click", function(event) {
         event.stopPropagation();
         localStorage.clear();
         alert("Local storage cleared!");
