@@ -192,4 +192,11 @@ html {
     border: none !important;
     outline: none !important;
     box-shadow: none !important;
-  }
+}
+
+.settings_icon {
+    color: var(--accent-color);
+    transform: rotate(45deg);
+    transition: all 0.5s ease-in-out;
+    margin-left: 10px;
+}
