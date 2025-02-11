@@ -1058,9 +1058,8 @@
         }
 
         clearStorageBtn.addEventListener("click", function(event) {
-        event.stopPropagation();
         localStorage.clear();
-        alert("Local storage cleared!");
+        location.reload();
         });
     </script>
     <script defer>
