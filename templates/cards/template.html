@@ -19,12 +19,26 @@
 </head>
 
 <body>
+    <div class="modal fade" id="data_removal_confirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">Do you wish to reset your view settings?</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+              <button type="button" id="clear_storage" class="btn btn-primary">Yes</button>
+            </div>
+          </div>
+        </div>
+      </div>
     <div class="container-fluid mt-4">
         <div class="row">
             <h1 class="text-uppercase text-center text-color-secondary">My cards</h1>
             <div class="d-flex justify-content-center mb-3">
                 <button id="edit_view_button" class="btn">
-                    <i class="fa-regular fa-2xl fa-circle-xmark add_icon" title="Button for adding cards"></i><i id="clear_storage" class="fa-solid fa-ban fa-2xl defaults_icon" title="Button for clearing back to default settings"></i>
+                    <i class="fa-regular fa-2xl fa-circle-xmark add_icon" title="Button for adding cards"></i><i data-bs-toggle="modal" data-bs-target="#data_removal_confirmation" class="fa-solid fa-ban fa-2xl defaults_icon" title="Button for clearing back to default settings"></i>
                 </button>
             </div>
         </div>
@@ -1032,12 +1046,12 @@
         }
 
         function setActive(selectedItem) {
-                var parentCard = selectedItem.closest('.card');
-                var navItems = parentCard.querySelectorAll('.nav-item');
-                navItems.forEach(function(item) {
-                    item.classList.remove('active');
-                });
-                selectedItem.classList.add('active');
+            var parentCard = selectedItem.closest('.card');
+            var navItems = parentCard.querySelectorAll('.nav-item');
+            navItems.forEach(function(item) {
+                item.classList.remove('active');
+            });
+            selectedItem.classList.add('active');
         }
 
         clearStorageBtn.addEventListener("click", function(event) {
