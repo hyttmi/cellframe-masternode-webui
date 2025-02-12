@@ -81,7 +81,6 @@ def cache_blocks_data():
         for network in networks:
             log_it("d", f"Caching blocks for {network}...")
             net_config = get_network_config(network)
-            log_it("d", f"Network config for {network} returned {net_config}")
             if net_config:
                 log_it("i", "Caching blocks...")
                 start_time = time.time()
