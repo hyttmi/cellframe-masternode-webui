@@ -48,20 +48,23 @@ def parse_tx_history(tx_history):
 
 def parse_blocks(data, block_type):
     parsed_blocks = []
-    block_number = None
-    if data:
-        log_it("d", f"Parsing {block_type.replace('_', ' ').capitalize()}...")
-        lines = data.splitlines()
-        for line in lines:
-            line = line.strip()
-            if "block number" in line:
-                block_number = line.split("block number:")[1].strip()
-                parsed_blocks.append({"block_number": block_number})
-            elif "hash:" in line and block_number:
-                parsed_blocks[-1]['hash'] = line.split("hash:")[1].strip()
-            elif "ts_create:" in line and block_number:
-                original_date = line.split("ts_create:")[1].strip()[:-6]
-                parsed_blocks[-1]['ts_created'] = original_date
+    block_info = None
+    if not data:
+        log_it("d", f"No data to parse from {block_type.replace('_', ' ').capitalize()}")
+        return parsed_blocks
+    log_it("d", f"Parsing {block_type.replace('_', ' ').capitalize()}...")
+    for line in data.splitlines():
+        line = line.strip()
+        if line.startswith("block number:"):
+            if block_info:
+                parsed_blocks.append(block_info)
+            block_info = {"block_number": line.split("block number:")[1].strip()}
+        elif line.startswith("hash:") and block_info:
+            block_info["hash"] = line.split("hash:")[1].strip()
+        elif line.startswith("ts_create:") and block_info:
+            block_info["ts_created"] = line.split("ts_create:")[1].strip()[:-6]
+    if block_info:
+        parsed_blocks.append(block_info)
     return parsed_blocks
 
 def cache_blocks_data():
