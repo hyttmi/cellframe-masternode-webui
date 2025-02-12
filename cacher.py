@@ -47,7 +47,7 @@ def parse_tx_history(tx_history):
     return rewards
 
 def parse_blocks(data, block_type):
-    parsed_blocks = {}
+    parsed_blocks = []
     block_number = None
     if data:
         log_it("d", f"Parsing {block_type.replace('_', ' ').capitalize()}...")
@@ -56,12 +56,12 @@ def parse_blocks(data, block_type):
             line = line.strip()
             if "block number" in line:
                 block_number = line.split("block number:")[1].strip()
-                parsed_blocks[block_number] = {}
+                parsed_blocks.append({"block_number": block_number})
             elif "hash:" in line and block_number:
-                parsed_blocks[block_number]['hash'] = line.split("hash:")[1].strip()
+                parsed_blocks[-1]['hash'] = line.split("hash:")[1].strip()
             elif "ts_create:" in line and block_number:
                 original_date = line.split("ts_create:")[1].strip()[:-6]
-                parsed_blocks[block_number]['ts_created'] = original_date
+                parsed_blocks[-1]['ts_created'] = original_date
     return parsed_blocks
 
 def cache_blocks_data():
