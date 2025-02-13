@@ -3,6 +3,7 @@ from concurrent.futures import ThreadPoolExecutor
 from config import Config
 from emailer import send_email
 from generators import generate_data
+from heartbeat import run_heartbeat_check
 from logger import log_it
 from telegram import send_telegram_message
 from updater import install_plugin_update
@@ -49,6 +50,15 @@ def setup_schedules():
                 run_on_startup=True
             )
             log_it("d", "rewards_caching_schedule submitted to ThreadPool")
+
+            futures['heartbeat_check_schedule'] = executor.submit(
+                run_scheduler,
+                run_heartbeat_check,
+                15,
+                every_min=True,
+                run_on_startup=False
+            )
+            log_it("d", "heartbeat_check_schedule submitted to ThreadPool")
 
             if Config.TELEGRAM_STATS_ENABLED:
                 futures['send_telegram_message_notification'] = executor.submit(
