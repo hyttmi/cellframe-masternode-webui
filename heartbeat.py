@@ -51,4 +51,4 @@ def run_heartbeat_check():
     heartbeat.autocollect_status()
     heartbeat.last_signed_block()
     statuses = heartbeat.get_statuses()
-    log_it("d", f"Updated Heartbeat Statuses: {statuses}")
+    log_it("d", f"Updated heartbeat statuses: {statuses}")
