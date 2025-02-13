@@ -21,7 +21,7 @@ def init():
         log_it("i", "HTTP server started!")
         t_scheduled_tasks.start()
         log_it("i", "Scheduled tasks started!")
-        log_it("i", f"{Config.PLUGIN_NAME} started")
+        log_it("i", f"{Config.PLUGIN_NAME} started!")
         return 0
     except Exception as e:
         log_it("e", "An error occurred", exc=e)
