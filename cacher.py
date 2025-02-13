@@ -114,7 +114,6 @@ def cache_blocks_data():
                     json.dump(block_data, f, indent=4)
                 elapsed_time = time.time() - start_time
                 log_it("i", f"Blocks cached for {network}! It took {elapsed_time:.2f} seconds!")
-
             else:
                 log_it("e", f"Network config not found for {network}, skipping caching")
     except Exception as e:
