@@ -33,7 +33,7 @@ class Heartbeat:
     def last_signed_block(self):
         try:
             for network in self.statuses:
-                signed_blocks = get_blocks(network, block_type="all_signed_blocks")
+                signed_blocks = get_blocks(network, block_type="all_signed_blocks", heartbeat=True)
                 log_it("d", signed_blocks)
                 curr_time = datetime.now()
                 for block in signed_blocks:

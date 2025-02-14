@@ -210,7 +210,7 @@ def get_rewards(network, total_sum=False, rewards_today=False, is_sovereign=Fals
         log_it("e", "An error occurred", exc=e)
         return None
 
-def get_blocks(network, block_type="count", today=False):
+def get_blocks(network, block_type="count", today=False, heartbeat=False):
     try:
         cache_file_path = os.path.join(get_current_script_directory(), f".{network}_blocks_cache.json")
         with open(cache_file_path, "r") as f:
@@ -235,7 +235,8 @@ def get_blocks(network, block_type="count", today=False):
             blocks_per_day = {}
             for block in all_signed_blocks:
                 block_date = datetime.strptime(block["ts_created"], "%a, %d %b %Y %H:%M:%S")
-                day_str = block_date.strftime("%a, %d %b %Y")
+                if not heartbeat:
+                    day_str = block_date.strftime("%a, %d %b %Y")
                 blocks_per_day[day_str] = blocks_per_day.get(day_str, 0) + 1
 
             sorted_blocks = sorted(blocks_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))
@@ -250,7 +251,8 @@ def get_blocks(network, block_type="count", today=False):
             first_signed_blocks_per_day = {}
             for block in all_first_signed_blocks:
                 block_date = datetime.strptime(block["ts_created"], "%a, %d %b %Y %H:%M:%S")
-                day_str = block_date.strftime("%a, %d %b %Y")
+                if not heartbeat:
+                    day_str = block_date.strftime("%a, %d %b %Y")
                 first_signed_blocks_per_day[day_str] = first_signed_blocks_per_day.get(day_str, 0) + 1
 
             sorted_blocks = sorted(first_signed_blocks_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))
