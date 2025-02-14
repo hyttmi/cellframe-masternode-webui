@@ -7,7 +7,7 @@ from networkutils import (
 from cacher import is_locked
 from logger import log_it
 from datetime import datetime, timedelta
-import os, time
+import time
 
 class Heartbeat:
     def __init__(self):
