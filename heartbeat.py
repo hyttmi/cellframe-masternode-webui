@@ -37,7 +37,7 @@ class Heartbeat:
             while is_locked():
                 time.sleep(1) # Don't do anything if we're caching...
             for network in self.statuses:
-                signed_blocks = get_blocks(network, block_type="all_signed_blocks", heartbeat=True)
+                signed_blocks = get_blocks(network, block_type="all_signed_blocks")
                 log_it("d", signed_blocks)
                 curr_time = datetime.now()
                 for _,block in signed_blocks:
