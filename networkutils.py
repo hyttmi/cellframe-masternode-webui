@@ -210,7 +210,7 @@ def get_rewards(network, total_sum=False, rewards_today=False, is_sovereign=Fals
         log_it("e", "An error occurred", exc=e)
         return None
 
-def get_blocks(network, block_type="count", today=False):
+def get_blocks(network, block_type="count", today=False, heartbeat=False):
     try:
         cache_file_path = os.path.join(get_current_script_directory(), f".{network}_blocks_cache.json")
         with open(cache_file_path, "r") as f:
@@ -230,6 +230,9 @@ def get_blocks(network, block_type="count", today=False):
 
         if block_type == "all_signed_blocks" and today:
             return sum(1 for block in all_signed_blocks if today_str in block["ts_created"])
+
+        if heartbeat:
+            return all_signed_blocks[0] if all_signed_blocks else None
 
         if block_type == "all_signed_blocks":
             blocks_per_day = {}

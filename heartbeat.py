@@ -5,12 +5,15 @@ from networkutils import (
     get_blocks
 )
 from cacher import is_locked
+from config import Config
 from logger import log_it
+from notifications import send_email, send_telegram_message
 from datetime import datetime, timedelta
 import time
 
 class Heartbeat:
     def __init__(self):
+        msg_sent = False
         self.statuses = {
             network: {
                 "autocollect_status": "Unknown",
@@ -35,9 +38,9 @@ class Heartbeat:
     def last_signed_block(self):
         try:
             while is_locked():
-                time.sleep(1) # Don't do anything if we're caching...
+                time.sleep(10) # Don't do anything if we're caching...
             for network in self.statuses:
-                signed_blocks = get_blocks(network, block_type="all_signed_blocks")
+                signed_blocks = get_blocks(network, heartbeat=True)
                 log_it("d", signed_blocks)
                 curr_time = datetime.now()
                 for _,block in signed_blocks:
@@ -57,3 +60,34 @@ def run_heartbeat_check():
     heartbeat.autocollect_status()
     heartbeat.last_signed_block()
     log_it("d", f"Updated heartbeat statuses: {heartbeat.statuses}")
+
+    if not heartbeat.msg_sent and any(
+        status["autocollect_status"] == "NOK" or status["signed_blocks"] == "NOK"
+        for status in heartbeat.statuses.values()
+    ):
+        report_heartbeat_errors(heartbeat)
+        heartbeat.msg_sent = True
+    else:
+        log_it("d", "[HEARTBEAT] No issues detected or notification already sent.")
+
+def report_heartbeat_errors(heartbeat):
+    if not (Config.TELEGRAM_STATS_ENABLED or Config.EMAIL_STATS_ENABLED):
+        log_it("d", "[HEARTBEAT] Telegram and / or email sending is not enabled, can't send message!")
+        return
+
+    errors = []
+    for network, status in heartbeat.statuses.items():
+        if status["autocollect_status"] == "NOK":
+            errors.append(f"[{network}] Autocollect status: NOK")
+        if status["signed_blocks"] == "NOK":
+            errors.append(f"[{network}] Signed blocks are too old!")
+
+    if errors:
+        error_message = "\n".join(errors)
+        log_it("e", f"[HEARTBEAT] Issues detected:\n{error_message}")
+
+        if Config.TELEGRAM_STATS_ENABLED:
+            send_telegram_message(error_message)
+
+        if Config.EMAIL_STATS_ENABLED:
+            send_email("Heartbeat Alert", error_message)

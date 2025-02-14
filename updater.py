@@ -3,8 +3,7 @@ from config import Config
 from logger import log_it
 from packaging import version
 from utils import get_node_pid
-from telegram import send_telegram_message
-from emailer import send_email
+from notifications import send_telegram_message, send_email
 import os, requests, shutil, json, zipfile, psutil
 
 def check_plugin_update():

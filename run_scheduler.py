@@ -1,11 +1,10 @@
 from cacher import cache_blocks_data, cache_rewards_data
 from concurrent.futures import ThreadPoolExecutor
 from config import Config
-from emailer import send_email
 from generators import generate_data
 from heartbeat import run_heartbeat_check
 from logger import log_it
-from telegram import send_telegram_message
+from notifications import send_telegram_message, send_email
 from updater import install_plugin_update
 import schedule, time
 
