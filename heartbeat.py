@@ -17,7 +17,7 @@ class Heartbeat:
         self.statuses = {
             network: {
                 "autocollect_status": "Unknown",
-                "signed_blocks": "Unknown"
+                "last_signed_block": "Unknown"
             }
             for network in get_active_networks() if get_network_config(network)
         }
@@ -42,19 +42,15 @@ class Heartbeat:
                 time.sleep(10) # Don't do anything if we're caching...
 
             for network in self.statuses:
-                signed_blocks = get_blocks(network, heartbeat=True)
-                if signed_blocks:
-                    log_it("d", signed_blocks)
+                last_signed_block = get_blocks(network, heartbeat=True)
+                if last_signed_block:
                     curr_time = datetime.now()
-                    for block in signed_blocks:
-                        log_it("d", block)
-                        block_time = datetime.strptime(block["ts_created"], "%a, %d %b %Y %H:%M:%S")
-                        if curr_time - block_time > timedelta(hours=12):
-                            self.statuses[network]['signed_blocks'] = "NOK"
-                            log_it("e", f"[HEARTBEAT] Signed block {block['tx_hash']} is older than 6 hours!")
-                            break
+                    block_time = datetime.strptime(last_signed_block, "%a, %d %b %Y %H:%M:%S")
+                    if curr_time - block_time > timedelta(hours=12):
+                        self.statuses[network]['last_signed_block'] = "NOK"
+                        log_it("e", f"[HEARTBEAT] Last signed block is older than 6 hours!")
                     else:
-                        self.statuses[network]['signed_blocks'] = "OK"
+                        self.statuses[network]['last_signed_block'] = "OK"
                 else:
                     log_it("e", f"Unable to fetch blocks for {network}")
         except Exception as e:
@@ -66,10 +62,7 @@ def run_heartbeat_check():
     heartbeat.last_signed_block()
     log_it("d", f"[HEARTBEAT] Updated heartbeat statuses: {heartbeat.statuses}")
 
-    if not heartbeat.msg_sent and any(
-        status["autocollect_status"] == "NOK" or status["signed_blocks"] == "NOK"
-        for status in heartbeat.statuses.values()
-    ):
+    if not heartbeat.msg_sent and any("NOK" in status.values() for status in heartbeat.statuses.values()):
         report_heartbeat_errors(heartbeat)
         heartbeat.msg_sent = True
     else:

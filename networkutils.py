@@ -232,7 +232,7 @@ def get_blocks(network, block_type="count", today=False, heartbeat=False):
             return sum(1 for block in all_signed_blocks if today_str in block["ts_created"])
 
         if heartbeat:
-            return all_signed_blocks[0] if all_signed_blocks else None
+            return all_signed_blocks[0]['ts_created'] if all_signed_blocks else None
 
         if block_type == "all_signed_blocks":
             blocks_per_day = {}
