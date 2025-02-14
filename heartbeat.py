@@ -38,6 +38,7 @@ class Heartbeat:
     def last_signed_block(self):
         try:
             while is_locked():
+                log_it("d", "[HEARTBEAT] Cache is locked, waiting for lock to release...")
                 time.sleep(10) # Don't do anything if we're caching...
             for network in self.statuses:
                 signed_blocks = get_blocks(network, heartbeat=True)
@@ -48,7 +49,7 @@ class Heartbeat:
                     block_time = datetime.strptime(block["ts_created"], "%a, %d %b %Y %H:%M:%S")
                     if curr_time - block_time > timedelta(hours=12):
                         self.statuses[network]['signed_blocks'] = "NOK"
-                        log_it("e", f"[HEARTBEAT] Signed block {block['tx_hash']} is older than 12 hours!")
+                        log_it("e", f"[HEARTBEAT] Signed block {block['tx_hash']} is older than 6 hours!")
                         break
                 else:
                     self.statuses[network]['signed_blocks'] = "OK"
@@ -59,7 +60,7 @@ def run_heartbeat_check():
     heartbeat = Heartbeat()
     heartbeat.autocollect_status()
     heartbeat.last_signed_block()
-    log_it("d", f"Updated heartbeat statuses: {heartbeat.statuses}")
+    log_it("d", f"[HEARTBEAT] Updated heartbeat statuses: {heartbeat.statuses}")
 
     if not heartbeat.msg_sent and any(
         status["autocollect_status"] == "NOK" or status["signed_blocks"] == "NOK"
