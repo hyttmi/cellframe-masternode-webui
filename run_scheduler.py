@@ -56,7 +56,7 @@ def setup_schedules():
                 run_heartbeat_check,
                 15,
                 every_min=True,
-                run_on_startup=False
+                run_on_startup=True
             )
             log_it("d", "heartbeat_check_schedule submitted to ThreadPool")
 
