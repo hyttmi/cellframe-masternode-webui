@@ -4,8 +4,10 @@ from networkutils import (
     get_autocollect_status,
     get_blocks
 )
+from cacher import is_locked
 from logger import log_it
 from datetime import datetime, timedelta
+import os, time
 
 class Heartbeat:
     def __init__(self):
@@ -32,11 +34,13 @@ class Heartbeat:
 
     def last_signed_block(self):
         try:
+            while is_locked():
+                time.sleep(1) # Don't do anything if we're caching...
             for network in self.statuses:
                 signed_blocks = get_blocks(network, block_type="all_signed_blocks", heartbeat=True)
                 log_it("d", signed_blocks)
                 curr_time = datetime.now()
-                for block in signed_blocks.items():
+                for _,block in signed_blocks:
                     log_it("d", block)
                     block_time = datetime.strptime(block["ts_created"], "%a, %d %b %Y %H:%M:%S")
                     if curr_time - block_time > timedelta(hours=12):
