@@ -44,6 +44,7 @@ class Heartbeat:
             for network in self.statuses:
                 last_signed_block = get_blocks(network, heartbeat=True)
                 if last_signed_block:
+                    log_it("d", f"{last_signed_block}")
                     curr_time = datetime.now()
                     block_time = datetime.strptime(last_signed_block, "%a, %d %b %Y %H:%M:%S")
                     if curr_time - block_time > timedelta(hours=12):
