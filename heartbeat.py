@@ -43,7 +43,7 @@ class Heartbeat:
                 signed_blocks = get_blocks(network, heartbeat=True)
                 log_it("d", signed_blocks)
                 curr_time = datetime.now()
-                for _,block in signed_blocks:
+                for block in signed_blocks:
                     log_it("d", block)
                     block_time = datetime.strptime(block["ts_created"], "%a, %d %b %Y %H:%M:%S")
                     if curr_time - block_time > timedelta(hours=12):
