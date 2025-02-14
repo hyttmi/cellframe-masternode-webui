@@ -13,7 +13,7 @@ import time
 
 class Heartbeat:
     def __init__(self):
-        msg_sent = False
+        self.msg_sent = False
         self.statuses = {
             network: {
                 "autocollect_status": "Unknown",
@@ -40,19 +40,23 @@ class Heartbeat:
             while is_locked():
                 log_it("d", "[HEARTBEAT] Cache is locked, waiting for lock to release...")
                 time.sleep(10) # Don't do anything if we're caching...
+
             for network in self.statuses:
                 signed_blocks = get_blocks(network, heartbeat=True)
-                log_it("d", signed_blocks)
-                curr_time = datetime.now()
-                for block in signed_blocks:
-                    log_it("d", block)
-                    block_time = datetime.strptime(block["ts_created"], "%a, %d %b %Y %H:%M:%S")
-                    if curr_time - block_time > timedelta(hours=12):
-                        self.statuses[network]['signed_blocks'] = "NOK"
-                        log_it("e", f"[HEARTBEAT] Signed block {block['tx_hash']} is older than 6 hours!")
-                        break
+                if signed_blocks:
+                    log_it("d", signed_blocks)
+                    curr_time = datetime.now()
+                    for block in signed_blocks:
+                        log_it("d", block)
+                        block_time = datetime.strptime(block["ts_created"], "%a, %d %b %Y %H:%M:%S")
+                        if curr_time - block_time > timedelta(hours=12):
+                            self.statuses[network]['signed_blocks'] = "NOK"
+                            log_it("e", f"[HEARTBEAT] Signed block {block['tx_hash']} is older than 6 hours!")
+                            break
+                    else:
+                        self.statuses[network]['signed_blocks'] = "OK"
                 else:
-                    self.statuses[network]['signed_blocks'] = "OK"
+                    log_it("e", f"Unable to fetch blocks for {network}")
         except Exception as e:
             log_it("e", "An error occurred", exc=e)
 
