@@ -138,6 +138,20 @@
                         </td>
                     </tr>
                     {% endif %}
+                    {% if network.node_data.nodes %}
+                        {% for node in network.node_data.nodes %}
+                            {% if node.is_my_node and node.is_sovereign %}
+                                {% if node.sovereign_wallet_tokens %}
+                                    <td><strong>Sovereign reward wallet information:</strong></td>
+                                    <td>
+                                        {% for token, balance in network.sovereign_wallet_tokens.items() %}
+                                            {{ token }}: {{ balance }}<br>
+                                        {% endfor %}
+                                    </td>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
                 </table>
             </div>
             {% endfor %}

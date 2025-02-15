@@ -8,8 +8,6 @@ import requests
 def send_telegram_message(message):
     missing_configs = []
 
-    if not Config.TELEGRAM_STATS_TIME:
-        missing_configs.append("telegram_stats_time")
     if not Config.TELEGRAM_API_TOKEN:
         missing_configs.append("telegram_api_key")
     if not Config.TELEGRAM_CHAT_ID:
@@ -37,7 +35,6 @@ def send_telegram_message(message):
         log_it("e", "An error occurred", exc=e)
 
 def send_email(msg):
-    email_stats_time = Config.EMAIL_STATS_TIME
     smtp_server = Config.SMTP_SERVER
     smtp_port = Config.SMTP_PORT
     use_ssl = Config.EMAIL_USE_SSL
@@ -49,8 +46,6 @@ def send_email(msg):
 
     missing_configs = []
 
-    if not email_stats_time:
-        missing_configs.append("EMAIL_STATS_TIME")
     if not smtp_user:
         missing_configs.append("SMTP_USER")
     if not smtp_password:

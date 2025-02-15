@@ -106,13 +106,16 @@ def get_node_data(network):
             if not list_keys:
                 log_it("e", f"Failed to run srv_stake list keys for {network}")
                 return None
-            total_weight_in_network = re.search(r"total_weight_coins:\s+(\d+\.\d+)", list_keys)
+            total_weight_in_network = re.search(r"total_weight_coins:\s+([\d.]+)", list_keys)
             active_nodes_count = len(re.findall(r"active: true", list_keys))
-            max_related_weight = re.search(r"each_validator_max_related_weight:\s+(\d+\.\d+)", list_keys)
+            max_related_weight = re.search(r"each_validator_max_related_weight:\s+([\d.]+)", list_keys)
 
-            total_weight = float(total_weight_in_network.group(1))
-            max_weight = float(max_related_weight.group(1))
-            calculated_weight = float(total_weight * (max_weight / 100))
+            total_weight = float(total_weight_in_network.group(1)) if total_weight_in_network else None
+            max_weight = float(max_related_weight.group(1)) if max_related_weight else None
+            if max_weight and total_weight:
+                calculated_weight = float(total_weight * (max_weight / 100))
+            else:
+                calculated_weight = None
 
             node_pattern = re.compile(
                 r'pkey_hash:\s+(?P<pkey_hash>\w+)\s+'

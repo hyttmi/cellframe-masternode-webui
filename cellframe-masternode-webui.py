@@ -3,6 +3,7 @@ from handlers import request_handler
 from logger import log_it
 from pycfhelpers.node.http.simple import CFSimpleHTTPServer, CFSimpleHTTPRequestHandler
 from run_scheduler import setup_schedules
+from cacher import release_lock, is_locked
 import threading
 
 def http_server():
@@ -15,6 +16,9 @@ def http_server():
 
 def init():
     try:
+        if is_locked():
+            log_it("i", "Cache lock found, releasing it...")
+            release_lock()
         t_http_server = threading.Thread(target=http_server)
         t_scheduled_tasks = threading.Thread(target=setup_schedules)
         t_http_server.start()

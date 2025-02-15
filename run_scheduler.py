@@ -53,7 +53,7 @@ def setup_schedules():
             if Config.TELEGRAM_STATS_ENABLED:
                 futures['send_telegram_message_notification'] = executor.submit(
                     send_telegram_message,
-                    f"Telegram sending scheduled at {Config.TELEGRAM_STATS_TIME}"
+                    f"Telegram sending scheduled at {Config.TELEGRAM_STATS_TIME} from {Config.NODE_ALIAS}"
                 )
                 log_it("d", "send_telegram_message_notification submitted to ThreadPool")
 
@@ -71,7 +71,7 @@ def setup_schedules():
             if Config.EMAIL_STATS_ENABLED:
                 futures['send_email_message_notification'] = executor.submit(
                     send_email,
-                    f"Email sending scheduled at {Config.EMAIL_STATS_TIME}"
+                    f"Email sending scheduled at {Config.EMAIL_STATS_TIME}  from {Config.NODE_ALIAS}"
                 )
                 log_it("d", "send_email_message_notification submitted to ThreadPool")
 

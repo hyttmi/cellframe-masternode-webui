@@ -58,7 +58,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` or file in `
 - `download_prereleases=true|false` - Automatic updater downloads also pre-release versions of plugin. Default false.
 - `email_recipients=somebody@gmail.com|[somebody@gmail.com, another@aol.com]` - Recipient(s) for the email.
 - `email_stats=true|false` - Allow sending scheduled email statistics.
-- `email_time=23:59` - Set time when you want to send the statistics. **24h format (HH:MM)**
+- `email_time=23:59` - Set time when you want to send the statistics. Default time is 23:00**24h format (HH:MM)**
 - `email_use_ssl=true|false` - Use SSL for mail delivery.
 - `email_use_tls=true|false` - Use TLS for mail delivery.
 - `heartbeat_block_age=12`- Sets maximum age of signed block to 12 hours and if older, notifies user.
@@ -71,7 +71,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` or file in `
 - `smtp_user=<your_email_user>` - SMTP user for mail delivery.
 - `telegram_api_key=something` - Your Telegram Bot API token.
 - `telegram_chat_id=something` - Your Telegram chat id.
-- `telegram_stats_time=23:59` - Time to send the message. **24h format (HH:MM)**
+- `telegram_stats_time=23:59` - Time to send the message. Default time is 23:00 **24h format (HH:MM)**
 - `telegram_stats=true|false` - Enable timed Telegram messages.
 - `template=something` - Change template to something. If not set, default template will be used (cards).
 - `url=something` - Change plugin URL. Defaults to `webui`.

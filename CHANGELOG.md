@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.01] - 2025-02-15
+
+### Fixed
+- Release cache lock always on node restart.
+- Regex matching on `node_data`.
+
+### Added
+- Missing sovereign wallet information for Telegram/Email templates.
+- Default values for Telegram/Email stats time (23:00)
+
 ## [4.00] - 2025-02-15
 
 Introducing Heartbeat: A scheduled task designed to monitor node health and notify users of any issues. Currently, it tracks autocollect status and the last signed block, with plans to expand to additional monitoring features in the future.

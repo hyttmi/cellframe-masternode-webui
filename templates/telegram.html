@@ -8,7 +8,7 @@ Node version:        {{ general_info.node_version }}
 Latest node version: {{ general_info.latest_node_version }}
 </code>
 {% if network_info and network_info.items() %}
-{% for network_name, network in network_info.items() %}
+    {% for network_name, network in network_info.items() %}
 <b>{{ network_name }} Node Info</b>
 <code>
 Network state:          {{ network.state }}
@@ -17,16 +17,31 @@ Node address:           {{ network.address }}
 Signed blocks today:    {{ network.signed_blocks_today }}
 Autocollect status:     {{ network.autocollect_status }}
 </code>
+        {% if network.fee_wallet_tokens %}
 <b>Reward Wallet Info</b>
-{% if network.fee_wallet_tokens is not none %}{% for token, balance in network.fee_wallet_tokens.items() %}
+            {% for token, balance in network.fee_wallet_tokens.items() %}
 <code>
 Token:   {{ token }}
 Balance: {{ balance }}
-</code>{% endfor %}
-{% else %}
-<b>No tokens available.</b>
-{% endif %}
-{% endfor %}
+</code>
+            {% endfor %}
+        {% endif %}
+        {% if network.node_data.nodes %}
+            {% for node in network.node_data.nodes %}
+                {% if node.is_my_node and node.is_sovereign %}
+                    {% if node.sovereign_wallet_tokens %}
+<b>Sovereign Reward Wallet Information:</b>
+                        {% for token, balance in node.sovereign_wallet_tokens.items() %}
+<code>
+Token:   {{ token }}
+Balance: {{ balance }}
+</code>
+                        {% endfor %}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
 {% else %}
 <b>No network information available.</b>
 {% endif %}
