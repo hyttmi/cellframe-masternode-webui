@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.00] - 2025-XX-XX
+
+Introducing Heartbeat: A scheduled task designed to monitor node health and notify users of any issues. Currently, it tracks autocollect status and the last signed block, with plans to expand to additional monitoring features in the future.
+
+**NOTE: Telegram notifications or Email notifications must be enabled.**
+
+### Changed
+- Cacher is not using ThreadPool anymore so commands will not run in parallel which helps especially on low end systems.
+- Cacher uses locking mechanism now so blocks caching and rewards caching will never run in parallel. This one also helps on lower end systems.
+- Own node in top 15 nodes chart has a different color.
+
+### Added
+- Card for displaying main chain size.
+- Card for displaying maximum weight for node on network.
+- Button for removing all the cards from the view.
+
 ## [3.38] - 2025-02-08
 
 ### Fixed

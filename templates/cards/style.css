@@ -12,6 +12,7 @@ html {
     background-color: #1E1E1E;
     border: none;
     margin-bottom: 25px;
+    min-height: 170px;
 }
 
 .card:hover {
@@ -66,6 +67,7 @@ html {
 .card-header {
     padding-top: 15px;
     border: none;
+    cursor: all-scroll;
 }
 
 .nav-item {
@@ -123,14 +125,7 @@ html {
 }
 
 .custom-modal-bg {
-    background-color: #151515 !important;
-}
-
-#chart-container {
-    min-height: 1200px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    width: 100%;
+    background-color: #1A1A1A !important;
 }
 
 .icon-effect {
@@ -175,21 +170,18 @@ html {
     transition: all 0.5s ease-in-out;
 }
 
-.card {
-    min-height: 170px;
-}
-
 .card-inner {
     max-width: 80%;
     overflow: auto;
-}
-
-.card-header {
-    cursor: all-scroll;
 }
 
 .btn:focus, .btn:active {
     border: none !important;
     outline: none !important;
     box-shadow: none !important;
-  }
+}
+
+.defaults_icon {
+    color: var(--accent-color);
+    margin-left: 10px;
+}

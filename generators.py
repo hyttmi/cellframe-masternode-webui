@@ -15,7 +15,8 @@ from networkutils import (
     get_node_data,
     get_rewards,
     get_token_price,
-    get_current_block_reward
+    get_current_block_reward,
+    get_chain_size
 )
 from updater import check_plugin_update
 from wallets import get_reward_wallet_tokens
@@ -70,6 +71,7 @@ def generate_network_info():
                         'autocollect_status': executor.submit(get_autocollect_status, network),
                         'blocks_today': executor.submit(get_blocks, network, block_type="blocks_today_in_network"),
                         'current_block_reward': executor.submit(get_current_block_reward, network),
+                        'chain_size': executor.submit(get_chain_size, network),
                         'first_signed_blocks': executor.submit(get_blocks, network, block_type="first_signed_blocks_count"),
                         'first_signed_blocks_today': executor.submit(get_blocks, network, block_type="first_signed_blocks", today=True),
                         'node_data': executor.submit(get_node_data, network),
@@ -94,6 +96,7 @@ def generate_network_info():
                         'autocollect_status': futures['autocollect_status'].result()['active'],
                         'blocks_today': futures['blocks_today'].result(),
                         'current_block_reward': futures['current_block_reward'].result(),
+                        'chain_size': futures['chain_size'].result(),
                         'fee_wallet_tokens': tokens,
                         'first_signed_blocks': futures['first_signed_blocks'].result(),
                         'node_data': futures['node_data'].result(),

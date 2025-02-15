@@ -56,7 +56,7 @@ def get_sys_stats():
             log_it("d", "Fetching system stats...")
             process = psutil.Process(PID)
             sys_stats = {}
-            cpu_usage = process.cpu_percent(interval=1) / psutil.cpu_count() # Divide by CPU cores, it's possible that only one core is @ 100%
+            cpu_usage = process.cpu_percent(interval=1) / psutil.cpu_count()
             sys_stats['node_cpu_usage'] = cpu_usage
 
             memory_info = process.memory_info()

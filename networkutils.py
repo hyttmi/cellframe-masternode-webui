@@ -9,7 +9,6 @@ def get_active_networks():
     try:
         nets = CFNet.active_nets()
         if nets:
-            log_it("d", f"Found the following networks: {nets}")
             return [str(net.name) for net in nets]
         log_it("e", "Can't get list of networks!")
         return None
@@ -104,10 +103,18 @@ def get_node_data(network):
         if status:
             addr = status['address']
             list_keys = cli_command(f"srv_stake list keys -net {network}", timeout=3)
+            if not list_keys:
+                log_it("e", f"Failed to run srv_stake list keys for {network}")
+                return None
             total_weight_in_network = re.search(r"total_weight_coins:\s+(\d+\.\d+)", list_keys)
             active_nodes_count = len(re.findall(r"active: true", list_keys))
+            max_related_weight = re.search(r"each_validator_max_related_weight:\s+(\d+\.\d+)", list_keys)
+
             total_weight = float(total_weight_in_network.group(1))
-            pattern = re.compile(
+            max_weight = float(max_related_weight.group(1))
+            calculated_weight = float(total_weight * (max_weight / 100))
+
+            node_pattern = re.compile(
                 r'pkey_hash:\s+(?P<pkey_hash>\w+)\s+'
                 r'stake_value:\s+(?P<stake_value>\d+\.\d+)\s+'
                 r'effective_value:\s+(?P<effective_value>\d+\.\d+)\s+'
@@ -119,7 +126,7 @@ def get_node_data(network):
                 r'active:\s+(?P<active>true|false)'
             )
             nodes = []
-            for match in pattern.finditer(list_keys):
+            for match in node_pattern.finditer(list_keys):
                 node = match.groupdict()
                 node['is_my_node'] = (node['node_addr'] == addr)
                 node['is_sovereign'] = float(node['sovereign_tax']) > 0.0
@@ -136,7 +143,8 @@ def get_node_data(network):
 
             info = {
                 'active_nodes_count': active_nodes_count,
-                'total_weight': total_weight
+                'total_weight': total_weight,
+                'max_weight': calculated_weight
             }
             result = {
                 'info': info,
@@ -202,97 +210,95 @@ def get_rewards(network, total_sum=False, rewards_today=False, is_sovereign=Fals
         log_it("e", "An error occurred", exc=e)
         return None
 
-def get_blocks(network, block_type="count", today=False):
+def get_blocks(network, block_type="count", today=False, heartbeat=False):
     try:
         cache_file_path = os.path.join(get_current_script_directory(), f".{network}_blocks_cache.json")
         with open(cache_file_path, "r") as f:
             block_data = json.load(f)
-            all_signed_blocks = block_data.get('all_signed_blocks')
-            all_first_signed_blocks = block_data.get('all_first_signed_blocks')
+            all_signed_blocks = block_data.get('all_signed_blocks', [])
+            all_first_signed_blocks = block_data.get('all_first_signed_blocks', [])
             block_count = block_data.get('block_count')
             blocks_today_in_network = block_data.get('blocks_today_in_network')
 
+        if block_type == "all_signed_blocks" and heartbeat:
+            return all_signed_blocks[0] if all_signed_blocks else None
+
         if block_type == "blocks_today_in_network":
-            if blocks_today_in_network:
-                return blocks_today_in_network
-            return None
+            return blocks_today_in_network if blocks_today_in_network else None
 
         if block_type == "count":
-            if block_count:
-                return block_count
-            return None
+            return block_count if block_count else None
+
+        today_str = datetime.now().strftime("%a, %d %b %Y")
 
         if block_type == "all_signed_blocks" and today:
-            today_count = 0
-            today_str = datetime.now().strftime("%a, %d %b %Y")
-            if all_signed_blocks:
-                for _, value in all_signed_blocks.items():
-                    if today_str in value['ts_created']:
-                        today_count += 1
-                return today_count
-            log_it("d", "all_signed_blocks is None or missing")
-            return None
+            return sum(1 for block in all_signed_blocks if today_str in block["ts_created"])
 
         if block_type == "all_signed_blocks":
             blocks_per_day = {}
-            if all_signed_blocks:
-                for _, value in all_signed_blocks.items():
-                    block_date = datetime.strptime(value['ts_created'], "%a, %d %b %Y %H:%M:%S")
-                    day_str = block_date.strftime("%a, %d %b %Y")
-                    if day_str in blocks_per_day:
-                        blocks_per_day[day_str] += 1
-                    else:
-                        blocks_per_day[day_str] = 1
-                sorted_blocks = sorted(blocks_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))
-                if sorted_blocks:
-                    sorted_blocks.pop()
-                return dict(sorted_blocks)
-            log_it("d", "all_signed_blocks is None or missing")
-            return None
+            for block in all_signed_blocks:
+                block_date = datetime.strptime(block["ts_created"], "%a, %d %b %Y %H:%M:%S")
+                day_str = block_date.strftime("%a, %d %b %Y")
+                blocks_per_day[day_str] = blocks_per_day.get(day_str, 0) + 1
+
+            sorted_blocks = sorted(blocks_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))
+            if sorted_blocks:
+                sorted_blocks.pop()
+            return dict(sorted_blocks)
 
         if block_type == "first_signed_blocks" and today:
-            today_count = 0
-            today_str = datetime.now().strftime("%a, %d %b %Y")
-            if all_first_signed_blocks:
-                for _, value in all_first_signed_blocks.items():
-                    if today_str in value['ts_created']:
-                        today_count += 1
-                return today_count
-            log_it("d", "all_first_signed_blocks is None or missing")
-            return None
+            return sum(1 for block in all_first_signed_blocks if today_str in block["ts_created"])
 
         if block_type == "first_signed_blocks":
             first_signed_blocks_per_day = {}
-            if all_first_signed_blocks:
-                for _, value in all_first_signed_blocks.items():
-                    first_signed_block_date = datetime.strptime(value['ts_created'], "%a, %d %b %Y %H:%M:%S")
-                    day_str = first_signed_block_date.strftime("%a, %d %b %Y")
-                    if day_str in first_signed_blocks_per_day:
-                        first_signed_blocks_per_day[day_str] += 1
-                    else:
-                        first_signed_blocks_per_day[day_str] = 1
-                sorted_blocks = sorted(first_signed_blocks_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))
-                if sorted_blocks:
-                    sorted_blocks.pop()
-                return dict(sorted_blocks)
-            log_it("d", "all_first_signed_blocks is None or missing")
-            return None
+            for block in all_first_signed_blocks:
+                block_date = datetime.strptime(block["ts_created"], "%a, %d %b %Y %H:%M:%S")
+                day_str = block_date.strftime("%a, %d %b %Y")
+                first_signed_blocks_per_day[day_str] = first_signed_blocks_per_day.get(day_str, 0) + 1
+
+            sorted_blocks = sorted(first_signed_blocks_per_day.items(), key=lambda x: datetime.strptime(x[0], "%a, %d %b %Y"))
+            if sorted_blocks:
+                sorted_blocks.pop()
+            return dict(sorted_blocks)
 
         if block_type == "all_signed_blocks_count":
-            if all_signed_blocks:
-                return len(all_signed_blocks)
-            log_it("d", "all_signed_blocks is None or missing")
-            return None
+            return len(all_signed_blocks) if all_signed_blocks else None
 
         if block_type == "first_signed_blocks_count":
-            if all_first_signed_blocks:
-                return len(all_first_signed_blocks)
-            log_it("d", "all_first_signed_blocks is None or missing")
-            return None
+            return len(all_first_signed_blocks) if all_first_signed_blocks else None
 
     except FileNotFoundError:
         log_it("e", "Blocks cache file not found!")
         return None
+    except Exception as e:
+        log_it("e", "An error occurred", exc=e)
+        return None
+
+def get_chain_size(network):
+    try:
+        network_mapping = {
+            'Backbone': 'scorpion',
+            'KelVPN': 'kelvpn'
+        }
+        if network not in network_mapping:
+            log_it("d" f"Unknown network: {network}. Can't fetch chain size...")
+            return None
+        dir = network_mapping[network]
+        chain_path = f"/opt/cellframe-node/var/lib/network/{dir}/main/0.dchaincell"
+        log_it("d", f"Checking chain size for {chain_path}...")
+        if not os.path.exists(chain_path):
+            log_it("e", f"Chaincell file not found for {network}")
+            return None
+        log_it("d", f"Chain path for {network} exists!")
+        size = os.path.getsize(chain_path)
+        if size < 1024:
+            return f"{size} bytes"
+        elif size < pow(1024,2):
+            return f"{round(size/1024, 2)} KB"
+        elif size < pow(1024,3):
+            return f"{round(size/(pow(1024,2)), 2)} MB"
+        elif size < pow(1024,4):
+            return f"{round(size/(pow(1024,3)), 2)} GB"
     except Exception as e:
         log_it("e", "An error occurred", exc=e)
         return None

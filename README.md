@@ -61,6 +61,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` or file in `
 - `email_time=23:59` - Set time when you want to send the statistics. **24h format (HH:MM)**
 - `email_use_ssl=true|false` - Use SSL for mail delivery.
 - `email_use_tls=true|false` - Use TLS for mail delivery.
+- `heartbeat_block_age=12`- Sets maximum age of signed block to 12 hours and if older, notifies user.
 - `node_alias="Name` - Name of the node as alias. Default is CFNode. **NO SPACES**
 - `password=p455w0rd` - Sets password to p455w0rd. Default: `webui`
 - `scheduler_delay_on_startup` - Sets delay for functions which are passed to scheduler and launched directly on startup. Default value is 60 seconds
@@ -72,7 +73,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` or file in `
 - `telegram_chat_id=something` - Your Telegram chat id.
 - `telegram_stats_time=23:59` - Time to send the message. **24h format (HH:MM)**
 - `telegram_stats=true|false` - Enable timed Telegram messages.
-- `template=something` - Change template to something. If not set, default template will be used (cards). Oldskool theme is also available by default.
+- `template=something` - Change template to something. If not set, default template will be used (cards).
 - `url=something` - Change plugin URL. Defaults to `webui`.
 - `username=john` - Sets http authentication as user john. Default: `webui`
 
@@ -123,7 +124,7 @@ Here are the variables that are passed to the Jinja templates:
   - `network_info.autocollect_status`: The status of reward autocollection
   - `network_info.fee_wallet_tokens`: A dict of token balances in the network's fee wallet
   - `network_info.first_signed_blocks`: The number of first signed blocks
-  - `network_info.general_node_info`: Returns the output from `cellframe-node-cli node dump -<network>`
+  - `network_info.chain_size`: Chain size of main chain per network
   - `network_info.node_data`: Returns a dict containing information about all network nodes
   - `network_info.rewards`: A dictionary of all rewards
   - `network_info.signed_blocks_today`: The number of blocks signed today
