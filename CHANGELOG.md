@@ -10,9 +10,10 @@ Introducing Heartbeat: A scheduled task designed to monitor node health and noti
 - Cacher is not using ThreadPool anymore so commands will not run in parallel which helps especially on low end systems.
 - Cacher uses locking mechanism now so blocks caching and rewards caching will never run in parallel. This one also helps on lower end systems.
 - Own node in top 15 nodes chart has a different color.
+- Blocks are parsed now in a separate function.
 
 ### Added
-- Card for displaying main chain size.
+- Card for displaying main chain size. Supports KelVPN and Backbone for now.
 - Card for displaying maximum weight for node on network.
 - Button for removing all the cards from the view.
 
