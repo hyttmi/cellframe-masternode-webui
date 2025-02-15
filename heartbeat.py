@@ -48,7 +48,7 @@ class Heartbeat:
                     block_time = datetime.strptime(last_signed_block["ts_created"], "%a, %d %b %Y %H:%M:%S")
                     time_diff = curr_time - block_time
                     log_it("d", f"Time difference: {time_diff} (current: {curr_time}, block time: {block_time})")
-                    if curr_time - block_time > timedelta(hours=Config.HEARTBEAT_BLOCK_AGE):
+                    if curr_time - block_time > timedelta(milliseconds=Config.HEARTBEAT_BLOCK_AGE):
                         self.statuses[network]['last_signed_block'] = "NOK"
                         log_it("e", f"[HEARTBEAT] Last signed block is older than 10 hours!")
                         break
@@ -76,7 +76,7 @@ def report_heartbeat_errors(heartbeat):
     for network, status in heartbeat.statuses.items():
         if status["autocollect_status"] == "NOK":
             errors.append(f"[{network}] Autocollect status: Inactive")
-        if status["signed_blocks"] == "NOK":
+        if status["last_signed_block"] == "NOK":
             errors.append(f"[{network}] Last signed block is older than {Config.HEARTBEAT_BLOCK_AGE} hours!")
     if errors:
         error_message = "\n".join(errors)
