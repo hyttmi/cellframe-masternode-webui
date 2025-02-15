@@ -3,8 +3,8 @@
 ## [4.01] - 2025-02-15
 
 ### Fixed
-- Release cache lock always on node restart.
-- Regex matching on `node_data`.
+- Release cache lock always on node restart. Thanks @ageargeek for debug logs.
+- Regex matching on `node_data`. Thanks @ageargeek for debug logs.
 
 ### Added
 - Missing sovereign wallet information for Telegram/Email templates.
