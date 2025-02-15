@@ -1,6 +1,6 @@
 # Changelog
 
-## [4.00] - 2025-XX-XX
+## [4.00] - 2025-02-15
 
 Introducing Heartbeat: A scheduled task designed to monitor node health and notify users of any issues. Currently, it tracks autocollect status and the last signed block, with plans to expand to additional monitoring features in the future.
 
