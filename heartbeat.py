@@ -43,7 +43,7 @@ class Heartbeat:
             for network in self.statuses:
                 last_signed_block = get_blocks(network, block_type="all_signed_blocks", heartbeat=True)
                 if last_signed_block:
-                    log_it("d", f"Got block {last_signed_block}")
+                    log_it("d", f"[HEARTBEAT] Got block {last_signed_block}")
                     curr_time = datetime.now()
                     block_time = datetime.strptime(last_signed_block["ts_created"], "%a, %d %b %Y %H:%M:%S")
                     time_diff = curr_time - block_time

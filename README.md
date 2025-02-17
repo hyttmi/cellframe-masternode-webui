@@ -70,9 +70,10 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` or file in `
 - `smtp_server=your.smtp.server.com` - SMTP server to use for mail delivery.
 - `smtp_user=<your_email_user>` - SMTP user for mail delivery.
 - `telegram_api_key=something` - Your Telegram Bot API token.
+- `telegram_bot_key=something|[something, something, something]` - Your Telegram bot UUID from https://t.me/Cellframe_Masternode_WebUI_Bot or multiple UUIDs as list.
 - `telegram_chat_id=something` - Your Telegram chat id.
 - `telegram_stats_time=23:59` - Time to send the message. Default time is 23:00 **24h format (HH:MM)**
-- `telegram_stats=true|false` - Enable timed Telegram messages.
+- `telegram_stats=true|false` - Enable Telegram messaging support.
 - `template=something` - Change template to something. If not set, default template will be used (cards).
 - `url=something` - Change plugin URL. Defaults to `webui`.
 - `username=john` - Sets http authentication as user john. Default: `webui`

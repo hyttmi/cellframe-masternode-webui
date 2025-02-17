@@ -71,7 +71,7 @@ def cache_blocks_data():
     try:
         while is_locked():
             log_it("i", "Caching is already in progress, waiting for lock to release...")
-            time.sleep(1)
+            time.sleep(30)
 
         create_lock()
 
@@ -125,7 +125,7 @@ def cache_rewards_data():
     try:
         while is_locked():
             log_it("i", "Caching is already in progress, waiting for lock to release...")
-            time.sleep(1)
+            time.sleep(30)
 
         create_lock()
 

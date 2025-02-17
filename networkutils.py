@@ -42,7 +42,7 @@ def get_autocollect_status(network):
     try:
         autocollect_status = {}
         autocollect_cmd = cli_command(f"block autocollect status -net {network}", timeout=3)
-        amounts = re.findall(r"profit is (\d+.\d+)", autocollect_cmd)
+        amounts = re.findall(r"profit is ([\d.]+)", autocollect_cmd)
         if amounts:
             autocollect_status['rewards'] = sum(float(amount) for amount in amounts)
         else:
@@ -60,7 +60,7 @@ def get_current_block_reward(network):
     try:
         block_reward_cmd = cli_command(f"block reward show -net {network}", timeout=3)
         if block_reward_cmd:
-            block_reward_match = re.search(r"(\d+.\d+)", block_reward_cmd)
+            block_reward_match = re.search(r"([\d.]+)", block_reward_cmd)
             if block_reward_match:
                 return float(block_reward_match.group(1))
             return None
@@ -83,8 +83,8 @@ def get_token_price(network):
         response = requests.get(url, timeout=5)
         if response.status_code == 200:
             regex_patterns = {
-                "backbone": r"price today is \$(\d+\.\d+)",
-                "kelvpn": r"\$(\d+\.\d+)"
+                "backbone": r"price today is \$([\d.]+)",
+                "kelvpn": r"\$([\d.]+)"
             }
             regex_match = re.search(regex_patterns[network.lower()], response.text)
             if regex_match:
@@ -119,13 +119,13 @@ def get_node_data(network):
 
             node_pattern = re.compile(
                 r'pkey_hash:\s+(?P<pkey_hash>\w+)\s+'
-                r'stake_value:\s+(?P<stake_value>\d+\.\d+)\s+'
-                r'effective_value:\s+(?P<effective_value>\d+\.\d+)\s+'
-                r'related_weight:\s+(?P<related_weight>\d+\.\d+)\s+'
+                r'stake_value:\s+(?P<stake_value>[\d.]+)\s+'
+                r'effective_value:\s+(?P<effective_value>[\d.]+)\s+'
+                r'related_weight:\s+(?P<related_weight>[\d.]+)\s+'
                 r'tx_hash:\s+(?P<tx_hash>\w+)\s+'
                 r'node_addr:\s+(?P<node_addr>[A-Z0-9]+::[A-Z0-9]+::[A-Z0-9]+::[A-Z0-9]+)\s+'
                 r'sovereign_addr:\s+(?P<sovereign_addr>\w+)\s+'
-                r'sovereign_tax:\s+(?P<sovereign_tax>\d+\.\d+)\s+'
+                r'sovereign_tax:\s+(?P<sovereign_tax>[\d.]+)\s+'
                 r'active:\s+(?P<active>true|false)'
             )
             nodes = []

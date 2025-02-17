@@ -1,5 +1,20 @@
 # Changelog
 
+## [4.02] - 2025-02-17
+
+### Fixed
+- Template whitespace trimming.
+
+### Added
+- Allow sending messages via Cellframe_Masternode_WebUI bot. Accepts one UUID or multiple ones as `list`. This one now has higher priority for message sending.
+
+### Changed
+- Some logging.
+- Redirect `sys.stderr` also to `webui.log`.
+- Increase sleep time of waiting for caching lock to release.
+- Increase default blocks caching interval to 30 mins (like rewards caching). I promise this is the final change!
+- Main threads moved back to `ThreadPool`, non-blocking this time.
+
 ## [4.01] - 2025-02-15
 
 ### Fixed

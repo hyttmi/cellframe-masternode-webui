@@ -18,7 +18,7 @@ class Config:
     API_TOKEN = str(get_config_value("webui", "api_token", default=False, is_numeric=False))
     AUTH_BYPASS = get_config_value("webui", "auth_bypass", default=False, is_numeric=False)
     AUTO_UPDATE = get_config_value("webui", "auto_update", default=False, is_numeric=False)
-    CACHE_BLOCKS_INTERVAL = int(get_config_value("webui", "cache_blocks_interval", default=10, is_numeric=True))
+    CACHE_BLOCKS_INTERVAL = int(get_config_value("webui", "cache_blocks_interval", default=30, is_numeric=True))
     CACHE_REWARDS_INTERVAL = int(get_config_value("webui", "cache_rewards_interval", default=30, is_numeric=True))
     DEBUG = get_config_value("webui", "debug", default=False, is_numeric=False)
     DOWNLOAD_PRERELEASES = get_config_value("webui", "download_prereleases", default=False)
@@ -41,7 +41,8 @@ class Config:
     SMTP_PORT = int(get_config_value("webui", "smtp_port", default="465", is_numeric=True))
     SMTP_SERVER = get_config_value("webui", "smtp_server", default="smtp.gmail.com", is_numeric=False)
     SMTP_USER = get_config_value("webui", "smtp_user", default=None, is_numeric=False)
-    TELEGRAM_API_TOKEN = get_config_value("webui", "telegram_api_key", default=False, is_numeric=False)
+    TELEGRAM_API_TOKEN = get_config_value("webui", "telegram_api_key", default=None, is_numeric=False)
+    TELEGRAM_BOT_TOKEN = get_config_value("webui", "telegram_bot_key", default=None, is_numeric=False)
     TELEGRAM_CHAT_ID = get_config_value("webui", "telegram_chat_id", default=False, is_numeric=False)
     TELEGRAM_STATS_ENABLED = get_config_value("webui", "telegram_stats", default=False, is_numeric=False)
     TELEGRAM_STATS_TIME = get_config_value("webui", "telegram_stats_time", default="23:00", is_numeric=False)
@@ -54,4 +55,6 @@ class Config:
             autoescape=select_autoescape()
         )
         env.policies['json.dumps_kwargs'] = {'sort_keys': False}
+        env.trim_blocks = True
+        env.lstrip_blocks = True
         return env
