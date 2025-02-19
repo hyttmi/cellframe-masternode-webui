@@ -97,7 +97,7 @@ def get_token_price(network):
         log_it("e", "An error occurred", exc=e)
         return None
 
-def get_node_data(network):
+def get_node_data(network, only_my_node=False):
     try:
         status = get_network_status(network)
         if status:
@@ -143,6 +143,10 @@ def get_node_data(network):
                         node['sovereign_wallet_tokens'] = None
                 else:
                     node['sovereign_wallet_tokens'] = None
+
+            if only_my_node:
+                my_node = next((node for node in nodes if node['is_my_node']), None)
+                return my_node
 
             info = {
                 'active_nodes_count': active_nodes_count,
