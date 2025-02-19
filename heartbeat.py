@@ -40,6 +40,7 @@ class Heartbeat:
         try:
             for network in self.statuses:
                 active_status = get_node_data(network, only_my_node=True)
+                log_it("d", f"is_active returned {active_status}")
                 if active_status["active"] == "true":
                     self.statuses[network]['is_active'] = "OK"
                 else:
@@ -81,7 +82,7 @@ def run_heartbeat_check():
     if any("NOK" in status.values() for status in heartbeat.statuses.values()):
         report_heartbeat_errors(heartbeat)
     else:
-        log_it("d", "[HEARTBEAT] No issues detected or notification already sent.")
+        log_it("d", "[HEARTBEAT] No issues detected.")
 
 def report_heartbeat_errors(heartbeat):
     errors = []
