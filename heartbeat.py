@@ -2,7 +2,8 @@ from networkutils import (
     get_active_networks,
     get_network_config,
     get_autocollect_status,
-    get_blocks
+    get_blocks,
+    get_node_data
 )
 from cacher import is_locked
 from config import Config
@@ -13,11 +14,11 @@ import time
 
 class Heartbeat:
     def __init__(self):
-        self.msg_sent = False
         self.statuses = {
             network: {
                 "autocollect_status": "Unknown",
-                "last_signed_block": "Unknown"
+                "last_signed_block": "Unknown",
+                "is_active": "Unknown"
             }
             for network in get_active_networks() if get_network_config(network)
         }
@@ -32,6 +33,18 @@ class Heartbeat:
                 else:
                     self.statuses[network]["autocollect_status"] = "NOK"
                     log_it("e", f"[HEARTBEAT] Autocollect status seems to be inactive!")
+        except Exception as e:
+            log_it("e", "An error occurred", exc=e)
+
+    def is_active(self):
+        try:
+            for network in self.statuses:
+                active_status = get_node_data(network, only_my_node=True)
+                if active_status["active"] == "true":
+                    self.statuses[network]['is_active'] = "OK"
+                else:
+                    self.statuses[network]['is_active'] = "NOK"
+                    log_it("e", f'[HEARTBEAT] Node seems to be inactive in consensus.')
         except Exception as e:
             log_it("e", "An error occurred", exc=e)
 
@@ -65,9 +78,8 @@ def run_heartbeat_check():
     heartbeat.autocollect_status()
     heartbeat.last_signed_block()
     log_it("d", f"[HEARTBEAT] Updated heartbeat statuses: {heartbeat.statuses}")
-    if not heartbeat.msg_sent and any("NOK" in status.values() for status in heartbeat.statuses.values()):
+    if any("NOK" in status.values() for status in heartbeat.statuses.values()):
         report_heartbeat_errors(heartbeat)
-        heartbeat.msg_sent = True
     else:
         log_it("d", "[HEARTBEAT] No issues detected or notification already sent.")
 
