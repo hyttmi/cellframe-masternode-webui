@@ -2,6 +2,9 @@
 
 ## [4.03] - 2025-XX-XX
 
+### Added
+- Getting active node status for heartbeat. Might be unaccurate but we'll see...
+
 ## [4.02] - 2025-02-17
 
 ### Fixed
