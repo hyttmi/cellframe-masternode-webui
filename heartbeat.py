@@ -79,6 +79,7 @@ heartbeat = Heartbeat()
 def run_heartbeat_check():
     heartbeat.autocollect_status()
     heartbeat.last_signed_block()
+    heartbeat.is_active()
     log_it("d", f"[HEARTBEAT] Updated heartbeat statuses: {heartbeat.statuses}")
     if any("NOK" in status.values() for status in heartbeat.statuses.values()):
         report_heartbeat_errors(heartbeat)
