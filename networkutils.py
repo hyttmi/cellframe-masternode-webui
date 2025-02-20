@@ -141,9 +141,6 @@ def get_node_data(network, only_my_node=False):
                 else:
                     node['sovereign_wallet_tokens'] = None
 
-            if only_my_node:
-                return next((node for node in nodes if node['is_my_node']), None)
-
             info = {
                 'active_nodes_count': active_nodes_count,
                 'total_weight': total_weight,
@@ -153,6 +150,9 @@ def get_node_data(network, only_my_node=False):
                 'info': info,
                 'nodes': nodes
             }
+
+            if only_my_node:
+                return [node for node in result["nodes"] if node["is_my_node"]]
             return result
         return None
     except Exception as e:
