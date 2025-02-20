@@ -39,16 +39,18 @@ class Heartbeat:
     def is_active(self):
         try:
             for network in self.statuses:
-                log_it("d", f"Trying for network {network}...")
-                active_status = get_node_data(network, only_my_node=True)
-                log_it("d", f"is_active returned {active_status}")
-                if active_status["active"] == "true":
-                    self.statuses[network]['is_active'] = "OK"
+                active_status_list = get_node_data(network, only_my_node=True)
+                if active_status_list:
+                    active_status = active_status_list[0]
+                    is_active = active_status.get("active", "").lower() == "true"
                 else:
-                    self.statuses[network]['is_active'] = "NOK"
-                    log_it("e", f'[HEARTBEAT] Node seems to be inactive in consensus.')
+                    is_active = False
+                self.statuses[network]['is_active'] = "OK" if is_active else "NOK"
+                if not is_active:
+                    log_it("e", "[HEARTBEAT] Node seems to be inactive in consensus.")
         except Exception as e:
             log_it("e", "An error occurred", exc=e)
+
 
     def last_signed_block(self):
         try:
