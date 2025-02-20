@@ -61,7 +61,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` or file in `
 - `email_time=23:59` - Set time when you want to send the statistics. Default time is 23:00**24h format (HH:MM)**
 - `email_use_ssl=true|false` - Use SSL for mail delivery.
 - `email_use_tls=true|false` - Use TLS for mail delivery.
-- `heartbeat_block_age=12`- Sets maximum age of signed block to 12 hours and if older, notifies user.
+- `heartbeat_block_age=12`- Sets maximum age of last signed block to 12 hours and if older, notifies user.
 - `node_alias="Name` - Name of the node as alias. Default is CFNode. **NO SPACES**
 - `password=p455w0rd` - Sets password to p455w0rd. Default: `webui`
 - `scheduler_delay_on_startup` - Sets delay for functions which are passed to scheduler and launched directly on startup. Default value is 60 seconds

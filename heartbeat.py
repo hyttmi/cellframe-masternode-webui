@@ -39,6 +39,7 @@ class Heartbeat:
     def is_active(self):
         try:
             for network in self.statuses:
+                log_it("d", f"Trying for network {network}...")
                 active_status = get_node_data(network, only_my_node=True)
                 log_it("d", f"is_active returned {active_status}")
                 if active_status["active"] == "true":
