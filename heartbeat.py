@@ -89,7 +89,11 @@ def run_heartbeat_check():
     if any("NOK" in status.values() for status in heartbeat.statuses.values()):
         heartbeat.msgs_sent += 1
         if heartbeat.msgs_sent == heartbeat.max_sent_msgs:
-            log_it("i", f"[HEARTBEAT] Node will be restarted because of indicated problems.")
+            if Config.TELEGRAM_STATS_ENABLED:
+                send_telegram_message(f"({Config.NODE_ALIAS}): Node will be restarted because of indicated problems.")
+            if Config.EMAIL_STATS_ENABLED:
+                send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", "Node will be restarted because of indicated problems.")
+            log_it("i", "[HEARTBEAT] Node will be restarted because of indicated problems.")
             restart_node()
         report_heartbeat_errors(heartbeat)
     else:
@@ -109,7 +113,7 @@ def report_heartbeat_errors(heartbeat):
         log_it("e", f"[HEARTBEAT] Issues detected:\n{error_message}")
 
         if Config.TELEGRAM_STATS_ENABLED:
-            send_telegram_message(error_message)
+            send_telegram_message(f"({Config.NODE_ALIAS}): {error_message}")
 
         if Config.EMAIL_STATS_ENABLED:
-            send_email("Heartbeat Alert", error_message)
+            send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", error_message)
