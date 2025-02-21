@@ -48,7 +48,7 @@ class Heartbeat:
                     is_active = active_status.get("active", "").lower() == "true"
                 else:
                     is_active = False
-                self.statuses[network]['is_active'] = "OK" if is_active else "NOK"
+                self.statuses[network]['is_active_in_consensus'] = "OK" if is_active else "NOK"
                 if not is_active:
                     log_it("e", "[HEARTBEAT] Node seems to be inactive in consensus.")
         except Exception as e:
