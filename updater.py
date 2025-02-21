@@ -4,7 +4,7 @@ from logger import log_it
 from packaging import version
 from utils import restart_node
 from notifications import send_telegram_message, send_email
-import os, requests, shutil, json, zipfile, psutil
+import os, requests, shutil, json, zipfile
 
 def check_plugin_update():
     try:
