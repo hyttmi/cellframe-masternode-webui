@@ -4,7 +4,7 @@
 
 ### Added
 - Getting active node status for heartbeat. Might be unaccurate but we'll see...
-- Heartbeat now restarts the node after 5 times of checking and if issue is found every time.
+- Heartbeat now restarts the node after 5 (default, use `heartbeat_notification_amount` for setting a personal value) times of checking and if issue is found every time.
 - WebUI template now uses `node_alias` config as header text.
 
 ## [4.02] - 2025-02-17
