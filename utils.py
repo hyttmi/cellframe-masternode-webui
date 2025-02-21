@@ -111,3 +111,11 @@ def get_latest_node_version():
     except Exception as e:
         log_it("e", "An error occurred", exc=e)
         return None
+
+def restart_node():
+    try:
+        node_pid = get_node_pid()
+        if node_pid:
+            psutil.Process(node_pid).terminate()
+    except Exception as e:
+        log_it("e", "An error occurred", exc=e)
