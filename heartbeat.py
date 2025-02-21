@@ -18,7 +18,7 @@ class Heartbeat:
             network: {
                 "autocollect_status": "Unknown",
                 "last_signed_block": "Unknown",
-                "is_active": "Unknown"
+                "is_active_in_consensus": "Unknown"
             }
             for network in get_active_networks() if get_network_config(network)
         }
@@ -36,7 +36,7 @@ class Heartbeat:
         except Exception as e:
             log_it("e", "An error occurred", exc=e)
 
-    def is_active(self):
+    def is_active_in_consensus(self):
         try:
             for network in self.statuses:
                 active_status_list = get_node_data(network, only_my_node=True)
@@ -79,9 +79,13 @@ class Heartbeat:
 heartbeat = Heartbeat()
 
 def run_heartbeat_check():
-    heartbeat.autocollect_status()
-    heartbeat.last_signed_block()
-    heartbeat.is_active()
+    tasks = [
+        heartbeat.autocollect_status(),
+        heartbeat.last_signed_block(),
+        heartbeat.is_active_in_consensus()
+    ]
+    for task in tasks:
+        task
     log_it("d", f"[HEARTBEAT] Updated heartbeat statuses: {heartbeat.statuses}")
     if any("NOK" in status.values() for status in heartbeat.statuses.values()):
         report_heartbeat_errors(heartbeat)
