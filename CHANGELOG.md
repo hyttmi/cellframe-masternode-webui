@@ -4,6 +4,7 @@
 
 ### Added
 - Getting active node status for heartbeat. Might be unaccurate but we'll see...
+- Heartbeat now restarts the node after 5 times of checking and if there's issues all times.
 
 ## [4.02] - 2025-02-17
 

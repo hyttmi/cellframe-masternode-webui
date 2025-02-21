@@ -67,9 +67,9 @@ class Heartbeat:
                     block_time = datetime.strptime(last_signed_block["ts_created"], "%a, %d %b %Y %H:%M:%S")
                     time_diff = curr_time - block_time
                     log_it("d", f"Time difference: {time_diff} (current: {curr_time}, block time: {block_time})")
-                    if curr_time - block_time > timedelta(seconds=Config.HEARTBEAT_BLOCK_AGE):
+                    if curr_time - block_time > timedelta(hours=Config.HEARTBEAT_BLOCK_AGE):
                         self.statuses[network]['last_signed_block'] = "NOK"
-                        log_it("e", f"[HEARTBEAT] Last signed block is older than 10 hours!")
+                        log_it("e", f"[HEARTBEAT] Last signed block is older than {Config.HEARTBEAT_BLOCK_AGE} hours!")
                         break
                     else:
                         self.statuses[network]['last_signed_block'] = "OK"
@@ -99,6 +99,7 @@ def run_heartbeat_check():
         report_heartbeat_errors(heartbeat)
     else:
         log_it("d", "[HEARTBEAT] No issues detected.")
+        heartbeat.msgs_sent = 0 # Reset when no issues detected
 
 def report_heartbeat_errors(heartbeat):
     errors = []
