@@ -1,6 +1,7 @@
 from command_runner import command_runner
+from utils import get_node_pid
 from logger import log_it
-import os
+import os, psutil
 
 def cli_command(command, timeout=120, is_shell_command=False, retries=3):
     while retries > 0:
@@ -22,6 +23,14 @@ def cli_command(command, timeout=120, is_shell_command=False, retries=3):
         retries -= 1
         log_it("e", f"Retrying command: {command} ({retries} attempts left)")
     return None
+
+def restart_node():
+    try:
+        node_pid = get_node_pid()
+        if node_pid:
+            psutil.Process(node_pid).terminate()
+    except Exception as e:
+        log_it("e", "An error occurred", exc=e)
 
 def get_current_script_directory():
     return os.path.dirname(os.path.abspath(__file__))

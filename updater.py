@@ -1,4 +1,4 @@
-from common import get_current_script_directory, get_script_parent_directory, cli_command
+from common import get_current_script_directory, get_script_parent_directory, cli_command, restart_node
 from config import Config
 from logger import log_it
 from packaging import version
@@ -72,7 +72,7 @@ def install_plugin_update():
                             if Config.EMAIL_STATS_ENABLED:
                                 send_email(f"Plugin version ({update_info['latest_version']}) has been installed and your node will be restarted.")
                             log_it("i", "Restarting node...")
-                            psutil.Process(node_pid).terminate()
+                            restart_node() # Or maybe not, if it was launched manually... :D
                     else:
                         log_it("e", "Failed to install dependencies!")
                 else:
