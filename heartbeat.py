@@ -74,7 +74,7 @@ class Heartbeat:
                     else:
                         self.statuses[network]['last_signed_block'] = "OK"
                 else:
-                    log_it("e", f"Unable to fetch blocks for {network}")
+                    log_it("e", f"[HEARTBEAT] Unable to fetch blocks for {network}")
         except Exception as e:
             log_it("e", "An error occurred", exc=e)
 
