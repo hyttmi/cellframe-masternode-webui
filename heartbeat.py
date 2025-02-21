@@ -88,6 +88,7 @@ def run_heartbeat_check():
     log_it("d", f"[HEARTBEAT] Updated heartbeat statuses: {heartbeat.statuses}")
     if any("NOK" in status.values() for status in heartbeat.statuses.values()):
         heartbeat.msgs_sent += 1
+        log_it("d", f"[HEARTBEAT] has sent {heartbeat.msgs_sent} messages.")
         if heartbeat.msgs_sent == heartbeat.max_sent_msgs:
             if Config.TELEGRAM_STATS_ENABLED:
                 send_telegram_message(f"({Config.NODE_ALIAS}): Node will be restarted because of indicated problems.")
