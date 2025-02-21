@@ -67,7 +67,7 @@ class Heartbeat:
                     block_time = datetime.strptime(last_signed_block["ts_created"], "%a, %d %b %Y %H:%M:%S")
                     time_diff = curr_time - block_time
                     log_it("d", f"Time difference: {time_diff} (current: {curr_time}, block time: {block_time})")
-                    if curr_time - block_time > timedelta(hours=Config.HEARTBEAT_BLOCK_AGE):
+                    if curr_time - block_time > timedelta(seconds=Config.HEARTBEAT_BLOCK_AGE):
                         self.statuses[network]['last_signed_block'] = "NOK"
                         log_it("e", f"[HEARTBEAT] Last signed block is older than 10 hours!")
                         break
@@ -87,11 +87,11 @@ def run_heartbeat_check():
 
     log_it("d", f"[HEARTBEAT] Updated heartbeat statuses: {heartbeat.statuses}")
     if any("NOK" in status.values() for status in heartbeat.statuses.values()):
-        report_heartbeat_errors(heartbeat)
         heartbeat.msgs_sent += 1
         if heartbeat.msgs_sent == heartbeat.max_sent_msgs:
             log_it("i", f"[HEARTBEAT] Node will be restarted because of indicated problems.")
             restart_node()
+        report_heartbeat_errors(heartbeat)
     else:
         log_it("d", "[HEARTBEAT] No issues detected.")
 
@@ -99,11 +99,11 @@ def report_heartbeat_errors(heartbeat):
     errors = []
     for network, status in heartbeat.statuses.items():
         if status["autocollect_status"] == "NOK":
-            errors.append(f"[{network}] Autocollect status: Inactive")
+            errors.append(f"[{network}] Autocollect status seems to be inactive!")
         if status["last_signed_block"] == "NOK":
             errors.append(f"[{network}] Last signed block is older than {Config.HEARTBEAT_BLOCK_AGE} hours!")
         if status['is_active_in_consensus'] == "NOK":
-            errors.append(f"[{network}] Node seems to be inactive in consensus.")
+            errors.append(f"[{network}] Node seems to be inactive in consensus!")
     if errors:
         error_message = "\n".join(errors)
         log_it("e", f"[HEARTBEAT] Issues detected:\n{error_message}")
