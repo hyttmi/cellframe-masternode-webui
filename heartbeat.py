@@ -5,8 +5,8 @@ from networkutils import (
     get_blocks,
     get_node_data
 )
+from utils import restart_node
 from cacher import is_locked
-from common import restart_node
 from config import Config
 from logger import log_it
 from notifications import send_email, send_telegram_message
