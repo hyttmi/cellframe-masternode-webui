@@ -951,9 +951,22 @@
             </div>
         {% endif %}
         <div class="row text-center">
-            <p class="fw-medium small"><a href="https://gist.github.com/hyttmi/5f522586b089254813d9fc86edf8df65">Donations...</a></p>
+            <a href="javascript:void(0);" class="text-decoration-none" onclick="copyToClipboard()">
+                <i class="fa-solid fa-hand-holding-dollar"></i>
+              </a>
         </div>
     </div>
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="copyToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="toast-header">
+            <strong class="me-auto">Copied!</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div class="toast-body">
+            Wallet address copied to clipboard!
+          </div>
+        </div>
+      </div>
 
     <script defer>
         const customView = document.getElementById('custom_view');
