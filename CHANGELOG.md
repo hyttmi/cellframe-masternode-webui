@@ -6,6 +6,7 @@
 - Separate function for restarting the node. **CAUTION: If node has been started manually, there's no way to restart it!**
 - Heartbeat now restarts the node after 5 checks by default (configurable via heartbeat_notification_amount) if an issue is detected each time.
 - WebUI template now uses `node_alias` config as header text.
+- Donation button. This plugin is free and opensource and it will definitely stay that way. Please support my weekend beer drinking habit by donating a small amount of CELL tokens just to keep my mind clear and fresh ;)
 
 ## [4.02] - 2025-02-17
 
