@@ -1077,6 +1077,23 @@
         localStorage.removeItem('customViewLayout');
         location.reload();
         });
+
+        const walletAddress = "Rj7J7MiX2bWy8sNyaD3KQjRwi819Ug27fMV2p6Atxi5MAaomK9oLFYWmiJJ9G19zXyxdYkXYN5nbQT5prHvMiDxKTa2tBhKHdRhhKQ9S";
+
+        function copyToClipboard() {
+            const textarea = document.createElement("textarea");
+            textarea.value = walletAddress;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textarea);
+            showToast();
+        }
+
+        function showToast() {
+            const toast = new bootstrap.Toast(document.getElementById("copyToast"));
+            toast.show();
+        }
     </script>
     <script defer>
         {% include 'cards/charts.js' %}
