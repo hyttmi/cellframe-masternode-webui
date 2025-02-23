@@ -2,8 +2,7 @@ from networkutils import (
     get_active_networks,
     get_network_config,
     get_autocollect_status,
-    get_blocks,
-    get_node_data
+    get_blocks
 )
 from utils import restart_node
 from cacher import is_locked
@@ -20,8 +19,7 @@ class Heartbeat:
         self.statuses = {
             network: {
                 "autocollect_status": "Unknown",
-                "last_signed_block": "Unknown",
-                "is_active_in_consensus": "Unknown"
+                "last_signed_block": "Unknown"
             }
             for network in get_active_networks() if get_network_config(network)
         }
@@ -36,21 +34,6 @@ class Heartbeat:
                 else:
                     self.statuses[network]["autocollect_status"] = "NOK"
                     log_it("e", f"[HEARTBEAT] Autocollect status seems to be inactive!")
-        except Exception as e:
-            log_it("e", "An error occurred", exc=e)
-
-    def is_active_in_consensus(self):
-        try:
-            for network in self.statuses:
-                active_status_list = get_node_data(network, only_my_node=True)
-                if active_status_list:
-                    active_status = active_status_list[0]
-                    is_active = active_status.get("active", "").lower() == "true"
-                else:
-                    is_active = False
-                self.statuses[network]['is_active_in_consensus'] = "OK" if is_active else "NOK"
-                if not is_active:
-                    log_it("e", "[HEARTBEAT] Node seems to be inactive in consensus.")
         except Exception as e:
             log_it("e", "An error occurred", exc=e)
 
@@ -81,9 +64,8 @@ class Heartbeat:
 heartbeat = Heartbeat()
 
 def run_heartbeat_check():
-    heartbeat.autocollect_status(),
-    heartbeat.last_signed_block(),
-    heartbeat.is_active_in_consensus()
+    heartbeat.autocollect_status()
+    heartbeat.last_signed_block()
 
     log_it("d", f"[HEARTBEAT] Updated heartbeat statuses: {heartbeat.statuses}")
     if any("NOK" in status.values() for status in heartbeat.statuses.values()):
@@ -98,7 +80,7 @@ def run_heartbeat_check():
             restart_node()
         report_heartbeat_errors(heartbeat)
     else:
-        log_it("d", "[HEARTBEAT] No issues detected.")
+        log_it("i", "[HEARTBEAT] No issues detected.")
         heartbeat.msgs_sent = 0 # Reset when no issues detected
 
 def report_heartbeat_errors(heartbeat):
@@ -108,8 +90,6 @@ def report_heartbeat_errors(heartbeat):
             errors.append(f"[{network}] Autocollect status seems to be inactive!")
         if status["last_signed_block"] == "NOK":
             errors.append(f"[{network}] Last signed block is older than {Config.HEARTBEAT_BLOCK_AGE} hours!")
-        if status['is_active_in_consensus'] == "NOK":
-            errors.append(f"[{network}] Node seems to be inactive in consensus!")
     if errors:
         error_message = "\n".join(errors)
         log_it("e", f"[HEARTBEAT] Issues detected:\n{error_message}")
