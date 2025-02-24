@@ -1,5 +1,10 @@
 # Changelog
 
+## [4.04] - 2025-XX-XX
+
+### Fixed
+- Removed unnecessary checks for enabled email/telegram notifications in heartbeat module.
+
 ## [4.03] - 2025-02-23
 
 ### Added
