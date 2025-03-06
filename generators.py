@@ -20,6 +20,7 @@ from networkutils import (
 )
 from updater import check_plugin_update
 from wallets import get_reward_wallet_tokens
+from heartbeat import heartbeat
 from logger import log_it
 from common import get_current_script_directory
 from config import Config
@@ -84,6 +85,10 @@ def generate_network_info():
                         'sum_sovereign_rewards': executor.submit(get_rewards, network, total_sum=True, is_sovereign=True),
                         'token_price': executor.submit(get_token_price, network)
                     }
+
+                    heartbeat_autocollect_status_result = heartbeat.statuses.get(network, {}).get("autocollect_status", "Unknown")
+                    heartbeat_last_signed_block_result = heartbeat.statuses.get(network, {}).get("last_signed_block", "Unknown")
+
                     network_info = {
                         'address': net_status['address'],
                         'all_blocks': futures['all_blocks'].result(),
@@ -94,6 +99,8 @@ def generate_network_info():
                         'all_signed_blocks': futures['all_signed_blocks'].result(),
                         'autocollect_rewards': futures['autocollect_status'].result()['rewards'],
                         'autocollect_status': futures['autocollect_status'].result()['active'],
+                        'heartbeat_autocollect_status': heartbeat_autocollect_status_result,
+                        'heartbeat_last_signed_block': heartbeat_last_signed_block_result,
                         'blocks_today': futures['blocks_today'].result(),
                         'current_block_reward': futures['current_block_reward'].result(),
                         'chain_size': futures['chain_size'].result(),
