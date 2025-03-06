@@ -434,6 +434,27 @@
                             </div>
                         </div>
                     {% endif %}
+
+                    {% if network.heartbeat_autocollect_status and network.heartbeat_last_signed_block %}
+                    {% set hb_status = "OK" if network.heartbeat_autocollect_status == "OK" and network.heartbeat_last_signed_block == "OK" else "NOT OK" %}
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="heartbeat_{{ network_name }}">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="card-title text-uppercase"><span class="highlight">{{ network_name }}</span> Heartbeat</h6>
+                                    <button type="button" class="btn" onclick="toggleCard('heartbeat_{{ network_name }}')">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+                                <div class="card-body d-flex align-items-center">
+                                    <div class="card-inner">
+                                        <span class="fw-medium card-subtitle mb-2 text-body-secondary">{{ hb_status }}</span>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-heart-pulse icon-container"></i>
+                            </div>
+                        </div>
+                    {% endif %}
+
                     {% if network.target_state %}
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="target_state_{{ network_name }}">
                             <div class="card">
