@@ -436,7 +436,7 @@
                     {% endif %}
 
                     {% if network.heartbeat_autocollect_status and network.heartbeat_last_signed_block %}
-                    {% set hb_status = "OK" if network.heartbeat_autocollect_status == "OK" and network.heartbeat_last_signed_block == "OK" else "NOT OK" %}
+                    {% set hb_status = "OK" if network.heartbeat_autocollect_status == "OK" and network.heartbeat_last_signed_block == "OK" else "AUTOCOLLECT STATUS OR LAST SIGNED BLOCK CHECK HAS FAILED!" %}
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="heartbeat_{{ network_name }}">
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -448,7 +448,6 @@
                                 <div class="card-body d-flex align-items-center">
                                     <div class="card-inner">
                                         <span class="fw-medium card-subtitle mb-2 text-body-secondary">{{ hb_status }}</span>
-                                        <span class="fw-medium card-subtitle mb-2 text-body-secondary"><small>Autocollect status or last signed block check has failed!</small></span>
                                     </div>
                                 </div>
                                 <i class="fa-solid fa-heart-pulse icon-container"></i>
