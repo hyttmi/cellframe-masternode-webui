@@ -96,15 +96,14 @@ def setup_schedules():
                 )
                 log_it("d", "auto_updater submitted to ThreadPool")
 
-            if (Config.TELEGRAM_STATS_ENABLED or Config.EMAIL_STATS_ENABLED):
-                futures['heartbeat_check_schedule'] = executor.submit(
-                    run_scheduler,
-                    run_heartbeat_check,
-                    15,
-                    every_min=True,
-                    run_on_startup=False
-                )
-                log_it("d", "heartbeat_check_schedule submitted to ThreadPool")
+            futures['heartbeat_check_schedule'] = executor.submit(
+                run_scheduler,
+                run_heartbeat_check,
+                15,
+                every_min=True,
+                run_on_startup=False
+            )
+            log_it("d", "heartbeat_check_schedule submitted to ThreadPool")
 
             for name in futures:
                 log_it("d", f"{name} submitted to ThreadPool")
