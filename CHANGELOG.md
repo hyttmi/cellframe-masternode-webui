@@ -1,9 +1,8 @@
 # Changelog
 
-## [4.04] - 2025-XX-XX
+## [4.04] - 2025-03-07
 
 ### Fixed
-- Removed unnecessary checks for enabled email/telegram notifications in heartbeat module.
 - Fixed UI issues.
 - Add heartbeat module statuses to Jinja templates.
 
