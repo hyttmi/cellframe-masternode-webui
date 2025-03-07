@@ -72,9 +72,9 @@ def run_heartbeat_check():
         heartbeat.msgs_sent += 1
         log_it("d", f"[HEARTBEAT] has sent {heartbeat.msgs_sent} messages.")
         if heartbeat.msgs_sent == heartbeat.max_sent_msgs:
-            if Config.TELEGRAM_ENABLED:
+            if Config.TELEGRAM_STATS_ENABLED:
                 send_telegram_message(f"({Config.NODE_ALIAS}): Node will be restarted because of indicated problems.")
-            if Config.EMAIL_ENABLED:
+            if Config.EMAIL_STATS_ENABLED:
                 send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", "Node will be restarted because of indicated problems.")
             log_it("i", "[HEARTBEAT] Node will be restarted because of indicated problems.")
             restart_node()

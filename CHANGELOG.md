@@ -1,5 +1,10 @@
 # Changelog
 
+## [4.05] - 2025-03-07
+
+### Fixed
+- Getting config values.
+
 ## [4.04] - 2025-03-07
 
 ### Fixed
