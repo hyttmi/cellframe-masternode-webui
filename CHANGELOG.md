@@ -1,5 +1,10 @@
 # Changelog
 
+## [4.06] - 2025-03-07
+
+### Fixed
+- Getting config values again, sorry :(
+
 ## [4.05] - 2025-03-07
 
 ### Fixed

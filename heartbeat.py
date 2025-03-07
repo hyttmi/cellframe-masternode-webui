@@ -93,7 +93,7 @@ def report_heartbeat_errors(heartbeat):
     if errors:
         error_message = "\n".join(errors)
         log_it("e", f"[HEARTBEAT] Issues detected:\n{error_message}")
-        if Config.TELEGRAM_ENABLED:
+        if Config.TELEGRAM_STATS_ENABLED:
             send_telegram_message(f"({Config.NODE_ALIAS}): {error_message}")
-        if Config.EMAIL_ENABLED:
+        if Config.EMAIL_STATS_ENABLED:
             send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", error_message)
