@@ -80,7 +80,6 @@ def run_heartbeat_check():
         report_heartbeat_errors(heartbeat)
     else:
         log_it("i", "[HEARTBEAT] No issues detected.")
-        heartbeat.msgs_sent = 0
 
 def report_heartbeat_errors(heartbeat):
     errors = []
@@ -100,3 +99,6 @@ def report_heartbeat_errors(heartbeat):
             heartbeat.msgs_sent += 1
         except Exception as e:
             log_it("e", "An error occurred", exc=e)
+    else:
+        log_it("i", "[HEARTBEAT] No issues detected.")
+        heartbeat.msgs_sent = 0
