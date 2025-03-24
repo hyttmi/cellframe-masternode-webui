@@ -69,7 +69,6 @@ def run_heartbeat_check():
 
     log_it("d", f"[HEARTBEAT] Updated heartbeat statuses: {heartbeat.statuses}")
     if any("NOK" in status.values() for status in heartbeat.statuses.values()):
-        heartbeat.msgs_sent += 1
         log_it("d", f"[HEARTBEAT] has sent {heartbeat.msgs_sent} messages.")
         if heartbeat.msgs_sent == heartbeat.max_sent_msgs:
             if Config.TELEGRAM_STATS_ENABLED:
@@ -81,7 +80,7 @@ def run_heartbeat_check():
         report_heartbeat_errors(heartbeat)
     else:
         log_it("i", "[HEARTBEAT] No issues detected.")
-        heartbeat.msgs_sent = 0 # Reset when no issues detected
+        heartbeat.msgs_sent = 0
 
 def report_heartbeat_errors(heartbeat):
     errors = []
@@ -93,7 +92,11 @@ def report_heartbeat_errors(heartbeat):
     if errors:
         error_message = "\n".join(errors)
         log_it("e", f"[HEARTBEAT] Issues detected:\n{error_message}")
-        if Config.TELEGRAM_STATS_ENABLED:
-            send_telegram_message(f"({Config.NODE_ALIAS}): {error_message}")
-        if Config.EMAIL_STATS_ENABLED:
-            send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", error_message)
+        try:
+            if Config.TELEGRAM_STATS_ENABLED:
+                send_telegram_message(f"({Config.NODE_ALIAS}): {error_message}")
+            if Config.EMAIL_STATS_ENABLED:
+                send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", error_message)
+            heartbeat.msgs_sent += 1
+        except Exception as e:
+            log_it("e", "An error occurred", exc=e)
