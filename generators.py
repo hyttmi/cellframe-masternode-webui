@@ -115,7 +115,9 @@ def generate_network_info():
                         'first_signed_blocks_today': futures['first_signed_blocks_today'].result(),
                         'state': net_status['state'],
                         'target_state': net_status['target_state'],
-                        'token_price': futures['token_price'].result()
+                        'token_price': futures['token_price'].result(),
+                        'sync_status_zerochain': net_status['sync_status']['zerochain'] if 'zerochain' in net_status['sync_status'] else None,
+                        'sync_status_main': net_status['sync_status']['main'] if 'main' in net_status['sync_status'] else None
                     }
                     network_data[network] = network_info
         log_it("d", json.dumps(network_data, indent=4))
