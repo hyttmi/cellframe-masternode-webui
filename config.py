@@ -18,6 +18,7 @@ class Config:
     API_TOKEN = str(get_config_value("webui", "api_token", default=False, is_numeric=False))
     AUTH_BYPASS = get_config_value("webui", "auth_bypass", default=False, is_numeric=False)
     AUTO_UPDATE = get_config_value("webui", "auto_update", default=False, is_numeric=False)
+    CACHE_AGE_LIMIT = get_config_value("webui", "cache_age_limit", default=4, is_numeric=True)
     CACHE_BLOCKS_INTERVAL = int(get_config_value("webui", "cache_blocks_interval", default=30, is_numeric=True))
     CACHE_REWARDS_INTERVAL = int(get_config_value("webui", "cache_rewards_interval", default=30, is_numeric=True))
     DEBUG = get_config_value("webui", "debug", default=False, is_numeric=False)

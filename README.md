@@ -52,6 +52,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` or file in `
 - `api_token=your_own_api_token`- Used in accessing plain JSON data (You can generate your own or use a service like https://it-tools.tech/token-generator).
 - `auth_bypass=true|false` Disables HTTP authentication. Useful if you're planning to for example use the plugin behind reverse proxy. Default false.
 - `auto_update=true|false` Updates plugin files and restarts the node after update.
+- `cache_age_limit=2` - Time in hours to inform user if blocks cache is older than this value. Default 2 hours.
 - `cache_blocks_interval=10` - Time (in minutes) between blocks cache renew.
 - `cache_rewards_interval=10` - Time (in minutes) between rewards cache renew.
 - `debug=true|false` - Print debugging data to `webui.log`, useful when you're having issues with the plugin.

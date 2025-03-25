@@ -165,12 +165,18 @@ def get_network_status(network):
         addr_match = re.search(r"([A-Z0-9]+::[A-Z0-9]+::[A-Z0-9]+::[A-Z0-9]+)", net_status)
         state_match = re.search(r"states:\s+current: (\w+)", net_status)
         target_state_match = re.search(r"target: (\w+)", net_status)
+        sync_percent_match = re.search(r"zerochain:\s+[\s\S]+?status:\s+(.*)[\s\S]+main:\s+[\s\S]+?status:\s+(.*)", net_status)
         if state_match and addr_match and target_state_match:
             net_status = {
                 "state": state_match.group(1),
                 "target_state": target_state_match.group(1),
-                "address": addr_match.group(1)
+                "address": addr_match.group(1),
             }
+            if sync_percent_match:
+                    net_status["sync_status"] = {
+                        "zerochain": str(sync_percent_match.group(1)).toupper(),
+                        "main": str(sync_percent_match.group(2)).toupper()
+                    }
             return net_status
         return None
     except Exception as e:
@@ -218,13 +224,14 @@ def get_blocks(network, block_type="count", today=False, heartbeat=False):
         cache_file_path = os.path.join(get_current_script_directory(), f".{network}_blocks_cache.json")
         with open(cache_file_path, "r") as f:
             block_data = json.load(f)
+            last_run = block_data.get('last_run', None)
             all_signed_blocks = block_data.get('all_signed_blocks', [])
             all_first_signed_blocks = block_data.get('all_first_signed_blocks', [])
             block_count = block_data.get('block_count')
             blocks_today_in_network = block_data.get('blocks_today_in_network')
 
         if block_type == "all_signed_blocks" and heartbeat:
-            return all_signed_blocks[0] if all_signed_blocks else None
+            return (last_run, all_signed_blocks[0]) if all_signed_blocks else None
 
         if block_type == "blocks_today_in_network":
             return blocks_today_in_network if blocks_today_in_network else None

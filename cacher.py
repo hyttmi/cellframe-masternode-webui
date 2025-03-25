@@ -85,6 +85,7 @@ def cache_blocks_data():
                 log_it("i", "Caching blocks...")
                 start_time = time.time()
                 block_data = {
+                    'last_run': None,
                     'blocks_today_in_network': 0,
                     'block_count': 0,
                     'all_first_signed_blocks': {},
@@ -106,8 +107,12 @@ def cache_blocks_data():
                 if block_count and block_count_match:
                     block_data['block_count'] = int(block_count_match.group(1))
 
-                block_data['all_first_signed_blocks'] = parse_blocks(first_signed_blocks, "first_signed_blocks")
-                block_data['all_signed_blocks'] = parse_blocks(signed_blocks, "signed_blocks")
+                if first_signed_blocks:
+                    block_data['all_first_signed_blocks'] = parse_blocks(first_signed_blocks, "first_signed_blocks")
+
+                if signed_blocks:
+                    block_data['all_signed_blocks'] = parse_blocks(signed_blocks, "signed_blocks")
+                    block_data['last_run'] = datetime.now().isoformat()
 
                 cache_file_path = os.path.join(get_current_script_directory(), f".{network}_blocks_cache.json")
                 with open(cache_file_path, "w") as f:
@@ -162,6 +167,7 @@ def cache_rewards_data():
                     log_it("d", f"Caching wallet history for address {sovereign_wallet_addr}")
                     rewards['sovereign_rewards'] = parse_tx_history(cmd_get_sovereign_wallet_tx_history)
                 if rewards:
+                    rewards['last_run'] = datetime.now().isoformat()
                     cache_file_path = os.path.join(get_current_script_directory(), f".{network}_rewards_cache.json")
                     with open(cache_file_path, "w") as f:
                         json.dump(rewards, f, indent=4)

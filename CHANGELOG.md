@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.07] - 2025-03-25
+
+### Added
+- Last run timestamp to cacher.
+- Heartbeat module now checks the timestamp of blocks cache. If it's older than time set in `cache_age_limit` (default 2 hours), plugin will inform user. This is useful for detecting if cli is timing out.
+- Add cards for showing the status of zerochain and main chain.
+
 ## [4.06] - 2025-03-07
 
 ### Fixed

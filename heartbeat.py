@@ -43,7 +43,20 @@ class Heartbeat:
                 log_it("d", "[HEARTBEAT] Cache is locked, waiting for lock to release...")
                 time.sleep(60)
             for network in self.statuses:
-                last_signed_block = get_blocks(network, block_type="all_signed_blocks", heartbeat=True)
+                last_run, last_signed_block = get_blocks(network, block_type="all_signed_blocks", heartbeat=True)
+                if not last_run:
+                    log_it("e", f"[HEARTBEAT] There's no cache data for blocks in network {network}!")
+                    continue
+
+                cache_age = datetime.now() - datetime.fromisoformat(last_run)
+                if cache_age > timedelta(Config.CACHE_AGE_LIMIT):
+                    log_it("e", f"[HEARTBEAT] Cache file for {network} is too old! Last updated: {last_run}. Reporting issue...")
+                    if Config.TELEGRAM_STATS_ENABLED:
+                        send_telegram_message(f"({Config.NODE_ALIAS}): Your blocks cache has not been updated in more than {Config.CACHE_AGE_LIMIT} hours. Please check your node.")
+                    if Config.EMAIL_STATS_ENABLED:
+                        send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", f"Your blocks cache has not been updated in more than {Config.CACHE_AGE_LIMIT} hours. Please check your node.")
+                    continue
+
                 if last_signed_block:
                     log_it("d", f"[HEARTBEAT] Got block {last_signed_block}")
                     curr_time = datetime.now()
