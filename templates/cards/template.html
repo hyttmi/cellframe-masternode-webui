@@ -446,14 +446,8 @@
                                 </div>
                                 <div class="card-body d-flex align-items-center">
                                     <div class="card-inner">
-                                        <p>
-                                            <span class="fw-medium card-subtitle mb-2 text-body-secondary text-uppercase"><strong>Autocollect status</strong></span><br>
-                                            <span class="fw-medium card-subtitle mb-2 text-body-secondary text-uppercase">{{ network.heartbeat_autocollect_status }}</span><br>
-                                        </p>
-                                        <p>
-                                            <span class="fw-medium card-subtitle mb-2 text-body-secondary text-uppercase"><strong>Last signed block</strong></span>
-                                            <span class="fw-medium card-subtitle mb-2 text-body-secondary">{{ network.heartneat_last_signed_block }}</span>
-                                        </p>
+                                        <span class="fw-medium card-subtitle mb-2 text-body-secondary text-uppercase">Autocollect status: {{ network.heartbeat_autocollect_status }}</span>
+                                        <span class="fw-medium card-subtitle mb-2 text-body-secondary text-uppercase">Last signed block: {{ network.heartbeat_last_signed_block }}</span>
                                     </div>
                                 </div>
                                 <i class="fa-solid fa-heart-pulse icon-container"></i>
