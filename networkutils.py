@@ -174,8 +174,8 @@ def get_network_status(network):
             }
             if sync_percent_match:
                     net_status["sync_status"] = {
-                        "zerochain": str(sync_percent_match.group(1)).toupper() if sync_percent_match.group(1) else None,
-                        "main": str(sync_percent_match.group(2)).toupper() if sync_percent_match.group(2) else None
+                        "zerochain": str(sync_percent_match.group(1)).upper() if sync_percent_match.group(1) else None,
+                        "main": str(sync_percent_match.group(2)).upper() if sync_percent_match.group(2) else None
                     }
             return net_status
         return None
