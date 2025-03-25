@@ -165,18 +165,12 @@ def get_network_status(network):
         addr_match = re.search(r"([A-Z0-9]+::[A-Z0-9]+::[A-Z0-9]+::[A-Z0-9]+)", net_status)
         state_match = re.search(r"states:\s+current: (\w+)", net_status)
         target_state_match = re.search(r"target: (\w+)", net_status)
-        sync_percent_match = re.search(r"zerochain:\s+[\s\S]+?status:\s+(.*)[\s\S]+main:\s+[\s\S]+?status:\s+(.*)", net_status)
         if state_match and addr_match and target_state_match:
             net_status = {
                 "state": state_match.group(1),
                 "target_state": target_state_match.group(1),
                 "address": addr_match.group(1),
             }
-            if sync_percent_match:
-                    net_status["sync_status"] = {
-                        "zerochain": str(sync_percent_match.group(1)).upper() if sync_percent_match.group(1) else None,
-                        "main": str(sync_percent_match.group(2)).upper() if sync_percent_match.group(2) else None
-                    }
             return net_status
         return None
     except Exception as e:
