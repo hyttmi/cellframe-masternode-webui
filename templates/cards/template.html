@@ -37,7 +37,7 @@
         <div class="row">
             {% if network_info %}
                 {% for network_name, network in network_info.items() %}
-                    {% if network.heartbeat_autocollect_status == "NOK"%}
+                    {% if network.heartbeat_autocollect_status == "OK"%}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="external_ip">
                 <div class="alert alert-danger" role="alert">
                         <i class="fa-solid fa-triangle-exclamation"></i>
