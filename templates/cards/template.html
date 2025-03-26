@@ -35,6 +35,13 @@
       </div>
     <div class="container-fluid mt-4">
         <div class="row">
+            {% if network.heartbeat_autocollect_status != "NOK" %}
+            <div class="alert alert-danger" role="alert">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>Heartbeat not OK - {{ network.heartbeat_autocollect_status }}</span>
+            </div>
+            {% endif %}
+
             <h1 class="text-uppercase text-center text-color-secondary">{{ general_info.node_alias }}</h1>
             <div class="d-flex justify-content-center mb-3">
                 <button id="edit_view_button" class="btn">
