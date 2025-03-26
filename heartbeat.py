@@ -54,7 +54,7 @@ class Heartbeat:
 
                 cache_age = datetime.now() - datetime.fromisoformat(last_run)
                 log_it("d", f"[HEARTBEAT] Cache age for {network}: {cache_age}")
-                if cache_age > timedelta(milliseconds=Config.CACHE_AGE_LIMIT):
+                if cache_age > timedelta(hours=Config.CACHE_AGE_LIMIT):
                     log_it("e", f"[HEARTBEAT] Cache file for {network} is too old! Last updated: {last_run}. Reporting issue...")
                     if Config.TELEGRAM_STATS_ENABLED:
                         send_telegram_message(f"({Config.NODE_ALIAS}): Your blocks cache has not been updated in more than {Config.CACHE_AGE_LIMIT} hours. Please examine your node.")
