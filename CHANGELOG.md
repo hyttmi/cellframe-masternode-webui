@@ -4,7 +4,10 @@
 
 ### Added
 - Last run timestamp to cacher.
-- Heartbeat module now checks the timestamp of blocks cache. If it's older than time set in `cache_age_limit` (default 2 hours), plugin will inform user. This is useful for detecting if cli is timing out.
+- Heartbeat module now checks the timestamp of blocks cache. If it's older than time set in `cache_age_limit` (default 2 hours), plugin will inform user via logging and Telegram/Email if enabled. This is useful for detecting if cli is timing out.
+
+### Fixed
+- Fixed issues with heartbeat module.
 
 ## [4.06] - 2025-03-07
 
