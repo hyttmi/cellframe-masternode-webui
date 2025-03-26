@@ -1,5 +1,10 @@
 # Changelog
 
+## [4.08] - 2025-XX-XX
+
+### Added
+- Node alias to restart messages.
+
 ## [4.07] - 2025-03-26
 
 ### Added
