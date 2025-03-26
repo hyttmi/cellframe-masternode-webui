@@ -99,7 +99,7 @@ def setup_schedules():
             futures['heartbeat_check_schedule'] = executor.submit(
                 run_scheduler,
                 run_heartbeat_check,
-                1,
+                15,
                 every_min=True,
                 run_on_startup=False
             )
