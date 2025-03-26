@@ -19,7 +19,7 @@ class Heartbeat:
         self.statuses = {
             network: {
                 "autocollect_status": "Unknown",
-                "last_signed_block": "Unknown"
+                "last_signed_block": "Unknown",
             }
             for network in get_active_networks() if get_network_config(network)
         }
@@ -45,6 +45,10 @@ class Heartbeat:
             for network in self.statuses:
                 last_run, last_signed_block = get_blocks(network, block_type="all_signed_blocks", heartbeat=True)
                 if not last_run:
+                    log_it("e", f"[HEARTBEAT] There's no cache data for blocks in network {network}!")
+                    continue
+
+                if not last_signed_block:
                     log_it("e", f"[HEARTBEAT] There's no cache data for blocks in network {network}!")
                     continue
 
