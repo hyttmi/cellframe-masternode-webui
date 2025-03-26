@@ -35,11 +35,15 @@
       </div>
     <div class="container-fluid mt-4">
         <div class="row">
-            {% if network.heartbeat_autocollect_status != "NOK" %}
+            {% if network_info %}
+                {% for network_name, network in network_info.items() %}
+                    {% if network.heartbeat_autocollect_status != "NOK" %}
             <div class="alert alert-danger" role="alert">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                <span>Heartbeat not OK - {{ network.heartbeat_autocollect_status }}</span>
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>Heartbeat not OK - {{ network_name }} - {{ network.heartbeat_autocollect_status }}</span>
             </div>
+                    {% endif %}
+                {% endfor %}
             {% endif %}
 
             <h1 class="text-uppercase text-center text-color-secondary">{{ general_info.node_alias }}</h1>
