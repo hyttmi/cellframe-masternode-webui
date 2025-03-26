@@ -1,6 +1,6 @@
 # Changelog
 
-## [4.07] - 2025-XX-XX
+## [4.07] - 2025-03-26
 
 ### Added
 - Last run timestamp to cacher.
@@ -8,6 +8,9 @@
 
 ### Fixed
 - Fixed issues with heartbeat module sent messages count.
+
+### Changed
+- Hearbeat card is removed and if errors are detected, error cards are shown directly on the top of the page.
 
 ## [4.06] - 2025-03-07
 
