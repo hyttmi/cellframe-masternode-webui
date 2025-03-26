@@ -10,7 +10,7 @@
 - Fixed issues with heartbeat module sent messages count.
 
 ### Changed
-- Hearbeat card is removed and if errors are detected, error cards are shown directly on the top of the page.
+- Heartbeat card is removed and if errors are detected, error cards are shown directly on the top of the page.
 
 ## [4.06] - 2025-03-07
 
