@@ -49,12 +49,13 @@ class Heartbeat:
                     continue
 
                 cache_age = datetime.now() - datetime.fromisoformat(last_run)
+                log_it("d", f"[HEARTBEAT] Cache age for {network}: {cache_age}")
                 if cache_age > timedelta(Config.CACHE_AGE_LIMIT):
                     log_it("e", f"[HEARTBEAT] Cache file for {network} is too old! Last updated: {last_run}. Reporting issue...")
                     if Config.TELEGRAM_STATS_ENABLED:
-                        send_telegram_message(f"({Config.NODE_ALIAS}): Your blocks cache has not been updated in more than {Config.CACHE_AGE_LIMIT} hours. Please check your node.")
+                        send_telegram_message(f"({Config.NODE_ALIAS}): Your blocks cache has not been updated in more than {Config.CACHE_AGE_LIMIT} hours. Please examine your node.")
                     if Config.EMAIL_STATS_ENABLED:
-                        send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", f"Your blocks cache has not been updated in more than {Config.CACHE_AGE_LIMIT} hours. Please check your node.")
+                        send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", f"Your blocks cache has not been updated in more than {Config.CACHE_AGE_LIMIT} hours. Please examine your node.")
                     continue
 
                 if last_signed_block:
@@ -63,7 +64,7 @@ class Heartbeat:
                     block_time = datetime.strptime(last_signed_block["ts_created"], "%a, %d %b %Y %H:%M:%S")
                     time_diff = curr_time - block_time
                     log_it("d", f"Time difference: {time_diff} (current: {curr_time}, block time: {block_time})")
-                    if curr_time - block_time > timedelta(hours=Config.HEARTBEAT_BLOCK_AGE):
+                    if curr_time - block_time > timedelta(milliseconds=Config.HEARTBEAT_BLOCK_AGE):
                         self.statuses[network]['last_signed_block'] = "NOK"
                         log_it("e", f"[HEARTBEAT] Last signed block is older than {Config.HEARTBEAT_BLOCK_AGE} hours!")
                         break
