@@ -1,9 +1,12 @@
 # Changelog
 
-## [4.08] - 2025-XX-XX
+## [4.08] - 2025-03-27
 
 ### Added
 - Node alias to restart messages.
+
+### Fixed
+- Actually remove the heartbeat card :laughing:
 
 ## [4.07] - 2025-03-26
 
