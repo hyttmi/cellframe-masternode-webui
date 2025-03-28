@@ -2,6 +2,9 @@
 
 ## [4.09] - 2025-XX-XX
 
+### Changed
+- Load CSS, JS from S3 bucket.
+
 ## [4.08] - 2025-03-27
 
 ### Added
