@@ -1,5 +1,24 @@
 # Changelog
 
+## [4.09] - 2025-03-31
+
+### Added
+- Add cool new CPUNK theme.
+- Load logo (CPUNK) from S3.
+- Load favicons from S3.
+- Missing node address card.
+- Print current configuration to log file on startup.
+- Preliminary QEVM support. (Not even sure about the network name yet.)
+- Pass template name too with Jinja.
+
+### Removed
+- Donation button.
+
+### Changed
+- Made themes more modular, now all scripts are in `scripts` directory and chart colours are passed with Jinja based on a template used.
+- Cards are now sorted by size.
+- Updater now removes old files/dirs before copying new files.
+
 ## [4.08] - 2025-03-27
 
 ### Added

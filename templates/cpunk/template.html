@@ -12,21 +12,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/Sortable.min.js"></script>
-    <link rel="icon" href="https://cfwebui.s3.us-east-1.amazonaws.com/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="https://cfwebui.s3.us-east-1.amazonaws.com/favicon_cpunk.png" type="image/png">
     <style>
-        {% include 'cards/style.css' %}
+        {% include 'cpunk/style.css' %}
     </style>
 </head>
 
 <body>
     <div class="modal fade" id="data_removal_confirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
-          <div class="modal-content custom-modal-bg">
-            <div class="modal-header">
+          <div class="modal-content custom-modal-bg border-0">
+            <div class="modal-header border-0">
               <h1 class="modal-title fs-5" id="staticBackdropLabel">Do you wish to reset your view settings?</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <button type="button" class="custom-close-btn ms-auto" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer border-0">
               <button type="button" class="btn btn-dark" data-bs-dismiss="modal">No</button>
               <button type="button" id="clear_storage" data-bs-dismiss="modal" class="btn btn-danger">Yes</button>
             </div>
@@ -56,6 +56,11 @@
                 {% endif %}
             {% endfor %}
         {% endif %}
+        <div class="row justify-content-center">
+            <div class="col-auto text-center">
+                <img class="img-fluid logo" src="https://cfwebui.s3.us-east-1.amazonaws.com/logo.png" alt="logo">
+            </div>
+        </div>
         <div class="row">
             <h1 class="text-uppercase text-center text-color-secondary">{{ general_info.node_alias }}</h1>
             <div class="d-flex justify-content-center mb-3">
@@ -478,6 +483,7 @@
                             </div>
                         </div>
                     {% endif %}
+
 
                     {% if network.target_state %}
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="target_state_{{ network_name }}">
@@ -992,7 +998,7 @@
         </div>
         {% if general_info.current_plugin_version %}
             <div class="row text-center">
-                <span class="fw-medium small text-body-secondary">{{ general_info.current_plugin_version}}</span>
+                <p><span class="fw-medium small text-body-secondary">{{ general_info.current_plugin_version}}</span></p>
             </div>
         {% endif %}
     </div>

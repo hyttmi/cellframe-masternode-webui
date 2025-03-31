@@ -1,3 +1,11 @@
+{% if general_info.template == "cpunk" %}
+    let primaryColor = '#F97834';
+    let secondaryColor = '#FF9A4D';
+{% else %}
+    let primaryColor = '#9079FF';
+    let secondaryColor = '#B3A3FF';
+{% endif %}
+
 {% if network_info and network_info.items() %}
     {% for network_name, network in network_info.items() %}
     {% if "backbone" in network_name | lower %}
@@ -52,7 +60,7 @@
                         label: 'Effective weight',
                         data: effectiveWeights,
                         backgroundColor: topNodes.map(function(item) {
-                            return item.isMyNode ? '#9079FF' : '#B3A3FF';
+                            return item.isMyNode ? secondaryColor : primaryColor;
                         }),
                         borderWidth: 0
                     }
@@ -76,7 +84,7 @@
                             },
                             ticks: {
                                 display: false,
-                                color: '#B3A3FF',
+                                color: primaryColor,
                                 font: {
                                     size: 13,
                                     family: 'Rubik'
@@ -89,7 +97,7 @@
                             },
                             ticks: {
                                 display: true,
-                                color: '#B3A3FF',
+                                color: primaryColor,
                                 autoSkip: false,
                                 maxRotation: 0,
                                 minRotation: 0,
@@ -104,8 +112,8 @@
                         legend: {
                             display: false,
                             labels: {
-                                color: '#B3A3FF',
-                                fillStyle: '#B3A3FF',
+                                color: primaryColor,
+                                fillStyle: primaryColor,
                                 font: {
                                   size: 13,
                                   family: 'Rubik'
@@ -114,7 +122,7 @@
                             position: 'bottom',
                             title: {
                                 display: true,
-                                color: '#B3A3FF'
+                                color: primaryColor
                             }
                         },
                         tooltip: {
@@ -184,8 +192,8 @@
                         datasets: [{
                             label: '{{ chart.label }}',
                             data: [],
-                            backgroundColor: '#B3A3FF',
-                            borderColor: '#B3A3FF',
+                            backgroundColor: primaryColor,
+                            borderColor: primaryColor,
                             borderWidth: 1
                         }]
                     },
@@ -198,7 +206,7 @@
                                     display: false
                                 },
                                 ticks: {
-                                    color: '#B3A3FF',
+                                    color: primaryColor,
                                     font: {
                                         size: 13,
                                         family: 'Rubik'
@@ -211,7 +219,7 @@
                                 },
                                 beginAtZero: true,
                                 ticks: {
-                                    color: '#B3A3FF',
+                                    color: primaryColor,
                                     precision: 0,
                                     font: {
                                         size: 13,

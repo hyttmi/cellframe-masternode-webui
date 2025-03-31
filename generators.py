@@ -32,6 +32,7 @@ def generate_general_info(format_time=True):
         sys_stats = get_sys_stats()
         plugin_data = check_plugin_update()
         info = {
+                'template': Config.TEMPLATE,
                 'current_plugin_version': plugin_data['current_version'] if plugin_data else "Unavailable",
                 'latest_plugin_version': plugin_data['latest_version'] if plugin_data else "Unavailable",
                 'plugin_name': Config.PLUGIN_NAME,
@@ -136,6 +137,7 @@ def generate_data(template_name, return_as_json=False, is_top_level_template=Fal
         network_info = generate_network_info()
         if general_info:
             template_path = template_name if is_top_level_template else f"{Config.TEMPLATE}/{template_name}"
+            log_it("d", f"Generating HTML content using template: {template_path}")
             custom_template_file = f"custom_templates/{template_name}"
             if is_top_level_template and os.path.isfile(os.path.join(get_current_script_directory(), "templates", "custom_templates", template_name)):
                 template_path = custom_template_file
