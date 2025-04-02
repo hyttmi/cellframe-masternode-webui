@@ -1,6 +1,6 @@
 # Changelog
 
-## [4.10] - 2025-XX-XX
+## [4.10] - 2025-04-02
 
 ### Added
 - Cards for displaying sync percentage (or "Unknown", if value is `- %`) from zerochain and mainchain (request by @ageargeek).
