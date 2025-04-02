@@ -39,6 +39,7 @@ class Config:
         PLUGIN_URL = get_config_value("webui", "url", default="webui", is_numeric=False)
 
     SCHEDULER_DELAY_ON_STARTUP = get_config_value("webui", "scheduler_delay_on_startup", default=120, is_numeric=True)
+    SHOW_ICON = get_config_value("webui", "show_icon", default=False, is_numeric=False)
     SMTP_PASSWORD = get_config_value("webui", "smtp_password", default=None, is_numeric=False)
     SMTP_PORT = int(get_config_value("webui", "smtp_port", default="465", is_numeric=True))
     SMTP_SERVER = get_config_value("webui", "smtp_server", default="smtp.gmail.com", is_numeric=False)
@@ -48,7 +49,7 @@ class Config:
     TELEGRAM_CHAT_ID = get_config_value("webui", "telegram_chat_id", default=False, is_numeric=False)
     TELEGRAM_STATS_ENABLED = get_config_value("webui", "telegram_stats", default=False, is_numeric=False)
     TELEGRAM_STATS_TIME = get_config_value("webui", "telegram_stats_time", default="23:00", is_numeric=False)
-    TEMPLATE = get_config_value("webui", "template", default="cards", is_numeric=False)
+    TEMPLATE = get_config_value("webui", "template", default="cpunk", is_numeric=False)
     USERNAME = str(get_config_value("webui", "username", default="webui", is_numeric=False))
 
     def jinja_environment():

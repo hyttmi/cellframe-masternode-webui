@@ -19,6 +19,25 @@
 </head>
 
 <body>
+    <div class="modal fade" id="tutorialModal" tabindex="-1" aria-labelledby="tutorialModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content custom-modal-bg border-0">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="tutorialModalLabel">Welcome to Cellframe Masternode WebUI!</h5>
+                </div>
+            <div class="modal-body border-0">
+                <p>To view available cards, click the <i class="fa-regular fa-circle-xmark" style="transform: rotate(45deg);"></i> button.</p>
+                <p>To pin a card, click the <i class="fa-solid fa-plus"></i> button. It will move to your custom view.</p>
+                <p>To remove it, click the <i class="fa-solid fa-minus"></i> button.</p>
+                <p>Drag & reorder pinned cards to your preference.</p>
+                <p>To close available cards, click <i class="fa-regular fa-circle-xmark"></i> button.</p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-primary tutorial-ok-btn" id="tutorialOkBtn">Got it!</button>
+            </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="data_removal_confirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content custom-modal-bg">
@@ -494,6 +513,55 @@
                                     </div>
                                 </div>
                                 <i class="fa-solid fa-network-wired icon-container"></i>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if network.sync_state_main %}
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="sync_state_main_{{ network_name }}">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="card-title text-uppercase"><span class="highlight">{{ network_name }}</span>main sync state</h6>
+                                    <button type="button" class="btn" onclick="toggleCard('sync_state_main_{{ network_name }}')">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+                                <div class="card-body d-flex align-items-center">
+                                    <div class="card-inner">
+                                        <span class="fw-medium card-subtitle mb-2 text-body-secondary">
+                                            {% if network.sync_state_main is integer %}
+                                                {{ network.sync_state_main }}%
+                                            {% else %}
+                                                {{ network.sync_state_main }}
+                                            {% endif %}
+                                        </span>
+
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-arrows-spin icon-container"></i>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if network.sync_state_zerochain %}
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="sync_state_zerochain_{{ network_name }}">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="card-title text-uppercase"><span class="highlight">{{ network_name }}</span>zerochain sync state</h6>
+                                    <button type="button" class="btn" onclick="toggleCard('sync_state_zerochain_{{ network_name }}')">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+                                <div class="card-body d-flex align-items-center">
+                                    <div class="card-inner">
+                                        <span class="fw-medium card-subtitle mb-2 text-body-secondary">
+                                            {% if network.sync_state_zerochain is integer %}
+                                                {{ network.sync_state_zerochain }}%
+                                            {% else %}
+                                                {{ network.sync_state_zerochain }}
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-arrows-spin icon-container"></i>
                             </div>
                         </div>
                     {% endif %}
@@ -996,9 +1064,6 @@
             </div>
         {% endif %}
     </div>
-    <script defer>
-        {% include 'scripts/sort.js' %}
-    </script>
     <script defer>
         {% include 'scripts/misc.js' %}
     </script>

@@ -12,17 +12,9 @@ USERNAME="webui"
 PASSWORD="webui"
 URL="webui"
 
-if [[ "$1" =~ --uninstall|-u ]]; then
-    if [[ -f "$CFG_PATH/webui.cfg" ]]; then
-        echo "Removing configuration file..."
-        rm -f "$CFG_PATH/webui.cfg" || { echo "Failed to remove configuration file!"; exit 1; }
-    fi
-    if [[ -d "$WEBUI_PATH" ]]; then
-        echo "Removing plugin directory..."
-        rm -rf "$WEBUI_PATH" || { echo "Failed to remove plugin directory!"; exit 1; }
-    fi
-    echo "Plugin uninstalled successfully!"; exit 0;
-fi
+generate_random_password() {
+    tr -dc 'A-Za-z0-9!@#$%&-+=' < /dev/urandom | head -c 16
+}
 
 install_plugin() {
     if [[ -f $PIP_PATH ]]; then
@@ -44,6 +36,18 @@ install_plugin() {
             exit 1
         fi
 }
+
+if [[ "$1" =~ --uninstall|-u ]]; then
+    if [[ -f "$CFG_PATH/webui.cfg" ]]; then
+        echo "Removing configuration file..."
+        rm -f "$CFG_PATH/webui.cfg" || { echo "Failed to remove configuration file!"; exit 1; }
+    fi
+    if [[ -d "$WEBUI_PATH" ]]; then
+        echo "Removing plugin directory..."
+        rm -rf "$WEBUI_PATH" || { echo "Failed to remove plugin directory!"; exit 1; }
+    fi
+    echo "Plugin uninstalled successfully!"; exit 0;
+fi
 
 if [[ -f "$CFG_PATH/webui.cfg" ]]; then
     echo "Old configuration file found, proceeding to install only!"
@@ -75,15 +79,17 @@ else
     echo -e "\n[webui]\nusername=$USERNAME" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 fi
 
-read -p "Type a password for WebUI user, leave blank to use default ($PASSWORD): " INPUT_PASSWORD
+read -p "Type a password for WebUI user, leave blank to generate a random password: " INPUT_PASSWORD
 
 if [[ -n "$INPUT_PASSWORD" ]] && [[ "$INPUT_PASSWORD" =~ ^[a-zA-Z0-9\_\!\@\$\%\^\&\*\(\)\-\+\=]+$ ]]; then
     PASSWORD=$INPUT_PASSWORD
-    echo -e "password=$PASSWORD" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
 else
-    echo "Password $INPUT_PASSWORD is invalid. Using default (webui)."
-    echo -e "password=$PASSWORD" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
+    PASSWORD=$(generate_random_password)
+    echo "Generated random password: $PASSWORD"
 fi
+
+echo -e "password=$PASSWORD" >> "$CFG_PATH/webui.cfg" || { echo "Failed to write configuration file"; exit 1; }
+
 
 read -p "Type URL which you want to register with the plugin, leave blank to use the default ($URL):" INPUT_URL
 

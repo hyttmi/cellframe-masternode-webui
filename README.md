@@ -63,6 +63,7 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` or file in `
 - `email_use_ssl=true|false` - Use SSL for mail delivery.
 - `email_use_tls=true|false` - Use TLS for mail delivery.
 - `heartbeat_block_age=12`- Sets maximum age of last signed block to 12 hours and if older, notifies user.
+- `hide_icon=true|false` - Hide icon from the top of the page, default true.
 - `node_alias="Name` - Name of the node as alias. Default is CFNode. **NO SPACES**
 - `password=p455w0rd` - Sets password to p455w0rd. Default: `webui`
 - `scheduler_delay_on_startup` - Sets delay for functions which are passed to scheduler and launched directly on startup. Default value is 60 seconds
@@ -94,7 +95,7 @@ email_use_tls=true
 ```
 
 ## Templating
-Since version 3.18, it's possible to create custom templates for `email.html` and `telegram.html`. The files should be placed in `templates/custom_templates` path.
+Since version 3.18, it's possible to create custom templates for `email.html` and `telegram.html`. The files should be placed in `custom_templates` directory.
 
 Default `email.html` and `telegram.html` templates are placed in `templates` directory and you can use them as the base for your own templates.
 
@@ -111,7 +112,7 @@ Here are the variables that are passed to the Jinja templates:
 - `general_info.hostname`: Returns your system hostname, this value is cached and will refresh only after restart of node
 - `general_info.system_uptime`: Returns your system uptime in seconds
 - `general_info.node_uptime`: Returns Cellframe node uptime in seconds
-- `general_info.node_version`: Returns the currently installed version of Cellframe node, this value is cached and will refresh only after restart of node
+- `general_info.node_version`: Returns the currently installed version of Cellframe node.
 - `general_info.latest_node_version`: Returns the latest version of Cellframe node
 - `general_info.node_cpu_usage`: Returns the current CPU utilization of Cellframe node
 - `general_info.node_memory_usage`: Returns the current memory utilization of Cellframe node

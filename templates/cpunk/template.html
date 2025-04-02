@@ -19,16 +19,52 @@
 </head>
 
 <body>
-    <div class="modal fade" id="data_removal_confirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal shadow rounded fade" id="changelogModal" tabindex="-1" aria-labelledby="changelogModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content custom-modal-bg border-0">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="changelogModalLabel">Changelog</h5>
+                </div>
+                <div class="modal-body text-color-secondary border-0">
+                    <div id="changelog">
+                        <p>Loading changelog...</p>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-primary tutorial-ok-btn" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal shadow rounded fade" id="tutorialModal" tabindex="-1" aria-labelledby="tutorialModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content custom-modal-bg border-0">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="tutorialModalLabel">Welcome to Cellframe Masternode WebUI!</h5>
+                </div>
+            <div class="modal-body text-color-secondary border-0">
+                <p>To view available cards, click the <i class="fa-regular fa-circle-xmark" style="transform: rotate(45deg); color: var(--color2);"></i> button.</p>
+                <p>To pin a card, click the <i class="fa-solid fa-plus"></i> button. It will move to pinned cards.</p>
+                <p>To remove it, click the <i class="fa-solid fa-minus"></i> button.</p>
+                <p>Drag & reorder pinned cards to your preference.</p>
+                <p>To close available cards, click <i class="fa-regular fa-circle-xmark" style="color: var(--color2);"></i> button.</p>
+                <p>For detailed plugin configuration, please refer to the <a target="_blank" href="https://github.com/hyttmi/cellframe-masternode-webui?tab=readme-ov-file#configuration">documentation.</a></p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-primary tutorial-ok-btn" id="tutorialOkBtn">Got it!</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal shadow rounded fade" id="data_removal_confirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content custom-modal-bg border-0">
             <div class="modal-header border-0">
-              <h1 class="modal-title fs-5" id="staticBackdropLabel">Do you wish to reset your view settings?</h1>
-              <button type="button" class="custom-close-btn ms-auto" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">Reset all settings? This will erase all stored preferences from your browser.</h1>
             </div>
             <div class="modal-footer border-0">
-              <button type="button" class="btn btn-dark" data-bs-dismiss="modal">No</button>
-              <button type="button" id="clear_storage" data-bs-dismiss="modal" class="btn btn-danger">Yes</button>
+              <button type="button" class="btn btn-primary btn-no" data-bs-dismiss="modal">No way!</button>
+              <button type="button" id="clear_storage" data-bs-dismiss="modal" class="btn btn-primary btn-yes">Yes, I know what I'm doing!</button>
             </div>
           </div>
         </div>
@@ -56,11 +92,13 @@
                 {% endif %}
             {% endfor %}
         {% endif %}
+        {% if general_info.show_icon %}
         <div class="row justify-content-center">
             <div class="col-auto text-center">
                 <img class="img-fluid logo" src="https://cfwebui.s3.us-east-1.amazonaws.com/logo.png" alt="logo">
             </div>
         </div>
+        {% endif %}
         <div class="row">
             <h1 class="text-uppercase text-center text-color-secondary">{{ general_info.node_alias }}</h1>
             <div class="d-flex justify-content-center mb-3">
@@ -483,8 +521,6 @@
                             </div>
                         </div>
                     {% endif %}
-
-
                     {% if network.target_state %}
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="target_state_{{ network_name }}">
                             <div class="card">
@@ -500,6 +536,55 @@
                                     </div>
                                 </div>
                                 <i class="fa-solid fa-network-wired icon-container"></i>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if network.sync_state_main %}
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="sync_state_main_{{ network_name }}">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="card-title text-uppercase"><span class="highlight">{{ network_name }}</span>main sync state</h6>
+                                    <button type="button" class="btn" onclick="toggleCard('sync_state_main_{{ network_name }}')">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+                                <div class="card-body d-flex align-items-center">
+                                    <div class="card-inner">
+                                        <span class="fw-medium card-subtitle mb-2 text-body-secondary">
+                                            {% if network.sync_state_main is integer %}
+                                                {{ network.sync_state_main }}%
+                                            {% else %}
+                                                {{ network.sync_state_main }}
+                                            {% endif %}
+                                        </span>
+
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-arrows-spin icon-container"></i>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if network.sync_state_zerochain %}
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="sync_state_zerochain_{{ network_name }}">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="card-title text-uppercase"><span class="highlight">{{ network_name }}</span>zerochain sync state</h6>
+                                    <button type="button" class="btn" onclick="toggleCard('sync_state_zerochain_{{ network_name }}')">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+                                <div class="card-body d-flex align-items-center">
+                                    <div class="card-inner">
+                                        <span class="fw-medium card-subtitle mb-2 text-body-secondary">
+                                            {% if network.sync_state_zerochain is integer %}
+                                                {{ network.sync_state_zerochain }}%
+                                            {% else %}
+                                                {{ network.sync_state_zerochain }}
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-arrows-spin icon-container"></i>
                             </div>
                         </div>
                     {% endif %}
@@ -1002,9 +1087,6 @@
             </div>
         {% endif %}
     </div>
-    <script defer>
-        {% include 'scripts/sort.js' %}
-    </script>
     <script defer>
         {% include 'scripts/misc.js' %}
     </script>

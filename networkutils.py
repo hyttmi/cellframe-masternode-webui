@@ -165,11 +165,26 @@ def get_network_status(network):
         addr_match = re.search(r"([A-Z0-9]+::[A-Z0-9]+::[A-Z0-9]+::[A-Z0-9]+)", net_status)
         state_match = re.search(r"states:\s+current: (\w+)", net_status)
         target_state_match = re.search(r"target: (\w+)", net_status)
-        if state_match and addr_match and target_state_match:
+        sync_state_match = re.search(r"zerochain[\s\S]+percent:\s+([\d.-]+)[\s\S]+percent:\s+([\d.-]+)", net_status)
+
+        if state_match and addr_match and target_state_match and sync_state_match:
+            try:
+                zerochain_percent = int(float(sync_state_match.group(1)))
+            except ValueError:
+                zerochain_percent = "Unknown"
+            try:
+                mainchain_percent = int(float(sync_state_match.group(2)))
+            except ValueError:
+                mainchain_percent = "Unknown"
+
             net_status = {
                 "state": state_match.group(1),
                 "target_state": target_state_match.group(1),
                 "address": addr_match.group(1),
+                "sync_state": {
+                    "zerochain_percent": zerochain_percent,
+                    "mainchain_percent": mainchain_percent
+                }
             }
             return net_status
         return None
@@ -303,6 +318,21 @@ def get_chain_size(network):
             return f"{round(size/(pow(1024,2)), 2)} MB"
         elif size < pow(1024,4):
             return f"{round(size/(pow(1024,3)), 2)} GB"
+    except Exception as e:
+        log_it("e", "An error occurred", exc=e)
+        return None
+
+def is_node_synced(network):
+    try:
+        net_status = get_network_status(network)
+        if not net_status:
+            return False
+        zerochain_percent = net_status["sync_state"].get("zerochain_percent")
+        mainchain_percent = net_status["sync_state"].get("mainchain_percent")
+        if isinstance(zerochain_percent, int) and isinstance(mainchain_percent, int):
+            if zerochain_percent == 100 and mainchain_percent == 100:
+                return True
+        return False
     except Exception as e:
         log_it("e", "An error occurred", exc=e)
         return None

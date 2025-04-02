@@ -32,19 +32,20 @@ def generate_general_info(format_time=True):
         sys_stats = get_sys_stats()
         plugin_data = check_plugin_update()
         info = {
-                'template': Config.TEMPLATE,
                 'current_plugin_version': plugin_data['current_version'] if plugin_data else "Unavailable",
-                'latest_plugin_version': plugin_data['latest_version'] if plugin_data else "Unavailable",
-                'plugin_name': Config.PLUGIN_NAME,
+                'external_ip': get_external_ip(),
                 'hostname': get_system_hostname(),
-                'system_uptime': format_uptime(sys_stats['system_uptime']) if format_time else sys_stats['system_uptime'],
-                'node_alias': Config.NODE_ALIAS,
-                'node_uptime': format_uptime(sys_stats['node_uptime']) if format_time else sys_stats['node_uptime'],
-                'node_version': get_installed_node_version(),
                 'latest_node_version': get_latest_node_version(),
+                'latest_plugin_version': plugin_data['latest_version'] if plugin_data else "Unavailable",
+                'node_alias': Config.NODE_ALIAS,
                 'node_cpu_usage': sys_stats['node_cpu_usage'],
                 'node_memory_usage': sys_stats['node_memory_usage_mb'],
-                'external_ip': get_external_ip()
+                'node_uptime': format_uptime(sys_stats['node_uptime']) if format_time else sys_stats['node_uptime'],
+                'node_version': get_installed_node_version(),
+                'plugin_name': Config.PLUGIN_NAME,
+                'show_icon': Config.SHOW_ICON,
+                'system_uptime': format_uptime(sys_stats['system_uptime']) if format_time else sys_stats['system_uptime'],
+                'template': Config.TEMPLATE
         }
         log_it("d", json.dumps(info, indent=4))
         return info
@@ -117,6 +118,8 @@ def generate_network_info():
                         'state': net_status['state'],
                         'target_state': net_status['target_state'],
                         'token_price': futures['token_price'].result(),
+                        'sync_state_main': net_status['sync_state']['mainchain_percent'],
+                        'sync_state_zerochain': net_status['sync_state']['zerochain_percent']
                     }
                     network_data[network] = network_info
         log_it("d", json.dumps(network_data, indent=4))
@@ -139,7 +142,7 @@ def generate_data(template_name, return_as_json=False, is_top_level_template=Fal
             template_path = template_name if is_top_level_template else f"{Config.TEMPLATE}/{template_name}"
             log_it("d", f"Generating HTML content using template: {template_path}")
             custom_template_file = f"custom_templates/{template_name}"
-            if is_top_level_template and os.path.isfile(os.path.join(get_current_script_directory(), "templates", "custom_templates", template_name)):
+            if is_top_level_template and os.path.isfile(os.path.join(get_current_script_directory(), "custom_templates", template_name)):
                 template_path = custom_template_file
                 log_it("d", f"Generating HTML content using template: {template_path}")
             log_it("d", "Generating HTML content...")

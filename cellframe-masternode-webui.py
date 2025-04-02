@@ -31,7 +31,7 @@ try:
 
     def init():
         try:
-            hidden_keys = ["TOKEN", "PASSWORD", "CHAT_ID", "USER"]
+            hidden_keys = ["TOKEN", "PASSWORD", "CHAT_ID", "USER", "RECIPIENTS"]
             log_it("i", f"========= Configuration for {Config.PLUGIN_NAME} =========")
             for key, value in vars(Config).items():
                 if key.startswith("__"):

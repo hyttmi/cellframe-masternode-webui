@@ -1,6 +1,6 @@
 from datetime import datetime
 from logger import log_it
-from networkutils import get_active_networks, get_network_config, get_node_data
+from networkutils import get_active_networks, get_network_config, get_node_data, is_node_synced
 from common import cli_command, get_current_script_directory
 import re, time, json, os
 
@@ -82,6 +82,9 @@ def cache_blocks_data():
             log_it("d", f"Caching blocks for {network}...")
             net_config = get_network_config(network)
             if net_config:
+                while not is_node_synced(network):
+                    log_it("i", "Network seems not to be synced, sleeping for 10 seconds...")
+                    time.sleep(10)
                 log_it("i", "Caching blocks...")
                 start_time = time.time()
                 block_data = {
@@ -151,6 +154,9 @@ def cache_rewards_data():
                     log_it("d", f"Sovereign wallet address found: {sovereign_wallet_addr}")
 
             if net_config:  # net_config has to return something always
+                while not is_node_synced(network):
+                    log_it("i", "Network seems not to be synced, sleeping for 10 seconds...")
+                    time.sleep(10)
                 log_it("i", "Caching rewards...")
                 start_time = time.time()
 

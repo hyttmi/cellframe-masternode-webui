@@ -24,8 +24,7 @@ html {
 
 .card {
     background-color: #1A0F0E;
-    border: 1px solid transparent;
-    border-image: linear-gradient(150deg, rgba(249, 120, 52, 0.4), transparent) 1;
+    border-image: linear-gradient(140deg, rgba(249, 120, 52, 1) 0%, rgba(249, 120, 52, 0) 50%) 1;
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 0, 0, 0.6);
     margin-bottom: 25px;
     min-height: 170px;
@@ -83,8 +82,11 @@ html {
 .card-header {
     padding-top: 15px;
     border: none;
-    cursor: all-scroll;
     background-color: #140B0A;
+}
+
+#custom_view .card-header {
+    cursor: all-scroll;
 }
 
 .nav-item {
@@ -226,4 +228,62 @@ html {
 
 .fa-plus, .fa-minus {
     color: var(--color2);
+}
+
+.tutorial-ok-btn {
+    background-color: var(--accent-color) !important;
+    color: #140B0A !important;
+    border: none;
+    box-shadow: none !important;
+}
+
+.tutorial-ok-btn:hover,
+.tutorial-ok-btn:active,
+.tutorial-ok-btn:focus {
+    background-color: var(--color2) !important;
+    color: #140B0A !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.btn-no {
+    background-color: var(--accent-color) !important;
+    color: #140B0A !important;
+    border: none;
+    box-shadow: none !important;
+}
+
+.btn-no:hover,
+.btn-no:active,
+.btn-no:focus {
+    background-color: var(--color2) !important;
+    color: #140B0A !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.btn-yes {
+    background-color: #FD2034 !important;
+    color: #140B0A !important;
+    border: none;
+    box-shadow: none !important;
+}
+
+.btn-yes:hover,
+.btn-yes:active,
+.btn-yes:focus {
+    background-color: var(--accent-color) !important;
+    color: #140B0A !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+a {
+    color: var(--color2);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--color2);
+    text-decoration: underline;
 }

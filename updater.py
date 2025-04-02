@@ -106,30 +106,12 @@ def download_and_extract_update(download_url):
             update_dir = os.path.join(update_path, top_level_dir)
             log_it("d", f"Update dir is {update_dir}")
             Z.extractall(update_path)
-
         destination_path = os.path.join(get_script_parent_directory(), "cellframe-masternode-webui")
-        if os.path.exists(destination_path):
-            log_it("d", f"Removing existing installation at {destination_path}...")
-            for item in os.listdir(destination_path):
-                item_path = os.path.join(destination_path, item)
-                if item != ".autoupdater":
-                    try:
-                        if os.path.isdir(item_path):
-                            shutil.rmtree(item_path)
-                            log_it("d", f"Removed directory: {item_path}")
-                        else:
-                            os.remove(item_path)
-                            log_it("d", f"Removed file: {item_path}")
-                    except Exception as e:
-                        log_it("e", f"Failed to remove {item_path}", exc=e)
-        else:
-            os.remove(item_path)
-        copy_process = cli_command(f"cp -r {update_dir}/. {destination_path}/", is_shell_command=True)
-        if copy_process:
-            log_it("d", "Update extracted and installed successfully.")
+        try:
+            shutil.copytree(update_dir, destination_path, dirs_exist_ok=True)
             return True
-        else:
-            log_it("e", "Failed to install new version with cp command.")
+        except Exception as e:
+            log_it("e", "Failed to copy update files", exc=e)
             return False
     except Exception as e:
         log_it("e", "An error occurred", exc=e)

@@ -67,6 +67,9 @@ html {
 .card-header {
     padding-top: 15px;
     border: none;
+}
+
+#custom_view .card-header {
     cursor: all-scroll;
 }
 
