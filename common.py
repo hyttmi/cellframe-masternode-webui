@@ -1,6 +1,6 @@
 from command_runner import command_runner
 from logger import log_it
-import os, psutil
+import os, traceback
 
 def cli_command(command, timeout=120, is_shell_command=False, retries=3):
     while retries > 0:
@@ -18,7 +18,7 @@ def cli_command(command, timeout=120, is_shell_command=False, retries=3):
                 log_it("e", f"{command} failed to run successfully, return code was {exit_code}")
                 return False
         except Exception as e:
-            log_it("e", f"An error occurred while running the command: {command}", exc=e)
+            log_it("e", f"An error occurred while running {command}: {e}", exc=traceback.format_exc())
         retries -= 1
         log_it("e", f"Retrying command: {command} ({retries} attempts left)")
     return None

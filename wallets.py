@@ -1,6 +1,6 @@
 from logger import log_it
 from common import cli_command
-import re
+import re, traceback
 
 def get_reward_wallet_tokens(wallet):
     try:
@@ -16,5 +16,5 @@ def get_reward_wallet_tokens(wallet):
         else:
             return None
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None

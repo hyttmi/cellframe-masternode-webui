@@ -4,7 +4,7 @@ from generators import generate_data
 from io import BytesIO
 from logger import log_it
 from pycfhelpers.node.http.simple import CFSimpleHTTPResponse
-import base64, hashlib, gzip
+import base64, hashlib, gzip, traceback
 
 def generate_cookie(username, password):
     data = f"{username}:{password}"
@@ -103,7 +103,7 @@ def web_request_handler(headers, bypass_auth=False):
                                         }
                                     )
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return CFSimpleHTTPResponse(body=b"<h1>Internal Server Error</h1>", code=200)
 
 def json_request_handler(headers):
@@ -134,4 +134,4 @@ def compress_content(content):
         log_it("d", f"Content compressed size: {len(buffer.getvalue())} bytes")
         return buffer.getvalue()
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())

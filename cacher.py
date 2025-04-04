@@ -2,7 +2,7 @@ from datetime import datetime
 from logger import log_it
 from networkutils import get_active_networks, get_network_config, get_node_data, is_node_synced
 from common import cli_command, get_current_script_directory
-import re, time, json, os
+import re, time, json, os, traceback
 
 CACHE_LOCK_FILE = os.path.join(get_current_script_directory(), ".cache.lock")
 
@@ -123,9 +123,9 @@ def cache_blocks_data():
                 elapsed_time = time.time() - start_time
                 log_it("i", f"Blocks cached for {network}! It took {elapsed_time:.2f} seconds!")
             else:
-                log_it("e", f"Network config not found for {network}, skipping caching")
+                log_it("i", f"Network config not found for {network}, skipping caching")
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
     finally:
         release_lock()
 
@@ -180,8 +180,8 @@ def cache_rewards_data():
                 elapsed_time = time.time() - start_time
                 log_it("i", f"Reward caching took {elapsed_time:.2f} seconds!")
             else:
-                log_it("e", f"No valid address found for {network}, skipping caching.")
+                log_it("i", f"No valid address found for {network}, skipping caching.")
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
     finally:
         release_lock()

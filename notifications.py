@@ -1,9 +1,8 @@
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import smtplib
 from config import Config
 from logger import log_it
-import requests
+import requests, smtplib, traceback
 from time import sleep
 
 def send_telegram_message(message):
@@ -60,7 +59,7 @@ def send_telegram_message(message):
             else:
                 log_it("e", f"Sending Telegram message failed! Status code: {response.status_code}, Response: {response.text}")
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 
 def send_email(msg):
     smtp_server = Config.SMTP_SERVER
@@ -116,5 +115,4 @@ def send_email(msg):
         server.close()
         log_it("i", "Email sent!")
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
-        log_it("e", f"Error sending email: {e}")
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
