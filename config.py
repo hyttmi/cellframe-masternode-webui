@@ -15,7 +15,8 @@ def get_config_value(section, key, default=None, is_numeric=False):
 
 class Config:
     PLUGIN_NAME = "Cellframe Masternode WebUI"
-    API_TOKEN = str(get_config_value("webui", "api_token", default=False, is_numeric=False))
+    API_TOKEN = str(get_config_value("webui", "api_token", default=None, is_numeric=False))
+    ACCESS_TOKEN = str(get_config_value("webui", "access_token", default=None, is_numeric=False))
     AUTH_BYPASS = get_config_value("webui", "auth_bypass", default=False, is_numeric=False)
     AUTO_UPDATE = get_config_value("webui", "auto_update", default=False, is_numeric=False)
     CACHE_AGE_LIMIT = get_config_value("webui", "cache_age_limit", default=4, is_numeric=True)

@@ -5,10 +5,14 @@ from io import BytesIO
 from logger import log_it
 from pycfhelpers.node.http.simple import CFSimpleHTTPResponse
 import base64, hashlib, gzip, traceback
+from urllib.parse import parse_qs
 
 def generate_cookie(username, password):
     data = f"{username}:{password}"
     return hashlib.sha256(data.encode("utf-8")).hexdigest()
+
+def generate_token_cookie(token):
+    return hashlib.sha256(token.encode("utf-8")).hexdigest()
 
 def request_handler(request):
     headers = request.headers
@@ -22,54 +26,74 @@ def request_handler(request):
         if query == "as_json":
             log_it("i", f"Got a JSON request...")
             return json_request_handler(headers)
-        return web_request_handler(headers, bypass_auth=False)
+        return web_request_handler(headers, bypass_auth=False, query=query)
     log_it("i", f"Unsupported method: {request.method}")
     response = CFSimpleHTTPResponse(body=b"Unsupported method", code=200)
     return response
 
-def web_request_handler(headers, bypass_auth=False):
+def web_request_handler(headers, bypass_auth=False, query=None):
     auth_header = headers.get("Authorization")
     cookie_header = headers.get("Cookie")
     cookie_expires = (datetime.now(timezone.utc) + timedelta(days=14)).strftime('%a, %d %b %Y %H:%M:%S GMT') # 2 weeks
     expected_username = Config.USERNAME
     expected_password = Config.PASSWORD
+    access_token = Config.ACCESS_TOKEN
     expected_cookie = generate_cookie(expected_username, expected_password)
+    expected_token_cookie = generate_token_cookie(access_token)
+    url = Config.PLUGIN_URL
+
+    if query:
+        parsed_token = parse_qs(query).get("access_token", [None])[0]
+        if parsed_token and parsed_token == access_token:
+            try:
+                response_body = generate_data("template.html").encode("utf-8")
+                compressed_body = compress_content(response_body)
+                return CFSimpleHTTPResponse(body=compressed_body,
+                                            code=302,
+                                            headers={
+                                                "Content-Type": "text/html",
+                                                "Content-Encoding": "gzip",
+                                                "Set-Cookie": f"auth_cookie={expected_token_cookie}; HttpOnly; Path=/; Expires={cookie_expires}",
+                                                "Location": f"/{url}"
+                                            })
+            except Exception as e:
+                log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+                return CFSimpleHTTPResponse(body=b"<h1>Internal Server Error</h1>", code=200)
 
     if not bypass_auth:
-        if not expected_username or not expected_password:
-            log_it("e", "Missing configuration in cellframe-node.cfg. Username or password is not set, plugin will be unavailable!")
+        if not expected_username or not expected_password or not access_token:
+            log_it("e", "Missing configuration in cellframe-node.cfg. Username, password or access token is not set, plugin will be unavailable!")
             return CFSimpleHTTPResponse(
-                body=b"Missing configuration in cellframe-node.cfg. Username or password is not set, plugin will be unavailable!",
+                body=b"Missing configuration in cellframe-node.cfg. Username, password or access token is not set, plugin will be unavailable!",
                 code=200
             )
 
         if cookie_header:
             cookies = dict(item.split("=") for item in cookie_header.split("; "))
             auth_cookie = cookies.get("auth_cookie")
-            if auth_cookie and auth_cookie == expected_cookie: # Oooh, a chocolate chip cookie!
+            if auth_cookie and (auth_cookie == expected_cookie or auth_cookie == expected_token_cookie):
                 try:
                     response_body = generate_data("template.html").encode("utf-8")
                     compressed_body = compress_content(response_body)
                     return CFSimpleHTTPResponse(body=compressed_body,
                                                 code=200,
-                                                headers = {
+                                                headers={
                                                     "Content-Type": "text/html",
                                                     "Content-Encoding": "gzip",
-                                                    "Set-Cookie": f"auth_cookie={expected_cookie}; HttpOnly; Path=/; Expires={cookie_expires}"
+                                                    "Set-Cookie": f"auth_cookie={auth_cookie}; HttpOnly; Path=/; Expires={cookie_expires}"
                                                 })
                 except Exception as e:
-                    log_it("e", f"Error generating response: {e}")
-                    return CFSimpleHTTPResponse(body=b"<h1>Internal Server Error</h1>",
-                                                code=200)
+                    log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+                    return CFSimpleHTTPResponse(body=b"<h1>Internal Server Error</h1>", code=200)
 
         if not auth_header:
             log_it("e", "Missing Authorization header")
             return CFSimpleHTTPResponse(body=b"Unauthorized",
-                                            code=401,
-                                            headers = {
-                                                "Content-Type": "text/plain",
-                                                "WWW-Authenticate": 'Basic realm="Cellframe node webui"'
-                                            })
+                                        code=401,
+                                        headers={
+                                            "Content-Type": "text/plain",
+                                            "WWW-Authenticate": 'Basic realm="Cellframe node webui"'
+                                        })
         try:
             encoded_credentials = auth_header.split(' ', 1)[1]
             decoded_credentials = base64.b64decode(encoded_credentials).decode('utf-8')
@@ -78,7 +102,7 @@ def web_request_handler(headers, bypass_auth=False):
             log_it("e", f"Authorization decoding failed: {e}")
             return CFSimpleHTTPResponse(body=b"Unauthorized",
                                         code=401,
-                                        headers = {
+                                        headers={
                                             "Content-Type": "text/plain",
                                             "WWW-Authenticate": 'Basic realm="Cellframe node webui"'
                                         })
@@ -87,7 +111,7 @@ def web_request_handler(headers, bypass_auth=False):
             log_it("e", "Invalid credentials")
             return CFSimpleHTTPResponse(body=b"Unauthorized",
                                         code=401,
-                                        headers = {
+                                        headers={
                                             "Content-Type": "text/plain",
                                             "WWW-Authenticate": 'Basic realm="Cellframe node webui"'
                                         })
@@ -96,12 +120,11 @@ def web_request_handler(headers, bypass_auth=False):
         compressed_body = compress_content(response_body)
         return CFSimpleHTTPResponse(body=compressed_body,
                                     code=200,
-                                    headers = {
+                                    headers={
                                         "Content-Type": "text/html",
                                         "Content-Encoding": "gzip",
                                         "Set-Cookie": f"auth_cookie={expected_cookie}; HttpOnly; Path=/; Expires={cookie_expires}"
-                                        }
-                                    )
+                                    })
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return CFSimpleHTTPResponse(body=b"<h1>Internal Server Error</h1>", code=200)

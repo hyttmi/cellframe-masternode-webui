@@ -2,6 +2,9 @@
 
 ## [4.11] - 2025-XX-XX
 
+### Added
+- Support for access token login, no need to fiddle with username and password anymore. Use `access_token` in config. Use query string `?access_token=...` for accessing the WebUI.
+
 ## [4.10] - 2025-04-02
 
 ### Added
