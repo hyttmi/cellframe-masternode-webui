@@ -10,7 +10,7 @@ from config import Config
 from logger import log_it
 from notifications import send_email, send_telegram_message
 from datetime import datetime, timedelta
-import time
+import time, traceback
 
 class Heartbeat:
     def __init__(self):
@@ -35,7 +35,7 @@ class Heartbeat:
                     self.statuses[network]["autocollect_status"] = "NOK"
                     log_it("e", f"[HEARTBEAT] Autocollect status seems to be inactive!")
         except Exception as e:
-            log_it("e", "An error occurred", exc=e)
+            log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 
     def last_signed_block(self):
         try:
@@ -77,7 +77,7 @@ class Heartbeat:
                 else:
                     log_it("e", f"[HEARTBEAT] Unable to fetch blocks for {network}")
         except Exception as e:
-            log_it("e", "An error occurred", exc=e)
+            log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 
 heartbeat = Heartbeat()
 
@@ -116,7 +116,7 @@ def report_heartbeat_errors(heartbeat):
                 send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", error_message)
             heartbeat.msgs_sent += 1
         except Exception as e:
-            log_it("e", "An error occurred", exc=e)
+            log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
     else:
         log_it("i", "[HEARTBEAT] No issues detected.")
         heartbeat.msgs_sent = 0

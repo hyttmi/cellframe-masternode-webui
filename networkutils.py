@@ -3,7 +3,7 @@ from wallets import get_reward_wallet_tokens
 from datetime import datetime
 from logger import log_it
 from pycfhelpers.node.net import CFNet
-import re, requests, os, json, functools
+import re, requests, os, json, traceback
 
 def get_active_networks():
     try:
@@ -13,7 +13,7 @@ def get_active_networks():
         log_it("e", "Can't get list of networks!")
         return None
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None
 
 def get_network_config(network):
@@ -35,7 +35,7 @@ def get_network_config(network):
             log_it("e", f"Necessary information missing in {network_config_file}, not a masternode?")
             return None
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None
 
 def get_autocollect_status(network):
@@ -52,10 +52,9 @@ def get_autocollect_status(network):
             return autocollect_status
         return None
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None
 
-functools.lru_cache(maxsize=1)
 def get_current_block_reward(network):
     try:
         block_reward_cmd = cli_command(f"block reward show -net {network}", timeout=3)
@@ -66,7 +65,7 @@ def get_current_block_reward(network):
             return None
         return None
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None
 
 def get_token_price(network):
@@ -94,7 +93,7 @@ def get_token_price(network):
         log_it("e", f"Failed to fetch token price from {url}. Status code was {response.status_code}")
         return None
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None
 
 def get_node_data(network, only_my_node=False):
@@ -156,7 +155,7 @@ def get_node_data(network, only_my_node=False):
             return result
         return None
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None
 
 def get_network_status(network):
@@ -189,7 +188,7 @@ def get_network_status(network):
             return net_status
         return None
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None
 
 def get_rewards(network, total_sum=False, rewards_today=False, is_sovereign=False):
@@ -225,7 +224,7 @@ def get_rewards(network, total_sum=False, rewards_today=False, is_sovereign=Fals
         log_it("e", "Rewards file not found!")
         return None
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None
 
 def get_blocks(network, block_type="count", today=False, heartbeat=False):
@@ -290,7 +289,7 @@ def get_blocks(network, block_type="count", today=False, heartbeat=False):
         log_it("e", "Blocks cache file not found!")
         return None
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None
 
 def get_chain_size(network):
@@ -319,7 +318,7 @@ def get_chain_size(network):
         elif size < pow(1024,4):
             return f"{round(size/(pow(1024,3)), 2)} GB"
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None
 
 def is_node_synced(network):
@@ -334,5 +333,5 @@ def is_node_synced(network):
                 return True
         return False
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None

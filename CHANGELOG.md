@@ -1,5 +1,23 @@
 # Changelog
 
+## [4.11] - 2025-04-19
+
+### Added
+- Support for access token login, no need to fiddle with username and password anymore. Use `access_token` in config. Use query string `?access_token=...` for accessing the WebUI.
+
+### Changed
+- JSON output is now also compressed.
+- Better exception handling.
+
+### Fixed
+- Make sure `pre` tag properly wraps the text.
+
+### Removed
+- `api_token`. Use `access_token` instead.
+
+### Deprecated
+- Cards theme is now deprecated and it will be removed in the future.
+
 ## [4.10] - 2025-04-02
 
 ### Added

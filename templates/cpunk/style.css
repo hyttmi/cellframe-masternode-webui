@@ -287,3 +287,8 @@ a:hover {
     color: var(--color2);
     text-decoration: underline;
 }
+
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }

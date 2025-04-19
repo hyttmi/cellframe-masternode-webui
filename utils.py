@@ -1,7 +1,7 @@
 from common import cli_command
 from logger import log_it
 from packaging import version
-import socket, requests, re, time, psutil, time, functools
+import socket, requests, re, time, psutil, time, traceback
 
 def get_external_ip():
     try:
@@ -12,7 +12,7 @@ def get_external_ip():
         log_it("e", f"Error fetching IP address from {response.url}, status code: {response.status_code}")
         return "Unable to fetch IP"
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None
 
 def get_node_pid():
@@ -25,7 +25,7 @@ def get_node_pid():
                 return pid
         return None
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None
 
 def get_system_hostname():
@@ -33,7 +33,7 @@ def get_system_hostname():
         log_it("d", "Fetching hostname...")
         return socket.gethostname()
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None
 
 def format_uptime(seconds):
@@ -46,7 +46,7 @@ def format_uptime(seconds):
             return f"{int(days)}d {int(hours)}h {int(minutes)}m {int(seconds)}s"
         return f"{int(hours)}h {int(minutes)}m {int(seconds)}s"
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None
 
 def get_sys_stats():
@@ -74,10 +74,9 @@ def get_sys_stats():
             return sys_stats
         return None
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None
 
-@functools.lru_cache(maxsize=1)
 def get_installed_node_version():
     try:
         log_it("d", "Fetching installed node version...")
@@ -91,7 +90,7 @@ def get_installed_node_version():
             return None
         return None
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None
 
 def get_latest_node_version():
@@ -109,7 +108,7 @@ def get_latest_node_version():
         log_it("e", f"Error fetching latest node version from {response.url}, status code: {response.status_code}")
         return None
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None
 
 def restart_node():
@@ -118,4 +117,4 @@ def restart_node():
         if node_pid:
             psutil.Process(node_pid).terminate()
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())

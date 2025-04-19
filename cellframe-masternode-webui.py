@@ -18,6 +18,7 @@ try:
     from run_scheduler import setup_schedules
     from cacher import release_lock, is_locked
     from concurrent.futures import ThreadPoolExecutor
+    import traceback
 
     executor = ThreadPoolExecutor(max_workers=2)
 
@@ -27,7 +28,7 @@ try:
             CFSimpleHTTPServer().register_uri_handler(uri=f"/{Config.PLUGIN_URL}", handler=handler)
             log_it("i", "HTTP server started")
         except Exception as e:
-            log_it("e", "An error occurred", exc=e)
+            log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 
     def init():
         try:
@@ -51,10 +52,10 @@ try:
             log_it("i", f"{Config.PLUGIN_NAME} started!")
             return 0
         except Exception as e:
-            log_it("e", "An error occurred", exc=e)
+            log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 
     def deinit():
         log_it("i", f"{Config.PLUGIN_NAME} stopped")
         return 0
 except Exception as e:
-    log_it("e", "Fatal error during startup", exc=e)
+    log_it("e", f"Fatal error during startup: {e}", exc=traceback.format_exc())

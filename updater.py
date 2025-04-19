@@ -4,7 +4,7 @@ from logger import log_it
 from packaging import version
 from utils import restart_node
 from notifications import send_telegram_message, send_email
-import os, requests, shutil, json, zipfile
+import os, requests, shutil, json, zipfile, traceback
 
 def check_plugin_update():
     try:
@@ -42,7 +42,7 @@ def check_plugin_update():
             log_it("e", f"Error fetching version data from {response.url}, status code: {response.status_code}")
             return None
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None
 
 def install_plugin_update():
@@ -80,7 +80,7 @@ def install_plugin_update():
         else:
             log_it("i", "Plugin is up to date.")
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 
 def download_and_extract_update(download_url):
     try:
@@ -114,5 +114,5 @@ def download_and_extract_update(download_url):
             log_it("e", "Failed to copy update files", exc=e)
             return False
     except Exception as e:
-        log_it("e", "An error occurred", exc=e)
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return False

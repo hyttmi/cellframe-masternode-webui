@@ -49,7 +49,7 @@ Download the latest zip, execute `install.sh` as root and restart node.
 
 Configuration of the plugin is done by editing `cellframe-node.cfg` or file in `/opt/cellframe-node/etc/cellframe-node.cfg`. You just need to add new section `[webui]` to the end of the file and below that, add the settings which you want to change:
 
-- `api_token=your_own_api_token`- Used in accessing plain JSON data (You can generate your own or use a service like https://it-tools.tech/token-generator).
+- `access_token=your_own_access_token`- Used in accessing WebUI or fetching JSON data. (You can generate your own or use a service like https://it-tools.tech/token-generator).
 - `auth_bypass=true|false` Disables HTTP authentication. Useful if you're planning to for example use the plugin behind reverse proxy. Default false.
 - `auto_update=true|false` Updates plugin files and restarts the node after update.
 - `cache_age_limit=2` - Time in hours to inform user if blocks cache is older than this value. Default 2 hours.
@@ -136,22 +136,22 @@ Here are the variables that are passed to the Jinja templates:
   - `network_info.token_price`: Tries to fetch and return the latest token price from CMC
 
 ## Accessing data as JSON
-By default, this plugin has support for fetching all the important data from your node as JSON if you have `api_token` set in settings. Here's a sample code for fetching the data with Python:
+By default, this plugin has support for fetching all the important data from your node as JSON if you have `access_token` set in settings. Here's a sample code for fetching the data with Python:
 
 ```
-import requests, json
+import requests, json, gzip
 
-def fetch_node_info(url, api_token):
+def fetch_node_info(url, access_token):
     headers = {
-        "API_TOKEN": api_token
+        "ACCESS_TOKEN": access_token
     }
 
     try:
         response = requests.get(url, headers=headers)
 
         if response.status_code == 200:
-            json_data = response.json()
-            return json_data
+            decompressed = gzip.decompress(response.content)
+            return json.loads(decompressed.decode("utf-8"))
         print(f"Error with a status code {response.status_code}")
         return False
     except requests.exceptions.RequestException as e:
@@ -159,9 +159,9 @@ def fetch_node_info(url, api_token):
         return False
 
 url = "http://<your_node_ip:8079/webui?as_json"
-api_token = "<your_custom_api_token"
+access_token = "<your_custom_access_token"
 
-data = fetch_node_info(url, api_token)
+data = fetch_node_info(url, access_token)
 
 if data:
     print(json.dumps(data, indent=4))
@@ -169,19 +169,18 @@ if data:
 
 And with on terminal with `curl` piping to `jq`:
 ```
-curl -s "http://<your_node_ext_ip>:8079/webui?as_json" -H "API_TOKEN: <your_api_token>" | jq .net_info.Backbone.signed_blocks_today -> Returns the amount of signed blocks today
+curl --compressed -s "http://<your_node_ext_ip>:8079/webui?as_json" -H "ACCESS_TOKEN: <your_access_token>" --output - | gunzip | jq .net_info.Backbone.signed_blocks_today -> Returns the amount of signed blocks today
 ```
 
 ```
-curl -s "http://<your_node_ext_ip>:8079/webui?as_json" -H "API_TOKEN: <your_api_token>" | jq .node_uptime -> Returns node uptime in seconds
+curl --compressed -s "http://<your_node_ext_ip>:8079/webui?as_json" -H "ACCESS_TOKEN: <your_access_token>" --output - | gunzip | jq .node_uptime -> Returns node uptime in seconds
 ```
 
 ```
-curl -s "http://<your_node_ext_ip>:8079/webui?as_json" -H "API_TOKEN: <your_api_token>" | jq -> Returns all data
+curl --compressed -s "http://<your_node_ext_ip>:8079/webui?as_json" -H "ACCESS_TOKEN: <your_access_token>" --output - | gunzip | jq -> Returns all data
 ```
 ```
-curl -s "http://<your_node_ext_ip>:8079/webui?as_json" -H "API_TOKEN: <your_api_token>" | jq '.networks.Backbone.rewards | add' -> Calculates all your earned rewards in Backbone network
-```
+curl --compressed -s "http://<your_node_ext_ip>:8079/webui?as_json" -H "ACCESS_TOKEN: <your_access_token>" --output - | gunzip | jq '.networks.Backbone.rewards | add' -> Calculates all your earned rewards in Backbone network
 
 ## Issues with the plugin
 
