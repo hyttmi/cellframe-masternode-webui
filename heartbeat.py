@@ -94,7 +94,9 @@ def run_heartbeat_check():
             if Config.EMAIL_STATS_ENABLED:
                 send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", "Node will be restarted because of indicated problems.")
             log_it("i", "[HEARTBEAT] Node will be restarted because of indicated problems.")
-            restart_node()
+            if Config.HEARTBEAT_AUTO_RESTART:
+                restart_node()
+            heartbeat.msgs_sent = 0
         report_heartbeat_errors(heartbeat)
     else:
         log_it("i", "[HEARTBEAT] No issues detected.")

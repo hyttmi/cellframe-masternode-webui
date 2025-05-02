@@ -34,20 +34,26 @@ You can get the latest release from [releases page](https://github.com/hyttmi/ce
    - Extract the file if you have downloaded an archive.
 2. Open the dir and run `install.sh` as root.
 
-## Removing
-Run `install.sh -u` or `install.sh --uninstall` as root.
-
 ### Easy way
 Set `auto_update=true` to configuration file, restart node and wait until plugin updates itself and restarts your node.
 
 ### Manual way
 Download the latest zip, execute `install.sh` as root and restart node.
 
+## Removing
+Run `install.sh -u` or `install.sh --uninstall` as root.
+
 ## Configuration
 
-**If installation is done with `install.sh` script. The configuration file will be set to `/opt/cellframe-node/etc/cellframe-node.cfg.d/webui.cfg`, which overrides the configuratio in `cellframe-node.cfg`**
+1. Create a configuration file in `/opt/cellframe-node/etc/cellframe-node.cfg.d/` directory. The file name should be `webui.cfg`.
+2. Add the configuration to the file. The configuration file should be in the following format:
+```
+[webui]
+configuration_option=value
+```
+3. Restart the node.
 
-Configuration of the plugin is done by editing `cellframe-node.cfg` or file in `/opt/cellframe-node/etc/cellframe-node.cfg`. You just need to add new section `[webui]` to the end of the file and below that, add the settings which you want to change:
+### Configuration options
 
 - `access_token=your_own_access_token`- Used in accessing WebUI or fetching JSON data. (You can generate your own or use a service like https://it-tools.tech/token-generator).
 - `auth_bypass=true|false` Disables HTTP authentication. Useful if you're planning to for example use the plugin behind reverse proxy. Default false.
@@ -59,10 +65,11 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` or file in `
 - `download_prereleases=true|false` - Automatic updater downloads also pre-release versions of plugin. Default false.
 - `email_recipients=somebody@gmail.com|[somebody@gmail.com, another@aol.com]` - Recipient(s) for the email.
 - `email_stats=true|false` - Allow sending scheduled email statistics.
-- `email_time=23:59` - Set time when you want to send the statistics. Default time is 23:00**24h format (HH:MM)**
+- `email_time=23:59` - Set time when you want to send the statistics. Default time is 23:00 **24h format (HH:MM)**
 - `email_use_ssl=true|false` - Use SSL for mail delivery.
 - `email_use_tls=true|false` - Use TLS for mail delivery.
 - `heartbeat_block_age=12`- Sets maximum age of last signed block to 12 hours and if older, notifies user.
+- `heartbeat_auto_restart=true|false` - Automatically restart node if heartbeat fails. Default true.
 - `hide_icon=true|false` - Hide icon from the top of the page, default true.
 - `node_alias="Name` - Name of the node as alias. Default is CFNode. **NO SPACES**
 - `password=p455w0rd` - Sets password to p455w0rd. Default: `webui`
@@ -79,20 +86,6 @@ Configuration of the plugin is done by editing `cellframe-node.cfg` or file in `
 - `template=something` - Change template to something. If not set, default template will be used (cards).
 - `url=something` - Change plugin URL. Defaults to `webui`.
 - `username=john` - Sets http authentication as user john. Default: `webui`
-
-### Using GMail with email stats
-
-1. Enable 2FA!
-2. Create an app password https://myaccount.google.com/apppasswords
-3. Use the following configuration:
-
-```
-smtp_server=smtp.gmail.com
-smtp_port=587
-smtp_password=<your_app_password>
-smtp_user=<your_gmail_user>
-email_use_tls=true
-```
 
 ## Templating
 Since version 3.18, it's possible to create custom templates for `email.html` and `telegram.html`. The files should be placed in `custom_templates` directory.
@@ -118,22 +111,28 @@ Here are the variables that are passed to the Jinja templates:
 - `general_info.node_memory_usage`: Returns the current memory utilization of Cellframe node
 - `general_info.external_ip`: Returns external IP address
 - `network_info`: Returns a dict containing data specific per network
-  - `network_info.address`: The network address
-  - `network_info.all_blocks`: The number of blocks in main chain
-  - `network_info.all_rewards`: Total sum of received rewards
-  - `network_info.all_signed_blocks_dict`: A dictionary of all signed blocks (day, amount)
-  - `network_info.all_signed_blocks`: The number of all signed blocks
-  - `network_info.autocollect_rewards`: The total autocollect rewards currently uncollected
-  - `network_info.autocollect_status`: The status of reward autocollection
-  - `network_info.fee_wallet_tokens`: A dict of token balances in the network's fee wallet
-  - `network_info.first_signed_blocks`: The number of first signed blocks
-  - `network_info.chain_size`: Chain size of main chain per network
-  - `network_info.node_data`: Returns a dict containing information about all network nodes
-  - `network_info.rewards`: A dictionary of all rewards
-  - `network_info.signed_blocks_today`: The number of blocks signed today
-  - `network_info.state`: The current state of the node in network
-  - `network_info.target_state`: Target state for the network
-  - `network_info.token_price`: Tries to fetch and return the latest token price from CMC
+    - `network_info.address`: The network address
+    - `network_info.all_blocks`: The number of blocks in the main chain
+    - `network_info.all_signed_blocks_dict`: A dictionary of all signed blocks (per day, amount)
+    - `network_info.all_signed_blocks`: The total number of all signed blocks
+    - `network_info.autocollect_status`: The status of reward autocollection
+    - `network_info.blocks_today`: The number of blocks signed today in this network
+    - `network_info.chain_size`: The chain size (total storage used) of the main chain
+    - `network_info.current_block_reward`: The reward value for signing the current block
+    - `network_info.first_signed_blocks_dict`: A dictionary of first signed blocks (per day, amount)
+    - `network_info.first_signed_blocks`: The number of first signed blocks
+    - `network_info.first_signed_blocks_today`: The number of first signed blocks today
+    - `network_info.node_data`: A dictionary containing information about all nodes in the network
+    - `network_info.rewards`: A dictionary of all received rewards
+    - `network_info.rewards_all_time_average`: The average amount of rewards all time
+    - `network_info.rewards_today`: The sum of rewards received today
+    - `network_info.sovereign_rewards`: A dictionary of sovereign rewards
+    - `network_info.sovereign_rewards_all_time_average`: The average amount of sovereign rewards all time
+    - `network_info.sovereign_rewards_today`: The sum of sovereign rewards received today
+    - `network_info.signed_blocks_today`: The number of blocks signed today
+    - `network_info.sum_rewards`: The total sum of all rewards received
+    - `network_info.sum_sovereign_rewards`: The total sum of all sovereign rewards received
+    - `network_info.token_price`: The latest token price from CMC or alternative source
 
 ## Accessing data as JSON
 By default, this plugin has support for fetching all the important data from your node as JSON if you have `access_token` set in settings. Here's a sample code for fetching the data with Python:
@@ -181,7 +180,7 @@ curl --compressed -s "http://<your_node_ext_ip>:8079/webui?as_json" -H "ACCESS_T
 ```
 ```
 curl --compressed -s "http://<your_node_ext_ip>:8079/webui?as_json" -H "ACCESS_TOKEN: <your_access_token>" --output - | gunzip | jq '.networks.Backbone.rewards | add' -> Calculates all your earned rewards in Backbone network
-
+```
 ## Issues with the plugin
 
 To help me debugging the plugin, the best way to do that is to provide me `webui.log` file which is generated in the plugin directory.
@@ -236,3 +235,17 @@ sudo nginx -t # Check for possible errors here in configuration testing
 sudo systemctl reload nginx
 ```
 Now you can verify that HTTP is working by visiting `http|https://your_domain.com`.
+
+### Using GMail with email stats
+
+1. Enable 2FA!
+2. Create an app password https://myaccount.google.com/apppasswords
+3. Use the following configuration:
+
+```
+smtp_server=smtp.gmail.com
+smtp_port=587
+smtp_password=<your_app_password>
+smtp_user=<your_gmail_user>
+email_use_tls=true
+```

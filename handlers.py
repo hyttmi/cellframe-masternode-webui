@@ -20,7 +20,7 @@ def request_handler(request):
     client_ip = request.client_address
     if request.method == "GET":
         log_it("i", f"Handling request from {client_ip}...")
-        if Config.AUTH_BYPASS:
+        if Config.AUTH_BYPASS or client_ip in ["127.0.0.1", "localhost"]:
             log_it("i", "Auth bypass set, HTTP authentication disabled!")
             return web_request_handler(headers, bypass_auth=True)
         if query == "as_json":

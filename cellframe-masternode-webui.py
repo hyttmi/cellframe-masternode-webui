@@ -34,14 +34,14 @@ try:
         try:
             hidden_keys = ["TOKEN", "PASSWORD", "CHAT_ID", "USER", "RECIPIENTS"]
             log_it("i", f"========= Configuration for {Config.PLUGIN_NAME} =========")
-            for key, value in vars(Config).items():
+            for key, value in sorted(vars(Config).items()):
                 if key.startswith("__"):
                     continue
                 if any(hidden in key for hidden in hidden_keys):
                     log_it("i", f"{key}: ***")
                 else:
                     log_it("i", f"{key}: {value}")
-            log_it("i", f"==========================================================")
+            log_it("i", "=" * 58)
             if is_locked():
                 log_it("i", "Cache lock found, releasing it...")
                 release_lock()

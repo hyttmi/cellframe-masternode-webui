@@ -164,34 +164,34 @@ def get_network_status(network):
         addr_match = re.search(r"([A-Z0-9]+::[A-Z0-9]+::[A-Z0-9]+::[A-Z0-9]+)", net_status)
         state_match = re.search(r"states:\s+current: (\w+)", net_status)
         target_state_match = re.search(r"target: (\w+)", net_status)
-        sync_state_match = re.search(r"zerochain[\s\S]+percent:\s+([\d.-]+)[\s\S]+percent:\s+([\d.-]+)", net_status)
-
-        if state_match and addr_match and target_state_match and sync_state_match:
-            try:
-                zerochain_percent = int(float(sync_state_match.group(1)))
-            except ValueError:
-                zerochain_percent = "Unknown"
-            try:
-                mainchain_percent = int(float(sync_state_match.group(2)))
-            except ValueError:
-                mainchain_percent = "Unknown"
-
-            net_status = {
-                "state": state_match.group(1),
-                "target_state": target_state_match.group(1),
-                "address": addr_match.group(1),
-                "sync_state": {
-                    "zerochain_percent": zerochain_percent,
-                    "mainchain_percent": mainchain_percent
-                }
+        sync_state_match = re.search(r"main:[\s\S]+current:\s+([\d]+)\s+in network:\s+([\d]+)", net_status)
+        if not (state_match and addr_match and target_state_match and sync_state_match):
+            return None
+        try:
+            main_current = int(sync_state_match.group(1))
+            main_network = int(sync_state_match.group(2))
+            log_it("d", f"Sync statuses = main_current: {main_current}, main_network: {main_network}")
+            if main_current >= main_network:
+                mainchain_percent = 100.0
+            elif main_network > 0:
+                mainchain_percent = float((main_current / main_network) * 100)
+            else:
+                mainchain_percent = 0.0
+        except Exception:
+            mainchain_percent = "Unknown"
+        return {
+            "state": state_match.group(1),
+            "target_state": target_state_match.group(1),
+            "address": addr_match.group(1),
+            "sync_state": {
+                "mainchain_percent": mainchain_percent
             }
-            return net_status
-        return None
+        }
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None
 
-def get_rewards(network, total_sum=False, rewards_today=False, is_sovereign=False):
+def get_rewards(network, total_sum=False, rewards_today=False, is_sovereign=False, all_time_average=False):
     try:
         rewards = {}
         cache_file_path = os.path.join(get_current_script_directory(), f".{network}_rewards_cache.json")
@@ -218,6 +218,8 @@ def get_rewards(network, total_sum=False, rewards_today=False, is_sovereign=Fals
             elif rewards_today:
                 today_str = datetime.now().strftime("%a, %d %b %Y")
                 return rewards.get(today_str, None)
+            elif all_time_average :
+                return sum(rewards.values()) / len(rewards)
             else:
                 return dict(sorted_dict)
     except FileNotFoundError:
@@ -325,13 +327,11 @@ def is_node_synced(network):
     try:
         net_status = get_network_status(network)
         if not net_status:
+            log_it("e", f"Failed to get network status for {network}")
             return False
-        zerochain_percent = net_status["sync_state"].get("zerochain_percent")
         mainchain_percent = net_status["sync_state"].get("mainchain_percent")
-        if isinstance(zerochain_percent, int) and isinstance(mainchain_percent, int):
-            if zerochain_percent == 100 and mainchain_percent == 100:
-                return True
-        return False
+        log_it("d", f"Mainchain percent: {mainchain_percent}")
+        return mainchain_percent == 100.0 if isinstance(mainchain_percent, float) else False
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
-        return None
+        return False

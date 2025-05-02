@@ -79,8 +79,10 @@ def generate_network_info():
                         'first_signed_blocks_today': executor.submit(get_blocks, network, block_type="first_signed_blocks", today=True),
                         'node_data': executor.submit(get_node_data, network),
                         'rewards': executor.submit(get_rewards, network, total_sum=False),
+                        'rewards_all_time_average': executor.submit(get_rewards, network, all_time_average=True),
                         'rewards_today': executor.submit(get_rewards, network, rewards_today=True),
                         'sovereign_rewards': executor.submit(get_rewards, network, is_sovereign=True),
+                        'sovereign_rewards_all_time_average': executor.submit(get_rewards, network, all_time_average=True, is_sovereign=True),
                         'sovereign_rewards_today': executor.submit(get_rewards, network, rewards_today=True, is_sovereign=True),
                         'signed_blocks_today': executor.submit(get_blocks, network, block_type="all_signed_blocks", today=True),
                         'sum_rewards': executor.submit(get_rewards, network, total_sum=True),
@@ -110,16 +112,17 @@ def generate_network_info():
                         'first_signed_blocks': futures['first_signed_blocks'].result(),
                         'node_data': futures['node_data'].result(),
                         'rewards': futures['rewards'].result(),
+                        'rewards_all_time_average': futures['rewards_all_time_average'].result(),
                         'rewards_today': futures['rewards_today'].result(),
                         'sovereign_rewards': futures['sovereign_rewards'].result(),
+                        'sovereign_rewards_all_time_average': futures['sovereign_rewards_all_time_average'].result(),
                         'sovereign_rewards_today': futures['sovereign_rewards_today'].result(),
                         'signed_blocks_today': futures['signed_blocks_today'].result(),
                         'first_signed_blocks_today': futures['first_signed_blocks_today'].result(),
                         'state': net_status['state'],
                         'target_state': net_status['target_state'],
                         'token_price': futures['token_price'].result(),
-                        'sync_state_main': net_status['sync_state']['mainchain_percent'],
-                        'sync_state_zerochain': net_status['sync_state']['zerochain_percent']
+                        'sync_state': net_status['sync_state']['mainchain_percent']
                     }
                     network_data[network] = network_info
         log_it("d", json.dumps(network_data, indent=4))
