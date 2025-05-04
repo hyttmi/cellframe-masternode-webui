@@ -7,4 +7,4 @@
 - Configuration for heartbeat interval (`heartbeat_interval`, default 30 mins).
 
 ### Changed
-- Default interval for heartbeat thread is now 30 minutes.
+- Default interval for heartbeat thread is now 30 minutes for allowing node to try resync method.

@@ -19,6 +19,7 @@ try:
     from cacher import release_lock, is_locked
     from concurrent.futures import ThreadPoolExecutor
     import traceback
+    from websocket_server import start_ws_server
 
     executor = ThreadPoolExecutor(max_workers=2)
 
@@ -49,6 +50,8 @@ try:
             log_it("i", "HTTP server started!")
             executor.submit(setup_schedules)
             log_it("i", "Scheduled tasks started!")
+            executor.submit(start_ws_server)
+            log_it("i", "WebSocket server started!")
             log_it("i", f"{Config.PLUGIN_NAME} started!")
             return 0
         except Exception as e:
