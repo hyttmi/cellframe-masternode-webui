@@ -51,7 +51,6 @@ try:
             executor.submit(setup_schedules)
             log_it("i", "Scheduled tasks started!")
             executor.submit(start_ws_server)
-            log_it("i", "WebSocket server started!")
             log_it("i", f"{Config.PLUGIN_NAME} started!")
             return 0
         except Exception as e:

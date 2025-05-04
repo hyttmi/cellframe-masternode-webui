@@ -2,6 +2,11 @@ const customView = document.getElementById('custom_view');
 const availableCards = document.getElementById('available_cards');
 const editViewBtn = document.getElementById('edit_view_button');
 const clearStorageBtn = document.getElementById('clear_storage');
+const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+const host = isLocal ? 'localhost' : window.location.hostname;
+const port = {{ general_info.websocket_server_port }};
+const socket = new WebSocket(`${protocol}//${host}:${port}`);
 
 const updateLocalStorage = () => {
     const customViewCards = Array.from(customView.children).map(card => card.dataset.id);
@@ -147,7 +152,6 @@ function showChangelogModal() {
         });
 }
 
-
 document.addEventListener("DOMContentLoaded", function () {
     sortCards();
     checkForVersionUpdate();
@@ -163,3 +167,39 @@ document.addEventListener("DOMContentLoaded", function () {
         tutorialModal.hide();
     });
 });
+
+socket.onmessage = function (event) {
+    const msg = event.data;
+    let parsed;
+    try {
+        parsed = JSON.parse(msg);
+    } catch (e) {
+        parsed = { type: 'text', data: msg };
+    }
+
+    let message;
+    if (parsed.type === 'stats_update') {
+        message = typeof parsed.data === 'string' ? parsed.data : JSON.stringify(parsed.data, null, 2);
+    } else {
+        message = parsed.data;
+    }
+
+    showToast(message);
+};
+
+function showToast(message) {
+    const toastId = `toast-${Date.now()}`;
+    const container = document.getElementById("wsToastContainer");
+    const toastHTML = `
+        <div id="${toastId}" class="toast align-items-center border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">${message}</div>
+            </div>
+        </div>`;
+    container.insertAdjacentHTML("beforeend", toastHTML);
+
+    const toastEl = document.getElementById(toastId);
+    const toast = new bootstrap.Toast(toastEl, { delay: 10000 });
+    toast.show();
+    toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+}

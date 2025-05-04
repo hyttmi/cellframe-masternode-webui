@@ -38,6 +38,7 @@ def web_request_handler(headers, bypass_auth=False, query=None):
     expected_username = Config.USERNAME
     expected_password = Config.PASSWORD
     access_token = Config.ACCESS_TOKEN
+    auth_cookie = None
     expected_cookie = generate_cookie(expected_username, expected_password)
     expected_token_cookie = generate_token_cookie(access_token)
     url = Config.PLUGIN_URL
@@ -64,7 +65,6 @@ def web_request_handler(headers, bypass_auth=False, query=None):
 
     if not bypass_auth:
         log_it("i", "Checking authentication...")
-        auth_cookie = None
         if cookie_header:
             cookies = dict(item.split("=", 1) for item in cookie_header.split("; "))
             auth_cookie = cookies.get("auth_cookie")

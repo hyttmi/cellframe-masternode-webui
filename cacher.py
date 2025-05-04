@@ -2,6 +2,7 @@ from datetime import datetime
 from logger import log_it
 from networkutils import get_active_networks, get_network_config, get_node_data, is_node_synced
 from common import cli_command, get_current_script_directory
+from websocket_server import broadcast_stats_update
 import re, time, json, os, traceback
 
 CACHE_LOCK_FILE = os.path.join(get_current_script_directory(), ".cache.lock")
@@ -74,6 +75,7 @@ def cache_blocks_data():
             time.sleep(30)
 
         create_lock()
+        broadcast_stats_update("Caching blocks data...")
 
         today = datetime.now().strftime("%y%m%d")
         networks = get_active_networks()
@@ -136,6 +138,7 @@ def cache_rewards_data():
             time.sleep(30)
 
         create_lock()
+        broadcast_stats_update("Caching rewards data...")
 
         networks = get_active_networks()
         log_it("d", f"Found the following networks: {networks}")

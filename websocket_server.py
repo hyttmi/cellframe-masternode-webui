@@ -1,7 +1,8 @@
-import socket, base64, hashlib, threading
+import socket, base64, hashlib, threading, json
 from logger import log_it
 
 clients = []
+websocket_server_port = None
 
 def handshake(conn):
     request = conn.recv(1024).decode()
@@ -23,11 +24,13 @@ def handshake(conn):
     log_it("i", f"Handshake successful with {conn.getpeername()}")
     return True
 
-def send_message(conn, message):
-    data = bytearray([0x81, len(message)])
-    data.extend(message.encode('utf-8'))
-    log_it("d", f"Sending message to {conn.getpeername()}: {message}")
-    conn.send(data)
+def send_message(message):
+    if clients:
+        for client in clients:
+            data = bytearray([0x81, len(message)])
+            data.extend(message.encode('utf-8'))
+            log_it("d", f"Sending message to {client.getpeername()}: {message}")
+            client.send(data)
 
 def client_handler(conn):
     clients.append(conn)
@@ -45,18 +48,21 @@ def find_available_port(start_port, end_port):
             try:
                 s.bind(("0.0.0.0", port))
                 s.close()
+                log_it("d", f"Found available port: {port}")
                 return port
             except socket.error:
                 continue
     return None
 
 def start_ws_server():
+    global websocket_server_port
     available_port = find_available_port(40000, 42000)
     if available_port is None:
-        print("No available ports found in the range 40000-42000, strange that is...")
+        print("No available ports found in the range 40000-42000, pretty strange...")
         return
     server = socket.socket()
     server.bind(("0.0.0.0", available_port))
+    websocket_server_port = available_port
     server.listen(5)
     log_it("i", f"WebSocket server started on port {available_port}")
     while True:
@@ -65,9 +71,5 @@ def start_ws_server():
             threading.Thread(target=client_handler, args=(conn,), daemon=True).start()
 
 def broadcast_stats_update(stats):
-    message = '{"type": "stats_update", "data": ' + str(stats) + '}'
-    for conn in clients:
-        try:
-            send_message(conn, message)
-        except:
-            clients.remove(conn)
+    message = json.dumps({"type": "stats_update", "data": stats})
+    send_message(message)
