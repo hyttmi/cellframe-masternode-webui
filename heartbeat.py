@@ -2,7 +2,10 @@ from networkutils import (
     get_active_networks,
     get_network_config,
     get_autocollect_status,
-    get_blocks
+    get_blocks,
+    net_go_offline,
+    net_go_online,
+    net_resync
 )
 from utils import restart_node
 from cacher import is_locked
@@ -16,6 +19,7 @@ class Heartbeat:
     def __init__(self):
         self.max_sent_msgs = Config.HEARTBEAT_NOTIFICATION_AMOUNT
         self.msgs_sent = 0
+        self.failed_networks = []
         self.statuses = {
             network: {
                 "autocollect_status": "Unknown",
@@ -97,6 +101,7 @@ def run_heartbeat_check():
             if Config.HEARTBEAT_AUTO_RESTART:
                 restart_node()
             heartbeat.msgs_sent = 0
+
         report_heartbeat_errors(heartbeat)
     else:
         log_it("i", "[HEARTBEAT] No issues detected.")
@@ -108,6 +113,14 @@ def report_heartbeat_errors(heartbeat):
             errors.append(f"[{network}] Autocollect status seems to be inactive!")
         if status["last_signed_block"] == "NOK":
             errors.append(f"[{network}] Last signed block is older than {Config.HEARTBEAT_BLOCK_AGE} hours!")
+            log_it("i", f"[HEARTBEAT] Attempting to restart {network} network...")
+            try:
+                net_go_offline(network)
+                net_go_online(network)
+                net_resync(network)
+            except Exception as e:
+                log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+
     if errors:
         error_message = "\n".join(errors)
         log_it("e", f"[HEARTBEAT] Issues detected:\n{error_message}")

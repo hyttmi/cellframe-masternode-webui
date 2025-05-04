@@ -33,6 +33,7 @@ class Config:
     EMAIL_USE_TLS = get_config_value("webui", "email_use_tls", default=False, is_numeric=False)
     HEARTBEAT_AUTO_RESTART = get_config_value("webui", "heartbeat_auto_restart", default=False, is_numeric=False)
     HEARTBEAT_BLOCK_AGE = get_config_value("webui", "heartbeat_block_age", default=12, is_numeric=True)
+    HEARTBEAT_INTERVAL = get_config_value("webui", "heartbeat_interval", default=30, is_numeric=True)
     HEARTBEAT_NOTIFICATION_AMOUNT = int(get_config_value("webui", "heartbeat_notification_amount", default=5, is_numeric=True))
     NODE_ALIAS = get_config_value("webui", "node_alias", default="CFNode", is_numeric=False)
     PASSWORD = str(get_config_value("webui", "password", default="webui", is_numeric=False))
