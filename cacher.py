@@ -88,6 +88,7 @@ def cache_blocks_data():
                     log_it("i", "Network seems not to be synced, sleeping for 10 seconds...")
                     time.sleep(10)
                 log_it("i", "Caching blocks...")
+                broadcast_stats_update("Caching blocks...")
                 start_time = time.time()
                 block_data = {
                     'last_run': None,
@@ -124,6 +125,7 @@ def cache_blocks_data():
                     json.dump(block_data, f, indent=4)
                 elapsed_time = time.time() - start_time
                 log_it("i", f"Blocks cached for {network}! It took {elapsed_time:.2f} seconds!")
+                broadcast_stats_update("Blocks cached for {network}! It took {elapsed_time:.2f} seconds!")
             else:
                 log_it("i", f"Network config not found for {network}, skipping caching")
     except Exception as e:
@@ -138,7 +140,6 @@ def cache_rewards_data():
             time.sleep(30)
 
         create_lock()
-        broadcast_stats_update("Caching rewards data...")
 
         networks = get_active_networks()
         log_it("d", f"Found the following networks: {networks}")
@@ -161,6 +162,7 @@ def cache_rewards_data():
                     log_it("i", "Network seems not to be synced, sleeping for 10 seconds...")
                     time.sleep(10)
                 log_it("i", "Caching rewards...")
+                broadcast_stats_update("Caching rewards...")
                 start_time = time.time()
 
                 rewards = {}
@@ -182,6 +184,7 @@ def cache_rewards_data():
                         json.dump(rewards, f, indent=4)
                 elapsed_time = time.time() - start_time
                 log_it("i", f"Reward caching took {elapsed_time:.2f} seconds!")
+                broadcast_stats_update(f"Reward caching took {elapsed_time:.2f} seconds!")
             else:
                 log_it("i", f"No valid address found for {network}, skipping caching.")
     except Exception as e:

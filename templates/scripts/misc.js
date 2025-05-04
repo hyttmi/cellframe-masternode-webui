@@ -191,9 +191,9 @@ function showToast(message) {
     const toastId = `toast-${Date.now()}`;
     const container = document.getElementById("wsToastContainer");
     const toastHTML = `
-        <div id="${toastId}" class="toast align-items-center border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+        <div id="${toastId}" class="toast align-items-center text-center border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
-                <div class="toast-body">${message}</div>
+                <div class="toast-body d-flex justify-content-center align-items-center w-100 text-center"><strong>${message}</strong></div>
             </div>
         </div>`;
     container.insertAdjacentHTML("beforeend", toastHTML);
