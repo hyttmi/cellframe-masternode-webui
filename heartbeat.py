@@ -19,7 +19,6 @@ class Heartbeat:
     def __init__(self):
         self.max_sent_msgs = Config.HEARTBEAT_NOTIFICATION_AMOUNT
         self.msgs_sent = 0
-        self.failed_networks = []
         self.statuses = {
             network: {
                 "autocollect_status": "Unknown",
@@ -120,7 +119,6 @@ def report_heartbeat_errors(heartbeat):
                 net_resync(network)
             except Exception as e:
                 log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
-
     if errors:
         error_message = "\n".join(errors)
         log_it("e", f"[HEARTBEAT] Issues detected:\n{error_message}")
