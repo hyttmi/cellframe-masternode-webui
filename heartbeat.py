@@ -115,7 +115,9 @@ def report_heartbeat_errors(heartbeat):
             log_it("i", f"[HEARTBEAT] Attempting to restart {network} network...")
             try:
                 net_go_offline(network)
+                time.sleep(2)
                 net_go_online(network)
+                time.sleep(2)
                 net_resync(network)
             except Exception as e:
                 log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
