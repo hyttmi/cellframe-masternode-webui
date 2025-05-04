@@ -335,3 +335,45 @@ def is_node_synced(network):
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return False
+
+def net_go_offline(network):
+    try:
+        log_it("d", f"Setting network {network} offline...")
+        resync_cmd = cli_command(f"net -net {network} go offline", timeout=3)
+        if resync_cmd:
+            log_it("d", f"Resync command executed successfully: {resync_cmd}")
+            return True
+        else:
+            log_it("e", f"Failed to execute resync command for {network}")
+            return False
+    except Exception as e:
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+        return False
+
+def net_go_online(network):
+    try:
+        log_it("d", f"Bringing network {network} online...")
+        online_cmd = cli_command(f"net -net {network} go online", timeout=3)
+        if online_cmd:
+            log_it("d", f"Online command executed successfully: {online_cmd}")
+            return True
+        else:
+            log_it("e", f"Failed to execute online command for {network}")
+            return False
+    except Exception as e:
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+        return False
+
+def net_resync(network):
+    try:
+        log_it("d", f"Resyncing network {network}...")
+        resync_cmd = cli_command(f"net -net {network} go sync", timeout=3)
+        if resync_cmd:
+            log_it("d", f"Resync command executed successfully: {resync_cmd}")
+            return True
+        else:
+            log_it("e", f"Failed to execute resync command for {network}")
+            return False
+    except Exception as e:
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+        return False
