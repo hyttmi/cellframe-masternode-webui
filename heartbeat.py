@@ -13,7 +13,7 @@ from config import Config
 from logger import log_it
 from notifications import send_email, send_telegram_message
 from datetime import datetime, timedelta
-from websocket_server import broadcast_stats_update
+from websocket_server import ws_broadcast_msg
 import time, traceback
 
 class Heartbeat:
@@ -65,7 +65,7 @@ class Heartbeat:
                         send_telegram_message(f"({Config.NODE_ALIAS}): Your blocks cache has not been updated in more than {Config.CACHE_AGE_LIMIT} hours. Please examine your node.")
                     if Config.EMAIL_STATS_ENABLED:
                         send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", f"Your blocks cache has not been updated in more than {Config.CACHE_AGE_LIMIT} hours. Please examine your node.")
-
+                    ws_broadcast_msg(f"({Config.NODE_ALIAS}): Your blocks cache has not been updated in more than {Config.CACHE_AGE_LIMIT} hours. Please examine your node.")
                     continue
 
                 if last_signed_block:
@@ -77,6 +77,7 @@ class Heartbeat:
                     if curr_time - block_time > timedelta(hours=Config.HEARTBEAT_BLOCK_AGE):
                         self.statuses[network]['last_signed_block'] = "NOK"
                         log_it("e", f"[HEARTBEAT] Last signed block is older than {Config.HEARTBEAT_BLOCK_AGE} hours!")
+                        ws_broadcast_msg(f"({Config.NODE_ALIAS}): Last signed block is older than {Config.HEARTBEAT_BLOCK_AGE} hours!")
                         break
                     else:
                         self.statuses[network]['last_signed_block'] = "OK"

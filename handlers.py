@@ -136,7 +136,8 @@ def web_request_handler(headers, bypass_auth=False, query=None):
         )
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
-        return CFSimpleHTTPResponse(body=b"<h1>Internal Server Error</h1>", code=500)
+        errmsg = f"<h1>Internal Server Error</h1><pre>{traceback.format_exc()}</pre>"
+        return CFSimpleHTTPResponse(body=errmsg.encode("utf-8"), code=500)
 
 def json_request_handler(headers):
     access_token = headers.get("ACCESS_TOKEN")

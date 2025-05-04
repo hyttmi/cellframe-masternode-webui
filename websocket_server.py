@@ -70,6 +70,6 @@ def start_ws_server():
         if handshake(conn):
             threading.Thread(target=client_handler, args=(conn,), daemon=True).start()
 
-def broadcast_stats_update(stats):
-    message = json.dumps({"type": "stats_update", "data": stats})
+def ws_broadcast_msg(msg):
+    message = json.dumps({"type": "stats_update", "data": msg})
     send_message(message)
