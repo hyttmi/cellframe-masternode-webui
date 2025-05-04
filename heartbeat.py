@@ -13,6 +13,7 @@ from config import Config
 from logger import log_it
 from notifications import send_email, send_telegram_message
 from datetime import datetime, timedelta
+from websocket_server import broadcast_stats_update
 import time, traceback
 
 class Heartbeat:
@@ -37,6 +38,7 @@ class Heartbeat:
                 else:
                     self.statuses[network]["autocollect_status"] = "NOK"
                     log_it("e", f"[HEARTBEAT] Autocollect status seems to be inactive!")
+
         except Exception as e:
             log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 
@@ -63,6 +65,7 @@ class Heartbeat:
                         send_telegram_message(f"({Config.NODE_ALIAS}): Your blocks cache has not been updated in more than {Config.CACHE_AGE_LIMIT} hours. Please examine your node.")
                     if Config.EMAIL_STATS_ENABLED:
                         send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", f"Your blocks cache has not been updated in more than {Config.CACHE_AGE_LIMIT} hours. Please examine your node.")
+
                     continue
 
                 if last_signed_block:

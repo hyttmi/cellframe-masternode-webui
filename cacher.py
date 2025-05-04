@@ -75,7 +75,6 @@ def cache_blocks_data():
             time.sleep(30)
 
         create_lock()
-        broadcast_stats_update("Caching blocks data...")
 
         today = datetime.now().strftime("%y%m%d")
         networks = get_active_networks()
@@ -125,7 +124,7 @@ def cache_blocks_data():
                     json.dump(block_data, f, indent=4)
                 elapsed_time = time.time() - start_time
                 log_it("i", f"Blocks cached for {network}! It took {elapsed_time:.2f} seconds!")
-                broadcast_stats_update("Blocks cached for {network}! It took {elapsed_time:.2f} seconds!")
+                broadcast_stats_update(f"Blocks cached for {network}! It took {elapsed_time:.2f} seconds!")
             else:
                 log_it("i", f"Network config not found for {network}, skipping caching")
     except Exception as e:
@@ -183,8 +182,8 @@ def cache_rewards_data():
                     with open(cache_file_path, "w") as f:
                         json.dump(rewards, f, indent=4)
                 elapsed_time = time.time() - start_time
-                log_it("i", f"Reward caching took {elapsed_time:.2f} seconds!")
-                broadcast_stats_update(f"Reward caching took {elapsed_time:.2f} seconds!")
+                log_it("i", f"Reward caching for {network} took {elapsed_time:.2f} seconds!")
+                broadcast_stats_update(f"Reward caching for {network} took {elapsed_time:.2f} seconds!")
             else:
                 log_it("i", f"No valid address found for {network}, skipping caching.")
     except Exception as e:

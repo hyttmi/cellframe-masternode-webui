@@ -8,6 +8,9 @@ const host = isLocal ? 'localhost' : window.location.hostname;
 const port = {{ general_info.websocket_server_port }};
 const socket = new WebSocket(`${protocol}//${host}:${port}`);
 
+console.log("Connecting to WebSocket with URL:", `${protocol}//${host}:${port}`);
+
+
 const updateLocalStorage = () => {
     const customViewCards = Array.from(customView.children).map(card => card.dataset.id);
     localStorage.setItem('customViewLayout', JSON.stringify(customViewCards));
