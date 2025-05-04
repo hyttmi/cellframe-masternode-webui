@@ -6,10 +6,6 @@ const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
 const host = isLocal ? 'localhost' : window.location.hostname;
 const port = {{ general_info.websocket_server_port }};
-const socket = new WebSocket(`${protocol}//${host}:${port}`);
-
-console.log("Connecting to WebSocket with URL:", `${protocol}//${host}:${port}`);
-
 
 const updateLocalStorage = () => {
     const customViewCards = Array.from(customView.children).map(card => card.dataset.id);
@@ -170,6 +166,20 @@ document.addEventListener("DOMContentLoaded", function () {
         tutorialModal.hide();
     });
 });
+
+const socket = new WebSocket(`${protocol}//${host}:${port}`);
+
+console.log("Connecting to WebSocket with URL:", `${protocol}//${host}:${port}`);
+
+socket.onopen = () => {
+    console.log("WebSocket connection established.");
+};
+socket.onerror = (error) => {
+    console.error("WebSocket connection error:", error);
+};
+socket.onclose = () => {
+    console.log("WebSocket connection closed.");
+};
 
 socket.onmessage = function (event) {
     const msg = event.data;
