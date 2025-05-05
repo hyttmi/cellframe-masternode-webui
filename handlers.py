@@ -61,7 +61,8 @@ def web_request_handler(headers, bypass_auth=False, query=None):
                 )
             except Exception as e:
                 log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
-                return CFSimpleHTTPResponse(body=b"<h1>Internal Server Error</h1>", code=500)
+                errmsg = f"<h1>Internal Server Error</h1><pre>{traceback.format_exc()}</pre>"
+                return CFSimpleHTTPResponse(body=errmsg.encode("utf-8"), code=500)
 
     if not bypass_auth:
         log_it("i", "Checking authentication...")
@@ -83,7 +84,8 @@ def web_request_handler(headers, bypass_auth=False, query=None):
                     )
                 except Exception as e:
                     log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
-                    return CFSimpleHTTPResponse(body=b"<h1>Internal Server Error</h1>", code=500)
+                    errmsg = f"<h1>Internal Server Error</h1><pre>{traceback.format_exc()}</pre>"
+                    return CFSimpleHTTPResponse(body=errmsg.encode("utf-8"), code=500)
 
         if not auth_header:
             log_it("e", "Missing Authorization header")
@@ -130,8 +132,7 @@ def web_request_handler(headers, bypass_auth=False, query=None):
             code=200,
             headers={
                 "Content-Type": "text/html",
-                "Content-Encoding": "gzip",
-                "Set-Cookie": f"auth_cookie={auth_cookie}; HttpOnly; Path=/; Expires={cookie_expires}"
+                "Content-Encoding": "gzip"
             }
         )
     except Exception as e:
