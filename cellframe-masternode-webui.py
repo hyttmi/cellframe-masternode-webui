@@ -50,7 +50,9 @@ try:
             log_it("i", "HTTP server started!")
             executor.submit(setup_schedules)
             log_it("i", "Scheduled tasks started!")
-            executor.submit(start_ws_server)
+            if Config.WEBSOCKET_PORT is not None:
+                log_it("i", f"WebSocket server started on port {Config.WEBSOCKET_PORT}")
+                executor.submit(start_ws_server)
             log_it("i", f"{Config.PLUGIN_NAME} started!")
             return 0
         except Exception as e:

@@ -1,8 +1,9 @@
 import socket, base64, hashlib, threading, json
 from logger import log_it
+from config import Config
 
+websocket_server_running = False
 clients = []
-websocket_server_port = None
 
 def handshake(conn):
     request = conn.recv(1024).decode()
@@ -42,34 +43,28 @@ def client_handler(conn):
         clients.remove(conn)
         conn.close()
 
-def find_available_port(start_port, end_port):
-    for port in range(start_port, end_port + 1):
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            try:
-                s.bind(("0.0.0.0", port))
-                s.close()
-                log_it("d", f"Found available port: {port}")
-                return port
-            except socket.error:
-                continue
-    return None
-
 def start_ws_server():
-    global websocket_server_port
-    available_port = find_available_port(40000, 42000)
+    global websocket_server_running
+    available_port = Config.WEBSOCKET_PORT
     if available_port is None:
-        print("No available ports found in the range 40000-42000, pretty strange...")
+        log_it("e", "WebSocket port is not set in the configuration, won't start WebSocket server")
         return
     server = socket.socket()
     server.bind(("0.0.0.0", available_port))
     websocket_server_port = available_port
     server.listen(5)
-    log_it("i", f"WebSocket server started on port {available_port}")
+    websocket_server_running = True
     while True:
         conn, _ = server.accept()
         if handshake(conn):
             threading.Thread(target=client_handler, args=(conn,), daemon=True).start()
 
 def ws_broadcast_msg(msg):
+    if not websocket_server_running:
+        log_it("e", "WebSocket server is not running")
+        return
+    if not clients:
+        log_it("e", "No clients connected to WebSocket server")
+        return
     message = json.dumps({"type": "stats_update", "data": msg})
     send_message(message)

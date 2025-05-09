@@ -5,7 +5,8 @@ from networkutils import (
     get_blocks,
     net_go_offline,
     net_go_online,
-    net_resync
+    net_resync,
+    is_node_in_node_list
 )
 from utils import restart_node
 from cacher import is_locked
@@ -24,6 +25,7 @@ class Heartbeat:
             network: {
                 "autocollect_status": "Unknown",
                 "last_signed_block": "Unknown",
+                "in_node_list": "Unknown"
             }
             for network in get_active_networks() if get_network_config(network)
         }
@@ -38,7 +40,26 @@ class Heartbeat:
                 else:
                     self.statuses[network]["autocollect_status"] = "NOK"
                     log_it("e", f"[HEARTBEAT] Autocollect status seems to be inactive!")
+                    ws_broadcast_msg(f"({Config.NODE_ALIAS}): Autocollect status seems to be inactive!")
+        except Exception as e:
+            log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 
+    def in_node_list(self):
+        try:
+            for network in self.statuses:
+                in_node_list = is_node_in_node_list(network)
+                if in_node_list:
+                    log_it("d", f"[HEARTBEAT] Node is in the node list for {network}")
+                    self.statuses[network]["in_node_list"] = "OK"
+                    return
+                else:
+                    log_it("e", f"[HEARTBEAT] Node is not in the node list for {network}")
+                    self.statuses[network]["in_node_list"] = "NOK"
+                    if Config.TELEGRAM_STATS_ENABLED:
+                        send_telegram_message(f"({Config.NODE_ALIAS}): Your node is not in the node list for {network}. Please examine your node.")
+                    if Config.EMAIL_STATS_ENABLED:
+                        send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", f"Your node is not in the node list for {network}. Please examine your node.")
+                    ws_broadcast_msg(f"({Config.NODE_ALIAS}): Your node is not in the node list for {network}. Please examine your node.")
         except Exception as e:
             log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 

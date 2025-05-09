@@ -1,4 +1,5 @@
 from common import cli_command
+from networkutils import get_active_networks, get_network_config
 from logger import log_it
 from packaging import version
 import socket, requests, re, time, psutil, time, traceback
@@ -118,3 +119,18 @@ def restart_node():
             psutil.Process(node_pid).terminate()
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+
+def is_node_masternode():
+    try:
+        for network in get_active_networks():
+            if network is None:
+                log_it("d", "No active networks found")
+                return False
+            network_config = get_network_config(network)
+            if network_config is None:
+                log_it("d", f"No correct network config found for {network}")
+                return False
+        return True
+    except Exception as e:
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+        return False

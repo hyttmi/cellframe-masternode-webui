@@ -368,3 +368,16 @@ def net_resync(network):
             log_it("e", f"Failed to execute resync command for {network}")
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+
+def is_node_in_node_list(network, node_addr):
+    try:
+        node_addr = get_network_status(network)["address"]
+        node_list = cli_command(f"node list -net {network}", timeout=3)
+        if node_addr not in node_list:
+            log_it("e", f"Node address {node_addr} not found in node list for {network}")
+            return False
+        log_it("d", f"Node address {node_addr} found in node list for {network}")
+        return True
+    except Exception as e:
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+        return False
