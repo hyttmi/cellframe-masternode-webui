@@ -51,7 +51,6 @@ def start_ws_server():
         return
     server = socket.socket()
     server.bind(("0.0.0.0", available_port))
-    websocket_server_port = available_port
     server.listen(5)
     websocket_server_running = True
     while True:

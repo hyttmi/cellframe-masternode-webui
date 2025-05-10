@@ -3,9 +3,7 @@ from networkutils import (
     get_network_config,
     get_autocollect_status,
     get_blocks,
-    net_go_offline,
-    net_go_online,
-    net_resync,
+    change_net_mode,
     is_node_in_node_list
 )
 from utils import restart_node
@@ -131,32 +129,35 @@ def run_heartbeat_check():
         log_it("i", "[HEARTBEAT] No issues detected.")
 
 def report_heartbeat_errors(heartbeat):
-    errors = []
-    for network, status in heartbeat.statuses.items():
-        if status["autocollect_status"] == "NOK":
-            errors.append(f"[{network}] Autocollect status seems to be inactive!")
-        if status["last_signed_block"] == "NOK":
-            errors.append(f"[{network}] Last signed block is older than {Config.HEARTBEAT_BLOCK_AGE} hours!")
-            log_it("i", f"[HEARTBEAT] Attempting to restart {network} network...")
+    try:
+        errors = []
+        for network, status in heartbeat.statuses.items():
+            if status["autocollect_status"] == "NOK":
+                errors.append(f"[{network}] Autocollect status seems to be inactive!")
+            if status["last_signed_block"] == "NOK":
+                errors.append(f"[{network}] Last signed block is older than {Config.HEARTBEAT_BLOCK_AGE} hours!")
+                log_it("i", f"[HEARTBEAT] Attempting to ressync {network} network...")
+                try:
+                    change_net_mode(network, "offline")
+                    time.sleep(2)
+                    change_net_mode(network, "online")
+                    time.sleep(2)
+                    change_net_mode(network, "resync")
+                except Exception as e:
+                    log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+        if errors:
+            error_message = "\n".join(errors)
+            log_it("e", f"[HEARTBEAT] Issues detected:\n{error_message}")
             try:
-                net_go_offline(network)
-                time.sleep(2)
-                net_go_online(network)
-                time.sleep(2)
-                net_resync(network)
+                if Config.TELEGRAM_STATS_ENABLED:
+                    send_telegram_message(f"({Config.NODE_ALIAS}): {error_message}")
+                if Config.EMAIL_STATS_ENABLED:
+                    send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", error_message)
+                heartbeat.msgs_sent += 1
             except Exception as e:
                 log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
-    if errors:
-        error_message = "\n".join(errors)
-        log_it("e", f"[HEARTBEAT] Issues detected:\n{error_message}")
-        try:
-            if Config.TELEGRAM_STATS_ENABLED:
-                send_telegram_message(f"({Config.NODE_ALIAS}): {error_message}")
-            if Config.EMAIL_STATS_ENABLED:
-                send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", error_message)
-            heartbeat.msgs_sent += 1
-        except Exception as e:
-            log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
-    else:
-        log_it("i", "[HEARTBEAT] No issues detected.")
-        heartbeat.msgs_sent = 0
+        else:
+            log_it("i", "[HEARTBEAT] No issues detected.")
+            heartbeat.msgs_sent = 0
+    except Exception as e:
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
