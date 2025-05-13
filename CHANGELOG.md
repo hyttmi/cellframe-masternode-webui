@@ -7,6 +7,7 @@
 - Heartbeat now checks also if node is added to the node list and if not, reports to user.
 - Configuration for heartbeat interval (`heartbeat_interval`, default 30 mins).
 - Websocket server for real time push messages to your browser. To enable, set `websocket_port` in configuration file.
+- Much more modular notification system.
 
 ### Changed
 - Default interval for heartbeat thread is now 30 minutes for allowing node to try resync method.
