@@ -7,8 +7,7 @@ from logger import log_it
 from notifications import notify_all, send_telegram_message, send_email
 from updater import install_plugin_update
 from utils import get_current_config
-import time
-
+import time, schedule
 
 def run_scheduler(func, scheduled_time, every_min=False, run_on_startup=False):
     log_it("d", f"Received func {func}, scheduled_time={scheduled_time}, every_min={every_min}, run_on_startup={run_on_startup}")
