@@ -1,7 +1,6 @@
 from config import Config
 from datetime import datetime, timedelta, timezone
 from generators import generate_data
-from io import BytesIO
 from logger import log_it
 from pycfhelpers.node.http.simple import CFSimpleHTTPResponse
 import base64, hashlib, gzip, traceback

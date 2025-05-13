@@ -25,7 +25,6 @@ from logger import log_it
 from common import get_current_script_directory
 from config import Config
 from concurrent.futures import ThreadPoolExecutor
-import websocket_server
 import json, os, traceback
 
 def generate_general_info(format_time=True):
@@ -47,8 +46,9 @@ def generate_general_info(format_time=True):
                 'show_icon': Config.SHOW_ICON,
                 'system_uptime': format_uptime(sys_stats['system_uptime']) if format_time else sys_stats['system_uptime'],
                 'template': Config.TEMPLATE,
-                'websocket_server_port': websocket_server.websocket_server_port
         }
+        if isinstance(Config.WEBSOCKET_SERVER_PORT, int):
+            info['websocket_server_port'] = Config.WEBSOCKET_SERVER_PORT
         log_it("d", json.dumps(info, indent=4))
         return info
     except Exception as e:
