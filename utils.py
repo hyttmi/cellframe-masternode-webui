@@ -136,7 +136,7 @@ def is_node_masternode():
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return False
 
-def get_current_config(hide_sensitive_data=False):
+def get_current_config(hide_sensitive_data=False, as_string=False):
     hidden_keys = ["TOKEN", "PASSWORD", "CHAT_ID", "USER", "RECIPIENTS"]
     config_data = {}
     for key, value in sorted(vars(Config).items()):
@@ -146,4 +146,7 @@ def get_current_config(hide_sensitive_data=False):
             config_data[key] = "***"
         else:
             config_data[key] = value
+    if as_string:
+        return "\n".join([f"{key}: {value}" for key, value in config_data.items()])
+    return config_data
     return config_data
