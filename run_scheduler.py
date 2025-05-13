@@ -96,7 +96,7 @@ def setup_schedules():
 
             futures['notify_user'] = executor.submit(
                 notify_all,
-                f"Plugin {Config.PLUGIN_NAME} started with current config: {get_current_config(hide_sensitive_data=True, as_string=True)}"
+                f"Plugin {Config.PLUGIN_NAME} started!"
                 )
             log_it("d", "notify_user submitted to ThreadPool")
 
