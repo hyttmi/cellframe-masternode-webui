@@ -10,9 +10,8 @@ from utils import restart_node
 from cacher import is_locked
 from config import Config
 from logger import log_it
-from notifications import send_email, send_telegram_message
+from notifications import notify_all
 from datetime import datetime, timedelta
-from websocket_server import ws_broadcast_msg
 import time, traceback
 
 class Heartbeat:
@@ -53,10 +52,7 @@ class Heartbeat:
                 else:
                     log_it("e", f"[HEARTBEAT] Node is not in the node list for {network}")
                     self.statuses[network]["in_node_list"] = "NOK"
-                    if Config.TELEGRAM_STATS_ENABLED:
-                        send_telegram_message(f"({Config.NODE_ALIAS}): Your node is not in the node list for {network}. Please examine your node.")
-                    if Config.EMAIL_STATS_ENABLED:
-                        send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", f"Your node is not in the node list for {network}. Please examine your node.")
+                    notify_all(f"({Config.NODE_ALIAS}): Your node is not in the node list for {network}. Please examine your node.")
                     ws_broadcast_msg(f"({Config.NODE_ALIAS}): Your node is not in the node list for {network}. Please examine your node.")
         except Exception as e:
             log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
@@ -80,11 +76,7 @@ class Heartbeat:
                 log_it("d", f"[HEARTBEAT] Cache age for {network}: {cache_age}")
                 if cache_age > timedelta(hours=Config.CACHE_AGE_LIMIT):
                     log_it("e", f"[HEARTBEAT] Cache file for {network} is too old! Last updated: {last_run}. Reporting issue...")
-                    if Config.TELEGRAM_STATS_ENABLED:
-                        send_telegram_message(f"({Config.NODE_ALIAS}): Your blocks cache has not been updated in more than {Config.CACHE_AGE_LIMIT} hours. Please examine your node.")
-                    if Config.EMAIL_STATS_ENABLED:
-                        send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", f"Your blocks cache has not been updated in more than {Config.CACHE_AGE_LIMIT} hours. Please examine your node.")
-                    ws_broadcast_msg(f"({Config.NODE_ALIAS}): Your blocks cache has not been updated in more than {Config.CACHE_AGE_LIMIT} hours. Please examine your node.")
+                    notify_all(f"({Config.NODE_ALIAS}): Your blocks cache has not been updated in more than {Config.CACHE_AGE_LIMIT} hours. Please examine your node.")
                     continue
 
                 if last_signed_block:
@@ -96,7 +88,7 @@ class Heartbeat:
                     if curr_time - block_time > timedelta(hours=Config.HEARTBEAT_BLOCK_AGE):
                         self.statuses[network]['last_signed_block'] = "NOK"
                         log_it("e", f"[HEARTBEAT] Last signed block is older than {Config.HEARTBEAT_BLOCK_AGE} hours!")
-                        ws_broadcast_msg(f"({Config.NODE_ALIAS}): Last signed block is older than {Config.HEARTBEAT_BLOCK_AGE} hours!")
+                        notify_all(f"({Config.NODE_ALIAS}): Last signed block is older than {Config.HEARTBEAT_BLOCK_AGE} hours!")
                         break
                     else:
                         self.statuses[network]['last_signed_block'] = "OK"
@@ -115,10 +107,7 @@ def run_heartbeat_check():
     if any("NOK" in status.values() for status in heartbeat.statuses.values()):
         log_it("d", f"[HEARTBEAT] has sent {heartbeat.msgs_sent} messages.")
         if heartbeat.msgs_sent == heartbeat.max_sent_msgs:
-            if Config.TELEGRAM_STATS_ENABLED:
-                send_telegram_message(f"({Config.NODE_ALIAS}): Node will be restarted because of indicated problems.")
-            if Config.EMAIL_STATS_ENABLED:
-                send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", "Node will be restarted because of indicated problems.")
+            notify_all(f"({Config.NODE_ALIAS}): Node will be restarted because of indicated problems.")
             log_it("i", "[HEARTBEAT] Node will be restarted because of indicated problems.")
             if Config.HEARTBEAT_AUTO_RESTART:
                 restart_node()
@@ -149,10 +138,7 @@ def report_heartbeat_errors(heartbeat):
             error_message = "\n".join(errors)
             log_it("e", f"[HEARTBEAT] Issues detected:\n{error_message}")
             try:
-                if Config.TELEGRAM_STATS_ENABLED:
-                    send_telegram_message(f"({Config.NODE_ALIAS}): {error_message}")
-                if Config.EMAIL_STATS_ENABLED:
-                    send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", error_message)
+                notify_all(f"({Config.NODE_ALIAS}): {error_message}")
                 heartbeat.msgs_sent += 1
             except Exception as e:
                 log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())

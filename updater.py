@@ -3,7 +3,7 @@ from config import Config
 from logger import log_it
 from packaging import version
 from utils import restart_node
-from notifications import send_telegram_message, send_email
+from notifications import notify_all
 import os, requests, shutil, json, zipfile, traceback
 
 def check_plugin_update():
@@ -65,10 +65,7 @@ def install_plugin_update():
                     command = f"/opt/cellframe-node/python/bin/pip3 install -r {requirements_path}"
                     if cli_command(command, is_shell_command=True):
                         log_it("i", "Dependencies successfully installed")
-                        if Config.TELEGRAM_STATS_ENABLED:
-                            send_telegram_message(f"Plugin version ({update_info['latest_version']}) has been installed and your node ({Config.NODE_ALIAS}) will be restarted.")
-                        if Config.EMAIL_STATS_ENABLED:
-                            send_email(f"Plugin version ({update_info['latest_version']}) has been installed and your node ({Config.NODE_ALIAS}) will be restarted.")
+                        notify_all(f"Plugin version ({update_info['latest_version']}) has been installed and your node ({Config.NODE_ALIAS}) will be restarted.")
                         log_it("i", "Restarting node...")
                         restart_node() # Or maybe not, if it was launched manually... :D
                     else:

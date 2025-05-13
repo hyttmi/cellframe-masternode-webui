@@ -4,6 +4,7 @@ from config import Config
 from logger import log_it
 import requests, smtplib, traceback
 from time import sleep
+from websocket_server import ws_broadcast_msg
 
 def send_telegram_message(message):
     missing_configs = []
@@ -114,5 +115,23 @@ def send_email(msg):
         server.sendmail(smtp_user, email_recipients, email_msg.as_string())
         server.close()
         log_it("i", "Email sent!")
+    except Exception as e:
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+
+def notify_all(message):
+    try:
+        if Config.TELEGRAM_STATS_ENABLED:
+            send_telegram_message(message)
+        else:
+            log_it("e", "Telegram notifications are disabled in the configuration.")
+        if Config.EMAIL_STATS_ENABLED:
+            send_email(message)
+        else:
+            log_it("e", "Email notifications are disabled in the configuration.")
+        if Config.WEBSOCKET_PORT:
+            ws_broadcast_msg(message)
+        else:
+            log_it("e", "WebSocket notifications are disabled in the configuration.")
+        log_it("i", f"Notification sent: {message}")
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())

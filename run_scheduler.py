@@ -4,7 +4,7 @@ from config import Config
 from generators import generate_data
 from heartbeat import run_heartbeat_check
 from logger import log_it
-from notifications import send_telegram_message, send_email
+from notifications import notify_all, send_telegram_message, send_email
 from updater import install_plugin_update
 import schedule, time
 
@@ -51,12 +51,6 @@ def setup_schedules():
             log_it("d", "rewards_caching_schedule submitted to ThreadPool")
 
             if Config.TELEGRAM_STATS_ENABLED:
-                futures['send_telegram_message_notification'] = executor.submit(
-                    send_telegram_message,
-                    f"Telegram sending scheduled at {Config.TELEGRAM_STATS_TIME} from {Config.NODE_ALIAS}"
-                )
-                log_it("d", "send_telegram_message_notification submitted to ThreadPool")
-
                 futures['send_telegram_message_schedule'] = executor.submit(
                     run_scheduler,
                     lambda: send_telegram_message(
@@ -69,12 +63,6 @@ def setup_schedules():
                 log_it("d", "send_telegram_message_schedule submitted to ThreadPool")
 
             if Config.EMAIL_STATS_ENABLED:
-                futures['send_email_message_notification'] = executor.submit(
-                    send_email,
-                    f"Email sending scheduled at {Config.EMAIL_STATS_TIME}  from {Config.NODE_ALIAS}"
-                )
-                log_it("d", "send_email_message_notification submitted to ThreadPool")
-
                 futures['send_email_message_schedule'] = executor.submit(
                     run_scheduler,
                     lambda: send_email(
@@ -104,6 +92,12 @@ def setup_schedules():
                 run_on_startup=False
             )
             log_it("d", "heartbeat_check_schedule submitted to ThreadPool")
+
+            futures['notify_user'] = executor.submit(
+                notify_all,
+                f"Your node has started! Please check the logs for more information."
+            )
+            log_it("d", "notify_user submitted to ThreadPool")
 
             for name in futures:
                 log_it("d", f"{name} submitted to ThreadPool")

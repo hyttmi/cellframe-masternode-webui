@@ -20,6 +20,7 @@ try:
     from concurrent.futures import ThreadPoolExecutor
     import traceback
     from websocket_server import start_ws_server
+    from utils import get_current_config
 
     executor = ThreadPoolExecutor(max_workers=2)
 
@@ -33,16 +34,9 @@ try:
 
     def init():
         try:
-            hidden_keys = ["TOKEN", "PASSWORD", "CHAT_ID", "USER", "RECIPIENTS"]
-            log_it("i", f"========= Configuration for {Config.PLUGIN_NAME} =========")
-            for key, value in sorted(vars(Config).items()):
-                if key.startswith("__"):
-                    continue
-                if any(hidden in key for hidden in hidden_keys):
-                    log_it("i", f"{key}: ***")
-                else:
-                    log_it("i", f"{key}: {value}")
-            log_it("i", "=" * 58)
+            current_config  = get_current_config(hide_sensitive_data=True)
+            for key, value in current_config.items():
+                log_it("d", f"{key}: {value}")
             if is_locked():
                 log_it("i", "Cache lock found, releasing it...")
                 release_lock()
