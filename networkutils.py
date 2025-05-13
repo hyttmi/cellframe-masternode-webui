@@ -345,7 +345,8 @@ def change_net_mode(network, mode):
             log_it("e", f"Invalid mode: {mode}. Valid modes are: {modes}")
             return
         else:
-            mode_cmd = cli_command(f"net -net {network} go {mode}", timeout=3)
+            log_it("d", f"Setting network {network} to {mode}...")
+            cli_command(f"net -net {network} go {mode}", timeout=3)
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 

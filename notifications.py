@@ -128,7 +128,7 @@ def notify_all(message):
             send_email(message)
         else:
             log_it("e", "Email notifications are disabled in the configuration.")
-        if Config.WEBSOCKET_PORT:
+        if Config.WEBSOCKET_SERVER_PORT:
             ws_broadcast_msg(message)
         else:
             log_it("e", "WebSocket notifications are disabled in the configuration.")
