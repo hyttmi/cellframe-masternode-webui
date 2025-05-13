@@ -2,7 +2,7 @@ from datetime import datetime
 from logger import log_it
 from networkutils import get_active_networks, get_network_config, get_node_data, is_node_synced
 from common import cli_command, get_current_script_directory
-from websocket_server import ws_broadcast_msg
+from notifications import ws_broadcast_msg
 import re, time, json, os, traceback
 
 CACHE_LOCK_FILE = os.path.join(get_current_script_directory(), ".cache.lock")

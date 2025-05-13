@@ -44,9 +44,11 @@ try:
             log_it("i", "HTTP server started!")
             executor.submit(setup_schedules)
             log_it("i", "Scheduled tasks started!")
-            if Config.WEBSOCKET_PORT is not None:
-                log_it("i", f"WebSocket server started on port {Config.WEBSOCKET_PORT}")
+            if isinstance(Config.WEBSOCKET_SERVER_PORT, int):
+                log_it("i", f"WebSocket server started on port {Config.WEBSOCKET_SERVER_PORT}")
                 executor.submit(start_ws_server)
+            else:
+                log_it("i", "WebSocket server not started, port is not an integer or not set")
             log_it("i", f"{Config.PLUGIN_NAME} started!")
             return 0
         except Exception as e:
