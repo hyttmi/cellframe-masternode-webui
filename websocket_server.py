@@ -45,10 +45,7 @@ def client_handler(conn):
 
 def start_ws_server():
     global websocket_server_running
-    available_port = Config.WEBSOCKET_PORT
-    if available_port is None:
-        log_it("e", "WebSocket port is not set in the configuration, won't start WebSocket server")
-        return
+    available_port = Config.WEBSOCKET_SERVER_PORT
     server = socket.socket()
     server.bind(("0.0.0.0", available_port))
     server.listen(5)
