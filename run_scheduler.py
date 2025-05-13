@@ -6,7 +6,9 @@ from heartbeat import run_heartbeat_check
 from logger import log_it
 from notifications import notify_all, send_telegram_message, send_email
 from updater import install_plugin_update
-import schedule, time
+from utils import get_current_config
+import time
+
 
 def run_scheduler(func, scheduled_time, every_min=False, run_on_startup=False):
     log_it("d", f"Received func {func}, scheduled_time={scheduled_time}, every_min={every_min}, run_on_startup={run_on_startup}")
@@ -95,7 +97,9 @@ def setup_schedules():
 
             futures['notify_user'] = executor.submit(
                 notify_all,
-                f"Your node has started! Please check the logs for more information."
+                lambda: notify_all(
+                    f"Plugin {Config.PLUGIN_NAME} started with current config: {get_current_config(hide_sensitive_data=True)}",
+                )
             )
             log_it("d", "notify_user submitted to ThreadPool")
 
