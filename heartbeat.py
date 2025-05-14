@@ -126,7 +126,7 @@ def report_heartbeat_errors(heartbeat):
                 errors.append(f"[{network}] Autocollect status seems to be inactive!")
             if status["last_signed_block"] == "NOK":
                 errors.append(f"[{network}] Last signed block is older than {Config.HEARTBEAT_BLOCK_AGE} hours!")
-                log_it("i", f"[HEARTBEAT] Attempting to ressync {network} network...")
+                log_it("i", f"[HEARTBEAT] Attempting to resync {network} network...")
                 try:
                     change_net_mode(network, "offline")
                     time.sleep(2)
