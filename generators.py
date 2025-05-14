@@ -94,6 +94,7 @@ def generate_network_info():
 
                     heartbeat_autocollect_status_result = heartbeat.statuses.get(network, {}).get("autocollect_status", "Unknown")
                     heartbeat_last_signed_block_result = heartbeat.statuses.get(network, {}).get("last_signed_block", "Unknown")
+                    heartbeat_in_node_list_result = heartbeat.statuses.get(network, {}).get("in_node_list", "Unknown")
 
                     network_info = {
                         'address': net_status['address'],
@@ -107,6 +108,7 @@ def generate_network_info():
                         'autocollect_status': futures['autocollect_status'].result()['active'],
                         'heartbeat_autocollect_status': heartbeat_autocollect_status_result,
                         'heartbeat_last_signed_block': heartbeat_last_signed_block_result,
+                        'heartbeat_in_node_list': heartbeat_in_node_list_result,
                         'blocks_today': futures['blocks_today'].result(),
                         'current_block_reward': futures['current_block_reward'].result(),
                         'chain_size': futures['chain_size'].result(),
