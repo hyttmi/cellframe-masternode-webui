@@ -37,7 +37,7 @@ class Heartbeat:
                 else:
                     self.statuses[network]["autocollect_status"] = "NOK"
                     log_it("e", f"[HEARTBEAT] Autocollect status seems to be inactive!")
-                    ws_broadcast_msg(f"({Config.NODE_ALIAS}): Autocollect status seems to be inactive!")
+                    notify_all(f"({Config.NODE_ALIAS}): Autocollect status seems to be inactive!")
         except Exception as e:
             log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 
@@ -53,7 +53,6 @@ class Heartbeat:
                     log_it("e", f"[HEARTBEAT] Node is not in the node list for {network}")
                     self.statuses[network]["in_node_list"] = "NOK"
                     notify_all(f"({Config.NODE_ALIAS}): Your node is not in the node list for {network}. Please examine your node.")
-                    ws_broadcast_msg(f"({Config.NODE_ALIAS}): Your node is not in the node list for {network}. Please examine your node.")
         except Exception as e:
             log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 
