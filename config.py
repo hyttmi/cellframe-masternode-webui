@@ -56,7 +56,7 @@ class Config:
     TELEGRAM_STATS_TIME = get_config_value("webui", "telegram_stats_time", default="23:00", is_numeric=False)
     TEMPLATE = get_config_value("webui", "template", default="cpunk", is_numeric=False)
     USERNAME = str(get_config_value("webui", "username", default="webui", is_numeric=False))
-    WEBSOCKET_SERVER_PORT = get_config_value("webui", "websocket_server_port", default=None, is_numeric=True)
+    WEBSOCKET_SERVER_PORT = int(get_config_value("webui", "websocket_server_port", default=0, is_numeric=True))
 
     def jinja_environment():
         env = Environment(
