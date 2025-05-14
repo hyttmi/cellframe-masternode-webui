@@ -22,7 +22,7 @@ try:
     from websocket_server import start_ws_server
     from utils import get_current_config
 
-    executor = ThreadPoolExecutor(max_workers=2)
+    executor = ThreadPoolExecutor()
 
     def http_server():
         try:
