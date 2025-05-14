@@ -80,6 +80,7 @@ configuration_option=value
 - `smtp_port=465` - SMTP port to use for mail delivery.
 - `smtp_server=your.smtp.server.com` - SMTP server to use for mail delivery.
 - `smtp_user=<your_email_user>` - SMTP user for mail delivery.
+- `stats_interval=60` - Sends statistics via notifiers every 60 minutes. Disable by setting value to 0. Default value is 0 (disabled)
 - `telegram_api_key=something` - Your Telegram Bot API token.
 - `telegram_bot_key=something|[something, something, something]` - Your Telegram bot UUID from https://t.me/Cellframe_Masternode_WebUI_Bot or multiple UUIDs as list.
 - `telegram_chat_id=something` - Your Telegram chat id.

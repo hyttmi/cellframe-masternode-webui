@@ -350,15 +350,18 @@ def change_net_mode(network, mode):
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 
-def is_node_in_node_list(network, node_addr):
+def is_node_in_node_list(network, node_addr=None):
     try:
-        node_addr = get_network_status(network)["address"]
-        node_list = cli_command(f"node list -net {network}", timeout=3)
-        if node_addr not in node_list:
-            log_it("e", f"Node address {node_addr} not found in node list for {network}")
-            return False
-        log_it("d", f"Node address {node_addr} found in node list for {network}")
-        return True
+        node_addr = node_addr or get_network_status(network).get("address")
+        node_list = cli_command(f"node list -net {network}", timeout=3).splitlines()
+        from utils import get_external_ip
+        current_ip = get_external_ip()
+        for line in node_list:
+            if node_addr in line and current_ip in line:
+                log_it("d", f"Node address {node_addr} with IP {current_ip} found in node list for {network}")
+                return True
+        log_it("e", f"Node address {node_addr} with IP {current_ip} not found in node list for {network}")
+        return False
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return False

@@ -6,7 +6,6 @@ from heartbeat import run_heartbeat_check
 from logger import log_it
 from notifications import notify_all, send_telegram_message, send_email
 from updater import install_plugin_update
-from utils import get_current_config
 import time, schedule
 
 def run_scheduler(func, scheduled_time, every_min=False, run_on_startup=False):
@@ -52,28 +51,52 @@ def setup_schedules():
             log_it("d", "rewards_caching_schedule submitted to ThreadPool")
 
             if Config.TELEGRAM_STATS_ENABLED:
-                futures['send_telegram_message_schedule'] = executor.submit(
-                    run_scheduler,
-                    lambda: send_telegram_message(
-                        generate_data("telegram.html", return_as_json=False, is_top_level_template=True)
-                    ),
-                    Config.TELEGRAM_STATS_TIME,
-                    every_min=False,
-                    run_on_startup=False
-                )
-                log_it("d", "send_telegram_message_schedule submitted to ThreadPool")
+                if Config.STATS_INTERVAL > 0:
+                    futures['send_telegram_message_schedule'] = executor.submit(
+                        run_scheduler,
+                        lambda: send_telegram_message(
+                            generate_data("telegram.html", return_as_json=False, is_top_level_template=True)
+                        ),
+                        Config.STATS_INTERVAL,
+                        every_min=True,
+                        run_on_startup=False
+                    )
+                    log_it("d", f"send_telegram_message_schedule submitted to ThreadPool with interval of {Config.STATS_INTERVAL} minutes")
+                else:
+                    futures['send_telegram_message_schedule'] = executor.submit(
+                        run_scheduler,
+                        lambda: send_telegram_message(
+                            generate_data("telegram.html", return_as_json=False, is_top_level_template=True)
+                        ),
+                        Config.TELEGRAM_STATS_TIME,
+                        every_min=False,
+                        run_on_startup=False
+                    )
+                    log_it("d", "send_telegram_message_schedule submitted to ThreadPool")
 
             if Config.EMAIL_STATS_ENABLED:
-                futures['send_email_message_schedule'] = executor.submit(
-                    run_scheduler,
-                    lambda: send_email(
-                        generate_data("email.html", return_as_json=False, is_top_level_template=True)
-                    ),
-                    Config.EMAIL_STATS_TIME,
-                    every_min=False,
-                    run_on_startup=False
-                )
-                log_it("d", "send_email_message_schedule submitted to ThreadPool")
+                if Config.STATS_INTERVAL > 0:
+                    futures['send_email_message_schedule'] = executor.submit(
+                        run_scheduler,
+                        lambda: send_email(
+                            generate_data("email.html", return_as_json=False, is_top_level_template=True)
+                        ),
+                        Config.STATS_INTERVAL,
+                        every_min=True,
+                        run_on_startup=False
+                    )
+                    log_it("d", f"send_email_message_schedule submitted to ThreadPool with interval of {Config.STATS_INTERVAL} minutes")
+                else:
+                    futures['send_email_message_schedule'] = executor.submit(
+                        run_scheduler,
+                        lambda: send_email(
+                            generate_data("email.html", return_as_json=False, is_top_level_template=True)
+                        ),
+                        Config.EMAIL_STATS_TIME,
+                        every_min=False,
+                        run_on_startup=False
+                    )
+                    log_it("d", "send_email_message_schedule submitted to ThreadPool")
 
             if Config.AUTO_UPDATE:
                 futures['auto_updater'] = executor.submit(
