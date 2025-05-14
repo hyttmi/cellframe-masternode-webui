@@ -149,4 +149,11 @@ def get_current_config(hide_sensitive_data=False, as_string=False):
     if as_string:
         return "\n".join([f"{key}: {value}" for key, value in config_data.items()])
     return config_data
-    return config_data
+
+def is_port_available(port, host="0.0.0.0"):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        try:
+            s.bind((host, port))
+            return True
+        except OSError:
+            return False

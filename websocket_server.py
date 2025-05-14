@@ -1,6 +1,7 @@
 import socket, base64, hashlib, threading, json
 from logger import log_it
 from config import Config
+from utils import is_port_available
 
 websocket_server_running = False
 clients = []
@@ -46,6 +47,9 @@ def client_handler(conn):
 def start_ws_server():
     global websocket_server_running
     available_port = Config.WEBSOCKET_SERVER_PORT
+    if not is_port_available(available_port):
+        log_it("e", f"WebSocket server port {available_port} is not available")
+        return
     server = socket.socket()
     server.bind(("0.0.0.0", available_port))
     server.listen(5)
