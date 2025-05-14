@@ -76,6 +76,9 @@ def setup_schedules():
 
             if Config.EMAIL_STATS_ENABLED:
                 if Config.STATS_INTERVAL > 0:
+                    if Config.STATS_INTERVAL < 30:
+                        log_it("e", "STATS_INTERVAL must be at least 30 minutes. Setting it to 30 minutes.")
+                        Config.STATS_INTERVAL = 30
                     futures['send_email_message_schedule'] = executor.submit(
                         run_scheduler,
                         lambda: send_email(
