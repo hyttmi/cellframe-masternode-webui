@@ -75,10 +75,13 @@ document.querySelectorAll('#custom_view .fa-plus').forEach(icon => {
 checkAvailableCards();
 
 function formatDate(dateString) {
-    var date = new Date(dateString);
+    const date = new Date(dateString);
     return date.toLocaleDateString(undefined, {
-        month: 'numeric',
-        day: 'numeric'
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
     });
 }
 
