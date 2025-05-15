@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", function () {
     timestampElements.forEach(el => {
         const raw = el.getAttribute('data-timestamp');
         if (raw) {
-            el.textContent = formatDate(raw, short = true);
+            el.textContent = formatDate(raw);
         }
     });
 
