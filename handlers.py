@@ -131,7 +131,8 @@ def web_request_handler(headers, bypass_auth=False, query=None):
             code=200,
             headers={
                 "Content-Type": "text/html",
-                "Content-Encoding": "gzip"
+                "Content-Encoding": "gzip",
+                "Set-Cookie": f"auth_cookie={auth_cookie}; HttpOnly; Path=/; Expires={cookie_expires}"
             }
         )
     except Exception as e:
