@@ -6,6 +6,7 @@ const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
 const host = isLocal ? 'localhost' : window.location.hostname;
 const port = {{ general_info.websocket_server_port }};
+const timestampElements = document.querySelectorAll('[data-timestamp]');
 
 const updateLocalStorage = () => {
     const customViewCards = Array.from(customView.children).map(card => card.dataset.id);
@@ -92,7 +93,6 @@ function formatDate(dateString, short = false) {
     }
 }
 
-
 function setActive(selectedItem) {
     var parentCard = selectedItem.closest('.card');
     var navItems = parentCard.querySelectorAll('.nav-item');
@@ -175,6 +175,13 @@ document.addEventListener("DOMContentLoaded", function () {
     tutorialOkBtn.addEventListener("click", function () {
         localStorage.setItem("customViewTutorialSeen", "true");
         tutorialModal.hide();
+
+        timestampElements.forEach(el => {
+            const raw = el.getAttribute('data-timestamp');
+            if (raw) {
+                el.textContent = formatDate(raw);
+            }
+        });
     });
 });
 
