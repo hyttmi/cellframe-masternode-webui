@@ -593,11 +593,11 @@
                         </div>
                     {% endif %}
                     {% if network.latest_signed_block_timestamp %}
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="signed_block_timestamp_{{ network_name }}">
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="latest_signed_block_timestamp_{{ network_name }}">
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h6 class="card-title text-uppercase"><span class="highlight">{{ network_name }}</span> latest signature timestamp</h6>
-                                    <button type="button" class="btn" onclick="toggleCard('signed_block_timestamp_{{ network_name }}')">
+                                    <button type="button" class="btn" onclick="toggleCard('latest_signed_block_timestamp_{{ network_name }}')">
                                         <i class="fa-solid fa-plus"></i>
                                     </button>
                                 </div>
