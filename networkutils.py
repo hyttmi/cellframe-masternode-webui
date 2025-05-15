@@ -249,7 +249,7 @@ def get_blocks(network, block_type="count", today=False, heartbeat=False):
         if block_type == "count":
             return block_count if block_count else None
 
-        if block_type == "last_signed_block_timestamp":
+        if block_type == "latest_signed_block_timestamp":
             return all_signed_blocks[0]["ts_created"] if all_signed_blocks else None
 
         today_str = datetime.now().strftime("%a, %d %b %Y")

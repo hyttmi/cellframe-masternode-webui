@@ -9,6 +9,7 @@
 - Websocket server for real time push messages to your browser. To enable, set `websocket_port` in configuration file.
 - Much more modular notification system.
 - Support for notifying user with statistics every `X` minutes. Shortest possible interval is 30 minutes. If set, it will override `email_stats_time` and `telegram_stats_time`.
+- Latest signed block timestamp
 
 ### Changed
 - Default interval for heartbeat thread is now 30 minutes for allowing node to try resync method.
