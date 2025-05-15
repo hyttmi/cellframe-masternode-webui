@@ -3,6 +3,7 @@ from logger import log_it
 from networkutils import get_active_networks, get_network_config, get_node_data, is_node_synced
 from common import cli_command, get_current_script_directory
 import re, time, json, os, traceback
+from notifications import notify_all
 
 CACHE_LOCK_FILE = os.path.join(get_current_script_directory(), ".cache.lock")
 
@@ -84,7 +85,8 @@ def cache_blocks_data():
                 while not is_node_synced(network):
                     log_it("i", "Network seems not to be synced, sleeping for 10 seconds...")
                     time.sleep(10)
-                log_it("i", "Caching blocks...")
+                log_it("i", f"Caching blocks for {network}...")
+                notify_all(f"Caching blocks for {network}...", channels=["websocket"])
                 start_time = time.time()
                 block_data = {
                     'last_run': None,
@@ -121,7 +123,7 @@ def cache_blocks_data():
                     json.dump(block_data, f, indent=4)
                 elapsed_time = time.time() - start_time
                 log_it("i", f"Blocks cached for {network}! It took {elapsed_time:.2f} seconds!")
-
+                notify_all(f"Blocks cached for {network}! It took {elapsed_time:.2f} seconds!", channels=["websocket"])
             else:
                 log_it("i", f"Network config not found for {network}, skipping caching")
     except Exception as e:
@@ -157,7 +159,8 @@ def cache_rewards_data():
                 while not is_node_synced(network):
                     log_it("i", "Network seems not to be synced, sleeping for 10 seconds...")
                     time.sleep(10)
-                log_it("i", "Caching rewards...")
+                log_it("i", f"Caching rewards for {network}...")
+                notify_all(f"Caching rewards for {network}...", channels=["websocket"])
                 start_time = time.time()
 
                 rewards = {}
@@ -179,7 +182,7 @@ def cache_rewards_data():
                         json.dump(rewards, f, indent=4)
                 elapsed_time = time.time() - start_time
                 log_it("i", f"Reward caching for {network} took {elapsed_time:.2f} seconds!")
-
+                notify_all(f"Reward caching for {network} took {elapsed_time:.2f} seconds!", channels=["websocket"])
             else:
                 log_it("i", f"No valid address found for {network}, skipping caching.")
     except Exception as e:

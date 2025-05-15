@@ -122,22 +122,27 @@ def send_email(msg):
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return False
 
-def notify_all(message):
+def notify_all(message, channels=None):
+    if channels is None:
+        channels = ["telegram", "email", "websocket"] # Send to all by default
     try:
-        if Config.TELEGRAM_STATS_ENABLED:
-            if send_telegram_message(message):
-                log_it("i", "Telegram notification sent!")
-        else:
-            log_it("e", "Telegram notifications are disabled in the configuration.")
-        if Config.EMAIL_STATS_ENABLED:
-             if send_email(message):
-                log_it("i", "Email notification sent!")
-        else:
-            log_it("e", "Email notifications are disabled in the configuration.")
-        if Config.WEBSOCKET_SERVER_PORT:
-            ws_broadcast_msg(message)
-        else:
-            log_it("e", "WebSocket notifications are disabled in the configuration.")
+        if "telegram" in channels:
+            if Config.TELEGRAM_STATS_ENABLED:
+                if send_telegram_message(message):
+                    log_it("i", "Telegram notification sent!")
+            else:
+                log_it("e", "Telegram notifications are disabled in the configuration.")
+        if "email" in channels:
+            if Config.EMAIL_STATS_ENABLED:
+                if send_email(message):
+                    log_it("i", "Email notification sent!")
+            else:
+                log_it("e", "Email notifications are disabled in the configuration.")
+        if "websocket" in channels:
+            if Config.WEBSOCKET_SERVER_PORT:
+                ws_broadcast_msg(message)
+            else:
+                log_it("e", "WebSocket notifications are disabled in the configuration.")
         log_it("i", f"Notification sent: {message}")
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
