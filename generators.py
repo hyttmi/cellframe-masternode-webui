@@ -116,6 +116,7 @@ def generate_network_info():
                         'fee_wallet_tokens': tokens,
                         'first_signed_blocks': futures['first_signed_blocks'].result(),
                         'node_data': futures['node_data'].result(),
+                        'last_signed_block_timestamp': futures['last_signed_block_timestamp'].result(),
                         'rewards': futures['rewards'].result(),
                         'rewards_all_time_average': futures['rewards_all_time_average'].result(),
                         'rewards_today': futures['rewards_today'].result(),
