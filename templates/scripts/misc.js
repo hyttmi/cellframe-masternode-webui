@@ -74,16 +74,24 @@ document.querySelectorAll('#custom_view .fa-plus').forEach(icon => {
 
 checkAvailableCards();
 
-function formatDate(dateString) {
+function formatDate(dateString, short = false) {
     const date = new Date(dateString);
-    return date.toLocaleDateString(undefined, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
+    if (short) {
+        return date.toLocaleDateString(undefined, {
+            month: 'numeric',
+            day: 'numeric'
+        });
+    } else {
+        return date.toLocaleString(undefined, {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+    }
 }
+
 
 function setActive(selectedItem) {
     var parentCard = selectedItem.closest('.card');
