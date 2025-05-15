@@ -6,6 +6,7 @@ const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
 const host = isLocal ? 'localhost' : window.location.hostname;
 const port = {{ general_info.websocket_server_port }};
+const timestampElements = document.querySelectorAll('[data-timestamp]');
 
 const updateLocalStorage = () => {
     const customViewCards = Array.from(customView.children).map(card => card.dataset.id);
