@@ -44,6 +44,7 @@ class Config:
 
     SCHEDULER_DELAY_ON_STARTUP = get_config_value("webui", "scheduler_delay_on_startup", default=120, is_numeric=True)
     SHOW_ICON = get_config_value("webui", "show_icon", default=False, is_numeric=False)
+    ICON_URL = get_config_value("webui", "icon_url", default="https://cfwebui.s3.us-east-1.amazonaws.com/logo.png", is_numeric=False)
     STATS_INTERVAL = get_config_value("webui", "stats_interval", default=0, is_numeric=True)
     SMTP_PASSWORD = get_config_value("webui", "smtp_password", default=None, is_numeric=False)
     SMTP_PORT = int(get_config_value("webui", "smtp_port", default="465", is_numeric=True))

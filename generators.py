@@ -79,6 +79,7 @@ def generate_network_info():
                         'chain_size': executor.submit(get_chain_size, network),
                         'first_signed_blocks': executor.submit(get_blocks, network, block_type="first_signed_blocks_count"),
                         'first_signed_blocks_today': executor.submit(get_blocks, network, block_type="first_signed_blocks", today=True),
+                        'icon_url': Config.ICON_URL,
                         'latest_signed_block_timestamp': executor.submit(get_blocks, network, block_type="latest_signed_block_timestamp"),
                         'node_data': executor.submit(get_node_data, network),
                         'rewards': executor.submit(get_rewards, network, total_sum=False),
