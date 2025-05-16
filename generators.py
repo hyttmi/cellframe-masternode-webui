@@ -44,6 +44,7 @@ def generate_general_info(format_time=True):
                 'node_version': get_installed_node_version(),
                 'plugin_name': Config.PLUGIN_NAME,
                 'show_icon': Config.SHOW_ICON,
+                'icon_url': Config.ICON_URL,
                 'system_uptime': format_uptime(sys_stats['system_uptime']) if format_time else sys_stats['system_uptime'],
                 'template': Config.TEMPLATE,
         }
@@ -79,7 +80,6 @@ def generate_network_info():
                         'chain_size': executor.submit(get_chain_size, network),
                         'first_signed_blocks': executor.submit(get_blocks, network, block_type="first_signed_blocks_count"),
                         'first_signed_blocks_today': executor.submit(get_blocks, network, block_type="first_signed_blocks", today=True),
-                        'icon_url': Config.ICON_URL,
                         'latest_signed_block_timestamp': executor.submit(get_blocks, network, block_type="latest_signed_block_timestamp"),
                         'node_data': executor.submit(get_node_data, network),
                         'rewards': executor.submit(get_rewards, network, total_sum=False),
