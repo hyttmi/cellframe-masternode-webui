@@ -6,7 +6,6 @@ const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
 const host = isLocal ? 'localhost' : window.location.hostname;
 const port = {{ general_info.websocket_server_port }};
-
 const timestampElements = document.querySelectorAll('[data-timestamp]');
 
 const updateLocalStorage = () => {
@@ -187,24 +186,23 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-const defaultPortForProtocol = (protocol === 'wss:') ? 443 : 80;
-
-const socketUrl = (port === defaultPortForProtocol)
-    ? `${protocol}//${host}`
-    : `${protocol}//${host}:${port}`;
-
-const socket = new WebSocket(socketUrl);
+let socketUrl;
+if (window.location.protocol === 'https:') {
+    socketUrl = `${protocol}//${host}`;
+} else {
+    socketUrl = `${protocol}//${host}:${port}`;
+}
 
 console.log("Connecting to WebSocket with URL:", socketUrl);
+
+const socket = new WebSocket(socketUrl);
 
 socket.onopen = () => {
     console.log("WebSocket connection established.");
 };
-
 socket.onerror = (error) => {
     console.error("WebSocket connection error:", error);
 };
-
 socket.onclose = () => {
     console.log("WebSocket connection closed.");
 };
