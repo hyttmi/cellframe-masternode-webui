@@ -52,7 +52,7 @@ class Config:
     SMTP_USER = get_config_value("webui", "smtp_user", default=None, is_numeric=False)
     TELEGRAM_API_TOKEN = get_config_value("webui", "telegram_api_key", default=None, is_numeric=False)
     TELEGRAM_BOT_TOKEN = get_config_value("webui", "telegram_bot_key", default=None, is_numeric=False)
-    TELEGRAM_CHAT_ID = get_config_value("webui", "telegram_chat_id", default=False, is_numeric=False)
+    TELEGRAM_CHAT_ID = get_config_value("webui", "telegram_chat_id", default=None, is_numeric=False)
     TELEGRAM_STATS_ENABLED = get_config_value("webui", "telegram_stats", default=False, is_numeric=False)
     TELEGRAM_STATS_TIME = get_config_value("webui", "telegram_stats_time", default="23:00", is_numeric=False)
     TEMPLATE = get_config_value("webui", "template", default="cpunk", is_numeric=False)
