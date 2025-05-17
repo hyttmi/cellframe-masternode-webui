@@ -165,12 +165,14 @@ def is_port_available(port, host="0.0.0.0"):
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return False
-
 def is_cli_ready():
     try:
         version_cmd = cli_command("version", timeout=2)
+        log_it("d", "Running version cmd...")
         if version_cmd:
+            log_it("d", f"Got data from cli, it's ready!")
             return True
+        log_it("d", f"No data from CLI!")
         return False
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
