@@ -14,6 +14,7 @@
 
 ### Changed
 - Default interval for heartbeat thread is now 30 minutes for allowing node to try resync method.
+- Use threadpool for fetching general info, it's at least 4 times faster now.
 
 ### Fixed
 - Bug on setting cookie when `bypass_auth` was set.
