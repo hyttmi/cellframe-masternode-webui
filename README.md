@@ -209,7 +209,7 @@ Create the Nginx configuration file:
 ```shell
 sudo nano /etc/nginx/sites-available/webui.conf
 ```
-Add the following configuration:
+Add the following bare minimum configuration:
 ```shell
 server {
     listen 80;
@@ -217,17 +217,6 @@ server {
 
     location / {
         proxy_pass http://your_node_ip_addr:your_node_port/your_node_url;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        auth_basic off;
-        proxy_set_header Authorization  $http_authorization;
-        proxy_pass_request_headers      on;
-
-        proxy_read_timeout 300;
-        proxy_connect_timeout 300;
-        proxy_send_timeout 300;
     }
 }
 ```
