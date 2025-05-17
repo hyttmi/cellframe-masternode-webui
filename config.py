@@ -68,3 +68,6 @@ class Config:
         env.trim_blocks = True
         env.lstrip_blocks = True
         return env
+
+    #### GLOBALS #####
+    WEBSOCKET_SERVER_RUNNING = False

@@ -47,8 +47,10 @@ try:
             if Config.WEBSOCKET_SERVER_PORT > 0:
                 if Config.WEBSOCKET_SERVER_PORT < 1024 or Config.WEBSOCKET_SERVER_PORT > 65535:
                     log_it("e", f"Invalid WebSocket server port: {Config.WEBSOCKET_SERVER_PORT}. Must be between 1024 and 65535.")
-                executor.submit(start_ws_server)
-                log_it("i", f"WebSocket server started on port {Config.WEBSOCKET_SERVER_PORT}")
+                else:
+                    executor.submit(start_ws_server)
+                    Config.WEBSOCKET_SERVER_RUNNING = True
+                    log_it("i", f"WebSocket server started on port {Config.WEBSOCKET_SERVER_PORT}")
             else:
                 log_it("i", "WebSocket server not started, port is not an integer or not set")
             log_it("i", f"{Config.PLUGIN_NAME} started!")

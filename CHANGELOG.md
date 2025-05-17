@@ -9,7 +9,7 @@
 - Websocket server for real time push messages to your browser. To enable, set `websocket_port` in configuration file.
 - Much more modular notification system.
 - Support for notifying user with statistics every `X` minutes. Shortest possible interval is 30 minutes. If set, it will override `email_stats_time` and `telegram_stats_time`.
-- Latest signed block timestamp.
+- Card with latest signed block (locale aware) timestamp.
 - Custom icons! Use external url with setting `show_icon=true` and `icon_url=xxx`. By default, `icon_url` is `cpunk` logo.
 - Method to check if cli is responding correctly, while not 100% bullet proof, it should increase overall stability of the plugin.
 

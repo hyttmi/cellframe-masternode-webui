@@ -124,7 +124,7 @@ def send_email(msg):
 
 def notify_all(message, channels=None):
     if channels is None:
-        channels = ["telegram", "email", "websocket"] # Send to all by default
+        channels = ["telegram", "email", "websocket"] # All by default
     try:
         if "telegram" in channels:
             if Config.TELEGRAM_STATS_ENABLED:
@@ -139,7 +139,7 @@ def notify_all(message, channels=None):
             else:
                 log_it("e", "Email notifications are disabled in the configuration.")
         if "websocket" in channels:
-            if Config.WEBSOCKET_SERVER_PORT:
+            if Config.WEBSOCKET_SERVER_RUNNING:
                 ws_broadcast_msg(message)
             else:
                 log_it("e", "WebSocket notifications are disabled in the configuration.")
