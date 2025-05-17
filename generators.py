@@ -27,8 +27,6 @@ from config import Config
 from concurrent.futures import ThreadPoolExecutor
 import json, os, traceback
 
-from concurrent.futures import ThreadPoolExecutor
-
 def generate_general_info(format_time=True):
     try:
         with ThreadPoolExecutor() as executor:
