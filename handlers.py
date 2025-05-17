@@ -5,6 +5,7 @@ from logger import log_it
 from pycfhelpers.node.http.simple import CFSimpleHTTPResponse
 import base64, hashlib, gzip, traceback
 from urllib.parse import parse_qs
+from utils import is_cli_ready
 
 def generate_cookie(username, password):
     data = f"{username}:{password}"
@@ -41,6 +42,10 @@ def web_request_handler(headers, bypass_auth=False, query=None):
     expected_cookie = generate_cookie(expected_username, expected_password)
     expected_token_cookie = generate_token_cookie(access_token)
     url = Config.PLUGIN_URL
+
+    if not is_cli_ready():
+        errmsg = f"<h1>CLI is not ready, wait for a moment!</h1>"
+        return CFSimpleHTTPResponse(body=errmsg.encode("utf-8"), code=500)
 
     if query:
         parsed_token = parse_qs(query).get("access_token", [None])[0]
