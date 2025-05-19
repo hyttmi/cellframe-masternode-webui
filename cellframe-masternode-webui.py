@@ -26,7 +26,7 @@ try:
 
     def http_server():
         try:
-            handler = CFSimpleHTTPRequestHandler(methods=["GET"], handler=request_handler)
+            handler = CFSimpleHTTPRequestHandler(methods=["GET", "POST"], handler=request_handler)
             CFSimpleHTTPServer().register_uri_handler(uri=f"/{Config.PLUGIN_URL}", handler=handler)
             log_it("i", "HTTP server started")
         except Exception as e:

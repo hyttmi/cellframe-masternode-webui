@@ -71,3 +71,4 @@ class Config:
 
     #### GLOBALS #####
     WEBSOCKET_SERVER_RUNNING = False
+    POST_AUTH_COOKIE = None
