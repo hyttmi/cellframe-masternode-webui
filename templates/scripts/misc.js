@@ -47,7 +47,10 @@ if (port !== 0) {
 
         showToast(message);
     };
+} else {
+    console.log("WebSocket is disabled, port set to 0");
 }
+
 
 const updateLocalStorage = () => {
     const customViewCards = Array.from(customView.children).map(card => card.dataset.id);
