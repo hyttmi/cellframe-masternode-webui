@@ -51,7 +51,6 @@ if (port !== 0) {
     console.log("WebSocket is disabled, port set to 0");
 }
 
-
 const updateLocalStorage = () => {
     const customViewCards = Array.from(customView.children).map(card => card.dataset.id);
     localStorage.setItem('customViewLayout', JSON.stringify(customViewCards));
@@ -206,6 +205,23 @@ function showChangelogModal() {
         });
 }
 
+function showToast(message) {
+    const toastId = `toast-${Date.now()}`;
+    const container = document.getElementById("wsToastContainer");
+    const toastHTML = `
+        <div id="${toastId}" class="toast align-items-center text-center border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body d-flex justify-content-center align-items-center w-100 text-center"><strong>${message}</strong></div>
+            </div>
+        </div>`;
+    container.insertAdjacentHTML("beforeend", toastHTML);
+
+    const toastEl = document.getElementById(toastId);
+    const toast = new bootstrap.Toast(toastEl, { delay: 10000 });
+    toast.show();
+    toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     sortCards();
     checkForVersionUpdate();
@@ -228,21 +244,21 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem("customViewTutorialSeen", "true");
         tutorialModal.hide();
     });
+
+    const restartBtn = document.getElementById("restart_node");
+    if (restartBtn) {
+        restartBtn.addEventListener("click", function () {
+            fetch(window.location.href, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ action: 'restart' })
+            })
+            .then(response => response.json())
+            .then(data => console.log('Restart Success:', data))
+            .catch(error => console.error('Restart Error:', error));
+        });
+    }
 });
-
-function showToast(message) {
-    const toastId = `toast-${Date.now()}`;
-    const container = document.getElementById("wsToastContainer");
-    const toastHTML = `
-        <div id="${toastId}" class="toast align-items-center text-center border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body d-flex justify-content-center align-items-center w-100 text-center"><strong>${message}</strong></div>
-            </div>
-        </div>`;
-    container.insertAdjacentHTML("beforeend", toastHTML);
-
-    const toastEl = document.getElementById(toastId);
-    const toast = new bootstrap.Toast(toastEl, { delay: 10000 });
-    toast.show();
-    toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
-}

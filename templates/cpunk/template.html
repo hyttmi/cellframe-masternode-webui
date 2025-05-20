@@ -59,17 +59,30 @@
     </div>
     <div class="modal shadow rounded fade" id="data_removal_confirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
-          <div class="modal-content custom-modal-bg border-0">
-            <div class="modal-header border-0">
-              <h1 class="modal-title fs-5" id="staticBackdropLabel">Reset all settings? This will erase all stored preferences from your browser.</h1>
-            </div>
+            <div class="modal-content custom-modal-bg border-0">
+                <div class="modal-header border-0">
+                    <h1 class="modal-title fs-5">Reset all settings? This will erase all stored preferences from your browser.</h1>
+                </div>
             <div class="modal-footer border-0">
-              <button type="button" class="btn btn-primary btn-no" data-bs-dismiss="modal">No way!</button>
-              <button type="button" id="clear_storage" data-bs-dismiss="modal" class="btn btn-primary btn-yes">Yes, I know what I'm doing!</button>
+                <button type="button" class="btn btn-primary btn-no" data-bs-dismiss="modal">No way!</button>
+                <button type="button" id="clear_storage" data-bs-dismiss="modal" class="btn btn-primary btn-yes">Yes, I know what I'm doing!</button>
             </div>
-          </div>
+            </div>
         </div>
-      </div>
+    </div>
+    <div class="modal shadow rounded fade" id="restart_node_confirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content custom-modal-bg border-0">
+                <div class="modal-header border-0">
+                    <h1 class="modal-title fs-5">Restart node? If node was launched manually from command line, there's no way to restart it!</h1>
+                </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-primary btn-no" data-bs-dismiss="modal">No way!</button>
+                <button type="button" id="restart_node" data-bs-dismiss="modal" class="btn btn-primary btn-yes">Yes, I know what I'm doing!</button>
+            </div>
+            </div>
+        </div>
+    </div>
     <div class="container-fluid mt-4">
         {% if network_info %}
             {% for network_name, network in network_info.items() %}
@@ -117,6 +130,9 @@
                 </button>
                 <button class="btn">
                 <i data-bs-toggle="modal" data-bs-target="#data_removal_confirmation" class="fa-solid fa-refresh fa-2xl defaults_icon"></i>
+                </button>
+                <button class="btn">
+                <i data-bs-toggle="modal" data-bs-target="#restart_node_confirmation" class="fa-solid fa-power-off fa-2xl defaults_icon"></i>
                 </button>
             </div>
         </div>

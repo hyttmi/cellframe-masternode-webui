@@ -343,7 +343,6 @@ def change_net_mode(network, mode):
     try:
         modes = ["offline", "online", "resync"]
         log_it("d", f"Changing network status for {network}...")
-        log_it("d", f"Setting network {network} offline...")
         if mode not in modes:
             log_it("e", f"Invalid mode: {mode}. Valid modes are: {modes}")
             return

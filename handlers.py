@@ -206,7 +206,6 @@ def POST_request_handler(headers, payload):
                 code=400,
                 headers={"Content-Type": "application/json"}
             )
-
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return CFSimpleHTTPResponse(
