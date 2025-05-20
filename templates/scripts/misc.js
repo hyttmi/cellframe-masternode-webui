@@ -7,6 +7,47 @@ const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
 const host = isLocal ? 'localhost' : window.location.hostname;
 const port = {{ general_info.websocket_server_port }};
 const timestampElements = document.querySelectorAll('[data-timestamp]');
+let socketUrl;
+
+if (port !== 0) {
+    if (window.location.protocol === 'https:') {
+        socketUrl = `${protocol}//${host}`;
+    } else {
+        socketUrl = `${protocol}//${host}:${port}`;
+    }
+
+    console.log("Connecting to WebSocket with URL:", socketUrl);
+    const socket = new WebSocket(socketUrl);
+
+    socket.onopen = () => {
+        console.log("WebSocket connection established.");
+    };
+    socket.onerror = (error) => {
+        console.error("WebSocket connection error:", error);
+    };
+    socket.onclose = () => {
+        console.log("WebSocket connection closed.");
+    };
+
+    socket.onmessage = function (event) {
+        const msg = event.data;
+        let parsed;
+        try {
+            parsed = JSON.parse(msg);
+        } catch (e) {
+            parsed = { type: 'text', data: msg };
+        }
+
+        let message;
+        if (parsed.type === 'stats_update') {
+            message = typeof parsed.data === 'string' ? parsed.data : JSON.stringify(parsed.data, null, 2);
+        } else {
+            message = parsed.data;
+        }
+
+        showToast(message);
+    };
+}
 
 const updateLocalStorage = () => {
     const customViewCards = Array.from(customView.children).map(card => card.dataset.id);
@@ -185,46 +226,6 @@ document.addEventListener("DOMContentLoaded", function () {
         tutorialModal.hide();
     });
 });
-
-let socketUrl;
-if (window.location.protocol === 'https:') {
-    socketUrl = `${protocol}//${host}`;
-} else {
-    socketUrl = `${protocol}//${host}:${port}`;
-}
-
-console.log("Connecting to WebSocket with URL:", socketUrl);
-
-const socket = new WebSocket(socketUrl);
-
-socket.onopen = () => {
-    console.log("WebSocket connection established.");
-};
-socket.onerror = (error) => {
-    console.error("WebSocket connection error:", error);
-};
-socket.onclose = () => {
-    console.log("WebSocket connection closed.");
-};
-
-socket.onmessage = function (event) {
-    const msg = event.data;
-    let parsed;
-    try {
-        parsed = JSON.parse(msg);
-    } catch (e) {
-        parsed = { type: 'text', data: msg };
-    }
-
-    let message;
-    if (parsed.type === 'stats_update') {
-        message = typeof parsed.data === 'string' ? parsed.data : JSON.stringify(parsed.data, null, 2);
-    } else {
-        message = parsed.data;
-    }
-
-    showToast(message);
-};
 
 function showToast(message) {
     const toastId = `toast-${Date.now()}`;
