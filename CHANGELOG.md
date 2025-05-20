@@ -12,10 +12,11 @@
 - Card with latest signed block (locale aware) timestamp.
 - Custom icons! Use external url with setting `show_icon=true` and `icon_url=xxx`. By default, `icon_url` is `cpunk` logo.
 - Method to check if cli is responding correctly, while not 100% bullet proof, it should increase overall stability of the plugin.
+- Implemented a method for allowing user to interact with node,
 
 ### Changed
 - Default interval for heartbeat thread is now 30 minutes for allowing node to try resync method.
-- Use threadpool for fetching general info, it's at least 4 times faster now.
+- Use Threadpool for fetching general info, it's at least 4 times faster now.
 
 ### Fixed
 - Bug on setting cookie when `bypass_auth` was set.

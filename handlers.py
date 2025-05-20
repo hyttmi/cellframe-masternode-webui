@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 from generators import generate_data
 from logger import log_it
 from pycfhelpers.node.http.simple import CFSimpleHTTPResponse
-import base64, hashlib, gzip, traceback, json
+import base64, hashlib, gzip, traceback, json, http.cookies
 from urllib.parse import parse_qs
 from utils import is_cli_ready, restart_node
 from uuid import uuid4
@@ -79,7 +79,7 @@ def GET_request_handler(headers, bypass_auth=False, query=None):
                         "Content-Type": "text/html",
                         "Content-Encoding": "gzip",
                         "Set-Cookie": f"auth_cookie={expected_token_cookie}; HttpOnly; Path=/; Expires={cookie_expires}",
-                        "Set-Cookie": f"post_auth_cookie={Config.POST_AUTH_COOKIE}; HttpOnly; Path=/;",
+                        "Set-Cookie": f"post_auth_cookie={Config.POST_AUTH_COOKIE}; Path=/;",
                         "Location": f"/{url}"
                     }
                 )
@@ -103,7 +103,7 @@ def GET_request_handler(headers, bypass_auth=False, query=None):
                             "Content-Type": "text/html",
                             "Content-Encoding": "gzip",
                             "Set-Cookie": f"auth_cookie={auth_cookie}; HttpOnly; Path=/; Expires={cookie_expires}",
-                            "Set-Cookie": f"post_auth_cookie={Config.POST_AUTH_COOKIE}; HttpOnly; Path=/;"
+                            "Set-Cookie": f"post_auth_cookie={Config.POST_AUTH_COOKIE}; Path=/;"
                         }
                     )
                 except Exception as e:
@@ -155,7 +155,7 @@ def GET_request_handler(headers, bypass_auth=False, query=None):
                 "Content-Type": "text/html",
                 "Content-Encoding": "gzip",
                 "Set-Cookie": f"auth_cookie={auth_cookie}; HttpOnly; Path=/; Expires={cookie_expires}",
-                "Set-Cookie": f"post_auth_cookie={Config.POST_AUTH_COOKIE}; HttpOnly; Path=/;"
+                "Set-Cookie": f"post_auth_cookie={Config.POST_AUTH_COOKIE}; Path=/;"
             }
         )
     except Exception as e:
@@ -163,31 +163,58 @@ def GET_request_handler(headers, bypass_auth=False, query=None):
         errmsg = f"<h1>Internal Server Error</h1><pre>{traceback.format_exc()}</pre>"
         return CFSimpleHTTPResponse(body=errmsg.encode("utf-8"), code=500)
 
+import http.cookies
+
 def POST_request_handler(headers, payload):
     try:
         payload = json.loads(payload)
-        log_it("d", f"Got payload {payload}")
+        log_it("d", f"Got payload {payload} with auth_header {headers}")
+
+        cookies = http.cookies.SimpleCookie()
+        auth_token = None
+        if "Cookie" in headers:
+            cookies.load(headers["Cookie"])
+            cookie_value = cookies.get("post_auth_cookie")
+            if cookie_value:
+                auth_token = cookie_value.value
+
+        if auth_token != Config.POST_AUTH_COOKIE:
+            return CFSimpleHTTPResponse(
+                body=b'{"error": "Unauthorized"}',
+                code=403,
+                headers={"Content-Type": "application/json"}
+            )
+
         action = payload.get("action")
         if not action:
-            return CFSimpleHTTPResponse(body=b'{"error": "Action is missing!"}',
-                                        code=500,
-                                        headers={
-                                            "Content-Type": "application/json"
-                                        })
+            return CFSimpleHTTPResponse(
+                body=b'{"error": "Action is missing!"}',
+                code=400,
+                headers={"Content-Type": "application/json"}
+            )
+
         if action == "restart":
             restart_node()
-        return CFSimpleHTTPResponse(body=b'{"error": "Unsupported POST request!"}',
-                                        code=500,
-                                        headers={
-                                            "Content-Type": "application/json"
-                                        })
-    except Exception as e: # Handle the malformed json here. I guess it's enough.
+            return CFSimpleHTTPResponse(
+                body=b'{"status": "Node restart triggered"}',
+                code=200,
+                headers={"Content-Type": "application/json"}
+            )
+        else:
+            return CFSimpleHTTPResponse(
+                body=b'{"error": "Unsupported POST request!"}',
+                code=400,
+                headers={"Content-Type": "application/json"}
+            )
+
+    except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
-        return CFSimpleHTTPResponse(body=b'{"error": "Internal server error"}',
-                                        code=500,
-                                        headers={
-                                            "Content-Type": "application/json"
-                                        })
+        return CFSimpleHTTPResponse(
+            body=b'{"error": "Internal server error"}',
+            code=500,
+            headers={"Content-Type": "application/json"}
+        )
+
 
 def json_request_handler(headers):
     try:
