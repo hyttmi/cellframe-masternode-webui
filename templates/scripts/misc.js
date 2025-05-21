@@ -2,11 +2,14 @@ const customView = document.getElementById('custom_view');
 const availableCards = document.getElementById('available_cards');
 const editViewBtn = document.getElementById('edit_view_button');
 const clearStorageBtn = document.getElementById('clear_storage');
+const timestampElements = document.querySelectorAll('[data-timestamp]');
+
+{% if general_info.websocket_server_port %}
 const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
 const host = isLocal ? 'localhost' : window.location.hostname;
 const port = {{ general_info.websocket_server_port }};
-const timestampElements = document.querySelectorAll('[data-timestamp]');
+
 let socketUrl;
 
 if (port !== 0) {
@@ -47,9 +50,8 @@ if (port !== 0) {
 
         showToast(message);
     };
-} else {
-    console.log("WebSocket is disabled, port set to 0");
 }
+{% endif %}
 
 const updateLocalStorage = () => {
     const customViewCards = Array.from(customView.children).map(card => card.dataset.id);

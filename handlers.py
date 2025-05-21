@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 from generators import generate_data
 from logger import log_it
 from pycfhelpers.node.http.simple import CFSimpleHTTPResponse
-import base64, hashlib, gzip, traceback, json, http.cookies
+import base64, hashlib, gzip, traceback, json, http.cookies, threading
 from urllib.parse import parse_qs
 from utils import is_cli_ready, restart_node
 from uuid import uuid4
@@ -22,7 +22,7 @@ def request_handler(request):
     body = request.body
     if request.method == "GET":
         log_it("i", f"Handling GET request from {client_ip}...")
-        if Config.AUTH_BYPASS or client_ip in ["127.0.0.1", "localhost"]:
+        if Config.AUTH_BYPASS:
             log_it("i", "Auth bypass set, HTTP authentication disabled!")
             return GET_request_handler(headers, bypass_auth=True)
         if query == "as_json":
@@ -52,6 +52,7 @@ def request_handler(request):
     return response
 
 def GET_request_handler(headers, bypass_auth=False, query=None):
+    log_it("d", f"Got GET request with headers: {headers}, query: {query}")
     auth_header = headers.get("Authorization")
     cookie_header = headers.get("Cookie")
     cookie_expires = (datetime.now(timezone.utc) + timedelta(days=14)).strftime('%a, %d %b %Y %H:%M:%S GMT')
@@ -68,7 +69,14 @@ def GET_request_handler(headers, bypass_auth=False, query=None):
         return CFSimpleHTTPResponse(body=errmsg.encode("utf-8"), code=500)
     if query:
         parsed_token = parse_qs(query).get("access_token", [None])[0]
+        if parsed_token is None:
+            log_it("e", "No access_token in query")
+            return CFSimpleHTTPResponse(body=b"Unauthorized", code=401)
+        if parsed_token != str(Config.ACCESS_TOKEN):
+            log_it("e", f"Invalid access_token: got '{parsed_token}', expected '{Config.ACCESS_TOKEN}'")
+            return CFSimpleHTTPResponse(body=b"Unauthorized", code=401)
         if parsed_token and parsed_token == access_token:
+            log_it("d", f"Parsed token: {parsed_token}, Expected: {access_token}")
             try:
                 response_body = generate_data("template.html").encode("utf-8")
                 compressed_body = compress_content(response_body)
@@ -78,8 +86,10 @@ def GET_request_handler(headers, bypass_auth=False, query=None):
                     headers={
                         "Content-Type": "text/html",
                         "Content-Encoding": "gzip",
-                        "Set-Cookie": f"auth_cookie={expected_token_cookie}; HttpOnly; Path=/; Expires={cookie_expires}",
-                        "Set-Cookie": f"post_auth_cookie={Config.POST_AUTH_COOKIE}; Path=/;",
+                        "Set-Cookie": (
+                            f"auth_cookie={expected_token_cookie}; HttpOnly; Path=/; Expires={cookie_expires}\r\n"
+                            f"Set-Cookie: post_auth_cookie={Config.POST_AUTH_COOKIE}; Path=/;"
+                        ),
                         "Location": f"/{url}"
                     }
                 )
@@ -102,8 +112,10 @@ def GET_request_handler(headers, bypass_auth=False, query=None):
                         headers={
                             "Content-Type": "text/html",
                             "Content-Encoding": "gzip",
-                            "Set-Cookie": f"auth_cookie={auth_cookie}; HttpOnly; Path=/; Expires={cookie_expires}",
-                            "Set-Cookie": f"post_auth_cookie={Config.POST_AUTH_COOKIE}; Path=/;"
+                            "Set-Cookie": (
+                                f"auth_cookie={expected_token_cookie}; HttpOnly; Path=/; Expires={cookie_expires}\r\n"
+                                f"Set-Cookie: post_auth_cookie={Config.POST_AUTH_COOKIE}; Path=/;"
+                            )
                         }
                     )
                 except Exception as e:
@@ -154,8 +166,10 @@ def GET_request_handler(headers, bypass_auth=False, query=None):
             headers={
                 "Content-Type": "text/html",
                 "Content-Encoding": "gzip",
-                "Set-Cookie": f"auth_cookie={auth_cookie}; HttpOnly; Path=/; Expires={cookie_expires}",
-                "Set-Cookie": f"post_auth_cookie={Config.POST_AUTH_COOKIE}; Path=/;"
+                "Set-Cookie": (
+                    f"auth_cookie={expected_token_cookie}; HttpOnly; Path=/; Expires={cookie_expires}\r\n"
+                    f"Set-Cookie: post_auth_cookie={Config.POST_AUTH_COOKIE}; Path=/;"
+                )
             }
         )
     except Exception as e:
@@ -163,13 +177,10 @@ def GET_request_handler(headers, bypass_auth=False, query=None):
         errmsg = f"<h1>Internal Server Error</h1><pre>{traceback.format_exc()}</pre>"
         return CFSimpleHTTPResponse(body=errmsg.encode("utf-8"), code=500)
 
-import http.cookies
-
 def POST_request_handler(headers, payload):
     try:
         payload = json.loads(payload)
         log_it("d", f"Got payload {payload} with auth_header {headers}")
-
         cookies = http.cookies.SimpleCookie()
         auth_token = None
         if "Cookie" in headers:
@@ -194,6 +205,7 @@ def POST_request_handler(headers, payload):
             )
 
         if action == "restart":
+            threading.Timer(1.0, restart_node).start()
             restart_node()
             return CFSimpleHTTPResponse(
                 body=b'{"status": "Node restart triggered"}',

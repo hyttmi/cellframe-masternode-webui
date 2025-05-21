@@ -117,7 +117,14 @@ def restart_node():
     try:
         node_pid = get_node_pid()
         if node_pid:
-            psutil.Process(node_pid).terminate()
+            proc = psutil.Process(node_pid)
+            log_it("d", f"Trying to stop {node_pid}")
+            proc.terminate()
+            try:
+                proc.wait(timeout=5)
+                log_it("d", f"Can't terminate {node_pid}, killing it...")
+            except psutil.TimeoutExpired:
+                proc.kill()
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 
@@ -165,6 +172,7 @@ def is_port_available(port, host="0.0.0.0"):
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return False
+
 def is_cli_ready():
     try:
         version_cmd = cli_command("version", timeout=2)
