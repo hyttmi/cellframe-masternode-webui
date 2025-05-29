@@ -1,5 +1,4 @@
 import logging, os, inspect
-from config import Config
 from logging.handlers import RotatingFileHandler
 
 log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "webui.log")
@@ -21,6 +20,7 @@ logger.setLevel(logging.INFO)
 logger.addHandler(handler)
 
 def log_it(level, msg, exc=None):
+    from config import Config
     caller_frame = inspect.currentframe().f_back
     func_name = caller_frame.f_code.co_name
     filename = caller_frame.f_code.co_filename
