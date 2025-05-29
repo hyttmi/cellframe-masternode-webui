@@ -21,6 +21,7 @@ try:
     import traceback
     from websocket_server import start_ws_server, send_ping
     from utils import is_port_available
+    from notifications import notify_all
 
     executor = ThreadPoolExecutor()
 
@@ -55,6 +56,7 @@ try:
                 executor.submit(send_ping)
                 log_it("i", "Started ping thread for WebSocket server")
             log_it("i", f"{Config.PLUGIN_NAME} on {Config.NODE_ALIAS} started!")
+            notify_all("i", f"{Config.PLUGIN_NAME} on {Config.NODE_ALIAS} started!")
             return 0
         except Exception as e:
             log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())

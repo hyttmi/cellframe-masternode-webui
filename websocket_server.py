@@ -69,7 +69,7 @@ def start_ws_server(port):
         conn, _ = server.accept()
         if handshake(conn):
             Config.WEBSOCKET_CLIENT.append(conn)
-            ws_broadcast_msg(f"{conn.getpeername()[0]} Connected to WebSocket server!")
+            ws_broadcast_msg(f"{conn.getpeername()[0]} connected to WebSocket server!")
 
 def ws_broadcast_msg(msg):
     if not Config.WEBSOCKET_SERVER_RUNNING:
