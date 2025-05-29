@@ -174,4 +174,4 @@ def generate_data(template_name, return_as_json=False, is_top_level_template=Fal
         if return_as_json:
             return json.dumps({"error": f"Error generating data: {e}"}).encode("utf-8")
         else:
-            return f"<h1>Error: {e}</h1><p>{traceback.format_exc()}</p>"
+            return f"<h1>Error: {e}</h1><pre>{traceback.format_exc()}</pre>"
