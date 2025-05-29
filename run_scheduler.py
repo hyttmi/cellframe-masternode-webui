@@ -4,9 +4,9 @@ from config import Config
 from generators import generate_data
 from heartbeat import run_heartbeat_check
 from logger import log_it
-from notifications import send_telegram_message, send_email
+from notifications import notify_all, send_telegram_message, send_email
 from updater import install_plugin_update
-import schedule, time
+import time, schedule
 
 def run_scheduler(func, scheduled_time, every_min=False, run_on_startup=False):
     log_it("d", f"Received func {func}, scheduled_time={scheduled_time}, every_min={every_min}, run_on_startup={run_on_startup}")
@@ -51,40 +51,56 @@ def setup_schedules():
             log_it("d", "rewards_caching_schedule submitted to ThreadPool")
 
             if Config.TELEGRAM_STATS_ENABLED:
-                futures['send_telegram_message_notification'] = executor.submit(
-                    send_telegram_message,
-                    f"Telegram sending scheduled at {Config.TELEGRAM_STATS_TIME} from {Config.NODE_ALIAS}"
-                )
-                log_it("d", "send_telegram_message_notification submitted to ThreadPool")
-
-                futures['send_telegram_message_schedule'] = executor.submit(
-                    run_scheduler,
-                    lambda: send_telegram_message(
-                        generate_data("telegram.html", return_as_json=False, is_top_level_template=True)
-                    ),
-                    Config.TELEGRAM_STATS_TIME,
-                    every_min=False,
-                    run_on_startup=False
-                )
-                log_it("d", "send_telegram_message_schedule submitted to ThreadPool")
+                if Config.STATS_INTERVAL > 0:
+                    futures['send_telegram_message_schedule'] = executor.submit(
+                        run_scheduler,
+                        lambda: send_telegram_message(
+                            generate_data("telegram.html", return_as_json=False, is_top_level_template=True)
+                        ),
+                        Config.STATS_INTERVAL,
+                        every_min=True,
+                        run_on_startup=False
+                    )
+                    log_it("d", f"send_telegram_message_schedule submitted to ThreadPool with interval of {Config.STATS_INTERVAL} minutes")
+                else:
+                    futures['send_telegram_message_schedule'] = executor.submit(
+                        run_scheduler,
+                        lambda: send_telegram_message(
+                            generate_data("telegram.html", return_as_json=False, is_top_level_template=True)
+                        ),
+                        Config.TELEGRAM_STATS_TIME,
+                        every_min=False,
+                        run_on_startup=False
+                    )
+                    log_it("d", "send_telegram_message_schedule submitted to ThreadPool with scheduled time of {Config.TELEGRAM_STATS_TIME}")
 
             if Config.EMAIL_STATS_ENABLED:
-                futures['send_email_message_notification'] = executor.submit(
-                    send_email,
-                    f"Email sending scheduled at {Config.EMAIL_STATS_TIME}  from {Config.NODE_ALIAS}"
-                )
-                log_it("d", "send_email_message_notification submitted to ThreadPool")
-
-                futures['send_email_message_schedule'] = executor.submit(
-                    run_scheduler,
-                    lambda: send_email(
-                        generate_data("email.html", return_as_json=False, is_top_level_template=True)
-                    ),
-                    Config.EMAIL_STATS_TIME,
-                    every_min=False,
-                    run_on_startup=False
-                )
-                log_it("d", "send_email_message_schedule submitted to ThreadPool")
+                if Config.STATS_INTERVAL > 0:
+                    if Config.STATS_INTERVAL < 30:
+                        log_it("e", "STATS_INTERVAL must be at least 30 minutes. Setting it to 30 minutes.")
+                        Config.STATS_INTERVAL = 30
+                    futures['send_email_message_schedule'] = executor.submit(
+                        run_scheduler,
+                        lambda: send_email(
+                            generate_data("email.html", return_as_json=False, is_top_level_template=True)
+                        ),
+                        Config.STATS_INTERVAL,
+                        every_min=True,
+                        run_on_startup=False
+                    )
+                    log_it("d", f"send_email_message_schedule submitted to ThreadPool with interval of {Config.STATS_INTERVAL} minutes")
+                else:
+                    log_it("d", f"send_email_message_schedule submitted to ThreadPool with interval of {Config.STATS_INTERVAL} minutes")
+                    futures['send_email_message_schedule'] = executor.submit(
+                        run_scheduler,
+                        lambda: send_email(
+                            generate_data("email.html", return_as_json=False, is_top_level_template=True)
+                        ),
+                        Config.EMAIL_STATS_TIME,
+                        every_min=False,
+                        run_on_startup=False
+                    )
+                    log_it("d", f"send_email_message_schedule submitted to ThreadPool with scheduled time of {Config.EMAIL_STATS_TIME}")
 
             if Config.AUTO_UPDATE:
                 futures['auto_updater'] = executor.submit(
@@ -94,19 +110,22 @@ def setup_schedules():
                     every_min=True,
                     run_on_startup=True
                 )
-                log_it("d", "auto_updater submitted to ThreadPool")
+                log_it("d", "auto_updater submitted to ThreadPool to run every 2 hours")
 
             futures['heartbeat_check_schedule'] = executor.submit(
                 run_scheduler,
                 run_heartbeat_check,
-                15,
+                Config.HEARTBEAT_INTERVAL,
                 every_min=True,
                 run_on_startup=False
             )
-            log_it("d", "heartbeat_check_schedule submitted to ThreadPool")
+            log_it("d", f"heartbeat_check_schedule submitted to ThreadPool to run every {Config.HEARTBEAT_INTERVAL} minutes.")
 
-            for name in futures:
-                log_it("d", f"{name} submitted to ThreadPool")
+            futures['notify_user'] = executor.submit(
+                notify_all,
+                f"{Config.PLUGIN_NAME} started!"
+                )
+            log_it("d", "notify_user submitted to ThreadPool")
 
     except Exception as e:
         log_it("e", "An error occurred", exc=e)

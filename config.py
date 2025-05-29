@@ -33,6 +33,7 @@ class Config:
     EMAIL_USE_TLS = get_config_value("webui", "email_use_tls", default=False, is_numeric=False)
     HEARTBEAT_AUTO_RESTART = get_config_value("webui", "heartbeat_auto_restart", default=False, is_numeric=False)
     HEARTBEAT_BLOCK_AGE = get_config_value("webui", "heartbeat_block_age", default=12, is_numeric=True)
+    HEARTBEAT_INTERVAL = get_config_value("webui", "heartbeat_interval", default=30, is_numeric=True)
     HEARTBEAT_NOTIFICATION_AMOUNT = int(get_config_value("webui", "heartbeat_notification_amount", default=5, is_numeric=True))
     NODE_ALIAS = get_config_value("webui", "node_alias", default="CFNode", is_numeric=False)
     PASSWORD = str(get_config_value("webui", "password", default="webui", is_numeric=False))
@@ -43,17 +44,20 @@ class Config:
 
     SCHEDULER_DELAY_ON_STARTUP = get_config_value("webui", "scheduler_delay_on_startup", default=120, is_numeric=True)
     SHOW_ICON = get_config_value("webui", "show_icon", default=False, is_numeric=False)
+    ICON_URL = get_config_value("webui", "icon_url", default="https://cfwebui.s3.us-east-1.amazonaws.com/logo.png", is_numeric=False)
+    STATS_INTERVAL = get_config_value("webui", "stats_interval", default=0, is_numeric=True)
     SMTP_PASSWORD = get_config_value("webui", "smtp_password", default=None, is_numeric=False)
     SMTP_PORT = int(get_config_value("webui", "smtp_port", default="465", is_numeric=True))
     SMTP_SERVER = get_config_value("webui", "smtp_server", default="smtp.gmail.com", is_numeric=False)
     SMTP_USER = get_config_value("webui", "smtp_user", default=None, is_numeric=False)
     TELEGRAM_API_TOKEN = get_config_value("webui", "telegram_api_key", default=None, is_numeric=False)
     TELEGRAM_BOT_TOKEN = get_config_value("webui", "telegram_bot_key", default=None, is_numeric=False)
-    TELEGRAM_CHAT_ID = get_config_value("webui", "telegram_chat_id", default=False, is_numeric=False)
+    TELEGRAM_CHAT_ID = get_config_value("webui", "telegram_chat_id", default=None, is_numeric=False)
     TELEGRAM_STATS_ENABLED = get_config_value("webui", "telegram_stats", default=False, is_numeric=False)
     TELEGRAM_STATS_TIME = get_config_value("webui", "telegram_stats_time", default="23:00", is_numeric=False)
     TEMPLATE = get_config_value("webui", "template", default="cpunk", is_numeric=False)
     USERNAME = str(get_config_value("webui", "username", default="webui", is_numeric=False))
+    WEBSOCKET_SERVER_PORT = int(get_config_value("webui", "websocket_server_port", default=40000, is_numeric=True))
 
     def jinja_environment():
         env = Environment(
@@ -64,3 +68,8 @@ class Config:
         env.trim_blocks = True
         env.lstrip_blocks = True
         return env
+
+    #### GLOBALS #####
+    WEBSOCKET_SERVER_RUNNING = False
+    WEBSOCKET_CLIENT = []
+    POST_AUTH_COOKIE = None

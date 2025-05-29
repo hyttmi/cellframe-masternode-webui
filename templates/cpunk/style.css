@@ -17,7 +17,7 @@ html {
 }
 
 .logo {
-    width: 70%;
+    max-width: 200px;
     height: auto;
     padding-bottom: 12px;
 }
@@ -291,4 +291,11 @@ a:hover {
 pre {
     white-space: pre-wrap;
     word-wrap: break-word;
-  }
+}
+
+.toast {
+    background-color: #140B0A;
+    border-radius: 0;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 0, 0, 0.6);
+    color: var(--color2)
+}

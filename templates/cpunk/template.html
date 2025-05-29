@@ -17,13 +17,13 @@
         {% include 'cpunk/style.css' %}
     </style>
 </head>
-
 <body>
-    <div class="modal shadow rounded fade" id="changelogModal" tabindex="-1" aria-labelledby="changelogModalLabel" aria-hidden="true">
+    <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3" id="wsToastContainer" style="z-index: 9999;"></div>
+    <div class="modal shadow rounded fade" id="changelogModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content custom-modal-bg border-0">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title" id="changelogModalLabel">Changelog</h5>
+                    <h5 class="modal-title">Changelog</h5>
                 </div>
                 <div class="modal-body text-color-secondary border-0 overflow-auto">
                     <div id="changelog">
@@ -36,39 +36,58 @@
             </div>
         </div>
     </div>
-    <div class="modal shadow rounded fade" id="tutorialModal" tabindex="-1" aria-labelledby="tutorialModalLabel" aria-hidden="true">
+    <div class="modal shadow rounded fade" id="tutorialModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content custom-modal-bg border-0">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title" id="tutorialModalLabel">Welcome to Cellframe Masternode WebUI!</h5>
+                    <h5 class="modal-title">Welcome to Cellframe Masternode WebUI!</h5>
                 </div>
-            <div class="modal-body text-color-secondary border-0">
-                <p>To view available cards, click the <i class="fa-regular fa-circle-xmark" style="transform: rotate(45deg); color: var(--color2);"></i> button.</p>
-                <p>To pin a card, click the <i class="fa-solid fa-plus"></i> button. It will move to pinned cards.</p>
-                <p>To remove it, click the <i class="fa-solid fa-minus"></i> button.</p>
-                <p>Drag & reorder pinned cards to your preference.</p>
-                <p>To close available cards, click <i class="fa-regular fa-circle-xmark" style="color: var(--color2);"></i> button.</p>
-                <p>For detailed plugin configuration, please refer to the <a target="_blank" href="https://github.com/hyttmi/cellframe-masternode-webui?tab=readme-ov-file#configuration">documentation.</a></p>
-            </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-primary tutorial-ok-btn" id="tutorialOkBtn">Got it!</button>
-            </div>
+                <div class="modal-body text-color-secondary border-0">
+                    <p>To view available cards, click the <i class="fa-regular fa-circle-xmark" style="transform: rotate(45deg); color: var(--color2);"></i> button.</p>
+                    <p>To pin a card, click the <i class="fa-solid fa-plus"></i> button. It will move to pinned cards.</p>
+                    <p>To remove it, click the <i class="fa-solid fa-minus"></i> button.</p>
+                    <p>Drag & reorder pinned cards to your preference.</p>
+                    <p>To close available cards, click <i class="fa-regular fa-circle-xmark" style="color: var(--color2);"></i> button.</p>
+                    <p>For detailed plugin configuration, please refer to the <a target="_blank" href="https://github.com/hyttmi/cellframe-masternode-webui?tab=readme-ov-file#configuration">documentation.</a></p>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-primary tutorial-ok-btn" id="tutorialOkBtn">Got it!</button>
+                </div>
             </div>
         </div>
     </div>
     <div class="modal shadow rounded fade" id="data_removal_confirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
-          <div class="modal-content custom-modal-bg border-0">
-            <div class="modal-header border-0">
-              <h1 class="modal-title fs-5" id="staticBackdropLabel">Reset all settings? This will erase all stored preferences from your browser.</h1>
+            <div class="modal-content custom-modal-bg border-0">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Reset all settings?</h5>
+                </div>
+                <div class="modal-body text-color-secondary border-0">
+                    <p>This will erase all stored preferences from your browser.</p>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-primary btn-no" data-bs-dismiss="modal">No way!</button>
+                    <button type="button" id="clear_storage" data-bs-dismiss="modal" class="btn btn-primary btn-yes">Yes, I know what I'm doing!</button>
+                </div>
             </div>
-            <div class="modal-footer border-0">
-              <button type="button" class="btn btn-primary btn-no" data-bs-dismiss="modal">No way!</button>
-              <button type="button" id="clear_storage" data-bs-dismiss="modal" class="btn btn-primary btn-yes">Yes, I know what I'm doing!</button>
-            </div>
-          </div>
         </div>
-      </div>
+    </div>
+    <div class="modal shadow rounded fade" id="restart_node_confirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content custom-modal-bg border-0">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Restart node?</h5>
+                </div>
+                <div class="modal-body text-color-secondary border-0">
+                    <p> If node was launched manually from command line, there's no way to restart it!</p>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-primary btn-no" data-bs-dismiss="modal">No way!</button>
+                    <button type="button" id="restart_node" data-bs-dismiss="modal" class="btn btn-primary btn-yes">Yes, I know what I'm doing!</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container-fluid mt-4">
         {% if network_info %}
             {% for network_name, network in network_info.items() %}
@@ -90,12 +109,21 @@
                 </div>
             </div>
                 {% endif %}
+                {% if network.heartbeat_in_node_list == "NOK"%}
+            <div class="row justify-content-center">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="alert alert-danger text-center d-flex align-items-center justify-content-center" role="alert">
+                        <span>Heartbeat for node in node list is not OK in {{ network_name }}</span>
+                    </div>
+                </div>
+            </div>
+                {% endif %}
             {% endfor %}
         {% endif %}
         {% if general_info.show_icon %}
         <div class="row justify-content-center">
             <div class="col-auto text-center">
-                <img class="img-fluid logo" src="https://cfwebui.s3.us-east-1.amazonaws.com/logo.png" alt="logo">
+                <img class="img-fluid logo" src="{{ general_info.icon_url }}" alt="logo">
             </div>
         </div>
         {% endif %}
@@ -107,6 +135,9 @@
                 </button>
                 <button class="btn">
                 <i data-bs-toggle="modal" data-bs-target="#data_removal_confirmation" class="fa-solid fa-refresh fa-2xl defaults_icon"></i>
+                </button>
+                <button class="btn">
+                <i data-bs-toggle="modal" data-bs-target="#restart_node_confirmation" class="fa-solid fa-power-off fa-2xl defaults_icon"></i>
                 </button>
             </div>
         </div>
@@ -579,6 +610,24 @@
                                     </div>
                                 </div>
                                 <i class="fa-solid fa-hard-drive icon-container"></i>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if network.latest_signed_block_timestamp %}
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-id="latest_signed_block_timestamp_{{ network_name }}">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="card-title text-uppercase"><span class="highlight">{{ network_name }}</span> latest signature timestamp</h6>
+                                    <button type="button" class="btn" onclick="toggleCard('latest_signed_block_timestamp_{{ network_name }}')">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+                                <div class="card-body d-flex align-items-center">
+                                    <div class="card-inner">
+                                        <span class="fw-medium card-subtitle mb-2 text-body-secondary" data-timestamp="{{ network.latest_signed_block_timestamp }}">{{ network.latest_signed_block_timestamp }}</span>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-clock icon-container"></i>
                             </div>
                         </div>
                     {% endif %}

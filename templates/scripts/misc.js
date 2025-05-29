@@ -2,6 +2,56 @@ const customView = document.getElementById('custom_view');
 const availableCards = document.getElementById('available_cards');
 const editViewBtn = document.getElementById('edit_view_button');
 const clearStorageBtn = document.getElementById('clear_storage');
+const timestampElements = document.querySelectorAll('[data-timestamp]');
+
+{% if general_info.websocket_server_port %}
+const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+const host = isLocal ? 'localhost' : window.location.hostname;
+const port = {{ general_info.websocket_server_port }};
+
+let socketUrl;
+
+if (port !== 0) {
+    if (window.location.protocol === 'https:') {
+        socketUrl = `${protocol}//${host}`;
+    } else {
+        socketUrl = `${protocol}//${host}:${port}`;
+    }
+
+    console.log("Connecting to WebSocket with URL:", socketUrl);
+    const socket = new WebSocket(socketUrl);
+
+    socket.onopen = () => {
+        console.log("WebSocket connection established.");
+    };
+    socket.onerror = (error) => {
+        console.error("WebSocket connection error:", error);
+    };
+    socket.onclose = () => {
+        console.log("WebSocket connection closed.");
+    };
+
+    socket.onmessage = function (event) {
+        const msg = event.data;
+        let parsed;
+        try {
+            parsed = JSON.parse(msg);
+        } catch (e) {
+            parsed = { type: 'text', data: msg };
+        }
+
+        let message;
+        if (parsed.type === 'stats_update') {
+            message = typeof parsed.data === 'string' ? parsed.data : JSON.stringify(parsed.data, null, 2);
+        } else {
+            message = parsed.data;
+        }
+
+        showToast(message);
+    };
+}
+{% endif %}
 
 const updateLocalStorage = () => {
     const customViewCards = Array.from(customView.children).map(card => card.dataset.id);
@@ -70,12 +120,22 @@ document.querySelectorAll('#custom_view .fa-plus').forEach(icon => {
 
 checkAvailableCards();
 
-function formatDate(dateString) {
-    var date = new Date(dateString);
-    return date.toLocaleDateString(undefined, {
-        month: 'numeric',
-        day: 'numeric'
-    });
+function formatDate(dateString, short = false) {
+    const date = new Date(dateString);
+    if (short) {
+        return date.toLocaleDateString(undefined, {
+            month: 'numeric',
+            day: 'numeric'
+        });
+    } else {
+        return date.toLocaleString(undefined, {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+    }
 }
 
 function setActive(selectedItem) {
@@ -147,10 +207,34 @@ function showChangelogModal() {
         });
 }
 
+function showToast(message) {
+    const toastId = `toast-${Date.now()}`;
+    const container = document.getElementById("wsToastContainer");
+    const toastHTML = `
+        <div id="${toastId}" class="toast align-items-center text-center border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body d-flex justify-content-center align-items-center w-100 text-center"><strong>${message}</strong></div>
+            </div>
+        </div>`;
+    container.insertAdjacentHTML("beforeend", toastHTML);
+
+    const toastEl = document.getElementById(toastId);
+    const toast = new bootstrap.Toast(toastEl, { delay: 10000 });
+    toast.show();
+    toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+}
 
 document.addEventListener("DOMContentLoaded", function () {
     sortCards();
     checkForVersionUpdate();
+
+    timestampElements.forEach(el => {
+        const raw = el.getAttribute('data-timestamp');
+        if (raw) {
+            el.textContent = formatDate(raw);
+        }
+    });
+
     const tutorialModal = new bootstrap.Modal(document.getElementById("tutorialModal"));
     const tutorialOkBtn = document.getElementById("tutorialOkBtn");
 
@@ -162,4 +246,21 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem("customViewTutorialSeen", "true");
         tutorialModal.hide();
     });
+
+    const restartBtn = document.getElementById("restart_node");
+    if (restartBtn) {
+        restartBtn.addEventListener("click", function () {
+            fetch(window.location.href, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ action: 'restart' })
+            })
+            .then(response => response.json())
+            .then(data => console.log('Restart Success:', data))
+            .catch(error => console.error('Restart Error:', error));
+        });
+    }
 });

@@ -68,8 +68,10 @@ configuration_option=value
 - `email_time=23:59` - Set time when you want to send the statistics. Default time is 23:00 **24h format (HH:MM)**
 - `email_use_ssl=true|false` - Use SSL for mail delivery.
 - `email_use_tls=true|false` - Use TLS for mail delivery.
-- `heartbeat_block_age=12`- Sets maximum age of last signed block to 12 hours and if older, notifies user.
 - `heartbeat_auto_restart=true|false` - Automatically restart node if heartbeat fails. Default true.
+- `heartbeat_block_age=12`- Sets maximum age of last signed block to 12 hours and if older, notifies user.
+- `heartbeat_interval=30` - Sets heartbeat check interval to 30 minutes.
+- `heartbeat_notification_amount=5` - Sets number of notifications to be sent if heartbeat fails.
 - `hide_icon=true|false` - Hide icon from the top of the page, default true.
 - `node_alias="Name` - Name of the node as alias. Default is CFNode. **NO SPACES**
 - `password=p455w0rd` - Sets password to p455w0rd. Default: `webui`
@@ -78,6 +80,7 @@ configuration_option=value
 - `smtp_port=465` - SMTP port to use for mail delivery.
 - `smtp_server=your.smtp.server.com` - SMTP server to use for mail delivery.
 - `smtp_user=<your_email_user>` - SMTP user for mail delivery.
+- `stats_interval=60` - Sends statistics via notifiers every 60 minutes. Disable by setting value to 0. Default value is 0 (disabled)
 - `telegram_api_key=something` - Your Telegram Bot API token.
 - `telegram_bot_key=something|[something, something, something]` - Your Telegram bot UUID from https://t.me/Cellframe_Masternode_WebUI_Bot or multiple UUIDs as list.
 - `telegram_chat_id=something` - Your Telegram chat id.
@@ -86,6 +89,7 @@ configuration_option=value
 - `template=something` - Change template to something. If not set, default template will be used (cards).
 - `url=something` - Change plugin URL. Defaults to `webui`.
 - `username=john` - Sets http authentication as user john. Default: `webui`
+- `websocket_server_port` - Sets WebSocket server port, default is `40000`
 
 ## Templating
 Since version 3.18, it's possible to create custom templates for `email.html` and `telegram.html`. The files should be placed in `custom_templates` directory.
@@ -206,7 +210,7 @@ Create the Nginx configuration file:
 ```shell
 sudo nano /etc/nginx/sites-available/webui.conf
 ```
-Add the following configuration:
+Add the following bare minimum configuration:
 ```shell
 server {
     listen 80;
@@ -214,17 +218,6 @@ server {
 
     location / {
         proxy_pass http://your_node_ip_addr:your_node_port/your_node_url;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        auth_basic off;
-        proxy_set_header Authorization  $http_authorization;
-        proxy_pass_request_headers      on;
-
-        proxy_read_timeout 300;
-        proxy_connect_timeout 300;
-        proxy_send_timeout 300;
     }
 }
 ```

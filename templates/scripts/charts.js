@@ -170,7 +170,7 @@
                 const days = Object.keys(data[networkName]).slice(-daysToShow);
                 const values = Object.values(data[networkName]).slice(-daysToShow);
 
-                const sortedDays = days.map(formatDate);
+                const sortedDays = days.map(day => formatDate(day, true));
                 const sortedValues = mapValues ? values.map(mapValues) : values;
 
                 chartObject[networkName].data.labels = sortedDays;

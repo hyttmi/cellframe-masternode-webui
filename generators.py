@@ -29,26 +29,39 @@ import json, os, traceback
 
 def generate_general_info(format_time=True):
     try:
-        sys_stats = get_sys_stats()
-        plugin_data = check_plugin_update()
-        info = {
+        with ThreadPoolExecutor() as executor:
+            sys_stats_future = executor.submit(get_sys_stats)
+            plugin_data_future = executor.submit(check_plugin_update)
+            external_ip_future = executor.submit(get_external_ip)
+            hostname_future = executor.submit(get_system_hostname)
+            latest_node_version_future = executor.submit(get_latest_node_version)
+            installed_node_version_future = executor.submit(get_installed_node_version)
+            sys_stats = sys_stats_future.result()
+            plugin_data = plugin_data_future.result()
+            node_uptime = (format_uptime(sys_stats['node_uptime']) if format_time else sys_stats['node_uptime'])
+            system_uptime = (format_uptime(sys_stats['system_uptime']) if format_time else sys_stats['system_uptime'])
+            info = {
                 'current_plugin_version': plugin_data['current_version'] if plugin_data else "Unavailable",
-                'external_ip': get_external_ip(),
-                'hostname': get_system_hostname(),
-                'latest_node_version': get_latest_node_version(),
+                'external_ip': external_ip_future.result(),
+                'hostname': hostname_future.result(),
+                'latest_node_version': latest_node_version_future.result(),
                 'latest_plugin_version': plugin_data['latest_version'] if plugin_data else "Unavailable",
                 'node_alias': Config.NODE_ALIAS,
-                'node_cpu_usage': sys_stats['node_cpu_usage'],
-                'node_memory_usage': sys_stats['node_memory_usage_mb'],
-                'node_uptime': format_uptime(sys_stats['node_uptime']) if format_time else sys_stats['node_uptime'],
-                'node_version': get_installed_node_version(),
+                'node_cpu_usage': sys_stats['node_cpu_usage'] if sys_stats else "N/A",
+                'node_memory_usage': sys_stats['node_memory_usage_mb'] if sys_stats else "N/A",
+                'node_uptime': node_uptime,
+                'node_version': installed_node_version_future.result(),
                 'plugin_name': Config.PLUGIN_NAME,
                 'show_icon': Config.SHOW_ICON,
-                'system_uptime': format_uptime(sys_stats['system_uptime']) if format_time else sys_stats['system_uptime'],
-                'template': Config.TEMPLATE
-        }
-        log_it("d", json.dumps(info, indent=4))
-        return info
+                'icon_url': Config.ICON_URL,
+                'system_uptime': system_uptime,
+                'template': Config.TEMPLATE,
+            }
+            if isinstance(Config.WEBSOCKET_SERVER_PORT, int):
+                if Config.WEBSOCKET_SERVER_PORT > 1024 or Config.WEBSOCKET_SERVER_PORT < 65535:
+                    info['websocket_server_port'] = Config.WEBSOCKET_SERVER_PORT
+            log_it("d", json.dumps(info, indent=4))
+            return info
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None
@@ -77,6 +90,7 @@ def generate_network_info():
                         'chain_size': executor.submit(get_chain_size, network),
                         'first_signed_blocks': executor.submit(get_blocks, network, block_type="first_signed_blocks_count"),
                         'first_signed_blocks_today': executor.submit(get_blocks, network, block_type="first_signed_blocks", today=True),
+                        'latest_signed_block_timestamp': executor.submit(get_blocks, network, block_type="latest_signed_block_timestamp"),
                         'node_data': executor.submit(get_node_data, network),
                         'rewards': executor.submit(get_rewards, network, total_sum=False),
                         'rewards_all_time_average': executor.submit(get_rewards, network, all_time_average=True),
@@ -92,6 +106,7 @@ def generate_network_info():
 
                     heartbeat_autocollect_status_result = heartbeat.statuses.get(network, {}).get("autocollect_status", "Unknown")
                     heartbeat_last_signed_block_result = heartbeat.statuses.get(network, {}).get("last_signed_block", "Unknown")
+                    heartbeat_in_node_list_result = heartbeat.statuses.get(network, {}).get("in_node_list", "Unknown")
 
                     network_info = {
                         'address': net_status['address'],
@@ -105,12 +120,14 @@ def generate_network_info():
                         'autocollect_status': futures['autocollect_status'].result()['active'],
                         'heartbeat_autocollect_status': heartbeat_autocollect_status_result,
                         'heartbeat_last_signed_block': heartbeat_last_signed_block_result,
+                        'heartbeat_in_node_list': heartbeat_in_node_list_result,
                         'blocks_today': futures['blocks_today'].result(),
                         'current_block_reward': futures['current_block_reward'].result(),
                         'chain_size': futures['chain_size'].result(),
                         'fee_wallet_tokens': tokens,
                         'first_signed_blocks': futures['first_signed_blocks'].result(),
                         'node_data': futures['node_data'].result(),
+                        'latest_signed_block_timestamp': futures['latest_signed_block_timestamp'].result(),
                         'rewards': futures['rewards'].result(),
                         'rewards_all_time_average': futures['rewards_all_time_average'].result(),
                         'rewards_today': futures['rewards_today'].result(),

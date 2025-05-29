@@ -2,13 +2,15 @@ from networkutils import (
     get_active_networks,
     get_network_config,
     get_autocollect_status,
-    get_blocks
+    get_blocks,
+    change_net_mode,
+    is_node_in_node_list
 )
 from utils import restart_node
 from cacher import is_locked
 from config import Config
 from logger import log_it
-from notifications import send_email, send_telegram_message
+from notifications import notify_all
 from datetime import datetime, timedelta
 import time, traceback
 
@@ -20,6 +22,7 @@ class Heartbeat:
             network: {
                 "autocollect_status": "Unknown",
                 "last_signed_block": "Unknown",
+                "in_node_list": "Unknown"
             }
             for network in get_active_networks() if get_network_config(network)
         }
@@ -34,6 +37,22 @@ class Heartbeat:
                 else:
                     self.statuses[network]["autocollect_status"] = "NOK"
                     log_it("e", f"[HEARTBEAT] Autocollect status seems to be inactive!")
+                    notify_all(f"({Config.NODE_ALIAS}): Autocollect status seems to be inactive!")
+        except Exception as e:
+            log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+
+    def in_node_list(self):
+        try:
+            for network in self.statuses:
+                in_node_list = is_node_in_node_list(network)
+                if in_node_list:
+                    log_it("d", f"[HEARTBEAT] Node is in the node list for {network}")
+                    self.statuses[network]["in_node_list"] = "OK"
+                    return
+                else:
+                    log_it("e", f"[HEARTBEAT] Node is not in the node list for {network}")
+                    self.statuses[network]["in_node_list"] = "NOK"
+                    notify_all(f"({Config.NODE_ALIAS}): Your node seems not to be in the node list for {network}. Please examine your node.")
         except Exception as e:
             log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 
@@ -56,10 +75,7 @@ class Heartbeat:
                 log_it("d", f"[HEARTBEAT] Cache age for {network}: {cache_age}")
                 if cache_age > timedelta(hours=Config.CACHE_AGE_LIMIT):
                     log_it("e", f"[HEARTBEAT] Cache file for {network} is too old! Last updated: {last_run}. Reporting issue...")
-                    if Config.TELEGRAM_STATS_ENABLED:
-                        send_telegram_message(f"({Config.NODE_ALIAS}): Your blocks cache has not been updated in more than {Config.CACHE_AGE_LIMIT} hours. Please examine your node.")
-                    if Config.EMAIL_STATS_ENABLED:
-                        send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", f"Your blocks cache has not been updated in more than {Config.CACHE_AGE_LIMIT} hours. Please examine your node.")
+                    notify_all(f"({Config.NODE_ALIAS}): Your blocks cache has not been updated in more than {Config.CACHE_AGE_LIMIT} hours. Please examine your node.")
                     continue
 
                 if last_signed_block:
@@ -71,6 +87,7 @@ class Heartbeat:
                     if curr_time - block_time > timedelta(hours=Config.HEARTBEAT_BLOCK_AGE):
                         self.statuses[network]['last_signed_block'] = "NOK"
                         log_it("e", f"[HEARTBEAT] Last signed block is older than {Config.HEARTBEAT_BLOCK_AGE} hours!")
+                        notify_all(f"({Config.NODE_ALIAS}): Last signed block is older than {Config.HEARTBEAT_BLOCK_AGE} hours!")
                         break
                     else:
                         self.statuses[network]['last_signed_block'] = "OK"
@@ -84,41 +101,51 @@ heartbeat = Heartbeat()
 def run_heartbeat_check():
     heartbeat.autocollect_status()
     heartbeat.last_signed_block()
+    heartbeat.in_node_list()
+    log_it("d", f"[HEARTBEAT] Heartbeat check completed.")
 
     log_it("d", f"[HEARTBEAT] Updated heartbeat statuses: {heartbeat.statuses}")
     if any("NOK" in status.values() for status in heartbeat.statuses.values()):
         log_it("d", f"[HEARTBEAT] has sent {heartbeat.msgs_sent} messages.")
         if heartbeat.msgs_sent == heartbeat.max_sent_msgs:
-            if Config.TELEGRAM_STATS_ENABLED:
-                send_telegram_message(f"({Config.NODE_ALIAS}): Node will be restarted because of indicated problems.")
-            if Config.EMAIL_STATS_ENABLED:
-                send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", "Node will be restarted because of indicated problems.")
-            log_it("i", "[HEARTBEAT] Node will be restarted because of indicated problems.")
             if Config.HEARTBEAT_AUTO_RESTART:
+                notify_all(f"({Config.NODE_ALIAS}): Node will be restarted because of indicated problems.")
+                log_it("i", "[HEARTBEAT] Node will be restarted because of indicated problems.")
                 restart_node()
             heartbeat.msgs_sent = 0
+
         report_heartbeat_errors(heartbeat)
     else:
         log_it("i", "[HEARTBEAT] No issues detected.")
+        notify_all("[HEARTBEAT] No issues detected.", channels=["websocket"])
 
 def report_heartbeat_errors(heartbeat):
-    errors = []
-    for network, status in heartbeat.statuses.items():
-        if status["autocollect_status"] == "NOK":
-            errors.append(f"[{network}] Autocollect status seems to be inactive!")
-        if status["last_signed_block"] == "NOK":
-            errors.append(f"[{network}] Last signed block is older than {Config.HEARTBEAT_BLOCK_AGE} hours!")
-    if errors:
-        error_message = "\n".join(errors)
-        log_it("e", f"[HEARTBEAT] Issues detected:\n{error_message}")
-        try:
-            if Config.TELEGRAM_STATS_ENABLED:
-                send_telegram_message(f"({Config.NODE_ALIAS}): {error_message}")
-            if Config.EMAIL_STATS_ENABLED:
-                send_email(f"({Config.NODE_ALIAS}) Heartbeat alert", error_message)
-            heartbeat.msgs_sent += 1
-        except Exception as e:
-            log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
-    else:
-        log_it("i", "[HEARTBEAT] No issues detected.")
-        heartbeat.msgs_sent = 0
+    try:
+        errors = []
+        for network, status in heartbeat.statuses.items():
+            if status["autocollect_status"] == "NOK":
+                errors.append(f"[{network}] Autocollect status seems to be inactive!")
+            if status["last_signed_block"] == "NOK":
+                errors.append(f"[{network}] Last signed block is older than {Config.HEARTBEAT_BLOCK_AGE} hours!")
+                log_it("i", f"[HEARTBEAT] Attempting to resync {network} network...")
+                try:
+                    change_net_mode(network, "offline")
+                    time.sleep(2)
+                    change_net_mode(network, "online")
+                    time.sleep(2)
+                    change_net_mode(network, "resync")
+                except Exception as e:
+                    log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+        if errors:
+            error_message = "\n".join(errors)
+            log_it("e", f"[HEARTBEAT] Issues detected:\n{error_message}")
+            try:
+                notify_all(f"({Config.NODE_ALIAS}): {error_message}")
+                heartbeat.msgs_sent += 1
+            except Exception as e:
+                log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+        else:
+            log_it("i", "[HEARTBEAT] No issues detected.")
+            heartbeat.msgs_sent = 0
+    except Exception as e:
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())

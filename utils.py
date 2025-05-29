@@ -1,7 +1,8 @@
 from common import cli_command
 from logger import log_it
 from packaging import version
-import socket, requests, re, time, psutil, time, traceback
+import socket, requests, re, time, psutil, time, traceback, platform
+from config import Config
 
 def get_external_ip():
     try:
@@ -18,14 +19,19 @@ def get_external_ip():
 def get_node_pid():
     try:
         log_it("d", "Fetching node PID...")
-        for proc in psutil.process_iter(['pid', 'name']):
-            if proc.info['name'] == "cellframe-node":
+        if platform.system() == "Linux":
+            result = cli_command("pgrep -x cellframe-node", timeout=3, is_shell_command=True)
+            if result:
+                return int(result.strip())
+        for proc in psutil.process_iter(attrs=['pid', 'name']):
+            name = proc.info.get('name')
+            if name == "cellframe-node":
                 pid = proc.info['pid']
                 log_it("d", f"PID for Cellframe node is {pid}")
                 return pid
         return None
     except Exception as e:
-        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+        log_it("e", f"An error occurred: {e}")
         return None
 
 def get_system_hostname():
@@ -115,6 +121,55 @@ def restart_node():
     try:
         node_pid = get_node_pid()
         if node_pid:
-            psutil.Process(node_pid).terminate()
+            proc = psutil.Process(node_pid)
+            log_it("d", f"Trying to stop {node_pid}")
+            proc.terminate()
+            try:
+                proc.wait(timeout=5)
+                log_it("d", f"Can't terminate {node_pid}, killing it...")
+            except psutil.TimeoutExpired:
+                proc.kill()
+    except Exception as e:
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+
+def get_current_config(hide_sensitive_data=False, as_string=False):
+    try:
+        hidden_keys = ["TOKEN", "PASSWORD", "CHAT_ID", "USER", "RECIPIENTS"]
+        config_data = {}
+        for key, value in sorted(vars(Config).items()):
+            if key.startswith("__"):
+                continue
+            if hide_sensitive_data and any(hidden in key for hidden in hidden_keys):
+                config_data[key] = "***"
+            else:
+                config_data[key] = value
+        if as_string:
+            return "\n".join([f"{key}: {value}" for key, value in config_data.items()])
+        return config_data
+    except Exception as e:
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+        return False
+
+def is_port_available(port, host="0.0.0.0"):
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            try:
+                s.bind((host, port))
+                return True
+            except OSError:
+                return False
+    except Exception as e:
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+        return False
+
+def is_cli_ready():
+    try:
+        version_cmd = cli_command("version", timeout=2)
+        log_it("d", "Running version cmd...")
+        if version_cmd:
+            log_it("d", f"Got data from cli, it's ready!")
+            return True
+        log_it("d", f"No data from CLI!")
+        return False
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())

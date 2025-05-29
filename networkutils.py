@@ -249,6 +249,9 @@ def get_blocks(network, block_type="count", today=False, heartbeat=False):
         if block_type == "count":
             return block_count if block_count else None
 
+        if block_type == "latest_signed_block_timestamp":
+            return all_signed_blocks[0]["ts_created"] if all_signed_blocks else None
+
         today_str = datetime.now().strftime("%a, %d %b %Y")
 
         if block_type == "all_signed_blocks" and today:
@@ -332,6 +335,35 @@ def is_node_synced(network):
         mainchain_percent = net_status["sync_state"].get("mainchain_percent")
         log_it("d", f"Mainchain percent: {mainchain_percent}")
         return mainchain_percent == 100.0 if isinstance(mainchain_percent, float) else False
+    except Exception as e:
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+        return False
+
+def change_net_mode(network, mode):
+    try:
+        modes = ["offline", "online", "resync"]
+        log_it("d", f"Changing network status for {network}...")
+        if mode not in modes:
+            log_it("e", f"Invalid mode: {mode}. Valid modes are: {modes}")
+            return
+        else:
+            log_it("d", f"Setting network {network} to {mode}...")
+            cli_command(f"net -net {network} go {mode}", timeout=3)
+    except Exception as e:
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+
+def is_node_in_node_list(network, node_addr=None):
+    try:
+        node_addr = node_addr or get_network_status(network).get("address")
+        node_list = cli_command(f"node list -net {network}", timeout=3).splitlines()
+        from utils import get_external_ip
+        current_ip = get_external_ip()
+        for line in node_list:
+            if node_addr in line and current_ip in line:
+                log_it("d", f"Node address {node_addr} with IP {current_ip} found in node list for {network}")
+                return True
+        log_it("e", f"Node address {node_addr} with IP {current_ip} not found in node list for {network}")
+        return False
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return False

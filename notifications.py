@@ -4,6 +4,7 @@ from config import Config
 from logger import log_it
 import requests, smtplib, traceback
 from time import sleep
+from websocket_server import ws_broadcast_msg
 
 def send_telegram_message(message):
     missing_configs = []
@@ -56,8 +57,10 @@ def send_telegram_message(message):
 
             if response.status_code == 200:
                 log_it("i", "Telegram message sent via API!")
+                return True
             else:
                 log_it("e", f"Sending Telegram message failed! Status code: {response.status_code}, Response: {response.text}")
+                return False
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 
@@ -87,11 +90,11 @@ def send_email(msg):
     if missing_configs:
         for config in missing_configs:
             log_it("e", f"{config} is not set!")
-        return
+        return False
 
     if not use_ssl and not use_tls:
         log_it("e", "SSL or TLS must be enabled for email sending!")
-        return
+        return False
 
     email_msg = MIMEMultipart("alternative")
     email_msg["From"] = smtp_user
@@ -114,5 +117,32 @@ def send_email(msg):
         server.sendmail(smtp_user, email_recipients, email_msg.as_string())
         server.close()
         log_it("i", "Email sent!")
+        return True
+    except Exception as e:
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+        return False
+
+def notify_all(message, channels=None):
+    if channels is None:
+        channels = ["telegram", "email", "websocket"] # All by default
+    try:
+        if "telegram" in channels:
+            if Config.TELEGRAM_STATS_ENABLED:
+                if send_telegram_message(message):
+                    log_it("i", "Telegram notification sent!")
+            else:
+                log_it("e", "Telegram notifications are disabled in the configuration.")
+        if "email" in channels:
+            if Config.EMAIL_STATS_ENABLED:
+                if send_email(message):
+                    log_it("i", "Email notification sent!")
+            else:
+                log_it("e", "Email notifications are disabled in the configuration.")
+        if "websocket" in channels:
+            if Config.WEBSOCKET_SERVER_RUNNING:
+                ws_broadcast_msg(message)
+            else:
+                log_it("e", "WebSocket server is not running.")
+        log_it("i", f"Notification sent: {message}")
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
