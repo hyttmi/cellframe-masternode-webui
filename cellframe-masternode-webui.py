@@ -20,7 +20,7 @@ try:
     from concurrent.futures import ThreadPoolExecutor
     import traceback
     from websocket_server import start_ws_server, send_ping
-    from utils import get_current_config, is_port_available
+    from utils import is_port_available
 
     executor = ThreadPoolExecutor()
 
@@ -34,7 +34,7 @@ try:
 
     def init():
         try:
-            current_config  = get_current_config(hide_sensitive_data=True)
+            current_config  = Config.get_current_config(hide_sensitive_data=True)
             for key, value in current_config.items():
                 log_it("d", f"{key}: {value}")
             if is_locked():

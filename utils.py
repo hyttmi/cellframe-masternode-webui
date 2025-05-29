@@ -2,7 +2,6 @@ from common import cli_command
 from logger import log_it
 from packaging import version
 import socket, requests, re, time, psutil, time, traceback, platform
-from config import Config
 
 def get_external_ip():
     try:
@@ -131,24 +130,6 @@ def restart_node():
                 proc.kill()
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
-
-def get_current_config(hide_sensitive_data=False, as_string=False):
-    try:
-        hidden_keys = ["TOKEN", "PASSWORD", "CHAT_ID", "USER", "RECIPIENTS"]
-        config_data = {}
-        for key, value in sorted(vars(Config).items()):
-            if key.startswith("__"):
-                continue
-            if hide_sensitive_data and any(hidden in key for hidden in hidden_keys):
-                config_data[key] = "***"
-            else:
-                config_data[key] = value
-        if as_string:
-            return "\n".join([f"{key}: {value}" for key, value in config_data.items()])
-        return config_data
-    except Exception as e:
-        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
-        return False
 
 def is_port_available(port, host="0.0.0.0"):
     try:
