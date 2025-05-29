@@ -74,10 +74,11 @@ class Config:
     @staticmethod
     def get_current_config(hide_sensitive_data=False, as_string=False):
         try:
+            excluded_keys = ["jinja_environment"]
             hidden_keys = ["TOKEN", "PASSWORD", "CHAT_ID", "USER", "RECIPIENTS"]
             config_data = {}
             for key, value in sorted(vars(Config).items()):
-                if key.startswith("__") or callable(value):
+                if key.startswith("__") or key in excluded_keys:
                     continue
                 if hide_sensitive_data and any(hidden in key for hidden in hidden_keys):
                     config_data[key] = "***"
