@@ -6,7 +6,7 @@ import socket, requests, re, time, psutil, time, traceback, platform
 def get_external_ip():
     try:
         log_it("d", "Fetching external IP...")
-        response = requests.get('https://ifconfig.me/ip', timeout=5)
+        response = requests.get('https://api.ipify.org', timeout=5)
         if response.status_code == 200:
             return response.text.strip()
         log_it("e", f"Error fetching IP address from {response.url}, status code: {response.status_code}")
