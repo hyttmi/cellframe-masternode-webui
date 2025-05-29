@@ -120,5 +120,12 @@ def setup_schedules():
                 run_on_startup=False
             )
             log_it("d", f"heartbeat_check_schedule submitted to ThreadPool to run every {Config.HEARTBEAT_INTERVAL} minutes.")
+
+            futures['notify_user'] = executor.submit(
+                notify_all,
+                f"{Config.PLUGIN_NAME} on {Config.NODE_ALIAS} started!"
+                )
+            log_it("d", "notify_user submitted to ThreadPool")
+
     except Exception as e:
         log_it("e", "An error occurred", exc=e)
