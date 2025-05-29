@@ -1,7 +1,7 @@
 #!/bin/bash
 LC_ALL=C # Ensure ASCII locale so regex works...
 
-EXT_IP=$(command -v curl > /dev/null && curl -4 -s ifconfig.me || echo "")
+EXT_IP=$(command -v curl > /dev/null && curl api.ipify.org || echo "")
 EXT_PORT=$(grep -oP '^listen_address=\K.*' /opt/cellframe-node/etc/cellframe-node.cfg | head -1 | tr -d '[]' | cut -d ':' -f 2)
 PIP_PATH="/opt/cellframe-node/python/bin/pip3"
 CFG_PATH="/opt/cellframe-node/etc/cellframe-node.cfg.d"
