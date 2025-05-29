@@ -74,7 +74,7 @@ class Config:
     @staticmethod
     def get_current_config(hide_sensitive_data=False, as_string=False):
         try:
-            excluded_keys = ["jinja_environment"]
+            excluded_keys = ["jinja_environment", "get_current_config"]
             hidden_keys = ["TOKEN", "PASSWORD", "CHAT_ID", "USER", "RECIPIENTS"]
             config_data = {}
             for key, value in sorted(vars(Config).items()):
