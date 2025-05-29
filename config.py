@@ -77,7 +77,7 @@ class Config:
             hidden_keys = ["TOKEN", "PASSWORD", "CHAT_ID", "USER", "RECIPIENTS"]
             config_data = {}
             for key, value in sorted(vars(Config).items()):
-                if key.startswith("__"):
+                if key.startswith("__") or callable(value):
                     continue
                 if hide_sensitive_data and any(hidden in key for hidden in hidden_keys):
                     config_data[key] = "***"

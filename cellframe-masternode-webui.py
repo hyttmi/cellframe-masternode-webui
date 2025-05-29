@@ -54,7 +54,7 @@ try:
                 Config.WEBSOCKET_SERVER_RUNNING = True
                 executor.submit(send_ping)
                 log_it("i", "Started ping thread for WebSocket server")
-            log_it("i", f"{Config.PLUGIN_NAME} started!")
+            log_it("i", f"{Config.PLUGIN_NAME} on {Config.NODE_ALIAS} started!")
             return 0
         except Exception as e:
             log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
