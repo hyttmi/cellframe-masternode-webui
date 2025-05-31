@@ -53,10 +53,8 @@ try:
             elif not is_port_available(Config.WEBSOCKET_SERVER_PORT):
                 log_it("e", f"WebSocket server port {Config.WEBSOCKET_SERVER_PORT} is not available.")
             else:
-                Config.WEBSOCKET_SERVER_RUNNING = True
                 executor.submit(start_ws_server, Config.WEBSOCKET_SERVER_PORT)
                 log_it("i", f"WebSocket server started on port {Config.WEBSOCKET_SERVER_PORT}")
-
             log_it("i", f"{Config.PLUGIN_NAME} on {Config.NODE_ALIAS} started!")
             return 0
         except Exception as e:
