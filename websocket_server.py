@@ -113,6 +113,7 @@ def start_ws_server(port):
     log_it("i", f"WebSocket server started on port {port}")
 
     Config.THREADPOOL.submit(send_ping)
+    log_it("i", "send_ping submitted to threadpool")
 
     try:
         while Config.WEBSOCKET_SERVER_RUNNING:
@@ -120,6 +121,7 @@ def start_ws_server(port):
                 conn, addr = server.accept()
                 if handshake(conn):
                     Config.THREADPOOL.submit(client_handler, conn)
+                    log_it("i", f"{conn} handler submitted to threadpool")
                     ws_broadcast_msg(f"{addr[0]} connected to WebSocket server!")
                 else:
                     log_it("e", f"Handshake failed for connection from {addr}")
