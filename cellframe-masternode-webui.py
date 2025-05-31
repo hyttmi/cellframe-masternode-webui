@@ -22,7 +22,8 @@ try:
     from websocket_server import start_ws_server
     from utils import is_port_available
 
-    executor = ThreadPoolExecutor()
+    Config.THREADPOOL = ThreadPoolExecutor()
+    executor = Config.THREADPOOL
 
     def http_server():
         try:
