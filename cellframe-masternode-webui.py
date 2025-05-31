@@ -22,8 +22,7 @@ try:
     from websocket_server import start_ws_server
     from utils import is_port_available
 
-    Config.THREADPOOL = ThreadPoolExecutor()
-    executor = Config.THREADPOOL
+    executor = ThreadPoolExecutor()
 
     def http_server():
         try:
@@ -47,7 +46,7 @@ try:
             log_it("i", "HTTP server submitted to threadpool")
 
             executor.submit(setup_schedules)
-            log_it("i", "Scheduled tasks started")
+            log_it("i", "Scheduled tasks submitted to threadpool")
 
             if Config.WEBSOCKET_SERVER_PORT < 1024 or Config.WEBSOCKET_SERVER_PORT > 65535:
                 log_it("e", f"Invalid WebSocket server port: {Config.WEBSOCKET_SERVER_PORT}. Must be between 1024 and 65535.")
@@ -55,7 +54,7 @@ try:
                 log_it("e", f"WebSocket server port {Config.WEBSOCKET_SERVER_PORT} is not available.")
             else:
                 executor.submit(start_ws_server, Config.WEBSOCKET_SERVER_PORT)
-                log_it("i", f"WebSocket server started on port {Config.WEBSOCKET_SERVER_PORT}")
+                log_it("i", f"WebSocket server submitted to threadpool")
             log_it("i", f"{Config.PLUGIN_NAME} on {Config.NODE_ALIAS} started!")
             return 0
         except Exception as e:
