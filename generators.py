@@ -29,7 +29,7 @@ import json, os, traceback
 
 def generate_general_info(format_time=True):
     try:
-        with Config.THREADPOOL as executor:
+        with ThreadPoolExecutor() as executor:
             sys_stats_future = executor.submit(get_sys_stats)
             plugin_data_future = executor.submit(check_plugin_update)
             external_ip_future = executor.submit(get_external_ip)
@@ -78,7 +78,7 @@ def generate_network_info():
                 wallet = net_config['wallet']
                 tokens = get_reward_wallet_tokens(wallet)
                 net_status = get_network_status(network)
-                with Config.THREADPOOL as executor:
+                with ThreadPoolExecutor() as executor:
                     futures = {
                         'all_blocks': executor.submit(get_blocks, network, block_type="count"),
                         'all_signed_blocks_dict': executor.submit(get_blocks, network, block_type="all_signed_blocks"),
