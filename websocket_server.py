@@ -32,11 +32,13 @@ def send_ping():
                 log_it("d", f"Sent ping to {client.getpeername()}")
             except (OSError, ConnectionResetError, BrokenPipeError) as e:
                 log_it("i", f"Removing client {client}: {e}")
+                log_it("d", f"Current list of clients: {Config.WEBSOCKET_CLIENT}")
                 try:
                     client.close()
                 except:
                     pass
                 Config.WEBSOCKET_CLIENT.remove(client)
+                log_it("d", f"Client {client} removed. Remaining clients: {Config.WEBSOCKET_CLIENT}")
 
 def send_message(message):
     for client in Config.WEBSOCKET_CLIENT.copy():
