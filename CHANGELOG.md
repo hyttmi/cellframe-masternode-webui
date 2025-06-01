@@ -1,9 +1,6 @@
 # Changelog
 
-## [5.01] - 2025-05-29
-
-### Changed
-- Some changes to Config class.
+## [5.02] - 2025-XX-XX
 
 ### Fixed
-- Node in node list heartbeat check failed on some servers because plugin was fetching IPv6 address instead of IPv4 address.
+- Issues with WebSocket server (hopefully)
