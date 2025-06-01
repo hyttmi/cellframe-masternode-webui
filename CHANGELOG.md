@@ -4,6 +4,3 @@
 
 ### Fixed
 - Issues with WebSocket server (hopefully)
-
-### Changed
-- Use global threadpool instance.
