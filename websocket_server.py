@@ -53,13 +53,13 @@ def send_message(message):
             Config.WEBSOCKET_CLIENT.remove(client)
 
 def start_ws_server(port):
-    Config.WEBSOCKET_SERVER_RUNNING = True
-    start_thread(target=send_ping, daemon=True)
+    start_thread(send_ping)
     log_it("i", "send_ping thread started")
     server = socket.socket()
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server.bind(("0.0.0.0", port))
     server.listen(5)
+    Config.WEBSOCKET_SERVER_RUNNING = True
     while True:
         try:
             conn, _ = server.accept()
