@@ -4,3 +4,6 @@
 
 ### Fixed
 - Issues with WebSocket server (hopefully)
+
+### Changed
+- Move all irrelevant ThreadPools to normal threads.
