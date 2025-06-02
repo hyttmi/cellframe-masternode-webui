@@ -1,6 +1,7 @@
-import socket, base64, hashlib, json, time, threading
+import socket, base64, hashlib, json, time
 from logger import log_it
 from config import Config
+from thread_launcher import start_thread
 
 def handshake(conn):
     request = conn.recv(1024).decode()
@@ -51,12 +52,9 @@ def send_message(message):
             log_it("e", f"Client {client} disconnected or errored: {e}")
             Config.WEBSOCKET_CLIENT.remove(client)
 
-import threading
-
 def start_ws_server(port):
     Config.WEBSOCKET_SERVER_RUNNING = True
-    ping_thread = threading.Thread(target=send_ping, daemon=True).start()
-    ping_thread.start()
+    start_thread(target=send_ping, daemon=True)
     log_it("i", "send_ping thread started")
     server = socket.socket()
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -71,7 +69,6 @@ def start_ws_server(port):
                 ws_broadcast_msg(f"{conn.getpeername()[0]} connected to WebSocket server!")
         except Exception as e:
             log_it("e", f"WebSocket server error: {e}")
-
 
 def ws_broadcast_msg(msg):
     if not Config.WEBSOCKET_SERVER_RUNNING:

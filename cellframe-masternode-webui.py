@@ -1,6 +1,5 @@
 from logger import log_it
 import sys
-import threading
 import traceback
 
 # Redirect stderr to logger
@@ -22,6 +21,7 @@ try:
     from cacher import release_lock, is_locked
     from websocket_server import start_ws_server
     from utils import is_port_available
+    from thread_launcher import start_thread
 
     def http_server():
         try:
@@ -41,10 +41,10 @@ try:
                 log_it("i", "Cache lock found, releasing it...")
                 release_lock()
 
-            threading.Thread(target=http_server, daemon=True).start()
+            start_thread(http_server, daemon=True)
             log_it("i", "HTTP server started on thread")
 
-            threading.Thread(target=setup_schedules, daemon=True).start()
+            start_thread(setup_schedules, daemon=True)
             log_it("i", "Scheduled tasks started on thread")
 
             if Config.WEBSOCKET_SERVER_PORT < 1024 or Config.WEBSOCKET_SERVER_PORT > 65535:
@@ -52,7 +52,7 @@ try:
             elif not is_port_available(Config.WEBSOCKET_SERVER_PORT):
                 log_it("e", f"WebSocket server port {Config.WEBSOCKET_SERVER_PORT} is not available.")
             else:
-                threading.Thread(target=start_ws_server, args=(Config.WEBSOCKET_SERVER_PORT,), daemon=True).start()
+                start_thread(target=start_ws_server, args=(Config.WEBSOCKET_SERVER_PORT,), daemon=True).start()
                 log_it("i", f"WebSocket server started on thread")
 
             log_it("i", f"{Config.PLUGIN_NAME} on {Config.NODE_ALIAS} started!")
