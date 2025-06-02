@@ -41,10 +41,10 @@ try:
                 log_it("i", "Cache lock found, releasing it...")
                 release_lock()
 
-            start_thread(http_server, daemon=True)
+            start_thread(http_server)
             log_it("i", "HTTP server started on thread")
 
-            start_thread(setup_schedules, daemon=True)
+            start_thread(setup_schedules)
             log_it("i", "Scheduled tasks started on thread")
 
             if Config.WEBSOCKET_SERVER_PORT < 1024 or Config.WEBSOCKET_SERVER_PORT > 65535:
@@ -52,7 +52,7 @@ try:
             elif not is_port_available(Config.WEBSOCKET_SERVER_PORT):
                 log_it("e", f"WebSocket server port {Config.WEBSOCKET_SERVER_PORT} is not available.")
             else:
-                start_thread(target=start_ws_server, args=(Config.WEBSOCKET_SERVER_PORT,), daemon=True).start()
+                start_thread(start_ws_server, Config.WEBSOCKET_SERVER_PORT)
                 log_it("i", f"WebSocket server started on thread")
 
             log_it("i", f"{Config.PLUGIN_NAME} on {Config.NODE_ALIAS} started!")
