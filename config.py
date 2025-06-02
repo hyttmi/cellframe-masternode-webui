@@ -18,7 +18,6 @@ def get_config_value(section, key, default=None, is_numeric=False):
 
 class Config:
     ######################### GLOBALS #########################
-    THREADPOOL = None
     WEBSOCKET_SERVER_RUNNING = False
     WEBSOCKET_CLIENT = []
     POST_AUTH_COOKIE = None

@@ -1,4 +1,4 @@
-import socket, base64, hashlib, json, time
+import socket, base64, hashlib, json, time, threading
 from logger import log_it
 from config import Config
 
@@ -51,20 +51,27 @@ def send_message(message):
             log_it("e", f"Client {client} disconnected or errored: {e}")
             Config.WEBSOCKET_CLIENT.remove(client)
 
+import threading
+
 def start_ws_server(port):
     Config.WEBSOCKET_SERVER_RUNNING = True
-    Config.THREADPOOL.submit(send_ping)
-    log_it("i", "send_ping thread submitted to threadpool")
+    ping_thread = threading.Thread(target=send_ping, daemon=True).start()
+    ping_thread.start()
+    log_it("i", "send_ping thread started")
     server = socket.socket()
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server.bind(("0.0.0.0", port))
     server.listen(5)
     while True:
-        conn, _ = server.accept()
-        if handshake(conn):
-            Config.WEBSOCKET_CLIENT.append(conn)
-            log_it("d", f"New handshake for WebSocket connection. Clients currently connected: {Config.WEBSOCKET_CLIENT}")
-            ws_broadcast_msg(f"{conn.getpeername()[0]} connected to WebSocket server!")
+        try:
+            conn, _ = server.accept()
+            if handshake(conn):
+                Config.WEBSOCKET_CLIENT.append(conn)
+                log_it("d", f"New handshake for WebSocket connection. Clients currently connected: {Config.WEBSOCKET_CLIENT}")
+                ws_broadcast_msg(f"{conn.getpeername()[0]} connected to WebSocket server!")
+        except Exception as e:
+            log_it("e", f"WebSocket server error: {e}")
+
 
 def ws_broadcast_msg(msg):
     if not Config.WEBSOCKET_SERVER_RUNNING:

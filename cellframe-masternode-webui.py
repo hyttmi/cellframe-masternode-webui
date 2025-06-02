@@ -1,6 +1,9 @@
 from logger import log_it
 import sys
+import threading
+import traceback
 
+# Redirect stderr to logger
 class LogRedirect:
     def write(self, message):
         if message.strip():
@@ -17,13 +20,8 @@ try:
     from pycfhelpers.node.http.simple import CFSimpleHTTPServer, CFSimpleHTTPRequestHandler
     from run_scheduler import setup_schedules
     from cacher import release_lock, is_locked
-    from concurrent.futures import ThreadPoolExecutor
-    import traceback
     from websocket_server import start_ws_server
     from utils import is_port_available
-
-    Config.THREADPOOL = ThreadPoolExecutor()
-    executor = Config.THREADPOOL
 
     def http_server():
         try:
@@ -43,19 +41,20 @@ try:
                 log_it("i", "Cache lock found, releasing it...")
                 release_lock()
 
-            executor.submit(http_server)
-            log_it("i", "HTTP server submitted to threadpool")
+            threading.Thread(target=http_server, daemon=True).start()
+            log_it("i", "HTTP server started on thread")
 
-            executor.submit(setup_schedules)
-            log_it("i", "Scheduled tasks submitted to threadpool")
+            threading.Thread(target=setup_schedules, daemon=True).start()
+            log_it("i", "Scheduled tasks started on thread")
 
             if Config.WEBSOCKET_SERVER_PORT < 1024 or Config.WEBSOCKET_SERVER_PORT > 65535:
                 log_it("e", f"Invalid WebSocket server port: {Config.WEBSOCKET_SERVER_PORT}. Must be between 1024 and 65535.")
             elif not is_port_available(Config.WEBSOCKET_SERVER_PORT):
                 log_it("e", f"WebSocket server port {Config.WEBSOCKET_SERVER_PORT} is not available.")
             else:
-                executor.submit(start_ws_server, Config.WEBSOCKET_SERVER_PORT)
-                log_it("i", f"WebSocket server submitted to threadpool")
+                threading.Thread(target=start_ws_server, args=(Config.WEBSOCKET_SERVER_PORT,), daemon=True).start()
+                log_it("i", f"WebSocket server started on thread")
+
             log_it("i", f"{Config.PLUGIN_NAME} on {Config.NODE_ALIAS} started!")
             return 0
         except Exception as e:
@@ -64,5 +63,6 @@ try:
     def deinit():
         log_it("i", f"{Config.PLUGIN_NAME} stopped")
         return 0
+
 except Exception as e:
     log_it("e", f"Fatal error during startup: {e}", exc=traceback.format_exc())
