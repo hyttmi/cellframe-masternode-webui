@@ -1,4 +1,4 @@
-import time
+import time, traceback
 import schedule
 from logger import log_it
 from config import Config
@@ -27,10 +27,17 @@ def run_scheduler(func, scheduled_time, every_min=False, run_on_startup=False):
             scheduler.run_pending()
             time.sleep(1)
     except Exception as e:
-        log_it("e", f"An error occurred in run_scheduler: {e}")
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 
 def setup_schedules():
     try:
+        use_interval_schedule = False
+        if Config.STATS_INTERVAL > 0:
+            if Config.STATS_INTERVAL < 30:
+                log_it("e", "STATS_INTERVAL must be at least 30 minutes. Setting it to 30 minutes.")
+                Config.STATS_INTERVAL = 30
+                use_interval_schedule = True
+
         start_thread(run_scheduler, cache_blocks_data, Config.CACHE_BLOCKS_INTERVAL, True, True)
         log_it("d", "blocks_caching_schedule started as thread")
 
@@ -38,7 +45,7 @@ def setup_schedules():
         log_it("d", "rewards_caching_schedule started as thread")
 
         if Config.TELEGRAM_STATS_ENABLED:
-            if Config.STATS_INTERVAL > 0:
+            if use_interval_schedule:
                 start_thread(
                     run_scheduler,
                     lambda: send_telegram_message(
@@ -62,10 +69,7 @@ def setup_schedules():
                 log_it("d", f"send_telegram_message_schedule started as thread with scheduled time {Config.TELEGRAM_STATS_TIME}")
 
         if Config.EMAIL_STATS_ENABLED:
-            if Config.STATS_INTERVAL > 0:
-                if Config.STATS_INTERVAL < 30:
-                    log_it("e", "STATS_INTERVAL must be at least 30 minutes. Setting it to 30 minutes.")
-                    Config.STATS_INTERVAL = 30
+            if use_interval_schedule:
                 start_thread(
                     run_scheduler,
                     lambda: send_email(
@@ -114,4 +118,4 @@ def setup_schedules():
         log_it("d", "notify_user started as thread")
 
     except Exception as e:
-        log_it("e", f"An error occurred in setup_schedules: {e}")
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())

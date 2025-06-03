@@ -31,6 +31,7 @@ def log_it(level, msg, exc=None):
     levels = {
         "i": logging.info,
         "e": logging.error,
+        'w': logging.warning,
         "d": logging.info,
     }
 
