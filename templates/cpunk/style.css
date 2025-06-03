@@ -1,12 +1,14 @@
 :root {
     --accent-color: #F97834;
     --color2: #FF9A4D;
+    --background-color-primary: #150F0C;
+    --background-color-secondary: #1A0F0E;
 }
 
 body,
 html {
     font-family: Rubik;
-    background-color: #150F0C;
+    background-color: var(--background-color-primary);
     background-image: radial-gradient(circle at 20% 30%, rgba(249, 120, 52, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(249, 120, 52, 0.08) 0%, transparent 50%);
     height: 100%;
     margin: 0;
@@ -23,7 +25,7 @@ html {
 }
 
 .card {
-    background-color: #1A0F0E;
+    background-color: var(--background-color-secondary);
     border-image: linear-gradient(140deg, rgba(249, 120, 52, 1) 0%, rgba(249, 120, 52, 0) 50%) 1;
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 0, 0, 0.6);
     margin-bottom: 25px;
@@ -82,7 +84,7 @@ html {
 .card-header {
     padding-top: 15px;
     border: none;
-    background-color: #140B0A;
+    background-color: var(--background-color-secondary);
 }
 
 #custom_view .card-header {
@@ -91,7 +93,7 @@ html {
 
 .nav-item {
     transition: background-color 0.2s ease;
-    background-color: #140B0A;
+    background-color: var(--background-color-secondary);
     margin-top: 10px;
     margin-bottom: 10px;
     margin-left: 5px;
