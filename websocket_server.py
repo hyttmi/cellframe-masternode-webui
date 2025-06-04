@@ -2,6 +2,7 @@ import socket, base64, hashlib, json, time
 from logger import log_it
 from config import Config
 from thread_launcher import start_thread
+from utils import is_port_available
 
 def handshake(conn):
     request = conn.recv(1024).decode()
@@ -53,6 +54,15 @@ def send_message(message):
             Config.WEBSOCKET_CLIENT.remove(client)
 
 def start_ws_server(port):
+    if port <= 0:
+        log_it("e", f"Invalid WebSocket server port: {port}. Must be a positive integer.")
+        return
+    elif port < 1024 or port > 65535:
+        log_it("e", f"Invalid WebSocket server port: {port}. Must be between 1024 and 65535.")
+        return
+    elif not is_port_available(port):
+        log_it("e", f"WebSocket server port {port} is not available.")
+        return
     log_it("i", "send_ping thread started")
     server = socket.socket()
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

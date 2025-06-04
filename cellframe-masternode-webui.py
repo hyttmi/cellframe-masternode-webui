@@ -20,7 +20,6 @@ try:
     from run_scheduler import setup_schedules
     from cacher import release_lock, is_locked
     from websocket_server import start_ws_server
-    from utils import is_port_available
     from thread_launcher import start_thread
 
     def http_server():
@@ -47,13 +46,8 @@ try:
             start_thread(setup_schedules)
             log_it("i", "Scheduled tasks started on thread")
 
-            if Config.WEBSOCKET_SERVER_PORT < 1024 or Config.WEBSOCKET_SERVER_PORT > 65535:
-                log_it("e", f"Invalid WebSocket server port: {Config.WEBSOCKET_SERVER_PORT}. Must be between 1024 and 65535.")
-            elif not is_port_available(Config.WEBSOCKET_SERVER_PORT):
-                log_it("e", f"WebSocket server port {Config.WEBSOCKET_SERVER_PORT} is not available.")
-            else:
-                start_thread(start_ws_server, Config.WEBSOCKET_SERVER_PORT)
-                log_it("i", f"WebSocket server started on thread")
+            start_thread(start_ws_server, Config.WEBSOCKET_SERVER_PORT)
+            log_it("i", f"WebSocket server started on thread")
 
             log_it("i", f"{Config.PLUGIN_NAME} on {Config.NODE_ALIAS} started!")
             return 0

@@ -33,6 +33,7 @@ def setup_schedules():
     try:
         use_interval_schedule = False
         if Config.STATS_INTERVAL > 0:
+            log_it("d", f"Using interval schedule for stats with interval {Config.STATS_INTERVAL} minutes.")
             if Config.STATS_INTERVAL < 30:
                 log_it("e", "STATS_INTERVAL must be at least 30 minutes. Setting it to 30 minutes.")
                 Config.STATS_INTERVAL = 30
