@@ -47,7 +47,8 @@ try:
             log_it("i", "Scheduled tasks started on thread")
 
             start_thread(start_ws_server, Config.WEBSOCKET_SERVER_PORT)
-            log_it("i", f"WebSocket server started on thread")
+            if Config.WEBSOCKET_SERVER_RUNNING:
+                log_it("i", f"WebSocket server started on thread")
 
             log_it("i", f"{Config.PLUGIN_NAME} on {Config.NODE_ALIAS} started!")
             return 0

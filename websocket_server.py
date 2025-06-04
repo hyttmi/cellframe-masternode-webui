@@ -63,13 +63,13 @@ def start_ws_server(port):
     elif not is_port_available(port):
         log_it("e", f"WebSocket server port {port} is not available.")
         return
-    log_it("i", "send_ping thread started")
     server = socket.socket()
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server.bind(("0.0.0.0", port))
     server.listen(5)
     Config.WEBSOCKET_SERVER_RUNNING = True
     start_thread(send_ping)
+    log_it("i", "send_ping thread started")
     while True:
         try:
             conn, _ = server.accept()
