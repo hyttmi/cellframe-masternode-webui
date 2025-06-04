@@ -68,8 +68,9 @@ def start_ws_server(port):
     server.bind(("0.0.0.0", port))
     server.listen(5)
     Config.WEBSOCKET_SERVER_RUNNING = True
+    log_it("i", f"WebSocket server started on thread")
     start_thread(send_ping)
-    log_it("i", "send_ping thread started")
+    log_it("i", "send_ping started on thread")
     while True:
         try:
             conn, _ = server.accept()
