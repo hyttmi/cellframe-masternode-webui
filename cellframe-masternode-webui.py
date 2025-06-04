@@ -32,14 +32,6 @@ try:
 
     def init():
         try:
-            current_config = Config.get_current_config(hide_sensitive_data=True)
-            for key, value in current_config.items():
-                log_it("d", f"{key}: {value}")
-
-            if is_locked():
-                log_it("i", "Cache lock found, releasing it...")
-                release_lock()
-
             start_thread(http_server)
             log_it("i", "HTTP server started on thread")
 
@@ -47,6 +39,14 @@ try:
             log_it("i", "Scheduled tasks started on thread")
 
             start_thread(start_ws_server, Config.WEBSOCKET_SERVER_PORT)
+
+            current_config = Config.get_current_config(hide_sensitive_data=True)
+            for key, value in current_config.items():
+                log_it("d", f"{key}: {value}")
+
+            if is_locked():
+                log_it("i", "Cache lock found, releasing it...")
+                release_lock()
 
             log_it("i", f"{Config.PLUGIN_NAME} on {Config.NODE_ALIAS} started!")
             return 0
