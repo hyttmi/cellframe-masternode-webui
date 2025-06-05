@@ -52,7 +52,13 @@ class Heartbeat:
                 else:
                     log_it("e", f"[HEARTBEAT] Node is not in the node list for {network}")
                     self.statuses[network]["in_node_list"] = "NOK"
-                    notify_all(f"({Config.NODE_ALIAS}): Your node seems not to be in the node list for {network}. If you are sure it should be, please check your node configuration.")
+                    notify_all(f"""
+                               ({Config.NODE_ALIAS}): Your node seems not to be in the node list for {network}.
+                               Please note that this is not a critical issue, but it may affect your node's performance.
+                               If you are sure it should be on node list, please check it manually with:
+
+                               cellframe-node-cli node list -net {network}."""
+                               )
         except Exception as e:
             log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 
