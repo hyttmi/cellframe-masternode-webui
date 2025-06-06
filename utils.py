@@ -19,9 +19,13 @@ def get_node_pid():
     try:
         log_it("d", "Fetching node PID...")
         if platform.system() == "Linux":
-            result = cli_command("pgrep -x cellframe-node", timeout=3, is_shell_command=True)
-            if result:
-                return int(result.strip())
+            try:
+                result = cli_command("pgrep -x cellframe-node", timeout=3, is_shell_command=True)
+                if result:
+                    return int(result.strip())
+            except Exception as e:
+                log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+                return None
         for proc in psutil.process_iter(attrs=['pid', 'name']):
             name = proc.info.get('name')
             if name == "cellframe-node":
@@ -30,7 +34,7 @@ def get_node_pid():
                 return pid
         return None
     except Exception as e:
-        log_it("e", f"An error occurred: {e}")
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return None
 
 def get_system_hostname():
