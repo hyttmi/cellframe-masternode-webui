@@ -17,12 +17,6 @@ def get_config_value(section, key, default=None, is_numeric=False):
         return default
 
 class Config:
-    ######################### GLOBALS #########################
-    WEBSOCKET_SERVER_RUNNING = False
-    WEBSOCKET_CLIENT = []
-    POST_AUTH_COOKIE = None
-    ###########################################################
-
     PLUGIN_NAME = "Cellframe Masternode WebUI"
     ACCESS_TOKEN = str(get_config_value("webui", "access_token", default=None, is_numeric=False))
     AUTH_BYPASS = get_config_value("webui", "auth_bypass", default=False, is_numeric=False)
@@ -93,3 +87,10 @@ class Config:
                 config_data[attr] = value
 
         return config_data
+
+class Globals:
+    ######################### GLOBALS #########################
+    WEBSOCKET_SERVER_RUNNING = False
+    WEBSOCKET_CLIENT = []
+    POST_AUTH_COOKIE = None
+    ###########################################################

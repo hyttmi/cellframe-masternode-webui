@@ -1,6 +1,6 @@
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from config import Config
+from config import Config, Globals
 from logger import log_it
 import requests, smtplib, traceback
 from time import sleep
@@ -139,7 +139,7 @@ def notify_all(message, channels=None):
             else:
                 log_it("e", "Email notifications are disabled in the configuration.")
         if "websocket" in channels:
-            if Config.WEBSOCKET_SERVER_RUNNING:
+            if Globals.WEBSOCKET_SERVER_RUNNING:
                 ws_broadcast_msg(message)
             else:
                 log_it("e", "WebSocket server is not running.")
