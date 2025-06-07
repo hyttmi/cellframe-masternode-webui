@@ -32,10 +32,6 @@ try:
 
     def init():
         try:
-            current_config = Config.get_current_config(hide_sensitive_data=True)
-            for key, value in current_config.items():
-                log_it("d", f"{key}: {value}")
-
             if is_locked():
                 log_it("i", "Cache lock found, releasing it...")
                 release_lock()
