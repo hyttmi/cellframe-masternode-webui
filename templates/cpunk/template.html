@@ -64,9 +64,9 @@
                     <h5 class="modal-title">Current configuration</h5>
                 </div>
                 <div class="modal-body text-color-secondary border-0">
-                     <div class="list-group list-group-flush border-0">
+                     <div class="list-group list-group-flush">
                         {% for key, value in general_info.current_config.items() %}
-                            <div class="list-group-item d-flex justify-content-between align-items-center bg-transparent border-secondary text-break small">
+                            <div class="list-group-item d-flex justify-content-between align-items-center bg-transparent border-secondary text-break small border-0">
                                 <strong class="me-2 card-title">{{ key }}</strong>
                                 <span class="text-end card-title">{{ value }}</span>
                             </div>
