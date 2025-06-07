@@ -21,6 +21,7 @@ try:
     from cacher import release_lock, is_locked
     from websocket_server import start_ws_server
     from thread_launcher import start_thread
+    from notifications import notify_all
 
     def http_server():
         try:
@@ -45,6 +46,7 @@ try:
             start_thread(start_ws_server, Config.WEBSOCKET_SERVER_PORT)
 
             log_it("i", f"{Config.PLUGIN_NAME} on {Config.NODE_ALIAS} started!")
+            notify_all(f"{Config.PLUGIN_NAME} on {Config.NODE_ALIAS} started!") # This doesn't block the main thread really
             return 0
         except Exception as e:
             log_it("e", f"An error occurred during init: {e}", exc=traceback.format_exc())

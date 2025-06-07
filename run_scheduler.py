@@ -112,11 +112,5 @@ def setup_schedules():
         )
         log_it("d", f"heartbeat_check_schedule started as thread every {Config.HEARTBEAT_INTERVAL} minutes")
 
-        start_thread(
-            notify_all,
-            f"{Config.PLUGIN_NAME} on {Config.NODE_ALIAS} started!"
-        )
-        log_it("d", "notify_user started as thread")
-
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())

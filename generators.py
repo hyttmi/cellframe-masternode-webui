@@ -59,8 +59,9 @@ def generate_general_info(format_time=True):
                 'template': Config.TEMPLATE,
             }
             if isinstance(Config.WEBSOCKET_SERVER_PORT, int):
-                if Config.WEBSOCKET_SERVER_PORT > 1024 or Config.WEBSOCKET_SERVER_PORT < 65535:
-                    info['websocket_server_port'] = Config.WEBSOCKET_SERVER_PORT
+                if Config.WEBSOCKET_SERVER_PORT > 0:
+                    if Config.WEBSOCKET_SERVER_PORT > 1024 or Config.WEBSOCKET_SERVER_PORT < 65535:
+                        info['websocket_server_port'] = Config.WEBSOCKET_SERVER_PORT
             log_it("d", json.dumps(info, indent=4))
             return info
     except Exception as e:
