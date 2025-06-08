@@ -1,6 +1,5 @@
 from jinja2 import Environment, PackageLoader, select_autoescape
-from logger import log_it
-import DAP, traceback
+import DAP
 
 def get_config_value(section, key, default=None, is_numeric=False):
     try:
@@ -72,26 +71,25 @@ class Config:
         return env
 
     @staticmethod
-    def get_current_config(hide_sensitive_data=False, as_string=False):
-        try:
-            excluded_keys = ["jinja_environment", "get_current_config"]
-            hidden_keys = ["TOKEN", "PASSWORD", "CHAT_ID", "USER", "RECIPIENTS"]
-            config_data = {}
-            for key, value in sorted(vars(Config).items()):
-                if key.startswith("__") or key in excluded_keys:
-                    continue
-                if hide_sensitive_data and any(hidden in key for hidden in hidden_keys):
-                    config_data[key] = "***"
-                else:
-                    config_data[key] = value
-            if as_string:
-                return "\n".join([f"{key}: {value}" for key, value in config_data.items()])
-            return config_data
-        except Exception as e:
-            log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
-            return False
+    def get_current_config(hide_sensitive_data=False):
+        sensitive_keywords = {"TOKEN", "PASSWORD", "CHAT_ID", "USER", "RECIPIENTS"}
+        config_data = {}
 
-    #### GLOBALS #####
+        for attr in dir(Config):
+            if attr.startswith("__") or callable(getattr(Config, attr)):
+                continue
+
+            value = getattr(Config, attr)
+            if hide_sensitive_data and any(key in attr for key in sensitive_keywords):
+                config_data[attr] = "***"
+            else:
+                config_data[attr] = value
+
+        return config_data
+
+class Globals:
+    ######################### GLOBALS #########################
     WEBSOCKET_SERVER_RUNNING = False
     WEBSOCKET_CLIENT = []
     POST_AUTH_COOKIE = None
+    ###########################################################

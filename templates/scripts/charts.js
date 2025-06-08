@@ -1,10 +1,5 @@
-{% if general_info.template == "cpunk" %}
-    let primaryColor = '#F97834';
-    let secondaryColor = '#FF9A4D';
-{% else %}
-    let primaryColor = '#9079FF';
-    let secondaryColor = '#B3A3FF';
-{% endif %}
+let primaryColor = '#F97834';
+let secondaryColor = '#FF9A4D';
 
 {% if network_info and network_info.items() %}
     {% for network_name, network in network_info.items() %}

@@ -41,6 +41,7 @@ def generate_general_info(format_time=True):
             node_uptime = (format_uptime(sys_stats['node_uptime']) if format_time else sys_stats['node_uptime'])
             system_uptime = (format_uptime(sys_stats['system_uptime']) if format_time else sys_stats['system_uptime'])
             info = {
+                'current_config': Config.get_current_config(hide_sensitive_data=False),
                 'current_plugin_version': plugin_data['current_version'] if plugin_data else "Unavailable",
                 'external_ip': external_ip_future.result(),
                 'hostname': hostname_future.result(),
@@ -58,8 +59,9 @@ def generate_general_info(format_time=True):
                 'template': Config.TEMPLATE,
             }
             if isinstance(Config.WEBSOCKET_SERVER_PORT, int):
-                if Config.WEBSOCKET_SERVER_PORT > 1024 or Config.WEBSOCKET_SERVER_PORT < 65535:
-                    info['websocket_server_port'] = Config.WEBSOCKET_SERVER_PORT
+                if Config.WEBSOCKET_SERVER_PORT > 0:
+                    if Config.WEBSOCKET_SERVER_PORT > 1024 or Config.WEBSOCKET_SERVER_PORT < 65535:
+                        info['websocket_server_port'] = Config.WEBSOCKET_SERVER_PORT
             log_it("d", json.dumps(info, indent=4))
             return info
     except Exception as e:

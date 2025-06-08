@@ -56,6 +56,30 @@
             </div>
         </div>
     </div>
+    {% if general_info.current_config %}
+    <div class="modal shadow rounded fade" id="current_configuration" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content custom-modal-bg border-0">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Current configuration</h5>
+                </div>
+                <div class="modal-body text-color-secondary border-0">
+                     <div class="list-group list-group-flush">
+                        {% for key, value in general_info.current_config.items() %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center bg-transparent border-secondary text-break small border-0">
+                                <strong class="me-2 card-title">{{ key }}</strong>
+                                <span class="text-end card-title">{{ value }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-primary btn-no" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
     <div class="modal shadow rounded fade" id="data_removal_confirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content custom-modal-bg border-0">
@@ -138,6 +162,9 @@
                 </button>
                 <button class="btn">
                 <i data-bs-toggle="modal" data-bs-target="#restart_node_confirmation" class="fa-solid fa-power-off fa-2xl defaults_icon"></i>
+                </button>
+                <button class="btn">
+                <i data-bs-toggle="modal" data-bs-target="#current_configuration" class="fa-solid fa-gears fa-2xl defaults_icon"></i>
                 </button>
             </div>
         </div>

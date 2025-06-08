@@ -1,4 +1,4 @@
-from config import Config
+from config import Config, Globals
 from datetime import datetime, timedelta, timezone
 from generators import generate_data
 from logger import log_it
@@ -61,7 +61,7 @@ def GET_request_handler(headers, bypass_auth=False, query=None):
     expected_password = Config.PASSWORD
     access_token = Config.ACCESS_TOKEN
     auth_cookie = None
-    Config.POST_AUTH_COOKIE = str(uuid4())
+    Globals.POST_AUTH_COOKIE = str(uuid4())
     expected_cookie = generate_cookie(expected_username, expected_password)
     expected_token_cookie = generate_token_cookie(access_token)
     url = Config.PLUGIN_URL
@@ -89,7 +89,7 @@ def GET_request_handler(headers, bypass_auth=False, query=None):
                         "Content-Encoding": "gzip",
                         "Set-Cookie": (
                             f"auth_cookie={expected_token_cookie}; HttpOnly; Path=/; Expires={cookie_expires}\r\n"
-                            f"Set-Cookie: post_auth_cookie={Config.POST_AUTH_COOKIE}; Path=/;"
+                            f"Set-Cookie: post_auth_cookie={Globals.POST_AUTH_COOKIE}; Path=/;"
                         ),
                         "Location": f"/{url}"
                     }
@@ -115,7 +115,7 @@ def GET_request_handler(headers, bypass_auth=False, query=None):
                             "Content-Encoding": "gzip",
                             "Set-Cookie": (
                                 f"auth_cookie={expected_token_cookie}; HttpOnly; Path=/; Expires={cookie_expires}\r\n"
-                                f"Set-Cookie: post_auth_cookie={Config.POST_AUTH_COOKIE}; Path=/;"
+                                f"Set-Cookie: post_auth_cookie={Globals.POST_AUTH_COOKIE}; Path=/;"
                             )
                         }
                     )
@@ -169,7 +169,7 @@ def GET_request_handler(headers, bypass_auth=False, query=None):
                 "Content-Encoding": "gzip",
                 "Set-Cookie": (
                     f"auth_cookie={expected_token_cookie}; HttpOnly; Path=/; Expires={cookie_expires}\r\n"
-                    f"Set-Cookie: post_auth_cookie={Config.POST_AUTH_COOKIE}; Path=/;"
+                    f"Set-Cookie: post_auth_cookie={Globals.POST_AUTH_COOKIE}; Path=/;"
                 )
             }
         )
@@ -190,7 +190,7 @@ def POST_request_handler(headers, payload):
             if cookie_value:
                 auth_token = cookie_value.value
 
-        if auth_token != Config.POST_AUTH_COOKIE:
+        if auth_token != Globals.POST_AUTH_COOKIE:
             return CFSimpleHTTPResponse(
                 body=b'{"error": "Unauthorized"}',
                 code=403,

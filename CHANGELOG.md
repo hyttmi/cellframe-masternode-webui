@@ -1,9 +1,14 @@
 # Changelog
 
-## [5.01] - 2025-05-29
+## [5.02] - 2025-06-08
 
-### Changed
-- Some changes to Config class.
+### Added
+- Make sure plugin doesn't spam when node is not on node list.
+- Button for viewing plugins current configuration.
 
 ### Fixed
-- Node in node list heartbeat check failed on some servers because plugin was fetching IPv6 address instead of IPv4 address.
+- Issues with WebSocket server (hopefully).
+- Bug when using interval on scheduled messages.
+
+### Changed
+- Move all irrelevant ThreadPools to normal threads.

@@ -1,12 +1,15 @@
 :root {
     --accent-color: #F97834;
     --color2: #FF9A4D;
+    --background-color-primary: #150F0C;
+    --background-color-secondary: #1A0F0E;
+    --background-color-tertiary: #140B0A;
 }
 
 body,
 html {
     font-family: Rubik;
-    background-color: #150F0C;
+    background-color: var(--background-color-primary);
     background-image: radial-gradient(circle at 20% 30%, rgba(249, 120, 52, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(249, 120, 52, 0.08) 0%, transparent 50%);
     height: 100%;
     margin: 0;
@@ -23,7 +26,7 @@ html {
 }
 
 .card {
-    background-color: #1A0F0E;
+    background-color: var(--background-color-secondary);
     border-image: linear-gradient(140deg, rgba(249, 120, 52, 1) 0%, rgba(249, 120, 52, 0) 50%) 1;
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 0, 0, 0.6);
     margin-bottom: 25px;
@@ -56,7 +59,7 @@ html {
     border-radius: 50%;
     font-size: 20px;
     color: var(--accent-color);
-    background: #140B0A;
+    background: var(--background-color-tertiary);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -68,7 +71,7 @@ html {
     border-radius: 50%;
     padding: 10px;
     margin-right: 5px;
-    background: #1A0F0E;
+    background: var(--background-color-secondary);
 }
 
 .tokens td {
@@ -82,7 +85,7 @@ html {
 .card-header {
     padding-top: 15px;
     border: none;
-    background-color: #140B0A;
+    background-color: var(--background-color-secondary);
 }
 
 #custom_view .card-header {
@@ -91,7 +94,7 @@ html {
 
 .nav-item {
     transition: background-color 0.2s ease;
-    background-color: #140B0A;
+    background-color: var(--background-color-secondary);
     margin-top: 10px;
     margin-bottom: 10px;
     margin-left: 5px;
@@ -106,7 +109,7 @@ html {
 }
 
 .nav-item:hover span {
-    color: #140B0A;
+    color: var(--background-color-tertiary);
 }
 
 .nav-item.active {
@@ -114,7 +117,7 @@ html {
 }
 
 .nav-item.active span {
-    color: #140B0A;
+    color: var(--background-color-tertiary);
 }
 
 .days_amount {
@@ -148,11 +151,11 @@ html {
 }
 
 .custom-modal-bg {
-    background-color: #1A0F0E !important;
+    background-color: var(--background-color-secondary) !important;
 }
 
 .modal-header {
-    background-color: #140B0A;
+    background-color: var(--background-color-tertiary);
     color: var(--color2);
 }
 
@@ -232,7 +235,7 @@ html {
 
 .tutorial-ok-btn {
     background-color: var(--accent-color) !important;
-    color: #140B0A !important;
+    color: var(--background-color-tertiary) !important;
     border: none;
     box-shadow: none !important;
 }
@@ -241,14 +244,14 @@ html {
 .tutorial-ok-btn:active,
 .tutorial-ok-btn:focus {
     background-color: var(--color2) !important;
-    color: #140B0A !important;
+    color: var(--background-color-tertiary) !important;
     outline: none !important;
     box-shadow: none !important;
 }
 
 .btn-no {
     background-color: var(--accent-color) !important;
-    color: #140B0A !important;
+    color: var(--background-color-tertiary) !important;
     border: none;
     box-shadow: none !important;
 }
@@ -257,14 +260,14 @@ html {
 .btn-no:active,
 .btn-no:focus {
     background-color: var(--color2) !important;
-    color: #140B0A !important;
+    color: var(--background-color-tertiary) !important;
     outline: none !important;
     box-shadow: none !important;
 }
 
 .btn-yes {
     background-color: #FD2034 !important;
-    color: #140B0A !important;
+    color: var(--background-color-tertiary) !important;
     border: none;
     box-shadow: none !important;
 }
@@ -273,7 +276,7 @@ html {
 .btn-yes:active,
 .btn-yes:focus {
     background-color: var(--accent-color) !important;
-    color: #140B0A !important;
+    color: var(--background-color-tertiary) !important;
     outline: none !important;
     box-shadow: none !important;
 }
@@ -294,7 +297,7 @@ pre {
 }
 
 .toast {
-    background-color: #140B0A;
+    background-color: var(--background-color-tertiary);
     border-radius: 0;
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 0, 0, 0.6);
     color: var(--color2)
