@@ -1,7 +1,7 @@
 from common import cli_command
 from logger import log_it
 from packaging import version
-import socket, requests, re, time, psutil, time, traceback, platform
+import socket, requests, re, time, psutil, time, traceback, platform, textwrap
 
 def get_external_ip():
     try:
@@ -158,3 +158,11 @@ def is_cli_ready():
         return False
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+
+def remove_spacing(text):
+    try:
+        log_it("d", "Removing extra spacing from text...")
+        return textwrap.dedent(text).strip()
+    except Exception as e:
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+        return text

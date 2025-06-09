@@ -6,7 +6,7 @@ from networkutils import (
     change_net_mode,
     is_node_in_node_list
 )
-from utils import restart_node
+from utils import restart_node, remove_spacing
 from cacher import is_locked
 from config import Config
 from logger import log_it
@@ -50,6 +50,7 @@ class Heartbeat:
                 if in_node_list:
                     log_it("d", f"[HEARTBEAT] Node is in the node list for {network}")
                     self.statuses[network]["in_node_list"] = "OK"
+                    self.in_node_list_msgs_sent = 0
                     return
                 else:
                     if self.in_node_list_msgs_sent == Config.HEARTBEAT_NOTIFICATION_AMOUNT:
@@ -58,14 +59,13 @@ class Heartbeat:
                         return
                     log_it("e", f"[HEARTBEAT] Node is not in the node list for {network}")
                     self.statuses[network]["in_node_list"] = "NOK"
-                    notify_all(f"""
-                               ({Config.NODE_ALIAS}): Your node seems not to be in the node list for {network}.
-                               Please note that this is not a critical issue, but it may affect your node's performance.
-                               If you are sure it should be on node list, please check it manually with:
+                    notify_all(remove_spacing(f"""
+                        ({Config.NODE_ALIAS}): Your node seems not to be in the node list for {network}.
+                        Please note that this is not a critical issue, but it may affect your node's performance.
+                        If you are sure it should be on node list, please check it manually with:
 
-                               cellframe-node-cli node list -net {network}.
-                               """
-                               )
+                        cellframe-node-cli node list -net {network}.
+                    """))
                     self.in_node_list_msgs_sent += 1
         except Exception as e:
             log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
