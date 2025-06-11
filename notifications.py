@@ -63,8 +63,9 @@ def send_telegram_message(message):
                 return False
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+        return False
 
-def send_email(msg):
+def send_email(message):
     smtp_server = Config.SMTP_SERVER
     smtp_port = Config.SMTP_PORT
     use_ssl = Config.EMAIL_USE_SSL
@@ -100,7 +101,7 @@ def send_email(msg):
     email_msg["From"] = smtp_user
     email_msg["To"] = ', '.join(email_recipients)
     email_msg["Subject"] = email_subject
-    part = MIMEText(msg, "html")
+    part = MIMEText(message, "html")
     email_msg.attach(part)
 
     try:

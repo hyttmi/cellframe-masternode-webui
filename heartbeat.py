@@ -60,8 +60,8 @@ class Heartbeat:
                     log_it("e", f"[HEARTBEAT] Node is not in the node list for {network}")
                     self.statuses[network]["in_node_list"] = "NOK"
                     notify_all(remove_spacing(f"""
-                        ({Config.NODE_ALIAS}): Your node seems not to be in the node list for {network}.
-                        Please note that this is not a critical issue, but it may affect your node's performance.
+                        ({Config.NODE_ALIAS}): Your node seems not to be in the node list for {network}. Please note that this is not a critical issue, but it may affect your node's performance.
+
                         If you are sure it should be on node list, please check it manually with:
 
                         cellframe-node-cli node list -net {network}.
@@ -100,7 +100,7 @@ class Heartbeat:
                     log_it("d", f"Time difference: {time_diff} (current: {curr_time}, block time: {block_time})")
                     if curr_time - block_time > timedelta(hours=Config.HEARTBEAT_BLOCK_AGE):
                         self.statuses[network]['last_signed_block'] = "NOK"
-                        log_it("e", f"[HEARTBEAT] Last signed block is older than {Config.HEARTBEAT_BLOCK_AGE} hours!")
+                        log_it("e", f"[HEARTBEAT] Last signed block is older than {Config.HEARTBEAT_BLOCK_AGE} hours! Reporting issue...")
                         notify_all(f"({Config.NODE_ALIAS}): Last signed block is older than {Config.HEARTBEAT_BLOCK_AGE} hours!")
                         break
                     else:
