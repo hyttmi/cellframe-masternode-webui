@@ -1,77 +1,106 @@
 :root {
     --accent-color: #F97834;
     --accent-color-light: #FF9A4D;
-    --accent-color-dark: #C44E1D;
-    --background-color-primary: #100B09;
+    --background-color-primary: #150F0C;
     --background-color-secondary: #1A0F0E;
     --background-color-tertiary: #140B0A;
-    --text-color: #F1EAE6;
-    --muted-color: #8E7268;
-    --border-radius: 16px;
-    --transition-speed: 0.25s;
-    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.6);
 }
 
-html, body {
-    font-family: 'Rubik', sans-serif;
+body,
+html {
+    font-family: Rubik;
     background-color: var(--background-color-primary);
-    background-image: radial-gradient(circle at 25% 25%, rgba(249, 120, 52, 0.07), transparent 60%),
-                      radial-gradient(circle at 75% 75%, rgba(249, 120, 52, 0.07), transparent 60%);
+    background-image: radial-gradient(circle at 20% 30%, rgba(249, 120, 52, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(249, 120, 52, 0.08) 0%, transparent 50%);
+    height: 100%;
     margin: 0;
     padding: 0;
-    height: 100%;
-    color: var(--text-color);
-    background-attachment: fixed;
     background-size: cover;
-}
-
-.card {
-    background: rgba(26, 15, 14, 0.95);
-    border-radius: var(--border-radius);
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(4px);
-    box-shadow: var(--shadow-soft);
-    margin-bottom: 25px;
-    padding: 20px;
-    transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
-}
-
-.card:hover {
-    transform: scale(1.015);
-    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.7);
-}
-
-.card-title {
-    color: var(--accent-color-light);
-    margin-bottom: 10px;
-}
-
-.card-subtitle {
-    color: var(--muted-color);
-    font-size: 0.95rem;
-    padding-top: 8px;
-}
-
-.card-body {
-    position: relative;
-}
-
-.card-body canvas {
-    width: 100% !important;
-    height: auto !important;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .logo {
-    max-width: 180px;
-    padding-bottom: 14px;
+    max-width: 200px;
+    height: auto;
+    padding-bottom: 12px;
+}
+
+.card {
+    background-color: var(--background-color-secondary);
+    border-image: linear-gradient(140deg, rgba(249, 120, 52, 1) 0%, rgba(249, 120, 52, 0) 50%) 1;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 0, 0, 0.6);
+    margin-bottom: 25px;
+    min-height: 170px;
+}
+
+.card:hover {
+    transform: scale(1.02);
+    transition: transform 0.2s ease;
+}
+
+.card-subtitle {
+    padding-top: 15px;
+}
+
+.text-color-secondary {
+    color: var(--accent-color);
+}
+
+.text-body-secondary {
+    color: var(--accent-color) !important;
+}
+
+.icon-container {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 20px;
+    color: var(--accent-color);
+    background: var(--background-color-tertiary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+}
+
+.highlight {
+    color: var(--accent-color-light);
+    border-radius: 50%;
+    padding: 10px;
+    margin-right: 5px;
+    background: var(--background-color-secondary);
+}
+
+.tokens td {
+    padding: 5px;
+}
+
+.ghost {
+    opacity: 0.5;
+}
+
+.card-header {
+    padding-top: 15px;
+    border: none;
+    background-color: var(--background-color-secondary);
+}
+
+#custom_view .card-header {
+    cursor: all-scroll;
 }
 
 .nav-item {
+    transition: background-color 0.2s ease;
     background-color: var(--background-color-secondary);
-    margin: 8px;
-    padding: 10px 15px;
-    border-radius: 12px;
-    transition: background-color var(--transition-speed);
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 10px;
+    border-radius: 10px;
     cursor: pointer;
 }
 
@@ -79,13 +108,7 @@ html, body {
     background-color: var(--accent-color);
 }
 
-.nav-item span {
-    color: var(--text-color);
-    transition: color var(--transition-speed);
-}
-
-.nav-item:hover span,
-.nav-item.active span {
+.nav-item:hover span {
     color: var(--background-color-tertiary);
 }
 
@@ -93,60 +116,169 @@ html, body {
     background-color: var(--accent-color);
 }
 
-.icon-container,
-.highlight,
-.add_icon,
-.defaults_icon {
-    background: var(--background-color-tertiary);
+.nav-item.active span {
+    color: var(--background-color-tertiary);
+}
+
+.days_amount {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-size: .875em;
+    text-transform: uppercase;
+}
+
+.hidden {
+    opacity: 0;
+    transform: scale(0.75);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.card-body {
+    position: relative;
+}
+
+.card-title {
+    color: var(--accent-color-light)
+}
+
+.card-body canvas {
+    width: 100% !important;
+    height: auto !important;
+}
+
+.info {
     color: var(--accent-color);
 }
 
-.btn,
-.tutorial-ok-btn,
-.btn-yes,
-.btn-no {
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-weight: 500;
-    transition: background-color var(--transition-speed), color var(--transition-speed);
-    border: none;
-    box-shadow: none !important;
-}
-
-.btn-yes {
-    background-color: #FD2034 !important;
-}
-
-.btn-no,
-.tutorial-ok-btn {
-    background-color: var(--accent-color) !important;
-}
-
-.btn-yes:hover,
-.btn-no:hover,
-.tutorial-ok-btn:hover {
-    background-color: var(--accent-color-light) !important;
-    color: var(--background-color-tertiary) !important;
+.custom-modal-bg {
+    background-color: var(--background-color-secondary) !important;
 }
 
 .modal-header {
     background-color: var(--background-color-tertiary);
     color: var(--accent-color-light);
-    border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
-.toast {
-    background-color: var(--background-color-tertiary);
+.custom-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
     color: var(--accent-color-light);
-    box-shadow: var(--shadow-soft);
-    border-radius: 12px;
-    padding: 12px;
+    cursor: pointer;
 }
 
-pre {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    color: var(--text-color);
+.custom-close-btn:hover {
+    opacity: 0.7;
+}
+
+.icon-effect {
+    animation: shake 0.5s ease infinite;
+  }
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  25%, 75% {
+    transform: translateY(-2px);
+  }
+  50% {
+    transform: translateY(2px);
+  }
+}
+
+.visibility-hidden {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.5s ease-in-out, max-height 0.5s ease-in-out;
+}
+
+.visibility-visible {
+    opacity: 1;
+    max-height: 10000px; /* Unfortunately this is needed :( */
+    overflow: visible;
+    transition: opacity 0.5s ease-in-out, max-height 0.5s ease-in-out;
+}
+
+.add_icon {
+    color: var(--accent-color);
+    transform: rotate(45deg);
+    transition: all 0.5s ease-in-out;
+}
+
+.add_icon_disabled {
+    color: var(--accent-color);
+    transform: rotate(0);
+    transition: all 0.5s ease-in-out;
+}
+
+.card-inner {
+    max-width: 80%;
+    overflow: auto;
+}
+
+.btn:focus, .btn:active {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.defaults_icon {
+    color: var(--accent-color);
+    margin-left: 10px;
+}
+
+.fa-plus, .fa-minus {
+    color: var(--accent-color-light);
+}
+
+.tutorial-ok-btn {
+    background-color: var(--accent-color) !important;
+    color: var(--background-color-tertiary) !important;
+    border: none;
+    box-shadow: none !important;
+}
+
+.tutorial-ok-btn:hover,
+.tutorial-ok-btn:active,
+.tutorial-ok-btn:focus {
+    background-color: var(--accent-color-light) !important;
+    color: var(--background-color-tertiary) !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.btn-no {
+    background-color: var(--accent-color) !important;
+    color: var(--background-color-tertiary) !important;
+    border: none;
+    box-shadow: none !important;
+}
+
+.btn-no:hover,
+.btn-no:active,
+.btn-no:focus {
+    background-color: var(--accent-color-light) !important;
+    color: var(--background-color-tertiary) !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.btn-yes {
+    background-color: #FD2034 !important;
+    color: var(--background-color-tertiary) !important;
+    border: none;
+    box-shadow: none !important;
+}
+
+.btn-yes:hover,
+.btn-yes:active,
+.btn-yes:focus {
+    background-color: var(--accent-color) !important;
+    color: var(--background-color-tertiary) !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 a {
@@ -155,41 +287,18 @@ a {
 }
 
 a:hover {
+    color: var(--accent-color-light);
     text-decoration: underline;
 }
 
-.text-color-secondary,
-.text-body-secondary,
-.info {
-    color: var(--accent-color);
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 
-.hidden {
-    opacity: 0;
-    transform: scale(0.8);
-    transition: opacity var(--transition-speed), transform var(--transition-speed);
-}
-
-.visibility-hidden {
-    opacity: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: all var(--transition-speed) ease-in-out;
-}
-
-.visibility-visible {
-    opacity: 1;
-    max-height: 1000px;
-    overflow: visible;
-    transition: all var(--transition-speed) ease-in-out;
-}
-
-.icon-effect {
-    animation: shake 0.5s ease-in-out infinite;
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateY(0); }
-    25%, 75% { transform: translateY(-2px); }
-    50% { transform: translateY(2px); }
+.toast {
+    background-color: var(--background-color-tertiary);
+    border-radius: 0;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 0, 0, 0.6);
+    color: var(--accent-color-light)
 }
