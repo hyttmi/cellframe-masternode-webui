@@ -140,10 +140,7 @@ def notify_all(message, channels=None):
             else:
                 log_it("e", "Email notifications are disabled in the configuration.")
         if "websocket" in channels:
-            if Globals.WEBSOCKET_SERVER_RUNNING:
                 ws_broadcast_msg(message)
-            else:
-                log_it("e", "WebSocket server is not running.")
         log_it("i", f"Notification sent: {message}")
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())

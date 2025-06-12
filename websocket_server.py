@@ -1,8 +1,9 @@
 import socket, base64, hashlib, json, time
 from logger import log_it
-from config import Config, Globals
+from config import Globals
 from thread_launcher import start_thread
 from utils import is_port_available
+from datetime import datetime
 
 def handshake(conn):
     request = conn.recv(1024).decode()
@@ -78,15 +79,21 @@ def start_ws_server(port):
                 Globals.WEBSOCKET_CLIENT.append(conn)
                 log_it("d", f"New handshake for WebSocket connection. Clients currently connected: {Globals.WEBSOCKET_CLIENT}")
                 ws_broadcast_msg(f"{conn.getpeername()[0]} connected to WebSocket server!")
+                if Globals.WEBSOCKET_MESSAGES:
+                    for msg in Globals.WEBSOCKET_MESSAGE_CACHE:
+                        send_message(msg)
+                    Globals.WEBSOCKET_MESSAGE_CACHE.clear()
         except Exception as e:
             log_it("e", f"WebSocket server error: {e}")
 
 def ws_broadcast_msg(msg):
+    time_rcvd = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     if not Globals.WEBSOCKET_SERVER_RUNNING:
         log_it("e", "WebSocket server is not running")
         return
     if not Globals.WEBSOCKET_CLIENT:
         log_it("e", "No clients connected to WebSocket server")
+        Globals.WEBSOCKET_MESSAGE_CACHE.append(f"[{time_rcvd}]: {msg}")
         return
     message = json.dumps({"type": "stats_update", "data": msg})
     send_message(message)
