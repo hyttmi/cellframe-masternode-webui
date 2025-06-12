@@ -79,23 +79,15 @@ def start_ws_server(port):
                 Globals.WEBSOCKET_CLIENT.append(conn)
                 log_it("d", f"New handshake for WebSocket connection. Clients currently connected: {Globals.WEBSOCKET_CLIENT}")
                 ws_broadcast_msg(f"{conn.getpeername()[0]} connected to WebSocket server!")
-                if Globals.WEBSOCKET_MESSAGE_CACHE:
-                    log_it("d", f"Sending cached messages to {conn.getpeername()}")
-                    log_it("d", f"Cached messages: {Globals.WEBSOCKET_MESSAGE_CACHE}")
-                    for msg in Globals.WEBSOCKET_MESSAGE_CACHE:
-                        send_message(msg)
-                    Globals.WEBSOCKET_MESSAGE_CACHE.clear()
         except Exception as e:
             log_it("e", f"WebSocket server error: {e}")
 
 def ws_broadcast_msg(msg):
-    time_rcvd = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     if not Globals.WEBSOCKET_SERVER_RUNNING:
         log_it("e", "WebSocket server is not running")
         return
     if not Globals.WEBSOCKET_CLIENT:
         log_it("e", "No clients connected to WebSocket server")
-        Globals.WEBSOCKET_MESSAGE_CACHE.append(f"[{time_rcvd}]: {msg}")
         return
     message = json.dumps({"type": "stats_update", "data": msg})
     send_message(message)
