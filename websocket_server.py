@@ -79,7 +79,9 @@ def start_ws_server(port):
                 Globals.WEBSOCKET_CLIENT.append(conn)
                 log_it("d", f"New handshake for WebSocket connection. Clients currently connected: {Globals.WEBSOCKET_CLIENT}")
                 ws_broadcast_msg(f"{conn.getpeername()[0]} connected to WebSocket server!")
-                if Globals.WEBSOCKET_MESSAGES:
+                if Globals.WEBSOCKET_MESSAGE_CACHE:
+                    log_it("d", f"Sending cached messages to {conn.getpeername()}")
+                    log_it("d", f"Cached messages: {Globals.WEBSOCKET_MESSAGE_CACHE}")
                     for msg in Globals.WEBSOCKET_MESSAGE_CACHE:
                         send_message(msg)
                     Globals.WEBSOCKET_MESSAGE_CACHE.clear()
