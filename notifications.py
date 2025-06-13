@@ -7,6 +7,9 @@ from time import sleep
 from websocket_server import ws_broadcast_msg
 
 def send_telegram_message(message):
+    if not Config.TELEGRAM_STATS_ENABLED:
+        log_it("e", "Telegram notifications are disabled in the configuration.")
+        return False
     missing_configs = []
 
     if not Config.TELEGRAM_API_TOKEN and not Config.TELEGRAM_BOT_TOKEN:
@@ -66,6 +69,9 @@ def send_telegram_message(message):
         return False
 
 def send_email(message):
+    if not Config.EMAIL_STATS_ENABLED:
+        log_it("e", "Email notifications are disabled in the configuration.")
+        return False
     smtp_server = Config.SMTP_SERVER
     smtp_port = Config.SMTP_PORT
     use_ssl = Config.EMAIL_USE_SSL
