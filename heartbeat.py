@@ -98,7 +98,6 @@ class Heartbeat:
         except Exception as e:
             log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 
-
 heartbeat = Heartbeat()
 
 def run_heartbeat_check():
@@ -119,7 +118,6 @@ def run_heartbeat_check():
     else:
         log_it("i", "[HEARTBEAT] No issues detected.")
         notify_all("[HEARTBEAT] No issues detected.", channels=["websocket"])
-
 
 def report_heartbeat_errors(heartbeat, network):
     try:
