@@ -277,7 +277,7 @@ document.addEventListener("DOMContentLoaded", function () {
     async function sendCliCommand(command) {
         if (!command.trim()) return;
 
-        appendCliOutput(`> ${command}`);
+        appendCliOutput(`${command}`);
 
         try {
             const response = await fetch(window.location.href, {
