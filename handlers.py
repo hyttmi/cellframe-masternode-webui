@@ -233,9 +233,9 @@ def POST_request_handler(headers, payload):
                         headers={"Content-Type": "application/json"}
                     )
                 return CFSimpleHTTPResponse(
-                    body=result.encode("utf-8"),
+                    body=json.dumps({"output": result}).encode("utf-8"),
                     code=200,
-                    headers={"Content-Type": "text/plain"}
+                    headers={"Content-Type": "application/json"}
                 )
             except Exception as e:
                 log_it("e", f"An error occurred while executing CLI command: {e}", exc=traceback.format_exc())
