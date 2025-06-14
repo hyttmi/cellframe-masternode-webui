@@ -217,7 +217,7 @@ def POST_request_handler(headers, payload):
             )
 
         elif action == "cli":
-            command = payload.get("command", "").strip().lower()
+            command = payload.get("command", "").strip()
             if not command:
                 return CFSimpleHTTPResponse(
                     body=b'{"error": "No command provided"}',
