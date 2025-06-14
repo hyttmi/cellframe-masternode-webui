@@ -191,6 +191,8 @@ def POST_request_handler(headers, payload):
                 auth_token = cookie_value.value
 
         if auth_token != Globals.POST_AUTH_COOKIE:
+            log_it("e", "Invalid or missing post_auth_cookie")
+            log_it("d", f"Expected: {Globals.POST_AUTH_COOKIE}, got: {auth_token}")
             return CFSimpleHTTPResponse(
                 body=b'{"error": "Unauthorized"}',
                 code=403,
@@ -223,7 +225,13 @@ def POST_request_handler(headers, payload):
                     headers={"Content-Type": "application/json"}
                 )
             try:
-                disallowed_commands = ["tx_create"]
+                disallowed_commands = []
+                if Config.CLI_DISALLOWED_COMMANDS:
+                    if isinstance(Config.CLI_DISALLOWED_COMMANDS, str):
+                        disallowed_commands.append(Config.CLI_DISALLOWED_COMMANDS)
+                    elif isinstance(Config.CLI_DISALLOWED_COMMANDS, list):
+                        disallowed_commands.extend(Config.CLI_DISALLOWED_COMMANDS)
+
                 log_it("i", f"Executing CLI command: {command}")
                 result = cli_command(command)
                 split_command = command.split()
