@@ -311,4 +311,7 @@ pre {
     padding: 10px;
     border-radius: 5px;
     font-family: "Geist Mono", monospace;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    height: 300px;
 }
