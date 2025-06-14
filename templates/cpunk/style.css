@@ -302,3 +302,11 @@ pre {
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 0, 0, 0.6);
     color: var(--accent-color-light)
 }
+
+.cli_output {
+    background-color: var(--background-color-secondary);
+    color: var(--accent-color-light);
+    padding: 10px;
+    border-radius: 5px;
+    font-family: "Geist Mono", monospace;
+}
