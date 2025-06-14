@@ -112,6 +112,24 @@
             </div>
         </div>
     </div>
+        <div class="modal shadow rounded fade" id="cli_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="cliModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content custom-modal-bg border-0">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">CLI Terminal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-color-secondary">
+                    <div id="cli_output" class="bg-dark text-light p-3 rounded" style="height: 300px; overflow-y: auto; font-family: monospace; white-space: pre-wrap;"></div>
+                    <input type="text" id="cli_input" class="form-control mt-3" placeholder="Enter CLI command (e.g. net list)">
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="cli_send" class="btn btn-primary">Run Command</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container-fluid mt-4">
         {% if network_info %}
             {% for network_name, network in network_info.items() %}
@@ -165,6 +183,9 @@
                 </button>
                 <button class="btn">
                 <i data-bs-toggle="modal" data-bs-target="#current_configuration" class="fa-solid fa-gears fa-2xl defaults_icon"></i>
+                </button>
+                <button class="btn">
+                <i data-bs-toggle="modal" data-bs-target="#cli_modal" class="fa-solid fa-terminal fa-2xl defaults_icon"></i>
                 </button>
             </div>
         </div>

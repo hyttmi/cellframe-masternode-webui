@@ -5,7 +5,7 @@ from logger import log_it
 from pycfhelpers.node.http.simple import CFSimpleHTTPResponse
 import base64, hashlib, gzip, traceback, json, http.cookies, threading
 from urllib.parse import parse_qs
-from utils import is_cli_ready, restart_node
+from utils import is_cli_ready, restart_node, cli_command
 from uuid import uuid4
 
 def generate_cookie(username, password):
@@ -213,6 +213,37 @@ def POST_request_handler(headers, payload):
                 code=200,
                 headers={"Content-Type": "application/json"}
             )
+
+        elif action == "cli":
+            command = payload.get("command", "").strip()
+            if not command:
+                return CFSimpleHTTPResponse(
+                    body=b'{"error": "No command provided"}',
+                    code=400,
+                    headers={"Content-Type": "application/json"}
+                )
+            try:
+                log_it("i", f"Executing CLI command: {command}")
+                result = cli_command(command)
+                if not result:
+                    log_it("e", "CLI command returned no result")
+                    return CFSimpleHTTPResponse(
+                        body=b'{"error": "CLI command returned no result"}',
+                        code=500,
+                        headers={"Content-Type": "application/json"}
+                    )
+                return CFSimpleHTTPResponse(
+                    body=result.encode("utf-8"),
+                    code=200,
+                    headers={"Content-Type": "text/plain"}
+                )
+            except Exception as e:
+                log_it("e", f"An error occurred while executing CLI command: {e}", exc=traceback.format_exc())
+                return CFSimpleHTTPResponse(
+                    body=b'{"error": "Failed to execute CLI command"}',
+                    code=500,
+                    headers={"Content-Type": "application/json"}
+                )
         else:
             return CFSimpleHTTPResponse(
                 body=b'{"error": "Unsupported POST request!"}',
