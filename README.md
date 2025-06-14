@@ -61,6 +61,7 @@ configuration_option=value
 - `cache_age_limit=2` - Time in hours to inform user if blocks cache is older than this value. Default 2 hours.
 - `cache_blocks_interval=10` - Time (in minutes) between blocks cache renew.
 - `cache_rewards_interval=10` - Time (in minutes) between rewards cache renew.
+- `cli_disallowed_commands=command1|[command1, command2, command3]`- Disallow certain commands to be executed via CLI. Default is None, accepts one string or a list of strings.
 - `debug=true|false` - Print debugging data to `webui.log`, useful when you're having issues with the plugin.
 - `download_prereleases=true|false` - Automatic updater downloads also pre-release versions of plugin. Default false.
 - `email_recipients=somebody@gmail.com|[somebody@gmail.com, another@aol.com]` - Recipient(s) for the email.
