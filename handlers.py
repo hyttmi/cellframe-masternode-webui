@@ -232,6 +232,8 @@ def POST_request_handler(headers, payload):
                     elif isinstance(Config.CLI_DISALLOWED_COMMANDS, list):
                         disallowed_commands.extend(Config.CLI_DISALLOWED_COMMANDS)
 
+                log_it("d", f"Disallowed commands: {disallowed_commands}")
+
                 log_it("i", f"Executing CLI command: {command}")
                 if not is_cli_ready():
                     log_it("e", "CLI is not ready, cannot execute command")
