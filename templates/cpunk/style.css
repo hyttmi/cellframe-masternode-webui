@@ -314,4 +314,5 @@ pre {
     overflow-y: auto;
     white-space: pre-wrap;
     height: 300px;
+    font-size: 0.875em;
 }
