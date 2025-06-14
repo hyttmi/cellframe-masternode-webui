@@ -4,6 +4,8 @@
     --background-color-primary: #150F0C;
     --background-color-secondary: #1A0F0E;
     --background-color-tertiary: #140B0A;
+    --black: #000000;
+    --white: #FFFFFF;
 }
 
 body,
@@ -304,8 +306,8 @@ pre {
 }
 
 .cli_output {
-    background-color: var(--background-color-secondary);
-    color: var(--accent-color-light);
+    background-color: var(--black);
+    color: var(--white);
     padding: 10px;
     border-radius: 5px;
     font-family: "Geist Mono", monospace;
