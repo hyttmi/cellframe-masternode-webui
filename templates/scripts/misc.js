@@ -288,22 +288,24 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             const text = await response.text();
+            let data = null;
 
-            let data;
             try {
                 data = JSON.parse(text);
-            } catch {
-                data = null;
+            } catch (err) {
+                console.error('Failed to parse response as JSON:', err);
             }
 
             if (!response.ok) {
-                const errorMessage = (data && data.error) || response.statusText || 'Unknown error';
+                const errorMessage = (data && data.error) || text || `${response.status} ${response.statusText}`;
                 appendCliOutput(`Error: ${errorMessage}`);
                 return;
             }
 
             if (data && data.output) {
                 appendCliOutput(data.output);
+            } else if (data && data.error) {
+                appendCliOutput(`Error: ${data.error}`);
             } else if (text && !data) {
                 appendCliOutput(text);
             } else {
@@ -314,7 +316,6 @@ document.addEventListener("DOMContentLoaded", function () {
             appendCliOutput(`Fetch error: ${error.message}`);
         }
     }
-
 
     if (cliSendBtn) {
         cliSendBtn.addEventListener('click', () => {

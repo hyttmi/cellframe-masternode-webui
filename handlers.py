@@ -217,7 +217,7 @@ def POST_request_handler(headers, payload):
             )
 
         elif action == "cli":
-            command = payload.get("command", "").strip()
+            command = payload.get("command", "").strip().lower()
             if not command:
                 return CFSimpleHTTPResponse(
                     body=b'{"error": "No command provided"}',
@@ -233,6 +233,13 @@ def POST_request_handler(headers, payload):
                         disallowed_commands.extend(Config.CLI_DISALLOWED_COMMANDS)
 
                 log_it("i", f"Executing CLI command: {command}")
+                if not is_cli_ready():
+                    log_it("e", "CLI is not ready, cannot execute command")
+                    return CFSimpleHTTPResponse(
+                        body=b'{"error": "CLI is not ready"}',
+                        code=500,
+                        headers={"Content-Type": "application/json"}
+                    )
                 result = cli_command(command)
                 split_command = command.split()
                 if not result:
