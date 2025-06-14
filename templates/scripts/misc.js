@@ -287,22 +287,34 @@ document.addEventListener("DOMContentLoaded", function () {
                 body: JSON.stringify({ action: 'cli', command })
             });
 
+            const text = await response.text();
+
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch {
+                data = null;
+            }
+
             if (!response.ok) {
-                appendCliOutput(`Error: ${response.statusText}`);
+                const errorMessage = (data && data.error) || response.statusText || 'Unknown error';
+                appendCliOutput(`Error: ${errorMessage}`);
                 return;
             }
 
-            const data = await response.json();
-
-            if (data.output) {
+            if (data && data.output) {
                 appendCliOutput(data.output);
+            } else if (text && !data) {
+                appendCliOutput(text);
             } else {
                 appendCliOutput('(no output)');
             }
+
         } catch (error) {
             appendCliOutput(`Fetch error: ${error.message}`);
         }
     }
+
 
     if (cliSendBtn) {
         cliSendBtn.addEventListener('click', () => {
