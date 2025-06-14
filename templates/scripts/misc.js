@@ -303,7 +303,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             if (data && data.output) {
-                appendCliOutput(data.output);
+                appendCliOutput(data.output.toLowercase());
             } else if (data && data.error) {
                 appendCliOutput(`Error: ${data.error}`);
             } else if (text && !data) {
