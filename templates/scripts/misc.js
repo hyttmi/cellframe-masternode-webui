@@ -277,7 +277,7 @@ document.addEventListener("DOMContentLoaded", function () {
     async function sendCliCommand(command) {
         if (!command.trim()) return;
 
-        appendCliOutput(`${command}`);
+        appendCliOutput(command.toLowerCase());
 
         try {
             const response = await fetch(window.location.href, {
@@ -303,7 +303,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             if (data && data.output) {
-                appendCliOutput(data.output.toLowercase());
+                appendCliOutput(data.output);
             } else if (data && data.error) {
                 appendCliOutput(`Error: ${data.error}`);
             } else if (text && !data) {
