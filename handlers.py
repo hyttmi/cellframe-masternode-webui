@@ -223,7 +223,7 @@ def POST_request_handler(headers, payload):
                     headers={"Content-Type": "application/json"}
                 )
             try:
-                disallowed_commands = []
+                disallowed_commands = ["tx_create"]
                 log_it("i", f"Executing CLI command: {command}")
                 result = cli_command(command)
                 split_command = command.split()
