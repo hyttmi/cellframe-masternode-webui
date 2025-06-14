@@ -223,13 +223,22 @@ def POST_request_handler(headers, payload):
                     headers={"Content-Type": "application/json"}
                 )
             try:
+                disallowed_commands = []
                 log_it("i", f"Executing CLI command: {command}")
                 result = cli_command(command)
+                split_command = command.split()
                 if not result:
                     log_it("e", "CLI command returned no result")
                     return CFSimpleHTTPResponse(
                         body=b'{"error": "CLI command returned no result"}',
                         code=500,
+                        headers={"Content-Type": "application/json"}
+                    )
+                if split_command[0] in disallowed_commands:
+                    log_it("e", f"CLI command '{command}' is not allowed!")
+                    return CFSimpleHTTPResponse(
+                        body=b'{"error": "This CLI command is not allowed!"}',
+                        code=403,
                         headers={"Content-Type": "application/json"}
                     )
                 return CFSimpleHTTPResponse(
