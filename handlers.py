@@ -5,7 +5,7 @@ from logger import log_it
 from pycfhelpers.node.http.simple import CFSimpleHTTPResponse
 import base64, hashlib, gzip, traceback, json, http.cookies, threading
 from urllib.parse import parse_qs
-from utils import is_cli_ready, restart_node
+from utils import is_cli_ready, restart_node, cli_command
 from uuid import uuid4
 
 def generate_cookie(username, password):
@@ -191,8 +191,10 @@ def POST_request_handler(headers, payload):
                 auth_token = cookie_value.value
 
         if auth_token != Globals.POST_AUTH_COOKIE:
+            log_it("e", "Invalid or missing post_auth_cookie")
+            log_it("d", f"Expected: {Globals.POST_AUTH_COOKIE}, got: {auth_token}")
             return CFSimpleHTTPResponse(
-                body=b'{"error": "Unauthorized"}',
+                body=b'{"error": "Unauthorized, post_auth_cookie is invalid or missing"}',
                 code=403,
                 headers={"Content-Type": "application/json"}
             )
@@ -213,6 +215,62 @@ def POST_request_handler(headers, payload):
                 code=200,
                 headers={"Content-Type": "application/json"}
             )
+
+        elif action == "cli":
+            command = payload.get("command", "").strip()
+            if not command:
+                return CFSimpleHTTPResponse(
+                    body=b'{"error": "No command provided"}',
+                    code=400,
+                    headers={"Content-Type": "application/json"}
+                )
+            try:
+                disallowed_commands = []
+                if Config.CLI_DISALLOWED_COMMANDS:
+                    if isinstance(Config.CLI_DISALLOWED_COMMANDS, str):
+                        disallowed_commands.append(Config.CLI_DISALLOWED_COMMANDS)
+                    elif isinstance(Config.CLI_DISALLOWED_COMMANDS, list):
+                        disallowed_commands.extend(Config.CLI_DISALLOWED_COMMANDS)
+
+                log_it("d", f"Disallowed commands: {disallowed_commands}")
+
+                log_it("i", f"Executing CLI command: {command}")
+                if not is_cli_ready():
+                    log_it("e", "CLI is not ready, cannot execute command")
+                    return CFSimpleHTTPResponse(
+                        body=b'{"error": "CLI is not ready"}',
+                        code=500,
+                        headers={"Content-Type": "application/json"}
+                    )
+                split_command = command.split()
+                if split_command[0] in disallowed_commands:
+                    log_it("e", f"CLI command '{command}' is not allowed!")
+                    return CFSimpleHTTPResponse(
+                        body=b'{"error": "This CLI command is not allowed!"}',
+                        code=403,
+                        headers={"Content-Type": "application/json"}
+                    )
+
+                result = cli_command(command)
+                if not result:
+                    log_it("e", "CLI command returned no result")
+                    return CFSimpleHTTPResponse(
+                        body=b'{"error": "CLI command returned no result"}',
+                        code=500,
+                        headers={"Content-Type": "application/json"}
+                    )
+                return CFSimpleHTTPResponse(
+                    body=json.dumps({"output": result}).encode("utf-8"),
+                    code=200,
+                    headers={"Content-Type": "application/json"}
+                )
+            except Exception as e:
+                log_it("e", f"An error occurred while executing CLI command: {e}", exc=traceback.format_exc())
+                return CFSimpleHTTPResponse(
+                    body=b'{"error": "Failed to execute CLI command"}',
+                    code=500,
+                    headers={"Content-Type": "application/json"}
+                )
         else:
             return CFSimpleHTTPResponse(
                 body=b'{"error": "Unsupported POST request!"}',

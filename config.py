@@ -23,6 +23,7 @@ class Config:
     CACHE_AGE_LIMIT = get_config_value("webui", "cache_age_limit", default=4, is_numeric=True)
     CACHE_BLOCKS_INTERVAL = int(get_config_value("webui", "cache_blocks_interval", default=30, is_numeric=True))
     CACHE_REWARDS_INTERVAL = int(get_config_value("webui", "cache_rewards_interval", default=30, is_numeric=True))
+    CLI_DISALLOWED_COMMANDS = get_config_value("webui", "cli_disallowed_commands", default=None, is_numeric=False)
     DEBUG = get_config_value("webui", "debug", default=False, is_numeric=False)
     DOWNLOAD_PRERELEASES = get_config_value("webui", "download_prereleases", default=False)
     EMAIL_RECIPIENTS = get_config_value("webui", "email_recipients", default=None, is_numeric=False)
@@ -92,4 +93,5 @@ class Globals:
     WEBSOCKET_SERVER_RUNNING = False
     WEBSOCKET_CLIENT = []
     POST_AUTH_COOKIE = None
+
     ###########################################################

@@ -223,7 +223,6 @@ function showToast(message) {
     toast.show();
     toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
 }
-
 document.addEventListener("DOMContentLoaded", function () {
     sortCards();
     checkForVersionUpdate();
@@ -248,6 +247,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     const restartBtn = document.getElementById("restart_node");
+    const cliOutput = document.getElementById('cli_output');
+    const cliInput = document.getElementById('cli_input');
+    const cliSendBtn = document.getElementById('cli_send');
+
     if (restartBtn) {
         restartBtn.addEventListener("click", function () {
             fetch(window.location.href, {
@@ -261,6 +264,73 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.json())
             .then(data => console.log('Restart Success:', data))
             .catch(error => console.error('Restart Error:', error));
+        });
+    }
+
+    function appendCliOutput(text) {
+        const line = document.createElement('div');
+        line.textContent = text;
+        cliOutput.appendChild(line);
+        cliOutput.scrollTop = cliOutput.scrollHeight;
+    }
+
+    async function sendCliCommand(command) {
+        if (!command.trim()) return;
+
+        appendCliOutput(`${command}`);
+
+        try {
+            const response = await fetch(window.location.href, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'cli', command })
+            });
+
+            const text = await response.text();
+            let data = null;
+
+            try {
+                data = JSON.parse(text);
+            } catch (err) {
+                console.error('Failed to parse response as JSON:', err);
+            }
+
+            if (!response.ok) {
+                const errorMessage = (data && data.error) || text || `${response.status} ${response.statusText}`;
+                appendCliOutput(`Error: ${errorMessage}`);
+                return;
+            }
+
+            if (data && data.output) {
+                appendCliOutput(data.output);
+            } else if (data && data.error) {
+                appendCliOutput(`Error: ${data.error}`);
+            } else if (text && !data) {
+                appendCliOutput(text);
+            } else {
+                appendCliOutput('(no output)');
+            }
+
+        } catch (error) {
+            appendCliOutput(`Fetch error: ${error.message}`);
+        }
+    }
+
+    if (cliSendBtn) {
+        cliSendBtn.addEventListener('click', () => {
+            sendCliCommand(cliInput.value);
+            cliInput.value = '';
+            cliInput.focus();
+        });
+    }
+
+    if (cliInput) {
+        cliInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                cliSendBtn.click();
+            }
         });
     }
 });

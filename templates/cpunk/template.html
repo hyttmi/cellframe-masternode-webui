@@ -3,13 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
-    <title>{{ plugin_name }}</title>
+    <title>{{ general_info.plugin_name }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/ed38ca7e1a.js" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/Sortable.min.js"></script>
     <link rel="icon" href="https://cfwebui.s3.us-east-1.amazonaws.com/favicon.svg" type="image/svg+xml">
@@ -43,11 +43,14 @@
                     <h5 class="modal-title">Welcome to Cellframe Masternode WebUI!</h5>
                 </div>
                 <div class="modal-body text-color-secondary border-0">
-                    <p>To view available cards, click the <i class="fa-regular fa-circle-xmark" style="transform: rotate(45deg); color: var(--color2);"></i> button.</p>
+                    <p>To view available cards, click the <i class="fa-regular fa-circle-xmark" style="transform: rotate(45deg); color: var(--accent-color-light);"></i> button.</p>
+                    <p>To restart your node, click the <i class="fa-solid fa-power-off" style="color: var(--accent-color-light);"></i> button.</p>
+                    <p>To view this plugins current config, click the <i class="fa-solid fa-gears" style="color: var(--accent-color-light);"></i> button.</p>
+                    <p>For interacting with Cellframe Node CLI, click the <i class="fa-solid fa-terminal" style="color: var(--accent-color-light);"></i> button.</p>
                     <p>To pin a card, click the <i class="fa-solid fa-plus"></i> button. It will move to pinned cards.</p>
                     <p>To remove it, click the <i class="fa-solid fa-minus"></i> button.</p>
                     <p>Drag & reorder pinned cards to your preference.</p>
-                    <p>To close available cards, click <i class="fa-regular fa-circle-xmark" style="color: var(--color2);"></i> button.</p>
+                    <p>To close available cards, click <i class="fa-regular fa-circle-xmark" style="color: var(--accent-color-light);"></i> button.</p>
                     <p>For detailed plugin configuration, please refer to the <a target="_blank" href="https://github.com/hyttmi/cellframe-masternode-webui?tab=readme-ov-file#configuration">documentation.</a></p>
                 </div>
                 <div class="modal-footer border-0">
@@ -112,6 +115,23 @@
             </div>
         </div>
     </div>
+    <div class="modal shadow rounded fade" id="cli_modal" tabindex="-1" aria-labelledby="cliModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content custom-modal-bg border-0">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">CLI terminal</h5>
+                </div>
+                <div class="modal-body text-color-secondary">
+                    <div id="cli_output" class="rounded cli_output"></div>
+                    <input type="text" id="cli_input" class="mt-3 cli_input border-0" placeholder="Enter CLI command (e.g. net list). Send with Enter key.">
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-no" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="cli_send" class="btn btn-yes">Run Command</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container-fluid mt-4">
         {% if network_info %}
             {% for network_name, network in network_info.items() %}
@@ -165,6 +185,9 @@
                 </button>
                 <button class="btn">
                 <i data-bs-toggle="modal" data-bs-target="#current_configuration" class="fa-solid fa-gears fa-2xl defaults_icon"></i>
+                </button>
+                <button class="btn">
+                <i data-bs-toggle="modal" data-bs-target="#cli_modal" class="fa-solid fa-terminal fa-2xl defaults_icon"></i>
                 </button>
             </div>
         </div>

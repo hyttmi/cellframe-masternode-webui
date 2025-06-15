@@ -7,6 +7,9 @@ from time import sleep
 from websocket_server import ws_broadcast_msg
 
 def send_telegram_message(message):
+    if not Config.TELEGRAM_STATS_ENABLED:
+        log_it("e", "Telegram notifications are disabled in the configuration.")
+        return False
     missing_configs = []
 
     if not Config.TELEGRAM_API_TOKEN and not Config.TELEGRAM_BOT_TOKEN:
@@ -63,8 +66,12 @@ def send_telegram_message(message):
                 return False
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+        return False
 
-def send_email(msg):
+def send_email(message):
+    if not Config.EMAIL_STATS_ENABLED:
+        log_it("e", "Email notifications are disabled in the configuration.")
+        return False
     smtp_server = Config.SMTP_SERVER
     smtp_port = Config.SMTP_PORT
     use_ssl = Config.EMAIL_USE_SSL
@@ -100,7 +107,7 @@ def send_email(msg):
     email_msg["From"] = smtp_user
     email_msg["To"] = ', '.join(email_recipients)
     email_msg["Subject"] = email_subject
-    part = MIMEText(msg, "html")
+    part = MIMEText(message, "html")
     email_msg.attach(part)
 
     try:
@@ -139,10 +146,7 @@ def notify_all(message, channels=None):
             else:
                 log_it("e", "Email notifications are disabled in the configuration.")
         if "websocket" in channels:
-            if Globals.WEBSOCKET_SERVER_RUNNING:
                 ws_broadcast_msg(message)
-            else:
-                log_it("e", "WebSocket server is not running.")
         log_it("i", f"Notification sent: {message}")
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())

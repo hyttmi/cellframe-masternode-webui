@@ -1,9 +1,11 @@
 :root {
     --accent-color: #F97834;
-    --color2: #FF9A4D;
+    --accent-color-light: #FF9A4D;
     --background-color-primary: #150F0C;
     --background-color-secondary: #1A0F0E;
     --background-color-tertiary: #140B0A;
+    --black: #000000;
+    --white: #FFFFFF;
 }
 
 body,
@@ -67,7 +69,7 @@ html {
 }
 
 .highlight {
-    color: var(--color2);
+    color: var(--accent-color-light);
     border-radius: 50%;
     padding: 10px;
     margin-right: 5px;
@@ -138,7 +140,7 @@ html {
 }
 
 .card-title {
-    color: var(--color2)
+    color: var(--accent-color-light)
 }
 
 .card-body canvas {
@@ -156,14 +158,14 @@ html {
 
 .modal-header {
     background-color: var(--background-color-tertiary);
-    color: var(--color2);
+    color: var(--accent-color-light);
 }
 
 .custom-close-btn {
     background: none;
     border: none;
     font-size: 1.5rem;
-    color: var(--color2);
+    color: var(--accent-color-light);
     cursor: pointer;
 }
 
@@ -230,7 +232,7 @@ html {
 }
 
 .fa-plus, .fa-minus {
-    color: var(--color2);
+    color: var(--accent-color-light);
 }
 
 .tutorial-ok-btn {
@@ -243,7 +245,7 @@ html {
 .tutorial-ok-btn:hover,
 .tutorial-ok-btn:active,
 .tutorial-ok-btn:focus {
-    background-color: var(--color2) !important;
+    background-color: var(--accent-color-light) !important;
     color: var(--background-color-tertiary) !important;
     outline: none !important;
     box-shadow: none !important;
@@ -259,7 +261,7 @@ html {
 .btn-no:hover,
 .btn-no:active,
 .btn-no:focus {
-    background-color: var(--color2) !important;
+    background-color: var(--accent-color-light) !important;
     color: var(--background-color-tertiary) !important;
     outline: none !important;
     box-shadow: none !important;
@@ -282,12 +284,12 @@ html {
 }
 
 a {
-    color: var(--color2);
+    color: var(--accent-color-light);
     text-decoration: none;
 }
 
 a:hover {
-    color: var(--color2);
+    color: var(--accent-color-light);
     text-decoration: underline;
 }
 
@@ -300,5 +302,33 @@ pre {
     background-color: var(--background-color-tertiary);
     border-radius: 0;
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 0, 0, 0.6);
-    color: var(--color2)
+    color: var(--accent-color-light)
+}
+
+.cli_output {
+    background-color: var(--black);
+    color: var(--white);
+    padding: 10px;
+    border-radius: 5px;
+    font-family: "Geist Mono", monospace;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    height: 300px;
+    font-size: 0.875em;
+    width: 100%;
+}
+
+.cli_input {
+    background-color: var(--black);
+    color: var(--white);
+    padding: 10px;
+    border-radius: 5px;
+    font-family: "Geist Mono", monospace;
+    font-size: 0.875em;
+    width: 100%;
+}
+
+.cli_input:focus {
+    outline: none;
+    border: none;
 }
