@@ -191,7 +191,6 @@ function showChangelogModal() {
             const renderedHtml = marked.parse(data);
 
             document.getElementById("changelog").innerHTML = `
-                <h6>What's New:</h6>
                 ${renderedHtml}
             `;
         })
