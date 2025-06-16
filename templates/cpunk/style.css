@@ -332,3 +332,7 @@ pre {
     outline: none;
     border: none;
 }
+
+#changelog {
+    font-size: 0.875em;;
+}
