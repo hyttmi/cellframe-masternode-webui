@@ -333,6 +333,7 @@ pre {
     border: none;
 }
 
-#changelog {
-    font-size: 0.875em;;
-}
+#changelog h1 { font-size: 1.25rem; }
+#changelog h2 { font-size: 1.1rem; }
+#changelog h3 { font-size: 1rem; }
+#changelog h4, #changelog h5, #changelog h6 { font-size: 0.95rem; }
