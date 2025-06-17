@@ -20,6 +20,8 @@ def cli_command(command, timeout=120, is_shell_command=False, is_from_webui=Fals
         else:
             log_it("e", f"{command} failed to run successfully, return code was {exit_code}")
             return False
+    except TimeoutError:
+        raise
     except Exception as e:
         log_it("e", f"An error occurred while running {command}: {e}", exc=traceback.format_exc())
     return None
