@@ -16,6 +16,7 @@ def cli_command(command, timeout=120, is_shell_command=False, is_from_webui=Fals
             log_it("e", f"{command} timed out.")
             if is_from_webui:
                 raise TimeoutError(f"Command {command} timed out after {timeout} seconds.")
+            return False
         else:
             log_it("e", f"{command} failed to run successfully, return code was {exit_code}")
             return False

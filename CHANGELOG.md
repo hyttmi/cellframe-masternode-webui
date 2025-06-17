@@ -4,3 +4,6 @@
 
 ### Fixed
 - Parsing changelog.
+
+### Changed
+- Make sure that long running commands are not possible to run via WebUI CLI.
