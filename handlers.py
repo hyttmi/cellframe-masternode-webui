@@ -251,7 +251,7 @@ def POST_request_handler(headers, payload):
                         headers={"Content-Type": "application/json"}
                     )
 
-                result = cli_command(command, is_from_webui=True, timeout=5)
+                result = cli_command(command, timeout=5, is_from_webui=True)
                 if not result:
                     log_it("e", "CLI command returned no result")
                     return CFSimpleHTTPResponse(
