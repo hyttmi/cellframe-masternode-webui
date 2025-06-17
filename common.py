@@ -2,7 +2,7 @@ from command_runner import command_runner
 from logger import log_it
 import os, traceback
 
-def cli_command(command, timeout=120, is_shell_command=False, retries=3):
+def cli_command(command, timeout=120, is_shell_command=False, retries=3, is_from_webui=False):
     while retries > 0:
         try:
             if is_shell_command:
@@ -14,6 +14,9 @@ def cli_command(command, timeout=120, is_shell_command=False, retries=3):
                 return output if output else True
             elif exit_code == -254:
                 log_it("e", f"{command} timed out, retrying...")
+                if is_from_webui:
+                    log_it("e", f"Command {command} timed out, please try again later.")
+                    raise TimeoutError(f"Command {command} timed out after {timeout} seconds.")
             else:
                 log_it("e", f"{command} failed to run successfully, return code was {exit_code}")
                 return False
