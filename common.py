@@ -2,7 +2,7 @@ from command_runner import command_runner
 from logger import log_it
 import os, traceback
 
-def cli_command(command, timeout=120, is_shell_command=False, is_from_webui=False):
+def cli_command(command, timeout=120, is_shell_command=False):
     try:
         if is_shell_command:
             exit_code, output = command_runner(command, timeout=timeout, shell=True, method='poller')
@@ -14,14 +14,10 @@ def cli_command(command, timeout=120, is_shell_command=False, is_from_webui=Fals
             return output if output else True
         elif exit_code == -254:
             log_it("e", f"{command} timed out.")
-            if is_from_webui:
-                raise TimeoutError(f"Command {command} timed out after {timeout} seconds.")
-            return False
+            raise TimeoutError(f"Command {command} timed out after {timeout} seconds.")
         else:
             log_it("e", f"{command} failed to run successfully, return code was {exit_code}")
             return False
-    except TimeoutError:
-        raise
     except Exception as e:
         log_it("e", f"An error occurred while running {command}: {e}", exc=traceback.format_exc())
     return None
