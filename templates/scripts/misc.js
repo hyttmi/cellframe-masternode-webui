@@ -227,6 +227,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    const cliModal = document.getElementById('cli_modal');
+    cliModal.addEventListener('shown.bs.modal', function () {
+        document.getElementById('cli_input').focus();
+    });
+
     const tutorialModal = new bootstrap.Modal(document.getElementById("tutorialModal"));
     const tutorialOkBtn = document.getElementById("tutorialOkBtn");
 
