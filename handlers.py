@@ -7,6 +7,10 @@ import base64, hashlib, gzip, traceback, json, http.cookies, threading
 from urllib.parse import parse_qs
 from utils import is_cli_ready, restart_node, cli_command
 from uuid import uuid4
+from cacher import is_locked
+
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeout
+cli_executor = ThreadPoolExecutor(max_workers=5)
 
 def generate_cookie(username, password):
     data = f"{username}:{password}"
@@ -242,6 +246,7 @@ def POST_request_handler(headers, payload):
                         code=500,
                         headers={"Content-Type": "application/json"}
                     )
+
                 split_command = command.split()
                 if split_command[0] in disallowed_commands:
                     log_it("e", f"CLI command '{command}' is not allowed!")
@@ -251,7 +256,17 @@ def POST_request_handler(headers, payload):
                         headers={"Content-Type": "application/json"}
                     )
 
-                result = cli_command(command, timeout=3) # 3 seconds timeout for WebUI commands
+                if is_locked():
+                    log_it("i", "Caching is in progress, CLI command execution is locked")
+                    return CFSimpleHTTPResponse(
+                        body=b'{"error": "CLI command execution is locked due to caching"}',
+                        code=503,
+                        headers={"Content-Type": "application/json"}
+                    )
+
+                future = cli_executor.submit(cli_command, command)
+                result = future.result()
+
                 if not result:
                     log_it("e", "CLI command returned no result")
                     return CFSimpleHTTPResponse(
@@ -259,16 +274,10 @@ def POST_request_handler(headers, payload):
                         code=500,
                         headers={"Content-Type": "application/json"}
                     )
+
                 return CFSimpleHTTPResponse(
                     body=json.dumps({"output": result}).encode("utf-8"),
                     code=200,
-                    headers={"Content-Type": "application/json"}
-                )
-            except TimeoutError as te:
-                log_it("e", f"CLI command timed out: {te}")
-                return CFSimpleHTTPResponse(
-                    body=b'{"error": "CLI command timed out, long running commands are not allowed!"}',
-                    code=500,
                     headers={"Content-Type": "application/json"}
                 )
             except Exception as e:
