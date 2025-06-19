@@ -234,7 +234,7 @@ document.addEventListener("DOMContentLoaded", function () {
         tutorialModal.show();
     }
 
-    tutorialOkBtn?.addEventListener("click", function () {
+    tutorialOkBtn.addEventListener("click", function () {
         localStorage.setItem("customViewTutorialSeen", "true");
         tutorialModal.hide();
     });
@@ -261,34 +261,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function appendCliOutput(text) {
-        if (!cliOutput) return;
         const line = document.createElement('div');
         line.textContent = text;
         cliOutput.appendChild(line);
         cliOutput.scrollTop = cliOutput.scrollHeight;
     }
 
-    function createLoadingLine(command) {
-        const line = document.createElement('div');
-        line.textContent = command + ' ';
-        const dots = document.createElement('span');
-        dots.textContent = '.';
-        line.appendChild(dots);
-        cliOutput.appendChild(line);
-        cliOutput.scrollTop = cliOutput.scrollHeight;
-
-        let count = 1;
-        const interval = setInterval(() => {
-            dots.textContent = '.'.repeat((count++ % 4) + 1); // cycles through ., .., ..., ....
-        }, 500);
-
-        return { line, dots, stop: () => clearInterval(interval) };
-    }
-
     async function sendCliCommand(command) {
         if (!command.trim()) return;
 
-        const loader = createLoadingLine(command);
+        appendCliOutput(`${command}`);
 
         try {
             const response = await fetch(window.location.href, {
@@ -307,31 +289,36 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.error('Failed to parse response as JSON:', err);
             }
 
-            loader.stop();
+            if (!response.ok) {
+                const errorMessage = (data && data.error) || text || `${response.status} ${response.statusText}`;
+                appendCliOutput(`Error: ${errorMessage}`);
+                return;
+            }
 
-            const resultText =
-                (data && data.output) ||
-                (data && data.error && `Error: ${data.error}`) ||
-                (!data && text) ||
-                '(no output)';
-
-            loader.line.textContent = `${command}\n${resultText}`;
-            cliOutput.scrollTop = cliOutput.scrollHeight;
+            if (data && data.output) {
+                appendCliOutput(data.output);
+            } else if (data && data.error) {
+                appendCliOutput(`Error: ${data.error}`);
+            } else if (text && !data) {
+                appendCliOutput(text);
+            } else {
+                appendCliOutput('(no output)');
+            }
 
         } catch (error) {
-            loader.stop();
-            loader.line.textContent = `${command}\nFetch error: ${error.message}`;
-            cliOutput.scrollTop = cliOutput.scrollHeight;
+            appendCliOutput(`Fetch error: ${error.message}`);
         }
     }
 
-    if (cliSendBtn && cliInput) {
+    if (cliSendBtn) {
         cliSendBtn.addEventListener('click', () => {
             sendCliCommand(cliInput.value);
             cliInput.value = '';
             cliInput.focus();
         });
+    }
 
+    if (cliInput) {
         cliInput.addEventListener('keydown', e => {
             if (e.key === 'Enter') {
                 e.preventDefault();
