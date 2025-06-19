@@ -326,4 +326,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+
+    const cliModal = document.getElementById('cli_modal');
+    cliModal.addEventListener('shown.bs.modal', function () {
+        document.getElementById('cli_input').focus();
+    });
 });
