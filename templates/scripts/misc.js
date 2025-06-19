@@ -189,7 +189,10 @@ function showChangelogModal() {
         .then(response => response.text())
         .then(data => {
             const renderedHtml = marked.parse(data);
-            document.getElementById("changelog").innerHTML = `${renderedHtml}`;
+
+            document.getElementById("changelog").innerHTML = `
+                ${renderedHtml}
+            `;
         })
         .catch(error => {
             document.getElementById("changelog").innerHTML = `<p>Error loading changelog.</p>`;
@@ -213,7 +216,6 @@ function showToast(message) {
     toast.show();
     toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
 }
-
 document.addEventListener("DOMContentLoaded", function () {
     sortCards();
     checkForVersionUpdate();
@@ -225,11 +227,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    const cliModal = document.getElementById('cli_modal');
-    cliModal.addEventListener('shown.bs.modal', function () {
-        document.getElementById('cli_input').focus();
-    });
-
     const tutorialModal = new bootstrap.Modal(document.getElementById("tutorialModal"));
     const tutorialOkBtn = document.getElementById("tutorialOkBtn");
 
@@ -237,7 +234,7 @@ document.addEventListener("DOMContentLoaded", function () {
         tutorialModal.show();
     }
 
-    tutorialOkBtn.addEventListener("click", function () {
+    tutorialOkBtn?.addEventListener("click", function () {
         localStorage.setItem("customViewTutorialSeen", "true");
         tutorialModal.hide();
     });
@@ -263,52 +260,35 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    function appendCliOutput(text, id = null) {
-        const output = document.getElementById('cli-output');
+    function appendCliOutput(text) {
+        if (!cliOutput) return;
         const line = document.createElement('div');
         line.textContent = text;
-        if (id) line.id = id;
-        output.appendChild(line);
-        output.scrollTop = output.scrollHeight;
+        cliOutput.appendChild(line);
+        cliOutput.scrollTop = cliOutput.scrollHeight;
     }
 
-    function updateCliOutputLine(text, id) {
-        const line = document.getElementById(id);
-        if (line) {
-            line.textContent = text;
-        }
-    }
+    function createLoadingLine(command) {
+        const line = document.createElement('div');
+        line.textContent = command + ' ';
+        const dots = document.createElement('span');
+        dots.textContent = '.';
+        line.appendChild(dots);
+        cliOutput.appendChild(line);
+        cliOutput.scrollTop = cliOutput.scrollHeight;
 
-    function removeCliOutputLine(id) {
-        const line = document.getElementById(id);
-        if (line && line.parentElement) {
-            line.parentElement.removeChild(line);
-        }
+        let count = 1;
+        const interval = setInterval(() => {
+            dots.textContent = '.'.repeat((count++ % 4) + 1); // cycles through ., .., ..., ....
+        }, 500);
+
+        return { line, dots, stop: () => clearInterval(interval) };
     }
 
     async function sendCliCommand(command) {
         if (!command.trim()) return;
 
-        appendCliOutput(`${command}`);
-
-        let dotIntervalId = null;
-        let dotCount = 0;
-        const loadingLineId = `loading-${Date.now()}`;
-
-        function startLoadingDots() {
-            appendCliOutput("", loadingLineId);
-            dotIntervalId = setInterval(() => {
-                dotCount = (dotCount + 1) % 4;
-                updateCliOutputLine('.'.repeat(dotCount), loadingLineId);
-            }, 500);
-        }
-
-        function stopLoadingDots() {
-            if (dotIntervalId) clearInterval(dotIntervalId);
-            removeCliOutputLine(loadingLineId);
-        }
-
-        startLoadingDots();
+        const loader = createLoadingLine(command);
 
         try {
             const response = await fetch(window.location.href, {
@@ -319,18 +299,44 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             const text = await response.text();
-            stopLoadingDots();
-            appendCliOutput(text);
-        } catch (err) {
-            stopLoadingDots();
-            appendCliOutput("Error: " + err.message);
+            let data = null;
+
+            try {
+                data = JSON.parse(text);
+            } catch (err) {
+                console.error('Failed to parse response as JSON:', err);
+            }
+
+            loader.stop();
+
+            const resultText =
+                (data && data.output) ||
+                (data && data.error && `Error: ${data.error}`) ||
+                (!data && text) ||
+                '(no output)';
+
+            loader.line.textContent = `${command}\n${resultText}`;
+            cliOutput.scrollTop = cliOutput.scrollHeight;
+
+        } catch (error) {
+            loader.stop();
+            loader.line.textContent = `${command}\nFetch error: ${error.message}`;
+            cliOutput.scrollTop = cliOutput.scrollHeight;
         }
     }
 
-    cliSendBtn.addEventListener("click", () => sendCliCommand(cliInput.value));
-    cliInput.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") {
+    if (cliSendBtn && cliInput) {
+        cliSendBtn.addEventListener('click', () => {
             sendCliCommand(cliInput.value);
-        }
-    });
+            cliInput.value = '';
+            cliInput.focus();
+        });
+
+        cliInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                cliSendBtn.click();
+            }
+        });
+    }
 });
