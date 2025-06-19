@@ -14,7 +14,7 @@ def cli_command(command, timeout=120, is_shell_command=False):
             return output if output else True
         elif exit_code == -254:
             log_it("e", f"{command} timed out.")
-            return False
+            raise TimeoutError(f"Command '{command}' timed out after {timeout} seconds.")
         else:
             log_it("e", f"{command} failed to run successfully, return code was {exit_code}")
             return False
