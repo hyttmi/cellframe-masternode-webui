@@ -265,17 +265,53 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    function appendCliOutput(text) {
+    function appendCliOutput(text, id = null) {
+        const output = document.getElementById('cli-output');
         const line = document.createElement('div');
         line.textContent = text;
-        cliOutput.appendChild(line);
-        cliOutput.scrollTop = cliOutput.scrollHeight;
+        if (id) line.id = id;
+        output.appendChild(line);
+        output.scrollTop = output.scrollHeight;
+    }
+
+    function updateCliOutputLine(text, id) {
+        const line = document.getElementById(id);
+        if (line) {
+            line.textContent = text;
+        }
+    }
+
+    function removeCliOutputLine(id) {
+        const line = document.getElementById(id);
+        if (line && line.parentElement) {
+            line.parentElement.removeChild(line);
+        }
     }
 
     async function sendCliCommand(command) {
         if (!command.trim()) return;
 
         appendCliOutput(`${command}`);
+
+        let dotIntervalId = null;
+        let dotCount = 0;
+        let loadingLineId = `loading-${Date.now()}`;
+
+        function startLoadingDots() {
+            appendCliOutput("", loadingLineId);
+            dotIntervalId = setInterval(() => {
+                dotCount = (dotCount + 1) % 4;
+                const dots = '.'.repeat(dotCount);
+                updateCliOutputLine(`${dots}`, loadingLineId);
+            }, 500);
+        }
+
+        function stopLoadingDots() {
+            if (dotIntervalId) clearInterval(dotIntervalId);
+            removeCliOutputLine(loadingLineId);
+        }
+
+        startLoadingDots();
 
         try {
             const response = await fetch(window.location.href, {
@@ -294,6 +330,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.error('Failed to parse response as JSON:', err);
             }
 
+            stopLoadingDots();
+
             if (!response.ok) {
                 const errorMessage = (data && data.error) || text || `${response.status} ${response.statusText}`;
                 appendCliOutput(`Error: ${errorMessage}`);
@@ -311,6 +349,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
         } catch (error) {
+            stopLoadingDots();
             appendCliOutput(`Fetch error: ${error.message}`);
         }
     }
