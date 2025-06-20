@@ -136,25 +136,25 @@
     <div class="container-fluid mt-4">
         {% if network_info %}
             {% for network_name, network in network_info.items() %}
-                {% if network.heartbeat_autocollect_status == "OK"%}
+                {% if network.heartbeat_autocollect_status == "OK" %}
             <div class="row justify-content-center">
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="alert alert-danger text-center d-flex align-items-center justify-content-center" role="alert">
-                        <span>Heartbeat for autocollect status is not OK in {{ network_name }}</span>
+                        <span>Autocollect is inactive in {{ network_name }}!</span>
                     </div>
                 </div>
             </div>
                 {% endif %}
-                {% if network.heartbeat_last_signed_block == "OK"%}
+                {% if network.heartbeat_last_signed_block == "OK" %}
             <div class="row justify-content-center">
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="alert alert-danger text-center d-flex align-items-center justify-content-center" role="alert">
-                        <span>Your last signed block is older than {{general_info.current_config.HEARTBEAT_BLOCK_AGE }} hours in {{ network_name }}.</span>
+                        <span>Your last signed block is older than {{ general_info.current_config.HEARTBEAT_BLOCK_AGE }} hours in {{ network_name }}.</span>
                     </div>
                 </div>
             </div>
                 {% endif %}
-                {% if network.heartbeat_in_node_list == "OK"%}
+                {% if network.heartbeat_in_node_list == "OK" %}
             <div class="row justify-content-center">
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="alert alert-warning text-center d-flex align-items-center justify-content-center" role="alert">
