@@ -149,7 +149,7 @@
             <div class="row justify-content-center">
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="alert alert-danger text-center d-flex align-items-center justify-content-center" role="alert">
-                        <span>Heartbeat for last signed block is not OK in {{ network_name }}</span>
+                        <span>Your last signed block is older than {{general_info.current_config.HEARTBEAT_BLOCK_AGE }} hours in {{ network_name }}.</span>
                     </div>
                 </div>
             </div>
@@ -157,8 +157,8 @@
                 {% if network.heartbeat_in_node_list == "NOK"%}
             <div class="row justify-content-center">
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="alert alert-danger text-center d-flex align-items-center justify-content-center" role="alert">
-                        <span>Heartbeat for node in node list is not OK in {{ network_name }}</span>
+                    <div class="alert alert-warning text-center d-flex align-items-center justify-content-center" role="alert">
+                        <span>Your node seems not to be in the node list for {{ network_name }}. Please note that this is not a critical issue, but it may affect your node's performance.</span>
                     </div>
                 </div>
             </div>

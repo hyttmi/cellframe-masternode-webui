@@ -1,4 +1,5 @@
 from command_runner import command_runner
+import requests_unixsocket
 from logger import log_it
 import os, traceback
 
