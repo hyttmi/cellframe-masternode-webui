@@ -1,11 +1,13 @@
 # Changelog
 
-## [5.10] - 2025-06-15
+## [5.11] - 2025-06-23
 
 ### Fixed
-- Missing `<title>` on WebUI.
-- Infinite "node-in-node-list" notifications.
-- Some other strange things which were happening with `Heartbeat`.
+- Parsing changelog.
+- Parsing `srv_stake list keys` which has dot in front of `pkey_hash` for some reason.
 
-### Added
-- Support for interacting with Cellframe Node CLI.
+### Changed
+- Make sure that long running commands are not possible to run via WebUI CLI.
+- No more retries for CLI commands, if it fails, it fails.
+- More informative messages from Heartbeat to UI.
+- Focus CLI input field automatically on WebUI.

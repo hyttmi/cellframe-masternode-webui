@@ -188,17 +188,10 @@ function showChangelogModal() {
     fetch("https://raw.githubusercontent.com/hyttmi/cellframe-masternode-webui/refs/heads/master/CHANGELOG.md")
         .then(response => response.text())
         .then(data => {
-            const emojiMap = {
-                ':sunglasses:': '😎',
-            };
-
-            for (const [shortcode, emoji] of Object.entries(emojiMap)) {
-                data = data.replaceAll(shortcode, emoji);
-            }
+            const renderedHtml = marked.parse(data);
 
             document.getElementById("changelog").innerHTML = `
-                <h6>What's New:</h6>
-                <pre>${data}</pre>
+                ${renderedHtml}
             `;
         })
         .catch(error => {
@@ -333,4 +326,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+
+    const cliModal = document.getElementById('cli_modal');
+    cliModal.addEventListener('shown.bs.modal', function () {
+        document.getElementById('cli_input').focus();
+    });
 });

@@ -251,7 +251,7 @@ def POST_request_handler(headers, payload):
                         headers={"Content-Type": "application/json"}
                     )
 
-                result = cli_command(command)
+                result = cli_command(command, timeout=3) # 3 seconds timeout for WebUI commands
                 if not result:
                     log_it("e", "CLI command returned no result")
                     return CFSimpleHTTPResponse(
@@ -262,6 +262,13 @@ def POST_request_handler(headers, payload):
                 return CFSimpleHTTPResponse(
                     body=json.dumps({"output": result}).encode("utf-8"),
                     code=200,
+                    headers={"Content-Type": "application/json"}
+                )
+            except TimeoutError as te:
+                log_it("e", f"CLI command timed out: {te}")
+                return CFSimpleHTTPResponse(
+                    body=b'{"error": "CLI command timed out, long running commands are not allowed!"}',
+                    code=500,
                     headers={"Content-Type": "application/json"}
                 )
             except Exception as e:

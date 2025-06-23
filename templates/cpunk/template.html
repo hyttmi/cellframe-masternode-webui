@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/Sortable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="icon" href="https://cfwebui.s3.us-east-1.amazonaws.com/favicon.svg" type="image/svg+xml">
     <style>
         {% include 'cpunk/style.css' %}
@@ -135,29 +136,29 @@
     <div class="container-fluid mt-4">
         {% if network_info %}
             {% for network_name, network in network_info.items() %}
-                {% if network.heartbeat_autocollect_status == "NOK"%}
+                {% if network.heartbeat_autocollect_status == "NOK" %}
             <div class="row justify-content-center">
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="alert alert-danger text-center d-flex align-items-center justify-content-center" role="alert">
-                        <span>Heartbeat for autocollect status is not OK in {{ network_name }}</span>
+                        <span>Autocollect is inactive in network {{ network_name }}!</span>
                     </div>
                 </div>
             </div>
                 {% endif %}
-                {% if network.heartbeat_last_signed_block == "NOK"%}
+                {% if network.heartbeat_last_signed_block == "NOK" %}
             <div class="row justify-content-center">
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="alert alert-danger text-center d-flex align-items-center justify-content-center" role="alert">
-                        <span>Heartbeat for last signed block is not OK in {{ network_name }}</span>
+                        <span>Your last signed block is older than {{ general_info.current_config.HEARTBEAT_BLOCK_AGE }} hours in {{ network_name }}.</span>
                     </div>
                 </div>
             </div>
                 {% endif %}
-                {% if network.heartbeat_in_node_list == "NOK"%}
+                {% if network.heartbeat_in_node_list == "NOK" %}
             <div class="row justify-content-center">
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="alert alert-danger text-center d-flex align-items-center justify-content-center" role="alert">
-                        <span>Heartbeat for node in node list is not OK in {{ network_name }}</span>
+                    <div class="alert alert-warning text-center d-flex align-items-center justify-content-center" role="alert">
+                        <span>Your node seems not to be in the node list for {{ network_name }}. Please note that this is not a critical issue, but it may affect your node's performance.</span>
                     </div>
                 </div>
             </div>

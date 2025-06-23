@@ -114,7 +114,7 @@ def get_node_data(network, only_my_node=False):
             calculated_weight = float(total_weight * (max_weight / 100)) if max_weight and total_weight else None
 
             node_pattern = re.compile(
-                r'pkey_hash:\s+(?P<pkey_hash>\w+)\s+'
+                r'pkey_hash:\s+(?P<pkey_hash>\.?\w+)\s+' # Optional dot at the start of pkey_hash
                 r'stake_value:\s+(?P<stake_value>[\d.]+)\s+'
                 r'effective_value:\s+(?P<effective_value>[\d.]+)\s+'
                 r'related_weight:\s+(?P<related_weight>[\d.]+)\s+'
