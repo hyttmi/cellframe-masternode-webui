@@ -1,7 +1,7 @@
 from common import cli_command
 from logger import log_it
 from packaging import version
-import socket, requests, re, time, psutil, time, traceback, platform, textwrap
+import socket, requests, re, time, psutil, time, traceback, platform, textwrap, os
 
 def get_external_ip():
     try:
@@ -166,3 +166,14 @@ def remove_spacing(text):
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
         return text
+
+def is_running_as_service():
+    try:
+        log_it("d", "Checking if running as service...")
+        if os.environ.get("INVOCATION_ID"):
+            log_it("d", "Running as service, INVOCATION_ID found.")
+            return True
+        return False
+    except Exception as e:
+        log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+        return False

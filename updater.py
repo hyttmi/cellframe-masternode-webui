@@ -2,7 +2,7 @@ from common import get_current_script_directory, get_script_parent_directory, cl
 from config import Config
 from logger import log_it
 from packaging import version
-from utils import restart_node
+from utils import restart_node, is_running_as_service
 from notifications import notify_all
 import os, requests, shutil, json, zipfile, traceback
 
@@ -65,9 +65,13 @@ def install_plugin_update():
                     command = f"/opt/cellframe-node/python/bin/pip3 install -r {requirements_path}"
                     if cli_command(command, is_shell_command=True):
                         log_it("i", "Dependencies successfully installed")
-                        notify_all(f"Plugin version ({update_info['latest_version']}) has been installed and your node ({Config.NODE_ALIAS}) will be restarted.")
-                        log_it("i", "Restarting node...")
-                        restart_node() # Or maybe not, if it was launched manually... :D
+                        notify_all(f"Plugin version ({update_info['latest_version']}) has been installed to your node: {Config.NODE_ALIAS}")
+                        if is_running_as_service():
+                            log_it("i", "Restarting node...")
+                            restart_node()
+                        else:
+                            log_it("i", "Node is not running as a service, please restart it manually.")
+                            notify_all(f"Plugin version ({update_info['latest_version']}) has been installed to your node: {Config.NODE_ALIAS}. Please restart your node manually.")
                     else:
                         log_it("e", "Failed to install dependencies!")
                 else:
