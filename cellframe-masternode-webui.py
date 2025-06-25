@@ -1,6 +1,7 @@
 from logger import log_it
 import sys
 import traceback
+import os
 
 # Redirect stderr to logger
 class LogRedirect:
@@ -33,6 +34,8 @@ try:
 
     def init():
         try:
+            for key, value in os.environ.items():
+                log_it("d", f'{key}: {value}')
             if is_locked():
                 log_it("i", "Cache lock found, releasing it...")
                 release_lock()
