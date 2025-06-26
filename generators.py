@@ -15,7 +15,6 @@ from updater import check_plugin_update
 from wallets import get_reward_wallet_tokens
 from heartbeat import heartbeat
 from logger import log_it
-from common import get_current_script_directory
 from config import Config
 from concurrent.futures import ThreadPoolExecutor
 import json, os, traceback

@@ -34,10 +34,9 @@ def get_network_config(network):
                     log_it("d", f"Found correct network config for {network}")
                     return net_config
             log_it("e", f"Necessary information missing in {network_config_file}, not a masternode?")
-            return None
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
-        return None
+    return None
 
 def get_autocollect_status(network):
     try:

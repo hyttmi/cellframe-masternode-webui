@@ -4,6 +4,7 @@ from packaging import version
 import socket, requests, re, time, psutil, traceback, platform, textwrap, os
 
 class Utils:
+
     @staticmethod
     def get_external_ip():
         try:
