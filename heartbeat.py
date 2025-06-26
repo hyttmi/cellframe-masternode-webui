@@ -6,7 +6,7 @@ from networkutils import (
     change_net_mode,
     is_node_in_node_list
 )
-from utils import restart_node, remove_spacing
+from utils import Utils
 from cacher import is_locked
 from config import Config
 from logger import log_it
@@ -150,7 +150,7 @@ def report_heartbeat_errors(heartbeat, network):
                 if status["msgs_sent"] >= heartbeat.max_msgs_sent and Config.HEARTBEAT_AUTO_RESTART:
                     notify_all(f"({Config.NODE_ALIAS}): Restarting node due to repeated issues on {network}.")
                     log_it("i", f"[HEARTBEAT] Restarting node due to repeated issues on {network}.")
-                    restart_node()
+                    Utils.restart_node()
             except Exception as e:
                 log_it("e", f"An error occurred during notification for {network}: {e}", exc=traceback.format_exc())
         else:

@@ -119,7 +119,7 @@ def cache_blocks_data():
                     block_data['all_signed_blocks'] = parse_blocks(signed_blocks, "signed_blocks")
                     block_data['last_run'] = datetime.now().isoformat()
 
-                cache_file_path = os.path.join(get_current_script_directory(), f".{network}_blocks_cache.json")
+                cache_file_path = os.path.join(Utils.get_current_script_directory(), f".{network}_blocks_cache.json")
                 with open(cache_file_path, "w") as f:
                     json.dump(block_data, f, indent=4)
                 elapsed_time = time.time() - start_time

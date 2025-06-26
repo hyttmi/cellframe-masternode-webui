@@ -130,8 +130,23 @@ class Utils:
             return None
 
     @staticmethod
+    def is_running_as_service():
+        try:
+            log_it("d", "Checking if running as service...")
+            if os.environ.get("INVOCATION_ID"):
+                log_it("d", "Running as service, INVOCATION_ID found.")
+                return True
+            return False
+        except Exception as e:
+            log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+            return False
+
+    @staticmethod
     def restart_node():
         try:
+            if not Utils.is_running_as_service():
+                log_it("e", "Node is not running as a service, cannot restart.")
+                return
             node_pid = Utils.get_node_pid()
             if node_pid:
                 proc = psutil.Process(node_pid)
@@ -179,18 +194,6 @@ class Utils:
         except Exception as e:
             log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
             return text
-
-    @staticmethod
-    def is_running_as_service():
-        try:
-            log_it("d", "Checking if running as service...")
-            if os.environ.get("INVOCATION_ID"):
-                log_it("d", "Running as service, INVOCATION_ID found.")
-                return True
-            return False
-        except Exception as e:
-            log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
-            return False
 
     @staticmethod
     def get_current_script_directory():

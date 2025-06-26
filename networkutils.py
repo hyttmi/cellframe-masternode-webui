@@ -232,7 +232,7 @@ def get_rewards(network, total_sum=False, rewards_today=False, is_sovereign=Fals
 
 def get_blocks(network, block_type="count", today=False, heartbeat=False):
     try:
-        cache_file_path = os.path.join(get_current_script_directory(), f".{network}_blocks_cache.json")
+        cache_file_path = os.path.join(Utils.get_current_script_directory(), f".{network}_blocks_cache.json")
         with open(cache_file_path, "r") as f:
             block_data = json.load(f)
             last_run = block_data.get('last_run', None)
@@ -357,8 +357,7 @@ def is_node_in_node_list(network, node_addr=None):
     try:
         node_addr = node_addr or get_network_status(network).get("address")
         node_list = cli_command(f"node list -net {network}", timeout=3).splitlines()
-        from utils import get_external_ip
-        current_ip = get_external_ip()
+        current_ip = Utils.get_external_ip()
         for line in node_list:
             if node_addr in line and current_ip in line:
                 log_it("d", f"Node address {node_addr} with IP {current_ip} found in node list for {network}")
