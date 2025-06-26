@@ -1,4 +1,5 @@
-from common import cli_command, get_current_script_directory
+from common import cli_command
+from utils import Utils
 from wallets import get_reward_wallet_tokens
 from datetime import datetime
 from logger import log_it
@@ -194,7 +195,7 @@ def get_network_status(network):
 def get_rewards(network, total_sum=False, rewards_today=False, is_sovereign=False, all_time_average=False):
     try:
         rewards = {}
-        cache_file_path = os.path.join(get_current_script_directory(), f".{network}_rewards_cache.json")
+        cache_file_path = os.path.join(Utils.get_current_script_directory(), f".{network}_rewards_cache.json")
         with open(cache_file_path) as f:
             data = json.load(f)
             rewards_data = data.get('sovereign_rewards' if is_sovereign else 'own_rewards', None)
