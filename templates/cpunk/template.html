@@ -100,6 +100,7 @@
             </div>
         </div>
     </div>
+    {% if general_info.is_running_as_service %}
     <div class="modal shadow rounded fade" id="restart_node_confirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content custom-modal-bg border-0">
@@ -116,6 +117,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
     <div class="modal shadow rounded fade" id="cli_modal" tabindex="-1" aria-labelledby="cliModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content custom-modal-bg border-0">
@@ -181,9 +183,11 @@
                 <button class="btn">
                 <i data-bs-toggle="modal" data-bs-target="#data_removal_confirmation" class="fa-solid fa-refresh fa-2xl defaults_icon"></i>
                 </button>
+                {% if general_info.is_running_as_service %}
                 <button class="btn">
                 <i data-bs-toggle="modal" data-bs-target="#restart_node_confirmation" class="fa-solid fa-power-off fa-2xl defaults_icon"></i>
                 </button>
+                {% endif %}
                 <button class="btn">
                 <i data-bs-toggle="modal" data-bs-target="#current_configuration" class="fa-solid fa-gears fa-2xl defaults_icon"></i>
                 </button>

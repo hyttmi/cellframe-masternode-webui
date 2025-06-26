@@ -2,7 +2,7 @@ import socket, base64, hashlib, json, time
 from logger import log_it
 from config import Globals
 from thread_launcher import start_thread
-from utils import is_port_available
+from utils import Utils
 from datetime import datetime
 
 def handshake(conn):
@@ -61,7 +61,7 @@ def start_ws_server(port):
     elif port < 1024 or port > 65535:
         log_it("e", f"Invalid WebSocket server port: {port}. Must be between 1024 and 65535.")
         return
-    elif not is_port_available(port):
+    elif not Utils.is_port_available(port):
         log_it("e", f"WebSocket server port {port} is not available.")
         return
     server = socket.socket()

@@ -1,12 +1,12 @@
 from datetime import datetime
 from logger import log_it
 from networkutils import get_active_networks, get_network_config, get_node_data, is_node_synced
-from common import cli_command, get_current_script_directory
+from common import cli_command
 import re, time, json, os, traceback
 from notifications import notify_all
-from utils import is_cli_ready
+from utils import Utils
 
-CACHE_LOCK_FILE = os.path.join(get_current_script_directory(), ".cache.lock")
+CACHE_LOCK_FILE = os.path.join(Utils.get_current_script_directory(), ".cache.lock")
 
 def is_locked():
     return os.path.exists(CACHE_LOCK_FILE)
@@ -83,7 +83,7 @@ def cache_blocks_data():
             log_it("d", f"Caching blocks for {network}...")
             net_config = get_network_config(network)
             if net_config:
-                while not is_node_synced(network) or not is_cli_ready():
+                while not is_node_synced(network) or not Utils.is_cli_ready():
                     log_it("i", "Network seems not to be synced or cli is not responding, sleeping for 10 seconds...")
                     time.sleep(10)
                 log_it("i", f"Caching blocks for {network}...")
@@ -157,7 +157,7 @@ def cache_rewards_data():
                     log_it("d", f"Sovereign wallet address found: {sovereign_wallet_addr}")
 
             if net_config:  # net_config has to return something always
-                while not is_node_synced(network) or not is_cli_ready():
+                while not is_node_synced(network) or not Utils.is_cli_ready():
                     log_it("i", "Network seems not to be synced or cli is not responding, sleeping for 10 seconds...")
                     time.sleep(10)
                 log_it("i", f"Caching rewards for {network}...")
@@ -178,7 +178,7 @@ def cache_rewards_data():
                     rewards['sovereign_rewards'] = parse_tx_history(cmd_get_sovereign_wallet_tx_history)
                 if rewards:
                     rewards['last_run'] = datetime.now().isoformat()
-                    cache_file_path = os.path.join(get_current_script_directory(), f".{network}_rewards_cache.json")
+                    cache_file_path = os.path.join(Utils.get_current_script_directory(), f".{network}_rewards_cache.json")
                     with open(cache_file_path, "w") as f:
                         json.dump(rewards, f, indent=4)
                 elapsed_time = time.time() - start_time

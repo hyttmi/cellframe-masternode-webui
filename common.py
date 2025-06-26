@@ -1,6 +1,6 @@
 from command_runner import command_runner
 from logger import log_it
-import os, traceback
+import traceback
 
 def cli_command(command, timeout=120, is_shell_command=False):
     try:
@@ -24,9 +24,3 @@ def cli_command(command, timeout=120, is_shell_command=False):
     except Exception as e:
         log_it("e", f"An error occurred while running {command}: {e}", exc=traceback.format_exc())
     return None
-
-def get_current_script_directory():
-    return os.path.dirname(os.path.abspath(__file__))
-
-def get_script_parent_directory():
-    return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

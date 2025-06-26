@@ -1,14 +1,14 @@
-from common import get_current_script_directory, get_script_parent_directory, cli_command
+from common import cli_command
 from config import Config
 from logger import log_it
 from packaging import version
-from utils import restart_node, is_running_as_service
+from utils import Utils
 from notifications import notify_all
 import os, requests, shutil, json, zipfile, traceback
 
 def check_plugin_update():
     try:
-        manifest_path = os.path.join(get_current_script_directory(), "manifest.json")
+        manifest_path = os.path.join(Utils.get_current_script_directory(), "manifest.json")
         with open(manifest_path) as manifest:
             data = json.load(manifest)
             curr_version = version.parse(data['version'])
@@ -59,16 +59,16 @@ def install_plugin_update():
                 log_it("e", "No download URL found for the latest release.")
                 return
             if download_and_extract_update(download_url):
-                requirements_path = os.path.join(get_current_script_directory(), "requirements.txt")
+                requirements_path = os.path.join(Utils.get_current_script_directory(), "requirements.txt")
                 if os.path.exists(requirements_path):
                     log_it("d", f"Installing requirements from {requirements_path}")
                     command = f"/opt/cellframe-node/python/bin/pip3 install -r {requirements_path}"
                     if cli_command(command, is_shell_command=True):
                         log_it("i", "Dependencies successfully installed")
                         notify_all(f"Plugin version ({update_info['latest_version']}) has been installed to your node: {Config.NODE_ALIAS}")
-                        if is_running_as_service():
+                        if Utils.is_running_as_service():
                             log_it("i", "Restarting node...")
-                            restart_node()
+                            Utils.restart_node()
                         else:
                             log_it("i", "Node is not running as a service, please restart it manually.")
                             notify_all(f"Plugin version ({update_info['latest_version']}) has been installed to your node: {Config.NODE_ALIAS}. Please restart your node manually.")
@@ -85,7 +85,7 @@ def install_plugin_update():
 
 def download_and_extract_update(download_url):
     try:
-        update_path = os.path.join(get_current_script_directory(), ".autoupdater")
+        update_path = os.path.join(Utils.get_current_script_directory(), ".autoupdater")
         if os.path.exists(update_path):
             shutil.rmtree(update_path)
         os.makedirs(update_path, exist_ok=True)
@@ -107,7 +107,7 @@ def download_and_extract_update(download_url):
             update_dir = os.path.join(update_path, top_level_dir)
             log_it("d", f"Update dir is {update_dir}")
             Z.extractall(update_path)
-        destination_path = os.path.join(get_script_parent_directory(), "cellframe-masternode-webui")
+        destination_path = os.path.join(Utils.get_script_parent_directory(), "cellframe-masternode-webui")
         try:
             shutil.copytree(update_dir, destination_path, dirs_exist_ok=True)
             return True

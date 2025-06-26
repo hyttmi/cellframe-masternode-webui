@@ -93,5 +93,4 @@ class Globals:
     WEBSOCKET_SERVER_RUNNING = False
     WEBSOCKET_CLIENT = []
     POST_AUTH_COOKIE = None
-
     ###########################################################

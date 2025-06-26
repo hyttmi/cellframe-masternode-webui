@@ -1,6 +1,6 @@
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from config import Config, Globals
+from config import Config
 from logger import log_it
 import requests, smtplib, traceback
 from time import sleep
