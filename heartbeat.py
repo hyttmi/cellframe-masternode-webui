@@ -59,7 +59,7 @@ class Heartbeat:
                     self.statuses[network]["in_node_list"] = "NOK"
                     self.statuses[network]["in_node_list_msgs_sent"] += 1
                     remaining = self.max_msgs_sent - self.statuses[network]["in_node_list_msgs_sent"]
-                    notify_all(remove_spacing(f"""
+                    notify_all(Utils.remove_spacing(f"""
                         ({Config.NODE_ALIAS}): Your node seems not to be in the node list for {network}. Please note that this is not a critical issue, but it may affect your node's performance.
 
                         If you are sure it should be on node list, please check it manually with the command:
@@ -148,9 +148,10 @@ def report_heartbeat_errors(heartbeat, network):
                 notify_all(f"({Config.NODE_ALIAS}): {error_message}")
                 status["msgs_sent"] += 1
                 if status["msgs_sent"] >= heartbeat.max_msgs_sent and Config.HEARTBEAT_AUTO_RESTART:
-                    notify_all(f"({Config.NODE_ALIAS}): Restarting node due to repeated issues on {network}.")
-                    log_it("i", f"[HEARTBEAT] Restarting node due to repeated issues on {network}.")
-                    Utils.restart_node()
+                    if Utils.is_running_as_service():
+                        log_it("i", f"[HEARTBEAT] Restarting node due to repeated issues on {network}.")
+                        notify_all(f"({Config.NODE_ALIAS}): Restarting node due to repeated issues on {network}.")
+                        Utils.restart_node()
             except Exception as e:
                 log_it("e", f"An error occurred during notification for {network}: {e}", exc=traceback.format_exc())
         else:
