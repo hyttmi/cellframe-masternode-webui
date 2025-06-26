@@ -159,7 +159,7 @@ def generate_data(template_name, return_as_json=False, is_top_level_template=Fal
             template_path = template_name if is_top_level_template else f"{Config.TEMPLATE}/{template_name}"
             log_it("d", f"Generating HTML content using template: {template_path}")
             custom_template_file = f"custom_templates/{template_name}"
-            if is_top_level_template and os.path.isfile(os.path.join(get_current_script_directory(), "custom_templates", template_name)):
+            if is_top_level_template and os.path.isfile(os.path.join(Utils.get_current_script_directory(), "custom_templates", template_name)):
                 template_path = custom_template_file
                 log_it("d", f"Generating HTML content using template: {template_path}")
             log_it("d", "Generating HTML content...")
