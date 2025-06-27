@@ -201,7 +201,7 @@ class Utils:
     @staticmethod
     def is_cli_ready():
         try:
-            version_cmd = cli_command("version", timeout=2)
+            version_cmd = Utils.cli_command("version", timeout=2)
             log_it("d", "Running version cmd...")
             if version_cmd:
                 log_it("d", f"Got data from cli, it's ready!")
