@@ -1,7 +1,6 @@
 from datetime import datetime
 from logger import log_it
 from networkutils import get_active_networks, get_network_config, get_node_data, is_node_synced
-from common import cli_command
 import re, time, json, os, traceback
 from notifications import notify_all
 from utils import Utils
@@ -97,10 +96,10 @@ def cache_blocks_data():
                     'all_signed_blocks': {}
                 }
 
-                blocks_today_in_network = cli_command(f"block list -from_date {today} -to_date {today} -net {network}", timeout=360)
-                block_count = cli_command(f"block count -net {network}", timeout=360)
-                first_signed_blocks = cli_command(f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']}", timeout=360)
-                signed_blocks = cli_command(f"block list -net {network} signed -cert {net_config['blocks_sign_cert']}", timeout=360)
+                blocks_today_in_network = Utils.cli_command(f"block list -from_date {today} -to_date {today} -net {network}", timeout=360)
+                block_count = Utils.cli_command(f"block count -net {network}", timeout=360)
+                first_signed_blocks = Utils.cli_command(f"block list -net {network} first_signed -cert {net_config['blocks_sign_cert']}", timeout=360)
+                signed_blocks = Utils.cli_command(f"block list -net {network} signed -cert {net_config['blocks_sign_cert']}", timeout=360)
 
                 blocks_today_in_network_match = re.search(r"have blocks: (\d+)", blocks_today_in_network)
 
@@ -165,9 +164,9 @@ def cache_rewards_data():
                 start_time = time.time()
 
                 rewards = {}
-                cmd_get_config_wallet_tx_history = cli_command(f"tx_history -addr {net_config['wallet']}", timeout=360)
+                cmd_get_config_wallet_tx_history = Utils.cli_command(f"tx_history -addr {net_config['wallet']}", timeout=360)
                 cmd_get_sovereign_wallet_tx_history = (
-                    cli_command(f"tx_history -addr {sovereign_wallet_addr}", timeout=360)
+                    Utils.cli_command(f"tx_history -addr {sovereign_wallet_addr}", timeout=360)
                     if sovereign_wallet_addr else None
                 )
                 if cmd_get_config_wallet_tx_history:

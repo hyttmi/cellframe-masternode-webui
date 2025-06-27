@@ -1,4 +1,3 @@
-from common import cli_command
 from config import Config
 from logger import log_it
 from packaging import version
@@ -63,7 +62,7 @@ def install_plugin_update():
                 if os.path.exists(requirements_path):
                     log_it("d", f"Installing requirements from {requirements_path}")
                     command = f"/opt/cellframe-node/python/bin/pip3 install -r {requirements_path}"
-                    if cli_command(command, is_shell_command=True):
+                    if Utils.cli_command(command, is_shell_command=True):
                         log_it("i", "Dependencies successfully installed")
                         notify_all(f"Plugin version ({update_info['latest_version']}) has been installed to your node: {Config.NODE_ALIAS}")
                         if Utils.is_running_as_service():
