@@ -26,21 +26,24 @@ def handshake(conn):
 
 def send_ping():
     while Globals.WEBSOCKET_SERVER_RUNNING:
-        Utils.delay(30)  # Ping every 30 seconds
-        for client in Globals.WEBSOCKET_CLIENT.copy():
-            try:
-                ping_frame = bytearray([0x89, 0x00])
-                client.send(ping_frame)
-                log_it("d", f"Sent ping to {client.getpeername()}")
-            except (OSError, ConnectionResetError, BrokenPipeError) as e:
-                log_it("i", f"Removing client {client}: {e}")
-                log_it("d", f"Current list of clients: {Globals.WEBSOCKET_CLIENT}")
+        if Globals.WEBSOCKET_CLIENT:
+            for client in Globals.WEBSOCKET_CLIENT.copy():
                 try:
-                    client.close()
-                except:
-                    pass
-                Globals.WEBSOCKET_CLIENT.remove(client)
-                log_it("d", f"Client {client} removed. Remaining clients: {Globals.WEBSOCKET_CLIENT}")
+                    ping_frame = bytearray([0x89, 0x00])
+                    client.send(ping_frame)
+                    log_it("d", f"Sent ping to {client.getpeername()}")
+                except (OSError, ConnectionResetError, BrokenPipeError) as e:
+                    log_it("i", f"Removing client {client}: {e}")
+                    try:
+                        client.close()
+                    except:
+                        pass
+                    Globals.WEBSOCKET_CLIENT.remove(client)
+                    log_it("d", f"Client {client} removed. Remaining clients: {Globals.WEBSOCKET_CLIENT}")
+        else:
+            log_it("d", "No clients to ping.")
+        Utils.delay(30)
+
 
 def send_message(message):
     for client in Globals.WEBSOCKET_CLIENT.copy():
@@ -73,7 +76,7 @@ def start_ws_server(port):
     log_it("i", "send_ping started on thread")
     while True:
         try:
-            conn, _ = server.accept()
+            conn,_ = server.accept()
             if handshake(conn):
                 Globals.WEBSOCKET_CLIENT.append(conn)
                 log_it("d", f"New handshake for WebSocket connection. Clients currently connected: {Globals.WEBSOCKET_CLIENT}")
