@@ -1,7 +1,7 @@
 from command_runner import command_runner
 from logger import log_it
 from packaging import version
-import socket, requests, re, time, psutil, traceback, platform, textwrap, os
+import socket, requests, re, time, psutil, traceback, platform, textwrap, os, inspect
 from config import Globals
 
 class Utils:
@@ -225,9 +225,10 @@ class Utils:
 
     @staticmethod
     def delay(seconds, logging=True):
+        caller = inspect.stack()[1].function
         try:
             if logging:
-                log_it("d", f"Delaying for {seconds} seconds...")
+                log_it("d", f"Delaying for {seconds} seconds... (called from: {caller})")
             time.sleep(seconds)
         except Exception as e:
             log_it("e", f"An error occurred during delay: {e}", exc=traceback.format_exc())
