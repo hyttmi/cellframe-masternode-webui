@@ -221,6 +221,14 @@ class Utils:
             return text
 
     @staticmethod
+    def delay(seconds):
+        try:
+            log_it("d", f"Delaying for {seconds} seconds...")
+            time.sleep(seconds)
+        except Exception as e:
+            log_it("e", f"An error occurred during delay: {e}", exc=traceback.format_exc())
+
+    @staticmethod
     def get_current_script_directory():
         try:
             log_it("d", "Fetching current script directory...")

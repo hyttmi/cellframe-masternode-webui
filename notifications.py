@@ -3,7 +3,7 @@ from email.mime.text import MIMEText
 from config import Config
 from logger import log_it
 import requests, smtplib, traceback
-from time import sleep
+from utils import Utils
 from websocket_server import ws_broadcast_msg
 
 def send_telegram_message(message):
@@ -33,7 +33,7 @@ def send_telegram_message(message):
                         'message': message
                     }
                     response = requests.post(url, json=payload)
-                    sleep(1) # To avoid hammering
+                    Utils.delay(1) # To avoid hammering
                     if response.status_code == 200:
                         log_it("i", f"Telegram message sent via server to chat id {chat_id}!")
                     else:

@@ -27,7 +27,7 @@ def handshake(conn):
 
 def send_ping():
     while Globals.WEBSOCKET_SERVER_RUNNING:
-        time.sleep(30)  # Ping every 30 seconds
+        Utils.delay(30)  # Ping every 30 seconds
         for client in Globals.WEBSOCKET_CLIENT.copy():
             try:
                 ping_frame = bytearray([0x89, 0x00])

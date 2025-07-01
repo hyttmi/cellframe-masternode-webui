@@ -75,7 +75,7 @@ class Heartbeat:
         try:
             while is_locked():
                 log_it("d", "[HEARTBEAT] Cache is locked, waiting for lock to release...")
-                time.sleep(60)
+                Utils.delay(60)
             for network in self.statuses:
                 last_run, last_signed_block = get_blocks(network, block_type="all_signed_blocks", heartbeat=True)
                 if not last_run or not last_signed_block:
@@ -134,9 +134,9 @@ def report_heartbeat_errors(heartbeat, network):
             log_it("i", f"[HEARTBEAT] Attempting to resync {network} network...")
             try:
                 change_net_mode(network, "offline")
-                time.sleep(2)
+                Utils.delay(2)
                 change_net_mode(network, "online")
-                time.sleep(2)
+                Utils.delay(2)
                 change_net_mode(network, "resync")
             except Exception as e:
                 log_it("e", f"An error occurred while resyncing {network}: {e}", exc=traceback.format_exc())

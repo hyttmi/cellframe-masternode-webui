@@ -72,7 +72,7 @@ def cache_blocks_data():
     try:
         while is_locked():
             log_it("i", "Caching is already in progress, waiting for lock to release...")
-            time.sleep(30)
+            Utils.delay(30)
 
         create_lock()
         today = datetime.now().strftime("%y%m%d")
@@ -84,7 +84,7 @@ def cache_blocks_data():
             if net_config:
                 while not is_node_synced(network) or not Utils.is_cli_ready():
                     log_it("i", "Network seems not to be synced or cli is not responding, sleeping for 10 seconds...")
-                    time.sleep(10)
+                    Utils.delay(10)
                 log_it("i", f"Caching blocks for {network}...")
                 notify_all(f"Caching blocks for {network}...", channels=["websocket"])
                 start_time = time.time()
@@ -135,7 +135,7 @@ def cache_rewards_data():
     try:
         while is_locked():
             log_it("i", "Caching is already in progress, waiting for lock to release...")
-            time.sleep(30)
+            Utils.delay(30)
 
         create_lock()
 
@@ -158,7 +158,7 @@ def cache_rewards_data():
             if net_config:  # net_config has to return something always
                 while not is_node_synced(network) or not Utils.is_cli_ready():
                     log_it("i", "Network seems not to be synced or cli is not responding, sleeping for 10 seconds...")
-                    time.sleep(10)
+                    Utils.delay(10)
                 log_it("i", f"Caching rewards for {network}...")
                 notify_all(f"Caching rewards for {network}...", channels=["websocket"])
                 start_time = time.time()
