@@ -93,7 +93,7 @@ class Utils:
     @staticmethod
     def get_sys_stats():
         try:
-            PID = Globals.NODE_PID if Globals.NODE_PID else Utils.get_node_pid()
+            PID = Globals.NODE_PID # I can (safely?) assume that this is set by now
             if PID:
                 log_it("d", "Fetching system stats...")
                 process = psutil.Process(PID)
@@ -246,8 +246,5 @@ class Utils:
         return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 Globals.IS_RUNNING_AS_SERVICE = Utils.is_running_as_service()
-log_it("i", f"Running as service: {Globals.IS_RUNNING_AS_SERVICE}")
 Globals.NODE_PID = Utils.get_node_pid()
-log_it("i", f"Node PID: {Globals.NODE_PID if Globals.NODE_PID else 'Not found'}")
 Globals.CURRENT_NODE_VERSION = Utils.get_installed_node_version()
-log_it("i", f"Current Node Version: {Globals.CURRENT_NODE_VERSION if Globals.CURRENT_NODE_VERSION else 'Not found'}")
