@@ -1,4 +1,4 @@
-import time, traceback
+import traceback
 import schedule
 from logger import log_it
 from config import Config

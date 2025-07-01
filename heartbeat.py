@@ -12,7 +12,7 @@ from config import Config
 from logger import log_it
 from notifications import notify_all
 from datetime import datetime, timedelta
-import time, traceback
+import traceback
 
 class Heartbeat:
     def __init__(self):

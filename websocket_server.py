@@ -1,9 +1,8 @@
-import socket, base64, hashlib, json, time
+import socket, base64, hashlib, json
 from logger import log_it
 from config import Globals
 from thread_launcher import start_thread
 from utils import Utils
-from datetime import datetime
 
 def handshake(conn):
     request = conn.recv(1024).decode()
