@@ -26,7 +26,7 @@ def run_scheduler(func, scheduled_time, every_x_min=False, run_on_startup=False)
             log_it("d", f"Scheduling {func.__name__} to run daily at {scheduled_time}.")
         while True:
             scheduler.run_pending()
-            Utils.delay(1)
+            Utils.delay(1, logging=False)  # Avoid logging every second
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 

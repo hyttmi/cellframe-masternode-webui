@@ -20,7 +20,7 @@ def send_telegram_message(message):
     if missing_configs:
         for config in missing_configs:
             log_it("e", f"{config} is not set!")
-        return
+        return False
 
     try:
         if Config.TELEGRAM_BOT_TOKEN: # Higher priority to this

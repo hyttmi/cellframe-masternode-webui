@@ -2,6 +2,7 @@ from command_runner import command_runner
 from logger import log_it
 from packaging import version
 import socket, requests, re, time, psutil, traceback, platform, textwrap, os
+from config import Globals
 
 class Utils:
 
@@ -92,7 +93,7 @@ class Utils:
     @staticmethod
     def get_sys_stats():
         try:
-            PID = Utils.get_node_pid()
+            PID = Globals.NODE_PID if Globals.NODE_PID else Utils.get_node_pid()
             if PID:
                 log_it("d", "Fetching system stats...")
                 process = psutil.Process(PID)
@@ -169,7 +170,7 @@ class Utils:
     @staticmethod
     def restart_node():
         try:
-            if not Utils.is_running_as_service():
+            if not Globals.IS_RUNNING_AS_SERVICE:
                 log_it("e", "Node is not running as a service, cannot restart.")
                 return
             node_pid = Utils.get_node_pid()
@@ -201,15 +202,17 @@ class Utils:
     @staticmethod
     def is_cli_ready():
         try:
-            version_cmd = Utils.cli_command("version", timeout=2)
             log_it("d", "Running version cmd...")
+            version_cmd = Utils.cli_command("version", timeout=2)
+            if not version_cmd:
+                log_it("e", "CLI is not ready, no version command output.")
+                return False
             if version_cmd:
                 log_it("d", f"Got data from cli, it's ready!")
                 return True
-            log_it("d", f"No data from CLI!")
-            return False
         except Exception as e:
             log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
+            return False
 
     @staticmethod
     def remove_spacing(text):
@@ -221,9 +224,10 @@ class Utils:
             return text
 
     @staticmethod
-    def delay(seconds):
+    def delay(seconds, logging=True):
         try:
-            log_it("d", f"Delaying for {seconds} seconds...")
+            if logging:
+                log_it("d", f"Delaying for {seconds} seconds...")
             time.sleep(seconds)
         except Exception as e:
             log_it("e", f"An error occurred during delay: {e}", exc=traceback.format_exc())
@@ -240,3 +244,10 @@ class Utils:
     @staticmethod
     def get_script_parent_directory():
         return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+Globals.IS_RUNNING_AS_SERVICE = Utils.is_running_as_service()
+log_it("i", f"Running as service: {Globals.IS_RUNNING_AS_SERVICE}")
+Globals.NODE_PID = Utils.get_node_pid()
+log_it("i", f"Node PID: {Globals.NODE_PID if Globals.NODE_PID else 'Not found'}")
+Globals.CURRENT_NODE_VERSION = Utils.get_installed_node_version()
+log_it("i", f"Current Node Version: {Globals.CURRENT_NODE_VERSION if Globals.CURRENT_NODE_VERSION else 'Not found'}")

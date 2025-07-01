@@ -1,4 +1,4 @@
-from config import Config
+from config import Config, Globals
 from logger import log_it
 from packaging import version
 from utils import Utils
@@ -65,7 +65,7 @@ def install_plugin_update():
                     if Utils.cli_command(command, is_shell_command=True):
                         log_it("i", "Dependencies successfully installed")
                         notify_all(f"Plugin version ({update_info['latest_version']}) has been installed to your node: {Config.NODE_ALIAS}")
-                        if Utils.is_running_as_service():
+                        if Globals.IS_RUNNING_AS_SERVICE:
                             log_it("i", "Restarting node...")
                             Utils.restart_node()
                         else:

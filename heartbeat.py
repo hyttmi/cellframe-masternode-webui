@@ -8,7 +8,7 @@ from networkutils import (
 )
 from utils import Utils
 from cacher import is_locked
-from config import Config
+from config import Config, Globals
 from logger import log_it
 from notifications import notify_all
 from datetime import datetime, timedelta
@@ -148,7 +148,7 @@ def report_heartbeat_errors(heartbeat, network):
                 notify_all(f"({Config.NODE_ALIAS}): {error_message}")
                 status["msgs_sent"] += 1
                 if status["msgs_sent"] >= heartbeat.max_msgs_sent and Config.HEARTBEAT_AUTO_RESTART:
-                    if Utils.is_running_as_service():
+                    if Globals.IS_RUNNING_AS_SERVICE:
                         log_it("i", f"[HEARTBEAT] Restarting node due to repeated issues on {network}.")
                         notify_all(f"({Config.NODE_ALIAS}): Restarting node due to repeated issues on {network}.")
                         Utils.restart_node()

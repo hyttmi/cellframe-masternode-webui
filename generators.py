@@ -15,7 +15,7 @@ from updater import check_plugin_update
 from wallets import get_reward_wallet_tokens
 from heartbeat import heartbeat
 from logger import log_it
-from config import Config
+from config import Config, Globals
 from concurrent.futures import ThreadPoolExecutor
 import json, os, traceback
 
@@ -28,7 +28,6 @@ def generate_general_info(format_time=True):
             hostname_future = executor.submit(Utils.get_system_hostname)
             latest_node_version_future = executor.submit(Utils.get_latest_node_version)
             installed_node_version_future = executor.submit(Utils.get_installed_node_version)
-            is_running_as_service_future = executor.submit(Utils.is_running_as_service)
             sys_stats = sys_stats_future.result()
             plugin_data = plugin_data_future.result()
             node_uptime = (Utils.format_uptime(sys_stats['node_uptime']) if format_time else sys_stats['node_uptime'])
@@ -38,7 +37,7 @@ def generate_general_info(format_time=True):
                 'current_plugin_version': plugin_data['current_version'] if plugin_data else "Unavailable",
                 'external_ip': external_ip_future.result(),
                 'hostname': hostname_future.result(),
-                'is_running_as_service': is_running_as_service_future.result(),
+                'is_running_as_service': Globals.IS_RUNNING_AS_SERVICE,
                 'latest_node_version': latest_node_version_future.result(),
                 'latest_plugin_version': plugin_data['latest_version'] if plugin_data else "Unavailable",
                 'node_alias': Config.NODE_ALIAS,

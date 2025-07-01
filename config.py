@@ -93,4 +93,7 @@ class Globals:
     WEBSOCKET_SERVER_RUNNING = False
     WEBSOCKET_CLIENT = []
     POST_AUTH_COOKIE = None
+    IS_RUNNING_AS_SERVICE = False
+    NODE_PID = None
+    CURRENT_NODE_VERSION = None
     ###########################################################

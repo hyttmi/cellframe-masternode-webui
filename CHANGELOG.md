@@ -10,3 +10,6 @@
 
 ### Changed
 - Disable restart button if node is not running as a service.
+
+### Improved
+- Cache node PID, node version, running as a service (True|False) on startup to speed things up.
