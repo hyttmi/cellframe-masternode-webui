@@ -45,6 +45,7 @@ fi
 
 if [[ -f "$CFG_PATH/webui.cfg" ]]; then
     echo "Old configuration file found. Proceeding to reinstall plugin only."
+    [[ ! -d "$WEBUI_PATH" ]] && echo "Creating plugin directory: $WEBUI_PATH" && mkdir -p "$WEBUI_PATH"
     install_plugin
 fi
 

@@ -1,6 +1,6 @@
 {
     "name": "cellframe-masternode-webui",
-    "version": "5.11",
+    "version": "5.12",
     "author": "Mika Hyttinen (@CELLgainz)",
     "dependencies": [],
     "description": "Cellframe Masternode WebUI",

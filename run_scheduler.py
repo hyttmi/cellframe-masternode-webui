@@ -1,4 +1,4 @@
-import time, traceback
+import traceback
 import schedule
 from logger import log_it
 from config import Config
@@ -8,6 +8,7 @@ from heartbeat import run_heartbeat_check
 from notifications import send_telegram_message, send_email
 from updater import install_plugin_update
 from thread_launcher import start_thread
+from utils import Utils
 
 def run_scheduler(func, scheduled_time, every_x_min=False, run_on_startup=False):
     log_it("d", f"Received func {func}, scheduled_time={scheduled_time}, every_x_min={every_x_min}, run_on_startup={run_on_startup}")
@@ -15,7 +16,7 @@ def run_scheduler(func, scheduled_time, every_x_min=False, run_on_startup=False)
         scheduler = schedule.Scheduler()
         if run_on_startup:
             log_it("d", f"Running {func.__name__} once on startup.")
-            time.sleep(Config.SCHEDULER_DELAY_ON_STARTUP)
+            Utils.delay(Config.SCHEDULER_DELAY_ON_STARTUP)
             func()
         if every_x_min:
             scheduler.every(scheduled_time).minutes.do(func)
@@ -25,7 +26,7 @@ def run_scheduler(func, scheduled_time, every_x_min=False, run_on_startup=False)
             log_it("d", f"Scheduling {func.__name__} to run daily at {scheduled_time}.")
         while True:
             scheduler.run_pending()
-            time.sleep(1)
+            Utils.delay(1, logging=False)  # Avoid logging every second
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 

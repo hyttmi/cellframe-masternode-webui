@@ -1,4 +1,4 @@
-from common import cli_command, get_current_script_directory
+from utils import Utils
 from wallets import get_reward_wallet_tokens
 from datetime import datetime
 from logger import log_it
@@ -33,15 +33,14 @@ def get_network_config(network):
                     log_it("d", f"Found correct network config for {network}")
                     return net_config
             log_it("e", f"Necessary information missing in {network_config_file}, not a masternode?")
-            return None
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
-        return None
+    return None
 
 def get_autocollect_status(network):
     try:
         autocollect_status = {}
-        autocollect_cmd = cli_command(f"block autocollect status -net {network}", timeout=3)
+        autocollect_cmd = Utils.cli_command(f"block autocollect status -net {network}", timeout=3)
         amounts = re.findall(r"profit is ([\d.]+)", autocollect_cmd)
         if amounts:
             autocollect_status['rewards'] = sum(float(amount) for amount in amounts)
@@ -57,7 +56,7 @@ def get_autocollect_status(network):
 
 def get_current_block_reward(network):
     try:
-        block_reward_cmd = cli_command(f"block reward show -net {network}", timeout=3)
+        block_reward_cmd = Utils.cli_command(f"block reward show -net {network}", timeout=3)
         if block_reward_cmd:
             block_reward_match = re.search(r"([\d.]+)", block_reward_cmd)
             if block_reward_match:
@@ -101,7 +100,7 @@ def get_node_data(network, only_my_node=False):
         status = get_network_status(network)
         if status:
             addr = status['address']
-            list_keys = cli_command(f"srv_stake list keys -net {network}", timeout=3)
+            list_keys = Utils.cli_command(f"srv_stake list keys -net {network}", timeout=3)
             if not list_keys:
                 log_it("e", f"Failed to run srv_stake list keys for {network}")
                 return None
@@ -114,12 +113,12 @@ def get_node_data(network, only_my_node=False):
             calculated_weight = float(total_weight * (max_weight / 100)) if max_weight and total_weight else None
 
             node_pattern = re.compile(
-                r'pkey_hash:\s+(?P<pkey_hash>\.?\w+)\s+' # Optional dot at the start of pkey_hash
+                r'pkey_hash:\s+\.?(?P<pkey_hash>0x[A-F0-9]+)\s+' # Optional dot at the start of pkey_hash
                 r'stake_value:\s+(?P<stake_value>[\d.]+)\s+'
                 r'effective_value:\s+(?P<effective_value>[\d.]+)\s+'
                 r'related_weight:\s+(?P<related_weight>[\d.]+)\s+'
                 r'tx_hash:\s+(?P<tx_hash>\w+)\s+'
-                r'node_addr:\s+(?P<node_addr>[A-Z0-9]+::[A-Z0-9]+::[A-Z0-9]+::[A-Z0-9]+)\s+'
+                r'node_addr:\s+(?P<node_addr>[A-F0-9]+::[A-F0-9]+::[A-F0-9]+::[A-F0-9]+)\s+'
                 r'sovereign_addr:\s+(?P<sovereign_addr>\w+)\s+'
                 r'sovereign_tax:\s+(?P<sovereign_tax>[\d.]+)\s+'
                 r'active:\s+(?P<active>true|false)'
@@ -160,7 +159,7 @@ def get_node_data(network, only_my_node=False):
 
 def get_network_status(network):
     try:
-        net_status = cli_command(f"net -net {network} get status", timeout=3)
+        net_status = Utils.cli_command(f"net -net {network} get status", timeout=3)
         addr_match = re.search(r"([A-Z0-9]+::[A-Z0-9]+::[A-Z0-9]+::[A-Z0-9]+)", net_status)
         state_match = re.search(r"states:\s+current: (\w+)", net_status)
         target_state_match = re.search(r"target: (\w+)", net_status)
@@ -194,7 +193,7 @@ def get_network_status(network):
 def get_rewards(network, total_sum=False, rewards_today=False, is_sovereign=False, all_time_average=False):
     try:
         rewards = {}
-        cache_file_path = os.path.join(get_current_script_directory(), f".{network}_rewards_cache.json")
+        cache_file_path = os.path.join(Utils.get_current_script_directory(), f".{network}_rewards_cache.json")
         with open(cache_file_path) as f:
             data = json.load(f)
             rewards_data = data.get('sovereign_rewards' if is_sovereign else 'own_rewards', None)
@@ -231,7 +230,7 @@ def get_rewards(network, total_sum=False, rewards_today=False, is_sovereign=Fals
 
 def get_blocks(network, block_type="count", today=False, heartbeat=False):
     try:
-        cache_file_path = os.path.join(get_current_script_directory(), f".{network}_blocks_cache.json")
+        cache_file_path = os.path.join(Utils.get_current_script_directory(), f".{network}_blocks_cache.json")
         with open(cache_file_path, "r") as f:
             block_data = json.load(f)
             last_run = block_data.get('last_run', None)
@@ -348,16 +347,15 @@ def change_net_mode(network, mode):
             return
         else:
             log_it("d", f"Setting network {network} to {mode}...")
-            cli_command(f"net -net {network} go {mode}", timeout=3)
+            Utils.cli_command(f"net -net {network} go {mode}", timeout=3)
     except Exception as e:
         log_it("e", f"An error occurred: {e}", exc=traceback.format_exc())
 
 def is_node_in_node_list(network, node_addr=None):
     try:
         node_addr = node_addr or get_network_status(network).get("address")
-        node_list = cli_command(f"node list -net {network}", timeout=3).splitlines()
-        from utils import get_external_ip
-        current_ip = get_external_ip()
+        node_list = Utils.cli_command(f"node list -net {network}", timeout=3).splitlines()
+        current_ip = Utils.get_external_ip()
         for line in node_list:
             if node_addr in line and current_ip in line:
                 log_it("d", f"Node address {node_addr} with IP {current_ip} found in node list for {network}")

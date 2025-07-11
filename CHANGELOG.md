@@ -1,13 +1,18 @@
 # Changelog
 
-## [5.11] - 2025-06-23
+## [5.12] - 2025-07-11
+
+☀️ Happy holidays edition ☀️!
 
 ### Fixed
-- Parsing changelog.
-- Parsing `srv_stake list keys` which has dot in front of `pkey_hash` for some reason.
+- Fixed regex parsing once again (correctly this time).
+- Telegram template.
+
+### Added
+- Feature to check if node is launched as a service.
 
 ### Changed
-- Make sure that long running commands are not possible to run via WebUI CLI.
-- No more retries for CLI commands, if it fails, it fails.
-- More informative messages from Heartbeat to UI.
-- Focus CLI input field automatically on WebUI.
+- Disable restart button if node is not running as a service.
+
+### Improved
+- Cache node PID, node version, running as a service (True|False) on startup to speed things up.

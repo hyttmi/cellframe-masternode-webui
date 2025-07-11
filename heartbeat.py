@@ -6,13 +6,13 @@ from networkutils import (
     change_net_mode,
     is_node_in_node_list
 )
-from utils import restart_node, remove_spacing
+from utils import Utils
 from cacher import is_locked
-from config import Config
+from config import Config, Globals
 from logger import log_it
 from notifications import notify_all
 from datetime import datetime, timedelta
-import time, traceback
+import traceback
 
 class Heartbeat:
     def __init__(self):
@@ -59,7 +59,7 @@ class Heartbeat:
                     self.statuses[network]["in_node_list"] = "NOK"
                     self.statuses[network]["in_node_list_msgs_sent"] += 1
                     remaining = self.max_msgs_sent - self.statuses[network]["in_node_list_msgs_sent"]
-                    notify_all(remove_spacing(f"""
+                    notify_all(Utils.remove_spacing(f"""
                         ({Config.NODE_ALIAS}): Your node seems not to be in the node list for {network}. Please note that this is not a critical issue, but it may affect your node's performance.
 
                         If you are sure it should be on node list, please check it manually with the command:
@@ -75,7 +75,7 @@ class Heartbeat:
         try:
             while is_locked():
                 log_it("d", "[HEARTBEAT] Cache is locked, waiting for lock to release...")
-                time.sleep(60)
+                Utils.delay(60)
             for network in self.statuses:
                 last_run, last_signed_block = get_blocks(network, block_type="all_signed_blocks", heartbeat=True)
                 if not last_run or not last_signed_block:
@@ -134,9 +134,9 @@ def report_heartbeat_errors(heartbeat, network):
             log_it("i", f"[HEARTBEAT] Attempting to resync {network} network...")
             try:
                 change_net_mode(network, "offline")
-                time.sleep(2)
+                Utils.delay(2)
                 change_net_mode(network, "online")
-                time.sleep(2)
+                Utils.delay(2)
                 change_net_mode(network, "resync")
             except Exception as e:
                 log_it("e", f"An error occurred while resyncing {network}: {e}", exc=traceback.format_exc())
@@ -148,9 +148,10 @@ def report_heartbeat_errors(heartbeat, network):
                 notify_all(f"({Config.NODE_ALIAS}): {error_message}")
                 status["msgs_sent"] += 1
                 if status["msgs_sent"] >= heartbeat.max_msgs_sent and Config.HEARTBEAT_AUTO_RESTART:
-                    notify_all(f"({Config.NODE_ALIAS}): Restarting node due to repeated issues on {network}.")
-                    log_it("i", f"[HEARTBEAT] Restarting node due to repeated issues on {network}.")
-                    restart_node()
+                    if Globals.IS_RUNNING_AS_SERVICE:
+                        log_it("i", f"[HEARTBEAT] Restarting node due to repeated issues on {network}.")
+                        notify_all(f"({Config.NODE_ALIAS}): Restarting node due to repeated issues on {network}.")
+                        Utils.restart_node()
             except Exception as e:
                 log_it("e", f"An error occurred during notification for {network}: {e}", exc=traceback.format_exc())
         else:

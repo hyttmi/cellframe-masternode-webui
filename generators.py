@@ -1,11 +1,4 @@
-from utils import (
-    format_uptime,
-    get_installed_node_version,
-    get_latest_node_version,
-    get_sys_stats,
-    get_system_hostname,
-    get_external_ip
-)
+from utils import Utils
 from networkutils import (
     get_active_networks,
     get_autocollect_status,
@@ -22,29 +15,29 @@ from updater import check_plugin_update
 from wallets import get_reward_wallet_tokens
 from heartbeat import heartbeat
 from logger import log_it
-from common import get_current_script_directory
-from config import Config
+from config import Config, Globals
 from concurrent.futures import ThreadPoolExecutor
 import json, os, traceback
 
 def generate_general_info(format_time=True):
     try:
         with ThreadPoolExecutor() as executor:
-            sys_stats_future = executor.submit(get_sys_stats)
+            sys_stats_future = executor.submit(Utils.get_sys_stats)
             plugin_data_future = executor.submit(check_plugin_update)
-            external_ip_future = executor.submit(get_external_ip)
-            hostname_future = executor.submit(get_system_hostname)
-            latest_node_version_future = executor.submit(get_latest_node_version)
-            installed_node_version_future = executor.submit(get_installed_node_version)
+            external_ip_future = executor.submit(Utils.get_external_ip)
+            hostname_future = executor.submit(Utils.get_system_hostname)
+            latest_node_version_future = executor.submit(Utils.get_latest_node_version)
+            installed_node_version_future = executor.submit(Utils.get_installed_node_version)
             sys_stats = sys_stats_future.result()
             plugin_data = plugin_data_future.result()
-            node_uptime = (format_uptime(sys_stats['node_uptime']) if format_time else sys_stats['node_uptime'])
-            system_uptime = (format_uptime(sys_stats['system_uptime']) if format_time else sys_stats['system_uptime'])
+            node_uptime = (Utils.format_uptime(sys_stats['node_uptime']) if format_time else sys_stats['node_uptime'])
+            system_uptime = (Utils.format_uptime(sys_stats['system_uptime']) if format_time else sys_stats['system_uptime'])
             info = {
                 'current_config': Config.get_current_config(hide_sensitive_data=False),
                 'current_plugin_version': plugin_data['current_version'] if plugin_data else "Unavailable",
                 'external_ip': external_ip_future.result(),
                 'hostname': hostname_future.result(),
+                'is_running_as_service': Globals.IS_RUNNING_AS_SERVICE,
                 'latest_node_version': latest_node_version_future.result(),
                 'latest_plugin_version': plugin_data['latest_version'] if plugin_data else "Unavailable",
                 'node_alias': Config.NODE_ALIAS,
@@ -57,6 +50,7 @@ def generate_general_info(format_time=True):
                 'icon_url': Config.ICON_URL,
                 'system_uptime': system_uptime,
                 'template': Config.TEMPLATE,
+
             }
             if isinstance(Config.WEBSOCKET_SERVER_PORT, int):
                 if Config.WEBSOCKET_SERVER_PORT > 0:
@@ -164,7 +158,7 @@ def generate_data(template_name, return_as_json=False, is_top_level_template=Fal
             template_path = template_name if is_top_level_template else f"{Config.TEMPLATE}/{template_name}"
             log_it("d", f"Generating HTML content using template: {template_path}")
             custom_template_file = f"custom_templates/{template_name}"
-            if is_top_level_template and os.path.isfile(os.path.join(get_current_script_directory(), "custom_templates", template_name)):
+            if is_top_level_template and os.path.isfile(os.path.join(Utils.get_current_script_directory(), "custom_templates", template_name)):
                 template_path = custom_template_file
                 log_it("d", f"Generating HTML content using template: {template_path}")
             log_it("d", "Generating HTML content...")

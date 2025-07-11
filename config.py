@@ -91,7 +91,11 @@ class Config:
 class Globals:
     ######################### GLOBALS #########################
     WEBSOCKET_SERVER_RUNNING = False
-    WEBSOCKET_CLIENT = []
+    WEBSOCKET_CLIENT = set()
+    PING_THREAD = None
+    PING_THREAD_RUNNING = False
     POST_AUTH_COOKIE = None
-
+    IS_RUNNING_AS_SERVICE = False
+    NODE_PID = None
+    CURRENT_NODE_VERSION = None
     ###########################################################

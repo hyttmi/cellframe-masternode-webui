@@ -1,9 +1,8 @@
-import socket, base64, hashlib, json, time
+import socket, base64, hashlib, json
 from logger import log_it
 from config import Globals
 from thread_launcher import start_thread
-from utils import is_port_available
-from datetime import datetime
+from utils import Utils
 
 def handshake(conn):
     request = conn.recv(1024).decode()
@@ -27,21 +26,49 @@ def handshake(conn):
 
 def send_ping():
     while Globals.WEBSOCKET_SERVER_RUNNING:
-        time.sleep(30)  # Ping every 30 seconds
-        for client in Globals.WEBSOCKET_CLIENT.copy():
-            try:
-                ping_frame = bytearray([0x89, 0x00])
-                client.send(ping_frame)
-                log_it("d", f"Sent ping to {client.getpeername()}")
-            except (OSError, ConnectionResetError, BrokenPipeError) as e:
-                log_it("i", f"Removing client {client}: {e}")
-                log_it("d", f"Current list of clients: {Globals.WEBSOCKET_CLIENT}")
+        if Globals.WEBSOCKET_CLIENT:
+            for client in Globals.WEBSOCKET_CLIENT.copy():
                 try:
-                    client.close()
-                except:
-                    pass
-                Globals.WEBSOCKET_CLIENT.remove(client)
-                log_it("d", f"Client {client} removed. Remaining clients: {Globals.WEBSOCKET_CLIENT}")
+                    ping_frame = bytearray([0x89, 0x00])
+                    client.send(ping_frame)
+                    log_it("d", f"Sent ping to {client.getpeername()}")
+                except (OSError, ConnectionResetError, BrokenPipeError) as e:
+                    log_it("i", f"Removing client {client}: {e}")
+                    try:
+                        client.close()
+                    except:
+                        pass
+                    Globals.WEBSOCKET_CLIENT.remove(client)
+                    client_list = [c.getpeername() for c in Globals.WEBSOCKET_CLIENT]
+                    log_it("d", f"Client {client.getpeername()} removed. Remaining clients: {client_list}")
+        else:
+            log_it("d", "No clients to ping.")
+        Utils.delay(30)
+
+def start_ping_thread():
+    if not Globals.PING_THREAD_RUNNING:
+        Globals.PING_THREAD_RUNNING = True
+        Globals.PING_THREAD = start_thread(send_ping)
+        log_it("d", "Ping thread started")
+
+def stop_ping_thread():
+    Globals.PING_THREAD_RUNNING = False
+    log_it("d", "Ping thread stop signal sent")
+
+def on_client_connect(client):
+    Globals.WEBSOCKET_CLIENT.add(client)
+    if len(Globals.WEBSOCKET_CLIENT) == 1:
+        start_ping_thread()
+
+def on_client_disconnect(client):
+    if client in Globals.WEBSOCKET_CLIENT:
+        Globals.WEBSOCKET_CLIENT.remove(client)
+    try:
+        client.close()
+    except:
+        pass
+    if not Globals.WEBSOCKET_CLIENT:
+        stop_ping_thread()
 
 def send_message(message):
     for client in Globals.WEBSOCKET_CLIENT.copy():
@@ -61,7 +88,7 @@ def start_ws_server(port):
     elif port < 1024 or port > 65535:
         log_it("e", f"Invalid WebSocket server port: {port}. Must be between 1024 and 65535.")
         return
-    elif not is_port_available(port):
+    elif not Utils.is_port_available(port):
         log_it("e", f"WebSocket server port {port} is not available.")
         return
     server = socket.socket()
@@ -70,13 +97,11 @@ def start_ws_server(port):
     server.listen(5)
     Globals.WEBSOCKET_SERVER_RUNNING = True
     log_it("i", f"WebSocket server started on thread")
-    start_thread(send_ping)
-    log_it("i", "send_ping started on thread")
     while True:
         try:
-            conn, _ = server.accept()
+            conn,_ = server.accept()
             if handshake(conn):
-                Globals.WEBSOCKET_CLIENT.append(conn)
+                on_client_connect(conn)
                 log_it("d", f"New handshake for WebSocket connection. Clients currently connected: {Globals.WEBSOCKET_CLIENT}")
                 ws_broadcast_msg(f"{conn.getpeername()[0]} connected to WebSocket server!")
         except Exception as e:

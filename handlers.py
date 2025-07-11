@@ -5,7 +5,7 @@ from logger import log_it
 from pycfhelpers.node.http.simple import CFSimpleHTTPResponse
 import base64, hashlib, gzip, traceback, json, http.cookies, threading
 from urllib.parse import parse_qs
-from utils import is_cli_ready, restart_node, cli_command
+from utils import Utils
 from uuid import uuid4
 
 def generate_cookie(username, password):
@@ -65,7 +65,7 @@ def GET_request_handler(headers, bypass_auth=False, query=None):
     expected_cookie = generate_cookie(expected_username, expected_password)
     expected_token_cookie = generate_token_cookie(access_token)
     url = Config.PLUGIN_URL
-    if not is_cli_ready():
+    if not Utils.is_cli_ready():
         errmsg = f"<h1>CLI is not ready, wait for a moment!</h1>"
         return CFSimpleHTTPResponse(body=errmsg.encode("utf-8"), code=500)
     if query:
@@ -208,8 +208,8 @@ def POST_request_handler(headers, payload):
             )
 
         if action == "restart":
-            threading.Timer(1.0, restart_node).start()
-            restart_node()
+            threading.Timer(1.0, Utils.restart_node).start()
+            Utils.restart_node()
             return CFSimpleHTTPResponse(
                 body=b'{"status": "Node restart triggered"}',
                 code=200,
@@ -235,7 +235,7 @@ def POST_request_handler(headers, payload):
                 log_it("d", f"Disallowed commands: {disallowed_commands}")
 
                 log_it("i", f"Executing CLI command: {command}")
-                if not is_cli_ready():
+                if not Utils.is_cli_ready():
                     log_it("e", "CLI is not ready, cannot execute command")
                     return CFSimpleHTTPResponse(
                         body=b'{"error": "CLI is not ready"}',
@@ -251,7 +251,7 @@ def POST_request_handler(headers, payload):
                         headers={"Content-Type": "application/json"}
                     )
 
-                result = cli_command(command, timeout=3) # 3 seconds timeout for WebUI commands
+                result = Utils.cli_command(command, timeout=3) # 3 seconds timeout for WebUI commands
                 if not result:
                     log_it("e", "CLI command returned no result")
                     return CFSimpleHTTPResponse(
