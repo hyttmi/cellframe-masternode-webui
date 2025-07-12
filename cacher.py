@@ -164,9 +164,9 @@ def cache_rewards_data():
                 start_time = time.time()
 
                 rewards = {}
-                cmd_get_config_wallet_tx_history = Utils.cli_command(f"tx_history -addr {net_config['wallet']}", timeout=360)
+                cmd_get_config_wallet_tx_history = Utils.cli_command(f"tx_history -addr {net_config['wallet']} -limit 0", timeout=360)
                 cmd_get_sovereign_wallet_tx_history = (
-                    Utils.cli_command(f"tx_history -addr {sovereign_wallet_addr}", timeout=360)
+                    Utils.cli_command(f"tx_history -addr {sovereign_wallet_addr} -limit 0", timeout=360)
                     if sovereign_wallet_addr else None
                 )
                 if cmd_get_config_wallet_tx_history:
