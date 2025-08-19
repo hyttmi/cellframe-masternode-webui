@@ -1,5 +1,5 @@
 from datetime import datetime
-from logger import log_it
+from webui_logger import log_it
 from networkutils import get_active_networks, get_network_config, get_node_data, is_node_synced
 import re, time, json, os, traceback
 from notifications import notify_all

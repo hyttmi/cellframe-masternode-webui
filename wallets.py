@@ -1,4 +1,4 @@
-from logger import log_it
+from webui_logger import log_it
 from utils import Utils
 import re, traceback
 

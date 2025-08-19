@@ -8,7 +8,7 @@ def get_config_value(section, key, default=None, is_numeric=False):
                 number = int(DAP.configGetItem(section, key))
                 return number
             except ValueError:
-                from logger import log_it
+                from webui_logger import log_it
                 log_it("e", f"Invalid setting for {section}.{key}. Expected an integer, got {DAP.configGetItem(section, key)}")
                 return default
         return DAP.configGetItem(section, key)

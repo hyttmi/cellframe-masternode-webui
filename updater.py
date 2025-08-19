@@ -1,5 +1,5 @@
 from config import Config, Globals
-from logger import log_it
+from webui_logger import log_it
 from packaging import version
 from utils import Utils
 from notifications import notify_all

@@ -1,6 +1,6 @@
 import traceback
 import schedule
-from logger import log_it
+from webui_logger import log_it
 from config import Config
 from cacher import cache_blocks_data, cache_rewards_data
 from generators import generate_data

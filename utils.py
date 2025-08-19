@@ -1,5 +1,5 @@
 from command_runner import command_runner
-from logger import log_it
+from webui_logger import log_it
 from packaging import version
 import socket, requests, re, time, psutil, traceback, platform, textwrap, os, inspect
 from config import Globals

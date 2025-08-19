@@ -1,4 +1,4 @@
-## [5.13] - 2025-07-12
+## [5.14] - 2025-08-19
 
 ### Fixed
-- Rewards caching.
+- Plugin loading on newer nodes.

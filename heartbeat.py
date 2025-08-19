@@ -9,7 +9,7 @@ from networkutils import (
 from utils import Utils
 from cacher import is_locked
 from config import Config, Globals
-from logger import log_it
+from webui_logger import log_it
 from notifications import notify_all
 from datetime import datetime, timedelta
 import traceback

@@ -1,7 +1,7 @@
 from utils import Utils
 from wallets import get_reward_wallet_tokens
 from datetime import datetime
-from logger import log_it
+from webui_logger import log_it
 from pycfhelpers.node.net import CFNet
 import re, requests, os, json, traceback
 

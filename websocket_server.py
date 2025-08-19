@@ -1,5 +1,5 @@
 import socket, base64, hashlib, json
-from logger import log_it
+from webui_logger import log_it
 from config import Globals
 from thread_launcher import start_thread
 from utils import Utils

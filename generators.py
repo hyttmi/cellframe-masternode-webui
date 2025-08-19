@@ -14,7 +14,7 @@ from networkutils import (
 from updater import check_plugin_update
 from wallets import get_reward_wallet_tokens
 from heartbeat import heartbeat
-from logger import log_it
+from webui_logger import log_it
 from config import Config, Globals
 from concurrent.futures import ThreadPoolExecutor
 import json, os, traceback
