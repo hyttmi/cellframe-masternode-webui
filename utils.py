@@ -142,7 +142,7 @@ class Utils:
             log_it("d", "Fetching latest node version...")
             response = requests.get("https://pub.cellframe.net/linux/cellframe-node/master/?C=M&O=D", timeout=5)
             if response.status_code == 200:
-                matches = re.findall(r"(\d\.\d-\d{3})", response.text)
+                matches = re.findall(r"(\d\.\d\-\d+)", response.text)
                 if matches:
                     versions = [match.replace("-", ".") for match in matches]
                     latest_version = max(versions, key=version.parse)

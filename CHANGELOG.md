@@ -1,4 +1,4 @@
-## [5.14] - 2025-08-19
+## [5.14] - 2025-08-31
 
 ### Fixed
-- Plugin loading on newer nodes.
+- Fetching latest node version.
